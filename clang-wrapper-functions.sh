@@ -28,7 +28,7 @@ function run_compilation() {
             IGNORE_NEXT_ARG=true
             ARGS+=("$var")
             i=$((i+1)) 
-            uar=${INPUT_ARGS[$i]}
+            var=${INPUT_ARGS[$i]}
             #echo "$var"
             dirname=$(dirname -- "$var")
             filename=$(basename -- "$var")
@@ -48,8 +48,8 @@ function run_compilation() {
                 filename=$(basename -- "$var")
                 filename="${filename%.*}"
                 echo "Run LLVM generation with flags: ${ARGS[@]}"
-                ${LLVM_INSTALL_DIRECTORY}/bin/${compiler} "${@:2}" #
-                ${LLVM_INSTALL_DIRECTORY}/bin/${compiler} -S -emit-llvm "${ARGS[@]}" #
+                ${LLVM_INSTALL_DIRECTORY}/bin/${compiler} "${@:2}"
+                ${LLVM_INSTALL_DIRECTORY}/bin/${compiler} -S -emit-llvm "${ARGS[@]}"
                 #${LLVM_INSTALL_DIRECTORY}/bin/clang "$@" 
                 #${LLVM_INSTALL_DIRECTORY}/bin/clang -S -emit-llvm "${ARGS[@]}"
                 #${LLVM_INSTALL_DIRECTORY}/bin/opt -load ${LLVM_TOOL_DIRECTORY}/libLLVMLoopStatistics.so -loop-statistics -loop-statistics-out-dir ${OUT_DIR} -loop-statistics-log-name "$filename" < "$filename.ll" > /dev/null
