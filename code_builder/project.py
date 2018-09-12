@@ -7,8 +7,12 @@ class GitProject:
     def __init__(self, repository_path):
         last_slash = repository_path.rfind('/') + 1
         project_name = repository_path[last_slash:repository_path.rfind('.git')]
-        prev_slash = repository_path.rfind('/', last_slash - 1, 0)
-        user_name = repository_path[prev_slash:last_slash]
+        # repository format is: git@server:user/project.git
+        # or https://server/user/project.git
+        user_start = repository_path.rfind('/', 0, last_slash - 1)
+        if user_start == -1:
+            user_start = repository_path.rfind(':', 0, last_slash - 1)
+        user_name = repository_path[user_start + 1 : last_slash - 1]
         self.project_name = '{0}_{1}'.format(user_name, project_name)
         self.repository_path = repository_path
 
