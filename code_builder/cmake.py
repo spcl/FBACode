@@ -18,7 +18,7 @@ class CMakeProject:
         # script is outside package directory
         if not exists(self.build_dir):
             mkdir(self.build_dir)
-        elif len(listdir(self.build_dir)) == 0 or force_update:
+        if len(listdir(self.build_dir)) == 0 or force_update:
             c_compiler_opt = "-DCMAKE_C_COMPILER=" + c_compiler
             cpp_compiler_opt = "-DCMAKE_CXX_COMPILER=" + cxx_compiler
             subprocess.run(["cmake", self.repository_path, c_compiler_opt, cpp_compiler_opt],
