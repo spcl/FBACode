@@ -35,8 +35,8 @@ function run_compilation() {
             filename=$(basename -- "$var")
             filename="${filename%.*}"
             #echo "${dirname}/${filename}.ll"
-            IR_FILES+=("${dirname}/${filename}.ll")
-            ARGS+=("${dirname}/${filename}.ll")
+            IR_FILES+=("${dirname}/${filename}.bc")
+            ARGS+=("${dirname}/${filename}.bc")
         fi
     done
     echo ${ARGS[@]}
@@ -45,7 +45,7 @@ function run_compilation() {
         shopt -s nocasematch
         echo "Run LLVM generation with flags: ${ARGS[@]}"
         ${LLVM_INSTALL_DIRECTORY}/bin/${compiler} "${@:2}"
-        ${LLVM_INSTALL_DIRECTORY}/bin/${compiler} -S -emit-llvm "${ARGS[@]}"
+        ${LLVM_INSTALL_DIRECTORY}/bin/${compiler} -emit-llvm "${ARGS[@]}"
         #for var in "${ARGS[@]}"
         #do
         #    if [[ "$var" =~ ".cpp" ]] || [[ "$var" =~ ".c" ]] ; then
