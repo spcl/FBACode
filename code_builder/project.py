@@ -4,7 +4,8 @@ from git import Repo, GitCommandError
 
 class GitProject:
 
-    def __init__(self, repository_path):
+    def __init__(self, repository_path, output_log):
+        self.output_log = output_log
         last_slash = repository_path.rfind('/') + 1
         project_name = repository_path[last_slash:repository_path.rfind('.git')]
         # repository format is: git@server:user/project.git
@@ -23,6 +24,7 @@ class GitProject:
         else:
             try:
                 self.cloned_repo = Repo.clone_from(self.repository_path, repo_location)
+                self.output_log.info('Clone {0} to {1}'.format(self.repository_path, repo_location))
             except GitCommandError:
                 self.cloned_repo = Repo(repo_location)
 
