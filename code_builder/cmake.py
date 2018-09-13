@@ -1,9 +1,10 @@
-import os.path, subprocess
+import subprocess
 
-from os.path import join, exists, isfile
-from os import listdir, mkdir
+from os.path import join, exists, isfile, dirname, basename
+from os import listdir, makedirs, mkdir, rename
 from shutil import rmtree
 from glob import iglob
+from re import search
 
 def isCmakeProject(repo_dir):
     return isfile( join(repo_dir, 'CMakeLists.txt') )
@@ -29,9 +30,12 @@ class CMakeProject:
     def generate_bitcodes(self, target_dir):
         if not exists(target_dir):
             mkdir(target_dir)
-        for file in iglob('{0}/**/*.ll'.format(self.build_dir), recursive=True):
-            filename = os.path.basename(file)
-            os.rename(file, os.path.join(target_dir, filename) )
+        for file in iglob('{0}/**/*.bc'.format(self.build_dir), recursive=True):
+            # CMake file format: {build_dir}/../CMakeFiles/{dir}.dir/relative_bc_location
+            res = search(r'CMakeFiles/.*\.dir', file)
+            local_path = file[res.end(0) + 1 : ]
+            makedirs( join(target_dir, dirname(local_path)), exist_ok = True)
+            rename(file, join(target_dir, local_path) )
 
     def clean(self):
         build_dir = self.repository_path + "_build"

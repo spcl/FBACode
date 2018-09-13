@@ -39,7 +39,7 @@ def import_projects(build_dir, target_dir, specification):
                     cxx_compiler = get_cxx_compiler(),
                     force_update = True
                     )
-            cmake_repo.generate_bitcodes( join(target_dir, project.name()))
+            cmake_repo.generate_bitcodes( join(target_dir, project.name()) )
 
     env.reset_environment()
 
