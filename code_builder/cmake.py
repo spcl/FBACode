@@ -23,10 +23,18 @@ class CMakeProject:
         if len(listdir(self.build_dir)) == 0 or force_update:
             c_compiler_opt = "-DCMAKE_C_COMPILER=" + c_compiler
             cpp_compiler_opt = "-DCMAKE_CXX_COMPILER=" + cxx_compiler
-            self.output_log.info('Configure {0} to build in {1}'.format(self.repository_path, self.build_dir))
-            run(["cmake", self.repository_path, c_compiler_opt, cpp_compiler_opt],
-                    cwd = self.build_dir
+            ret = run(
+                    ["cmake", self.repository_path, c_compiler_opt, cpp_compiler_opt],
+                    cwd = self.build_dir,
+                    stdout = PIPE,
+                    stderr = PIPE
                     )
+            if ret.returncode:
+                self.error_log.error(ret.stderr.decode('utf-8'))
+            else:
+                self.output_log.info('Configure %s to build in %s' % (self.repository_path, self.build_dir))
+            return ret.returncode
+        return False
 
     def build(self):
         # TODO: capture_output added in 3.7 - verify it works
@@ -35,12 +43,12 @@ class CMakeProject:
                 cwd = self.build_dir,
                 stdout = PIPE,
                 stderr = PIPE
-                #shell = True
                 )
         if ret.returncode:
             self.error_log.error(ret.stderr.decode('utf-8'))
         else:
             self.output_log.info('Build in %s' % self.build_dir)
+        return ret.returncode
 
     def generate_bitcodes(self, target_dir):
         if not exists(target_dir):

@@ -1,12 +1,17 @@
 
-import json
+from json import dump
 from os import environ, mkdir
 from os.path import join, exists
+from datetime import datetime
 
 from .cmake import CMakeProject, isCmakeProject
 from .project import GitProject
 from .environment import Environment, get_c_compiler, get_cxx_compiler
 from .logger import create_logger
+
+def export_projects(projects, name, time):
+    with open('%s_%s.json' % (name, time), 'w') as outfile:
+        dump(projects, outfile)
 
 def import_projects(build_dir, target_dir, specification):
 
@@ -16,8 +21,13 @@ def import_projects(build_dir, target_dir, specification):
         mkdir(target_dir)
 
     projects_count = len(specification)
-    output_log = create_logger('output', projects_count)
-    error_log = create_logger('error', projects_count)
+    current_time = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+    output_log = create_logger('output', current_time, projects_count)
+    error_log = create_logger('error', current_time, projects_count)
+
+    correct_projects = {}
+    incorrect_projects = {}
+    unrecognized_projects = {}
 
     env = Environment()
     env.overwrite_environment()
@@ -32,15 +42,31 @@ def import_projects(build_dir, target_dir, specification):
         source_dir = project.source_dir()
         if isCmakeProject(source_dir):
             cmake_repo = CMakeProject(source_dir, output_log, error_log)
-            cmake_repo.configure(
+            returnval = cmake_repo.configure(
                     c_compiler = get_c_compiler(),
                     cxx_compiler = get_cxx_compiler(),
                     force_update = True
                     )
-            cmake_repo.build()
-            cmake_repo.generate_bitcodes( join(target_dir, project.name()) )
+            if not returnval:
+                returnval = cmake_repo.build()
+            if not returnval:
+                cmake_repo.generate_bitcodes( join(target_dir, project.name()) )
+            if returnval:
+                incorrect_projects[repo] = spec
+            else:
+                correct_projects[repo] = spec
+        else:
+            output_log.info('Unrecognized project %s' % source_dir)
+            unrecognized_projects[repo] = spec
 
         output_log.next()
+        error_log.next()
 
     env.reset_environment()
+    print('Succesfull builds: %d' % len(correct_projects))
+    print('Build errors: %d' % len(incorrect_projects))
+    print('Unrecognized builds: %d' % len(unrecognized_projects))
 
+    export_projects(correct_projects, 'correct_projects', current_time)
+    export_projects(incorrect_projects, 'incorrect_projects', current_time)
+    export_projects(unrecognized_projects, 'unrecognized_projects', current_time)

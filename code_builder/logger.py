@@ -1,12 +1,10 @@
 
 from logging import LoggerAdapter, getLogger, DEBUG, FileHandler, Formatter
-from datetime import datetime
 
-def create_logger(name, projects_count):
-    current_time = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+def create_logger(name, time, projects_count):
     log = getLogger(name)
     log.setLevel(DEBUG)
-    handler = FileHandler('%s_%s.log' % (name, current_time))
+    handler = FileHandler('%s_%s.log' % (name, time))
     format = Formatter('%(levelname)s - %(message)s')
     handler.setFormatter(format)
     log.addHandler(handler)
