@@ -25,9 +25,9 @@ def import_projects(build_dir, target_dir, specification):
     output_log = create_logger('output', current_time, projects_count)
     error_log = create_logger('error', current_time, projects_count)
 
-    correct_projects = {}
-    incorrect_projects = {}
-    unrecognized_projects = {}
+    correct_projects = 0
+    incorrect_projects = 0
+    unrecognized_projects = 0
 
     env = Environment()
     env.overwrite_environment()
@@ -35,6 +35,14 @@ def import_projects(build_dir, target_dir, specification):
     for repo, spec in specification.items():
 
         repository_path = spec['repository']
+
+        if 'status' in spec:
+            # works -> check for updates
+            # unrecognized -> nothing
+            # fails -> check for updates, maybe try again
+            if spec['status'] == 'unrecognized':
+                unrecognized_projects += 1
+
         # note; extend here for non-git repos
         project = GitProject(repository_path, output_log)
         project.clone(build_dir)
@@ -52,21 +60,22 @@ def import_projects(build_dir, target_dir, specification):
             if not returnval:
                 cmake_repo.generate_bitcodes( join(target_dir, project.name()) )
             if returnval:
-                incorrect_projects[repo] = spec
+                incorrect_projects += 1
+                spec['status'] = 'fails'
             else:
-                correct_projects[repo] = spec
+                correct_projects += 1
+                spec['status'] = 'works'
         else:
             output_log.info('Unrecognized project %s' % source_dir)
-            unrecognized_projects[repo] = spec
+            unrecognized_projects += 1
+            spec['status'] = 'unrecognized'
 
         output_log.next()
         error_log.next()
 
     env.reset_environment()
-    print('Succesfull builds: %d' % len(correct_projects))
-    print('Build errors: %d' % len(incorrect_projects))
-    print('Unrecognized builds: %d' % len(unrecognized_projects))
+    print('Succesfull builds: %d' % correct_projects)
+    print('Build errors: %d' % incorrect_projects)
+    print('Unrecognized builds: %d' % unrecognized_projects)
 
-    export_projects(correct_projects, 'correct_projects', current_time)
-    export_projects(incorrect_projects, 'incorrect_projects', current_time)
-    export_projects(unrecognized_projects, 'unrecognized_projects', current_time)
+    export_projects(specification, 'build_projects', current_time)
