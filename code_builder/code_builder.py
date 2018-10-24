@@ -1,5 +1,4 @@
 
-from json import dump
 from os import environ, mkdir
 from os.path import join, exists
 
@@ -7,11 +6,7 @@ from .cmake import CMakeProject, isCmakeProject
 from .project import GitProject
 from .environment import Environment, get_c_compiler, get_cxx_compiler
 
-def export_projects(projects, name, time):
-    with open('%s_%s.json' % (name, time), 'w') as outfile:
-        dump(projects, outfile)
-
-def build_projects(build_dir, target_dir, repositories_db, export_repos, force_update, out_log, error_log):
+def build_projects(build_dir, target_dir, repositories_db, force_update, out_log, error_log):
 
     if not exists(build_dir):
         mkdir(build_dir)
@@ -75,5 +70,3 @@ def build_projects(build_dir, target_dir, repositories_db, export_repos, force_u
     print('Build errors: %d' % incorrect_projects)
     print('Unrecognized builds: %d' % unrecognized_projects)
 
-    if export_repos is not None:
-        export_projects(repositories_db, export_repos, current_time)

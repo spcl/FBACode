@@ -4,7 +4,8 @@ from time import time
 def fetch_projects(cfg, out_log, error_log, max_repos = None):
 
     github = GithubFetcher(cfg, out_log, error_log)
-    data = github.fetch(max_repos)
+    github.fetch(max_repos)
+    data = github.process_results()
     return data
 
 def fetch_json(address, params, language):
@@ -34,11 +35,13 @@ class GithubFetcher:
         page = 1
         if max_repos is None:
             max_repos = int(self.cfg['fetch']['max_repos'])
+            repos_per_page = min(max_repos, repos_per_page)
         repos_processed = 0
         results = []
         start = time()
         self.out_log.set_counter(max_repos)
         self.error_log.set_counter(max_repos)
+        
         while repos_processed < max_repos:
             request_params['page'] = str(page)
             results_c = fetch_json(address, request_params, 'C')
@@ -49,16 +52,30 @@ class GithubFetcher:
                 self.error_log.error('Incomplete results at GitHub API for %d repositories, start again with %d'
                         % (repos_per_page*2, repos_per_page))
                 continue
+            
             repos_processed += repos_per_page
             results += results_c['items']
             results += results_cpp['items']
-            self.out_log.info('Fetched %d repositories for C and C++ with GitHub API' % repos_per_page)
-            page += 1
             self.out_log.step(repos_per_page)
             self.error_log.step(repos_per_page)
+            self.out_log.info('Fetched %d repositories for C and C++ with GitHub API' % repos_per_page)
+            page += 1
+
         end = time()
         self.out_log.info('Processed %d repositories in %f seconds\n' % (repos_processed, end-start))
-        sorted_results = sorted(results, key = lambda x : x['stargazers_count'])
+        self.results = sorted(results, key = lambda x : x['stargazers_count'], reverse=True)
+
+    def process_results(self):
+       
+        processed_results = {}
+        for repo in self.results:   
+            data = {}
+            data['url'] = repo['git_url']
+            data['timestamp'] = repo['updated_at']
+            data['name'] = repo['name']
+            processed_results[ repo['full_name'] ] = data
+
+        return processed_results
 
     def update(self, existing_repo):
         pass

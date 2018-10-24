@@ -14,6 +14,10 @@ from code_builder.logger import create_logger
 def error_print(*args, **kwargs):
     print(*args, file=stderr, **kwargs)
 
+def export_projects(projects, name, time):
+    with open('%s_%s.json' % (name, time), 'w') as outfile:
+        json.dump(projects, outfile, indent = 2)
+
 parser = ArgumentParser(description='Code fetcher and builder')
 parser.add_argument('--fetch', dest='fetch', action='store_true',
         help='Fetch new repositories from Github')
@@ -63,7 +67,9 @@ if parsed_args.build:
     build_projects( build_dir = parsed_args.build_dir,
                     target_dir = parsed_args.results_dir,
                     repositories_db = repositories,
-                    export_repos = parsed_args.export_repos,
                     force_update = parsed_args.build_force_update,
                     out_log = output_log,
                     error_log = error_log) 
+
+if parsed_args.export_repos is not None:
+    export_projects(repositories, parsed_args.export_repos, timestamp)

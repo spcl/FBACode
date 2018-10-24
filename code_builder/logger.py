@@ -28,7 +28,7 @@ class CountingLogger(LoggerAdapter):
             return msg, kwargs
 
     def set_counter(self, counter_max):
-        self.extra['cur'] = 1
+        self.extra['cur'] = 0
         self.extra['size'] = counter_max
 
     def delete_counter():
