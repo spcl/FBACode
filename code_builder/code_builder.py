@@ -2,37 +2,34 @@
 from json import dump
 from os import environ, mkdir
 from os.path import join, exists
-from datetime import datetime
 
 from .cmake import CMakeProject, isCmakeProject
 from .project import GitProject
 from .environment import Environment, get_c_compiler, get_cxx_compiler
-from .logger import create_logger
 
 def export_projects(projects, name, time):
     with open('%s_%s.json' % (name, time), 'w') as outfile:
         dump(projects, outfile)
 
-def import_projects(build_dir, target_dir, specification):
+def build_projects(build_dir, target_dir, repositories_db, export_repos, force_update, out_log, error_log):
 
     if not exists(build_dir):
         mkdir(build_dir)
     if not exists(target_dir):
         mkdir(target_dir)
 
-    projects_count = len(specification)
-    current_time = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-    output_log = create_logger('output', current_time, projects_count)
-    error_log = create_logger('error', current_time, projects_count)
+    projects_count = len(repositories_db)
 
     correct_projects = 0
     incorrect_projects = 0
     unrecognized_projects = 0
+    out_log.set_counter(projects_count)
+    error_log.set_counter(projects_count)
 
     env = Environment()
     env.overwrite_environment()
 
-    for repo, spec in specification.items():
+    for repo, spec in repositories_db.items():
 
         repository_path = spec['repository']
 
@@ -78,4 +75,5 @@ def import_projects(build_dir, target_dir, specification):
     print('Build errors: %d' % incorrect_projects)
     print('Unrecognized builds: %d' % unrecognized_projects)
 
-    export_projects(specification, 'build_projects', current_time)
+    if export_repos is not None:
+        export_projects(repositories_db, export_repos, current_time)
