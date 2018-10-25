@@ -1,13 +1,26 @@
 
+import subprocess
+
 from os.path import join, exists, isfile, dirname, basename
 from os import listdir, makedirs, mkdir, rename
 from shutil import rmtree
 from glob import iglob
 from re import search
-from subprocess import PIPE, run
+from subprocess import PIPE
+from sys import version_info
 
 def isCmakeProject(repo_dir):
     return isfile( join(repo_dir, 'CMakeLists.txt') )
+
+def run(command, dir, stdout, stderr):
+
+    # Python 3.5+ - subprocess.run
+    # older - subprocess.call
+    version = version_info()
+    if version.major >= 3 and version.minor >= 5:
+        subprocess.run(command, cwd=dir, stdout = stdout, stderr = stderr)
+    else:
+        subprocess.call(command, cwd=dir, stdout = stdout, stderr = stderr)
 
 class CMakeProject:
 
