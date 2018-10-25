@@ -67,6 +67,6 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, out_log
 
     env.reset_environment()
     print('Succesfull builds: %d' % correct_projects)
-    print('Build errors: %d' % incorrect_projects)
+    print('Failed builds: %d' % incorrect_projects)
     print('Unrecognized builds: %d' % unrecognized_projects)
 
