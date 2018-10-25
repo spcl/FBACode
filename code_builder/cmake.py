@@ -22,6 +22,10 @@ def run(command, cwd, stdout, stderr):
     else:
         return subprocess.call(command, cwd=cwd, stdout = stdout, stderr = stderr)
 
+def decode(stream):
+    return stream.decode('utf-8')
+
+
 class CMakeProject:
 
     def __init__(self, repo_dir, output_log, error_log):
@@ -45,15 +49,18 @@ class CMakeProject:
                     )
             if ret.returncode:
                 self.error_log.error('Failed CMake configure command: %s' % ' '.join(cmd))
-                self.error_log.error(ret.stderr.decode('utf-8'))
+                self.error_log.error( decode(ret.stderr) )
             else:
                 self.output_log.info('Configure %s to build in %s' % (self.repository_path, self.build_dir))
+                self.output_log.debug('CMake configure command: %s' % ' '.join(cmd))
+                self.output_log.debug( decode(ret.stdout) )
             return ret.returncode
         return False
 
     def build(self):
+        cmd = ["cmake", "--build", "."]
         ret = run(
-                ["cmake", "--build", "."],
+                cmd,
                 cwd = self.build_dir,
                 stdout = PIPE,
                 stderr = PIPE
@@ -62,6 +69,8 @@ class CMakeProject:
             self.error_log.error(ret.stderr.decode('utf-8'))
         else:
             self.output_log.info('Build in %s' % self.build_dir)
+            self.output_log.debug('CMake build command: %s' % ' '.join(cmd))
+            self.output_log.debug( decode(ret.stdout) )
         return ret.returncode
 
     def generate_bitcodes(self, target_dir):

@@ -1,9 +1,12 @@
 
-from logging import LoggerAdapter, getLogger, INFO, FileHandler, Formatter, StreamHandler
+from logging import LoggerAdapter, getLogger, INFO, DEBUG, FileHandler, Formatter, StreamHandler
 
-def create_stream_logger(name, stream):
+def create_stream_logger(name, stream, verbose):
     log = getLogger(name)
-    log.setLevel(INFO)
+    if verbose:
+        log.setLevel(DEBUG)
+    else:
+        log.setLevel(INFO)
     handler = StreamHandler(stream)
     format = Formatter('%(levelname)s - %(message)s')
     handler.setFormatter(format)
@@ -12,7 +15,10 @@ def create_stream_logger(name, stream):
 
 def create_file_logger(filename, time):
     log = getLogger(filename)
-    log.setLevel(INFO)
+    if verbose:
+        log.setLevel(DEBUG)
+    else:
+        log.setLevel(INFO)
     handler = FileHandler('%s_%s.log' % (filename, time))
     format = Formatter('%(levelname)s - %(message)s')
     handler.setFormatter(format)

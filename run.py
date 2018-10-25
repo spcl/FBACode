@@ -42,16 +42,18 @@ parser.add_argument('--export-repositories', dest='export_repos', action='store'
         help='Export database of processed repositories as JSON file')
 parser.add_argument('--output-to-file', dest='out_to_file', action='store_true',
         help='Store output and error logs to a file')
+parser.add_argument('--verbose', dest='verbose', action='store_true',
+        help='Verbose output.')
 
 parsed_args = parser.parse_args(argv[1:])
 
 timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
 if parsed_args.out_to_file:
-    output_log = logger.create_file_logger(filename = 'output', time = timestamp)
-    error_log = logger.create_file_logger(filename = 'error', time = timestamp)
+    output_log = logger.create_file_logger(filename = 'output', time = timestamp, verbose = parsed_args.verbose)
+    error_log = logger.create_file_logger(filename = 'error', time = timestamp, verbose = parsed_args.verbose)
 else:
-    output_log = logger.create_stream_logger(name = 'output', stream = stdout)
-    error_log = logger.create_stream_logger(name = 'error', stream = stderr)
+    output_log = logger.create_stream_logger(name = 'output', stream = stdout, verbose = parsed_args.verbose)
+    error_log = logger.create_stream_logger(name = 'error', stream = stderr, verbose = parsed_args.verbose)
 
 cfg = ConfigParser()
 default_cfg = parsed_args.config_file
