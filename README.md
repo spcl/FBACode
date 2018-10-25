@@ -2,6 +2,7 @@ Fetch, Build and Analyze Code
 
 Requirements:
 - [requests](https://pypi.org/project/requests/)
+- [GitPython](https://pypi.org/project/GitPython/)
 
 # GitHub
 
