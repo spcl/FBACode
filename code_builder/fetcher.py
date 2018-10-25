@@ -52,7 +52,6 @@ class GithubFetcher:
                 self.error_log.error('Incomplete results at GitHub API for %d repositories, start again with %d'
                         % (repos_per_page*2, repos_per_page))
                 continue
-            
             repos_processed += repos_per_page
             results += results_c['items']
             results += results_cpp['items']
@@ -63,16 +62,17 @@ class GithubFetcher:
 
         end = time()
         self.out_log.info('Processed %d repositories in %f seconds\n' % (repos_processed, end-start))
-        self.results = sorted(results, key = lambda x : x['stargazers_count'], reverse=True)
+        # Mix C and C++ projects and sort them together
+        reversed_order = request_params['order'] == 'desc'
+        sort_key = request_params['sort']
+        self.results = sorted(results, key = lambda x : x[sort_key], reverse = reversed_order)
 
     def process_results(self):
        
         processed_results = {}
-        for repo in self.results:   
-            data = {}
-            data['url'] = repo['git_url']
-            data['timestamp'] = repo['updated_at']
-            data['name'] = repo['name']
+        for repo in self.results:
+            # dict https://stackoverflow.com/questions/3420122/filter-dict-to-contain-only-certain-keys
+            data = { key : repo[key] for key in ('git_url', 'updated_at', 'name', 'default_branch') }
             processed_results[ repo['full_name'] ] = data
 
         return processed_results
