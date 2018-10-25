@@ -14,8 +14,8 @@ from code_builder.logger import create_logger
 def error_print(*args, **kwargs):
     print(*args, file=stderr, **kwargs)
 
-def export_projects(projects, name, time):
-    with open('%s_%s.json' % (name, time), 'w') as outfile:
+def export_projects(projects, name):
+    with open(name, mode='w') as outfile:
         json.dump(projects, outfile, indent = 2)
 
 parser = ArgumentParser(description='Code fetcher and builder')
@@ -72,4 +72,4 @@ if parsed_args.build:
                     error_log = error_log) 
 
 if parsed_args.export_repos is not None:
-    export_projects(repositories, parsed_args.export_repos, timestamp)
+    export_projects(repositories, parsed_args.export_repos)
