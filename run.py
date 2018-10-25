@@ -2,14 +2,14 @@
 import json
 
 from argparse import ArgumentParser
-from sys import argv, stderr
+from sys import argv, stdout, stderr
 from configparser import ConfigParser
 from datetime import datetime
 from os import path
 
+from code_builder import logger
 from code_builder.fetcher import fetch_projects
 from code_builder.code_builder import build_projects
-from code_builder.logger import create_logger
 
 # https://stackoverflow.com/questions/5574702/how-to-print-to-stderr-in-python
 def error_print(*args, **kwargs):
@@ -40,11 +40,18 @@ parser.add_argument('--config-file', dest='config_file', default='default.cfg', 
         help='Application config file')
 parser.add_argument('--export-repositories', dest='export_repos', action='store',
         help='Export database of processed repositories as JSON file')
+parser.add_argument('--output-to-file', dest='out_to_file', action='store_true',
+        help='Store output and error logs to a file')
+
 parsed_args = parser.parse_args(argv[1:])
 
 timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-output_log = create_logger('output', timestamp)
-error_log = create_logger('error', timestamp)
+if parsed_args.out_to_file:
+    output_log = logger.create_file_logger(filename = 'output', time = timestamp)
+    error_log = logger.create_file_logger(filename = 'error', time = timestamp)
+else:
+    output_log = logger.create_stream_logger(name = 'output', stream = stdout)
+    error_log = logger.create_stream_logger(name = 'error', stream = stderr)
 
 cfg = ConfigParser()
 default_cfg = parsed_args.config_file

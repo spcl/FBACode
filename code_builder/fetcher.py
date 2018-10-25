@@ -62,7 +62,7 @@ class GithubFetcher:
             page += 1
 
         end = time()
-        self.out_log.info('Processed %d repositories in %f seconds\n' % (repos_processed, end-start))
+        self.out_log.info('Processed %d repositories in %f seconds' % (repos_processed, end-start))
         # Mix C and C++ projects and sort them together
         reversed_order = request_params['order'] == 'desc'
         sort_key = request_params['sort']

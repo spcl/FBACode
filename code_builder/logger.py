@@ -1,10 +1,19 @@
 
-from logging import LoggerAdapter, getLogger, DEBUG, FileHandler, Formatter
+from logging import LoggerAdapter, getLogger, INFO, FileHandler, Formatter, StreamHandler
 
-def create_logger(name, time):
+def create_stream_logger(name, stream):
     log = getLogger(name)
-    log.setLevel(DEBUG)
-    handler = FileHandler('%s_%s.log' % (name, time))
+    log.setLevel(INFO)
+    handler = StreamHandler(stream)
+    format = Formatter('%(levelname)s - %(message)s')
+    handler.setFormatter(format)
+    log.addHandler(handler)
+    return CountingLogger(log)
+
+def create_file_logger(filename, time):
+    log = getLogger(filename)
+    log.setLevel(INFO)
+    handler = FileHandler('%s_%s.log' % (filename, time))
     format = Formatter('%(levelname)s - %(message)s')
     handler.setFormatter(format)
     log.addHandler(handler)
@@ -14,6 +23,7 @@ class CountingLogger(LoggerAdapter):
 
     def __init__(self, logger):
         super().__init__(logger, {})
+        logger.propagate = False
 
     def next(self):
         self.extra['cur'] += 1
