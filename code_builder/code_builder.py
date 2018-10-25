@@ -26,7 +26,7 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, out_log
 
     for repo, spec in repositories_db.items():
 
-        repository_path = spec['repository']
+        repository_path = spec['codebase_data']['git_url']
 
         if 'status' in spec:
             # works -> check for updates
@@ -36,7 +36,7 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, out_log
                 unrecognized_projects += 1
 
         # note; extend here for non-git repos
-        project = GitProject(repository_path, output_log)
+        project = GitProject(repository_path, out_log)
         project.clone(build_dir)
         # classify repository
         source_dir = project.source_dir()

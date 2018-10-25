@@ -19,6 +19,7 @@ class GitProject:
 
     def clone(self, build_dir):
         repo_location = join(build_dir, self.project_name)
+        self.output_log.log('Clone %s repository from %s to %s', self.project_name, self.repository_path, repo_location)
         if exists(repo_location):
             self.cloned_repo = Repo(repo_location)
         else:
