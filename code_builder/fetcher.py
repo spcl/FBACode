@@ -31,11 +31,12 @@ class GithubFetcher:
         address = request_params['address']
         del request_params['address']
         repos_per_page = int(self.cfg['fetch']['pagination'])
-        request_params['per_page'] = str(repos_per_page)
         page = 1
         if max_repos is None:
             max_repos = int(self.cfg['fetch']['max_repos'])
-            repos_per_page = min(max_repos, repos_per_page)
+        repos_per_page = min(max_repos, repos_per_page)
+        request_params['per_page'] = str(repos_per_page)
+
         repos_processed = 0
         results = []
         start = time()
