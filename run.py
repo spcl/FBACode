@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 from sys import argv, stderr
 from configparser import ConfigParser
 from datetime import datetime
+from os import path
 
 from code_builder.fetcher import fetch_projects
 from code_builder.code_builder import build_projects
@@ -46,7 +47,12 @@ output_log = create_logger('output', timestamp)
 error_log = create_logger('error', timestamp)
 
 cfg = ConfigParser()
-cfg.read([parsed_args.user_config_file, parsed_args.config_file])
+default_cfg = parsed_args.config_file
+# if file not provided, use the one located in top project directory
+if not path.exists(default_cfg):
+    default_cfg = path.join(path.abspath(__file__), 'default.cfg')
+print(default_cfg)
+cfg.read([parsed_args.user_config_file, default_cfg])
 
 # fetch new data, possibley updating
 if parsed_args.repo_db is not None:
