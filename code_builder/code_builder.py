@@ -26,6 +26,8 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, out_log
 
     for repo, spec in repositories_db.items():
 
+        out_log.next()
+        error_log.next()
         repository_path = spec['codebase_data']['git_url']
 
         if 'status' in spec:
@@ -41,7 +43,7 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, out_log
         # classify repository
         source_dir = project.source_dir()
         if isCmakeProject(source_dir):
-            cmake_repo = CMakeProject(source_dir, output_log, error_log)
+            cmake_repo = CMakeProject(source_dir, out_log, error_log)
             returnval = cmake_repo.configure(
                     c_compiler = get_c_compiler(),
                     cxx_compiler = get_cxx_compiler(),
@@ -58,12 +60,10 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, out_log
                 correct_projects += 1
                 spec['status'] = 'works'
         else:
-            output_log.info('Unrecognized project %s' % source_dir)
+            out_log.info('Unrecognized project %s' % source_dir)
             unrecognized_projects += 1
             spec['status'] = 'unrecognized'
 
-        output_log.next()
-        error_log.next()
 
     env.reset_environment()
     print('Succesfull builds: %d' % correct_projects)

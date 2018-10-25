@@ -25,7 +25,6 @@ class GitProject:
         else:
             try:
                 self.cloned_repo = Repo.clone_from(self.repository_path, repo_location)
-                self.output_log.info('Clone {0} to {1}'.format(self.repository_path, repo_location))
             except GitCommandError:
                 self.cloned_repo = Repo(repo_location)
 
