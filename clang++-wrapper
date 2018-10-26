@@ -1,7 +1,0 @@
-#!/bin/bash
-
-source "${BASH_SOURCE%/*}/clang-wrapper.cfg"
-source "${BASH_SOURCE%/*}/clang-wrapper-functions.sh"
-
-run_compilation "clang++" "$@"
-

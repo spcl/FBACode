@@ -12,7 +12,7 @@ from sys import version_info
 def isCmakeProject(repo_dir):
     return isfile( join(repo_dir, 'CMakeLists.txt') )
 
-def run(command, cwd, stdout, stderr):
+def run(command, cwd = None, stdout = None, stderr = None):
 
     # Python 3.5+ - subprocess.run
     # older - subprocess.call
