@@ -83,6 +83,7 @@ if parsed_args.build:
                     target_dir = parsed_args.results_dir,
                     repositories_db = repositories,
                     force_update = parsed_args.build_force_update,
+                    cfg = cfg,
                     out_log = output_log,
                     error_log = error_log) 
 

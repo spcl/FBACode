@@ -4,7 +4,9 @@ from git import Repo, GitCommandError
 
 class GitProject:
 
-    def __init__(self, repository_path, output_log):
+    def __init__(self, repository_path, branch, cfg, output_log):
+        self.cfg = cfg
+        self.branch = branch
         self.output_log = output_log
         last_slash = repository_path.rfind('/') + 1
         project_name = repository_path[last_slash:repository_path.rfind('.git')]
@@ -24,7 +26,13 @@ class GitProject:
             self.cloned_repo = Repo(repo_location)
         else:
             try:
-                self.cloned_repo = Repo.clone_from(self.repository_path, repo_location)
+                self.cloned_repo = Repo.clone_from(self.repository_path, repo_location, recursive = True)
+                submodules_count = len(self.cloned_repo.submodules)
+                if submodules_count:
+                    self.output_log.info('Initialized %d submodules in %s'
+                            % (submodules_count, repo_location))
+                self.cloned_repo.git.checkout(self.branch)
+            # TODO: why do I need this? when can it fail?
             except GitCommandError:
                 self.cloned_repo = Repo(repo_location)
 

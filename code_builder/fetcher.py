@@ -13,7 +13,7 @@ def fetch_json(address, params, language):
     params['q'] = 'language:%s' % language
     r = get(address, params)
     if r.status_code != 200:
-        error_log.error('Failed to fetch from GitHub, url %s, text %s', r.url, r.text)
+        self.error_log.error('Failed to fetch from GitHub, url %s, text %s', r.url, r.text)
         return None
     else:
         return r.json()

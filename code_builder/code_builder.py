@@ -1,4 +1,5 @@
 
+from time import time
 from os import environ, mkdir
 from os.path import join, exists
 
@@ -6,7 +7,7 @@ from .cmake import CMakeProject, isCmakeProject
 from .project import GitProject
 from .environment import Environment, get_c_compiler, get_cxx_compiler
 
-def build_projects(build_dir, target_dir, repositories_db, force_update, out_log, error_log):
+def build_projects(build_dir, target_dir, repositories_db, force_update, cfg, out_log, error_log):
 
     if not exists(build_dir):
         mkdir(build_dir)
@@ -20,6 +21,7 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, out_log
     unrecognized_projects = 0
     out_log.set_counter(projects_count)
     error_log.set_counter(projects_count)
+    clone_time = 0
 
     env = Environment()
     env.overwrite_environment()
@@ -38,8 +40,13 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, out_log
                 unrecognized_projects += 1
 
         # note; extend here for non-git repos
-        project = GitProject(repository_path, out_log)
+        start = time()
+        project = GitProject(repository_path,
+                spec['codebase_data']['default_branch'],
+                cfg, out_log)
         project.clone(build_dir)
+        end = time()
+        clone_time = clone_time + (end - start)
         # classify repository
         source_dir = project.source_dir()
         if isCmakeProject(source_dir):
@@ -66,7 +73,8 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, out_log
 
 
     env.reset_environment()
-    print('Succesfull builds: %d' % correct_projects)
-    print('Failed builds: %d' % incorrect_projects)
-    print('Unrecognized builds: %d' % unrecognized_projects)
+    out_log.info('Repository clone time: %f seconds', clone_time)
+    out_log.info('Succesfull builds: %d' % correct_projects)
+    out_log.info('Failed builds: %d' % incorrect_projects)
+    out_log.info('Unrecognized builds: %d' % unrecognized_projects)
 
