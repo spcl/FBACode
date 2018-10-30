@@ -57,10 +57,14 @@ else:
 
 cfg = ConfigParser()
 default_cfg = parsed_args.config_file
+user_cfg = parsed_args.user_config_file
 # if file not provided, use the one located in top project directory
 if not path.exists(default_cfg):
     default_cfg = path.join( path.dirname(path.realpath(__file__)), 'default.cfg')
-cfg.read([parsed_args.user_config_file, default_cfg])
+if not path.exists(user_cfg):
+    user_cfg = path.join( path.dirname(path.realpath(__file__)), 'user.cfg')
+cfg.read([user_cfg, default_cfg])
+
 
 # fetch new data, possibley updating
 if parsed_args.repo_db is not None:

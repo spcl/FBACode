@@ -2,6 +2,7 @@
 from os.path import join, exists
 from git import Repo, GitCommandError
 
+
 class GitProject:
 
     def __init__(self, repository_path, branch, cfg, output_log):
@@ -19,9 +20,16 @@ class GitProject:
         self.project_name = '{0}_{1}'.format(user_name, project_name)
         self.repository_path = repository_path
 
-    def clone(self, build_dir):
+    def info(self, idx, msg):
+        if idx:
+            self.output_log.print_info(idx, msg)
+        else:
+            self.output_log.info(msg)
+
+    def clone(self, build_dir, idx = 0):
         repo_location = join(build_dir, self.project_name)
-        self.output_log.info('Clone %s repository from %s to %s' % (self.project_name, self.repository_path, repo_location))
+        self.info(idx, 'Clone %s repository from %s to %s'
+                % (self.project_name, self.repository_path, repo_location))
         if exists(repo_location):
             self.cloned_repo = Repo(repo_location)
         else:
@@ -29,7 +37,7 @@ class GitProject:
                 self.cloned_repo = Repo.clone_from(self.repository_path, repo_location, recursive = True)
                 submodules_count = len(self.cloned_repo.submodules)
                 if submodules_count:
-                    self.output_log.info('Initialized %d submodules in %s'
+                    info(idx, 'Initialized %d submodules in %s'
                             % (submodules_count, repo_location))
                 self.cloned_repo.git.checkout(self.branch)
             # TODO: why do I need this? when can it fail?

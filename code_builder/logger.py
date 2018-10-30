@@ -1,4 +1,6 @@
 
+import threading
+
 from logging import LoggerAdapter, getLogger, INFO, DEBUG, FileHandler, Formatter, StreamHandler
 
 def create_stream_logger(name, stream, verbose):
@@ -30,6 +32,15 @@ class CountingLogger(LoggerAdapter):
     def __init__(self, logger):
         super().__init__(logger, {})
         logger.propagate = False
+        self.lock = threading.Lock()
+
+    # Thread-safe alternative to overwrite counter value
+    def print_info(self, counter, msg):
+        with self.lock:
+            old_cur = self.extra['cur']
+            self.extra['cur'] = counter
+            self.info(msg)
+            self.extra['cur'] = old_cur
 
     def next(self):
         self.extra['cur'] += 1
