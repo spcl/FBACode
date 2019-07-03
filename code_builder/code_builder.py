@@ -11,7 +11,7 @@ from .project import GitProject
 from .environment import Environment, get_c_compiler, get_cxx_compiler
 
 def map(exec, f, args):
-    return [exec.submit(f, *d) for d in zip(*args)] 
+    return [exec.submit(f, *d) for d in zip(*args)]
 
 def when_all(futures, callback):
    return WhenAll(results, callback)
@@ -116,7 +116,7 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, cfg, ou
 
     start = time()
     for spec, project in projects:
-    
+
         out_log.next()
         error_log.next()
         # classify repository
