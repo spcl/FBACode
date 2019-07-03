@@ -17,7 +17,7 @@ parser.add_argument('--fetch', dest='fetch', action='store_true',
 parser.add_argument('--fetch-repos-max', dest='fetch_max', type=int, action='store',
         help='Number of repositories to fetch')
 parser.add_argument('--repositories', dest='repo_db', action='store',
-        help='Load repositories database from file')
+        help='Load repositories database from file for update')
 parser.add_argument('--user-config-file', dest='user_config_file',
         default='user.cfg', action='store', help='User config file')
 parser.add_argument('--config-file', dest='config_file', default='fetch.cfg', action='store',
@@ -37,9 +37,7 @@ cfg = open_config(parsed_args, path.dirname(path.realpath(__file__)))
 if parsed_args.repo_db is not None:
     with open(parsed_args.repo_db) as repo_db:
         repositories = json.load(repo_db)
-    if parsed_args.fetch:
-        # TODO: update database
-        pass
+    update_projects(repositories, cfg, output_log, error_log)
 else:
     repositories = fetch_projects(cfg, output_log, error_log,
             parsed_args.fetch_max)

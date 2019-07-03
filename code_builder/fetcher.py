@@ -1,5 +1,5 @@
 from requests import get
-from time import time
+from time import time, sleep
 
 def max_repos(cfg):
     return int(cfg['max_repos'])
@@ -18,6 +18,7 @@ class GithubFetcher:
     def fetch(self, max_repos):
 
         #request_params = self.cfg[self.name]
+        backoff = 0.5
         address = self.cfg[self.name]['address']
         request_params = {}
         request_params['sort'] = self.cfg[self.name]['sort']
@@ -54,6 +55,8 @@ class GithubFetcher:
                 request_params['per_page'] = str(repos_per_page)
                 self.error_log.error('Incomplete results at GitHub API for %d repositories, start again with %d'
                         % (repos_per_page*2, repos_per_page))
+                sleep(backoff)
+                backoff *= 2
                 continue
             repos_processed += repos_per_page
             results += results_page['items']
@@ -109,14 +112,15 @@ code_sources = { 'github.org' : GithubFetcher }
 
 def fetch_projects(cfg, out_log, error_log, max_repos = None):
 
-    data = None
+    data = {}
     for name, src in code_sources.items():
         if not bool(cfg[name]['active']):
             out_log.info('Skip inactive code source: {0}'.format(name))
             continue
         fetcher = src(cfg, out_log, error_log)
         fetcher.fetch(max_repos)
-        data = fetcher.process_results(data)
+        data[name] = fetcher.process_results(data)
     return data
 
-
+def update_projects(repo, cfg, out_log, error_log):
+    pass
