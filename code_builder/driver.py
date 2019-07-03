@@ -32,8 +32,10 @@ def open_logfiles(parsed_args):
 
 from collections import OrderedDict
 
+# change default behavior of ConfigParser
+# instead of overwriting sections with same key,
+# accumulate the results
 class multidict(OrderedDict):
-    _unique = 0   # class variable
 
     def __setitem__(self, key, val):
         if isinstance(val, dict):
@@ -52,10 +54,5 @@ def open_config(parsed_args, exec_dir):
         default_cfg = path.join(exec_dir, default_cfg)
     if not path.exists(user_cfg):
         user_cfg = path.join(exec_dir, 'user.cfg')
-    print(default_cfg)
     cfg.read([user_cfg, default_cfg])
-    print('Done')
-    print(cfg._sections['github.org'])
-    for sec in cfg:
-        print(sec)
     return cfg

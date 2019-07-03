@@ -75,8 +75,11 @@ class GithubFetcher:
         processed_results = {}
         for repo in self.results:
             # dict https://stackoverflow.com/questions/3420122/filter-dict-to-contain-only-certain-keys
-            data = { key : repo[key] for key in ('git_url', 'updated_at', 'name', 'default_branch') }
-            processed_results[ repo['full_name'] ] = {'type' : 'git_repository', 'codebase_data' : data}
+            data = { key : repo[key] for key in ('git_url', 'updated_at', 'name', 'default_branch', 'language') }
+            processed_results[ repo['full_name'] ] = {
+                    'type' : 'git_repository',
+                    'recently_updated' : True,
+                    'codebase_data' : data}
 
         if data is None:
             return processed_results
