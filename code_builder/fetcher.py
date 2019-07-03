@@ -13,20 +13,25 @@ class GithubFetcher:
         self.cfg = cfg
         self.out_log = out_log
         self.error_log = error_log
+        self.name = 'github.org'
 
     def fetch(self, max_repos):
 
-        #request_params = self.cfg['github.org']
-        address = self.cfg['github.org']['address']
+        #request_params = self.cfg[self.name]
+        address = self.cfg[self.name]['address']
         request_params = {}
-        request_params['sort'] = self.cfg['github.org']['sort']
-        request_params['order'] = self.cfg['github.org']['ord']
-        repos_per_page = pagination(request_params)
+        request_params['sort'] = self.cfg[self.name]['sort']
+        request_params['order'] = self.cfg[self.name]['order']
+        repos_per_page = pagination(self.cfg[self.name])
         page = 1
         if max_repos is None:
             max_repos = max_repos(request_params)
         repos_per_page = min(max_repos, repos_per_page)
         request_params['per_page'] = str(repos_per_page)
+
+        # Authorize for higher rate limits
+        if 'access_token' in self.cfg[self.name]:
+            request_params['access_token'] = self.cfg[self.name]['access_token']
 
         repos_processed = 0
         results = []
@@ -37,12 +42,11 @@ class GithubFetcher:
 
         while repos_processed < max_repos:
             request_params['page'] = str(page)
-            results_c = self.fetch_json(address, request_params, 'C')
-            results_cpp = self.fetch_json(address, request_params, 'Cpp')
-            if results_c is None or results_cpp is None:
+            results_page = self.fetch_json(address, request_params, ['C', 'Cpp'])
+            if results_page is None:
                 self.error_log.error('Incorrect results, end work!')
                 return
-            elif results_c['incomplete_results'] or results_cpp['incomplete_results']:
+            elif results_page['incomplete_results']:
                 repos_per_page /= 2
                 if repos_per_page < 1:
                     self.error_log.error('Couldnt fetch a single repository, end work!')
@@ -52,8 +56,7 @@ class GithubFetcher:
                         % (repos_per_page*2, repos_per_page))
                 continue
             repos_processed += repos_per_page
-            results += results_c['items']
-            results += results_cpp['items']
+            results += results_page['items']
             self.out_log.step(repos_per_page)
             self.error_log.step(repos_per_page)
             self.out_log.info('Fetched %d repositories for C and C++ with GitHub API' % repos_per_page)
@@ -83,10 +86,16 @@ class GithubFetcher:
     def update(self, existing_repo):
         pass
 
-    def fetch_json(self, address, params, language):
+    def fetch_json(self, address, params, languages):
 
-        params['q'] = 'language:%s' % language
-        r = get(address, params)
+        #language:C+Cpp+...
+        #https://developer.github.com/v3/search/
+        params['q'] = r'+'.join(map(lambda l : 'language:%s' % l, languages))
+        # Avoid percent encoding of plus sign - GH does not like that
+        params_str = '&'.join(
+                '{0}={1}'.format(key, value) for key, value in params.items()
+            )
+        r = get(address, params_str)
         if r.status_code != 200:
             self.error_log.error('Failed to fetch from GitHub, url %s, text %s', r.url, r.text)
             return None
