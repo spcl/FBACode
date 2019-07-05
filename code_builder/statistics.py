@@ -17,3 +17,7 @@ class Statistics:
         out_log.info('Succesfull builds: %d' % self.correct_projects)
         out_log.info('Failed builds: %d' % self.incorrect_projects)
         out_log.info('Unrecognized builds: %d' % self.unrecognized_projects)
+
+    def update_clone_time(self, clone_time):
+        with self.lock:
+            self.clone_time += clone_time

@@ -94,10 +94,10 @@ build_systems = {
 
 #def builder(builder, 
 
-def recognize_and_process(idx, name, project, stats, out_log, err_log):
+def recognize_and_build(idx, name, project, ctx):
 
     if project['status'] == 'unrecognized':
-        stats.unrecognized()
+        ctx.stats.unrecognized()
     if 'build' in project:
         # update if needed
         return
@@ -128,4 +128,4 @@ def recognize_and_process(idx, name, project, stats, out_log, err_log):
     #        unrecognized_projects += 1
     #        spec['status'] = 'unrecognized'
             return
-    
+

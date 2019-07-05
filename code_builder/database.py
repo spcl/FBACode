@@ -5,12 +5,10 @@ from .repository import GitProject
 
 class GitHub:
 
-    def __init__(self, build_dir, cfg, stats, out_log):
+    def __init__(self, build_dir, ctx):
         self.build_dir = build_dir
-        self.cfg = cfg
-        self.out_log = out_log
+        self.ctx = ctx
         self.clone_time = 0
-        self.stats = stats
         self.lock = Lock()
 
     def clone(self, idx, name, project):
@@ -19,7 +17,7 @@ class GitHub:
         repository_path = project['codebase_data']['git_url']
         git_repo = GitProject(repository_path,
                 project['codebase_data']['default_branch'],
-                self.cfg, self.out_log)
+                self.ctx.cfg, self.ctx.out_log)
         git_repo.clone(self.build_dir, idx)
         # check for updates
         if project['status'] == 'new':
@@ -27,15 +25,14 @@ class GitHub:
         if not 'source' in project:
             project['source'] = {'dir' : repository_path}
         end = time()
-        self.out_log.print_info(idx, "Cloned project %s from GitHub in %f seconds" % (name, end - start))
+        self.ctx.out_log.print_info(idx, "Cloned project %s from GitHub in %f seconds" % (name, end - start))
         with self.lock:
             self.clone_time += end - start
         return (idx, name, project)
 
     # Save statistics and display info
     def finish(self):
-        with self.stats.lock:
-            self.stats.clone_time += self.clone_time
+        self.ctx.stats.update_clone_time(self.clone_time)
 
 databases = { 'github.org' : GitHub }
 

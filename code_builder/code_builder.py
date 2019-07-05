@@ -7,11 +7,10 @@ from time import time
 from os import environ, mkdir
 from os.path import join, exists
 
-#from .cmake import CMakeProject, isCmakeProject
-from .environment import Environment, get_c_compiler, get_cxx_compiler
-from .database import get_database
+from .environment import Environment
 from .statistics import Statistics
-from .build_systems import recognize_and_process
+from .database import get_database
+from .build_systems import recognize_and_build
 
 def map(exec, f, args):
     return [exec.submit(f, *d) for d in zip(*args)]
@@ -31,62 +30,27 @@ class WhenAll:
         if len(self.futures) == 0:
             self.callback()
 
-class RepositoryProcesser:
+class Context:
 
-    def __init__(self, build_dir, cfg, out_log):
-        self.build_dir = build_dir
+    def __init__(self, projects_count, cfg, out_log, err_log):
         self.cfg = cfg
         self.out_log = out_log
-        self.clone_time = 0
-        self.unrecognized_projects = 0
-        self.lock = threading.Lock()
+        self.err_log = err_log
+        self.env = Environment()
+        self.stats = Statistics()
+        self.projects_count = projects_count
 
-    def clone_parallel(self, idx, repo, spec):
+        # Force compilers to use our wrappers
+        self.env.overwrite_environment()
+        self.out_log.set_counter(projects_count)
+        self.err_log.set_counter(projects_count)
 
-        start = time()
-        repository_path = spec['codebase_data']['git_url']
-        if 'status' in spec:
-            # works -> check for updates
-            # unrecognized -> nothing
-            # fails -> check for updates, maybe try again
-            if spec['status'] == 'unrecognized':
-                with self.lock:
-                    self.unrecognized_projects += 1
-        # note; extend here for non-git repos
-        project = GitProject(repository_path,
-                spec['codebase_data']['default_branch'],
-                self.cfg, self.out_log)
-        project.clone(self.build_dir, idx)
-        end = time()
-        with self.lock:
-            self.clone_time += end - start
-        return (spec, project)
+    def close(self):
+        self.out_log.next(self.projects_count)
+        self.err_log.next(self.projects_count)
+        self.env.reset_environment()
+        self.stats.print_stats(self.out_log)
 
-    def clone_serial(self, repositories_db):
-        projects = []
-        for repo, spec in repositories_db.items():
-
-            self.out_log.next()
-            self.error_log.next()
-            repository_path = spec['codebase_data']['git_url']
-            if 'status' in spec:
-                # works -> check for updates
-                # unrecognized -> nothing
-                # fails -> check for updates, maybe try again
-                if spec['status'] == 'unrecognized':
-                    self.unrecognized_projects += 1
-            # note; extend here for non-git repos
-            start = time()
-            project = GitProject(repository_path,
-                    spec['codebase_data']['default_branch'],
-                    self.cfg, self.out_log)
-            project.clone(self.build_dir)
-            projects.append( (spec, project) )
-            end = time()
-            self.clone_time += end - start
-
-        self.out_log.info('Repository clone time: %f seconds', self.clone_time)
-        return projects
 
 def build_projects(build_dir, target_dir, repositories_db, force_update, cfg,
         out_log, error_log):
@@ -99,12 +63,7 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, cfg,
     projects_count = 0
     for database, repositories in repositories_db.items():
         projects_count += len(repositories)
-    out_log.set_counter(projects_count)
-    error_log.set_counter(projects_count)
-    # Force compilers to use our wrappers
-    env = Environment()
-    env.overwrite_environment()
-    stats = Statistics()
+    ctx = Context(projects_count, cfg, out_log, error_log)
 
     repositories_idx = 0
     if cfg['clone']['multithreaded']:
@@ -117,16 +76,16 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, cfg,
         for database, repositories in repositories_db.items():
 
             repo_count = len(repositories)
-            processer = get_database(database)(build_dir, cfg, stats, out_log)
+            processer = get_database(database)(build_dir, ctx)
             indices = list( range(repositories_idx + 1, repo_count + 1) )
             keys, values = zip(*repositories.items())
-            # idx, repo, spec -> project instance
+            # idx, repo, spec -> downloaded project
             futures = map(pool, processer.clone, [indices, keys, values])
             # save statistics when database processer is done
             when_all(futures, lambda: processer.finish())
 
             # for each project, attach a builder
-            build_func = lambda fut: recognize_and_process(*fut.result(), stats, out_log, error_log)
+            build_func = lambda fut: recognize_and_build(*fut.result(), ctx)
             for project in futures:
                 project.add_done_callback(functools.partial(build_func))
 
@@ -134,8 +93,7 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, cfg,
             repositories_idx += repo_count
             database_processers.append(processer)
 
-    out_log.next(projects_count)
-    error_log.next(projects_count)
+    ctx.close()
 
     #for project in projects:
     #    out_log.next()
@@ -164,6 +122,4 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, cfg,
     #        unrecognized_projects += 1
     #        spec['status'] = 'unrecognized'
     #end = time()
-    env.reset_environment()
-    stats.print_stats(out_log)
 
