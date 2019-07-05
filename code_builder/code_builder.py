@@ -1,4 +1,5 @@
 
+import functools
 import threading
 import concurrent.futures
 
@@ -6,15 +7,17 @@ from time import time
 from os import environ, mkdir
 from os.path import join, exists
 
-from .cmake import CMakeProject, isCmakeProject
-from .project import GitProject
+#from .cmake import CMakeProject, isCmakeProject
 from .environment import Environment, get_c_compiler, get_cxx_compiler
+from .database import get_database
+from .statistics import Statistics
+from .build_systems import recognize_and_process
 
 def map(exec, f, args):
     return [exec.submit(f, *d) for d in zip(*args)]
 
 def when_all(futures, callback):
-   return WhenAll(results, callback)
+   return WhenAll(futures, callback)
 
 class WhenAll:
     def __init__(self, fs, callback):
@@ -85,69 +88,82 @@ class RepositoryProcesser:
         self.out_log.info('Repository clone time: %f seconds', self.clone_time)
         return projects
 
-def build_projects(build_dir, target_dir, repositories_db, force_update, cfg, out_log, error_log):
+def build_projects(build_dir, target_dir, repositories_db, force_update, cfg,
+        out_log, error_log):
 
     if not exists(build_dir):
         mkdir(build_dir)
     if not exists(target_dir):
         mkdir(target_dir)
 
-    projects_count = len(repositories_db)
-    correct_projects = 0
-    incorrect_projects = 0
-    unrecognized_projects = 0
+    projects_count = 0
+    for database, repositories in repositories_db.items():
+        projects_count += len(repositories)
     out_log.set_counter(projects_count)
     error_log.set_counter(projects_count)
-    clone_time = 0
+    # Force compilers to use our wrappers
     env = Environment()
     env.overwrite_environment()
-    processer = RepositoryProcesser(build_dir, out_log, error_log)
+    stats = Statistics()
 
+    repositories_idx = 0
     if cfg['clone']['multithreaded']:
-        threads_count = cfg['clone']['threads_number']
-        # process repositories in multithreaded environment
-        # idx, repo, spec -> git project instance
-        indices = list( range(1, projects_count + 1) )
-        pool = concurrent.futures.ThreadPoolExecutor( int(threads_count) )
-        keys, values = zip(*repositories_db.items())
-        projects = pool.map(processer.clone_parallel, indices, keys, values) #map(pool, processer.clone_parallel, (indices, keys, values))
+        threads_count = cfg['clone']['threads']
     else:
-        projects = processer.clone_serial(repositories_db)
+        threads_count = 1
+    with concurrent.futures.ThreadPoolExecutor( int(threads_count) ) as pool:
+        projects = []
+        database_processers = []
+        for database, repositories in repositories_db.items():
 
-    start = time()
-    for spec, project in projects:
+            repo_count = len(repositories)
+            processer = get_database(database)(build_dir, cfg, stats, out_log)
+            indices = list( range(repositories_idx + 1, repo_count + 1) )
+            keys, values = zip(*repositories.items())
+            # idx, repo, spec -> project instance
+            futures = map(pool, processer.clone, [indices, keys, values])
+            # save statistics when database processer is done
+            when_all(futures, lambda: processer.finish())
 
-        out_log.next()
-        error_log.next()
-        # classify repository
-        source_dir = project.source_dir()
-        if isCmakeProject(source_dir):
-            cmake_repo = CMakeProject(source_dir, out_log, error_log)
-            returnval = cmake_repo.configure(
-                    c_compiler = get_c_compiler(),
-                    cxx_compiler = get_cxx_compiler(),
-                    force_update = True
-                    )
-            if not returnval:
-                returnval = cmake_repo.build()
-            if not returnval:
-                cmake_repo.generate_bitcodes( join(target_dir, project.name()) )
-            if returnval:
-                incorrect_projects += 1
-                spec['status'] = 'fails'
-            else:
-                correct_projects += 1
-                spec['status'] = 'works'
-        else:
-            out_log.info('Unrecognized project %s' % source_dir)
-            unrecognized_projects += 1
-            spec['status'] = 'unrecognized'
-    end = time()
+            # for each project, attach a builder
+            build_func = lambda fut: recognize_and_process(*fut.result(), stats, out_log, error_log)
+            for project in futures:
+                project.add_done_callback(functools.partial(build_func))
 
+            #projects.extend(futures)
+            repositories_idx += repo_count
+            database_processers.append(processer)
+
+    out_log.next(projects_count)
+    error_log.next(projects_count)
+
+    #for project in projects:
+    #    out_log.next()
+    #    error_log.next()
+    #    # classify repository
+    #    source_dir = project.source_dir()
+    #    if isCmakeProject(source_dir):
+    #        cmake_repo = CMakeProject(source_dir, out_log, error_log)
+    #        returnval = cmake_repo.configure(
+    #                c_compiler = get_c_compiler(),
+    #                cxx_compiler = get_cxx_compiler(),
+    #                force_update = True
+    #                )
+    #        if not returnval:
+    #            returnval = cmake_repo.build()
+    #        if not returnval:
+    #            cmake_repo.generate_bitcodes( join(target_dir, project.name()) )
+    #        if returnval:
+    #            incorrect_projects += 1
+    #            spec['status'] = 'fails'
+    #        else:
+    #            correct_projects += 1
+    #            spec['status'] = 'works'
+    #    else:
+    #        out_log.info('Unrecognized project %s' % source_dir)
+    #        unrecognized_projects += 1
+    #        spec['status'] = 'unrecognized'
+    #end = time()
     env.reset_environment()
-    out_log.info('Repository clone time: %f seconds', processer.clone_time)
-    out_log.info('Repository build time: %f seconds', end - start)
-    out_log.info('Succesfull builds: %d' % correct_projects)
-    out_log.info('Failed builds: %d' % incorrect_projects)
-    out_log.info('Unrecognized builds: %d' % processer.unrecognized_projects)
+    stats.print_stats(out_log)
 

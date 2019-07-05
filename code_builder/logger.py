@@ -45,6 +45,9 @@ class CountingLogger(LoggerAdapter):
     def next(self):
         self.extra['cur'] += 1
 
+    def next(self, step):
+        self.extra['cur'] += step
+
     def step(self, val):
         self.extra['cur'] += val
 

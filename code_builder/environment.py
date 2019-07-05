@@ -2,7 +2,6 @@
 from os.path import abspath, realpath, join
 from os import pardir, environ
 
-from code_builder.cmake import run
 
 def get_wrappers_dir():
     return abspath(join(join(join(realpath(__file__), pardir), pardir), 'wrappers'))

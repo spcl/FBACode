@@ -9,8 +9,6 @@ from re import search
 from subprocess import PIPE
 from sys import version_info
 
-def isCmakeProject(repo_dir):
-    return isfile( join(repo_dir, 'CMakeLists.txt') )
 
 def run(command, cwd = None, stdout = None, stderr = None):
 
@@ -24,7 +22,6 @@ def run(command, cwd = None, stdout = None, stderr = None):
 
 def decode(stream):
     return stream.decode('utf-8')
-
 
 class CMakeProject:
 
@@ -88,3 +85,47 @@ class CMakeProject:
         rmtree(build_dir)
         os.mkdir(build_dir)
 
+    def recognize(repo_dir):
+        return isfile( join(repo_dir, 'CMakeLists.txt') )
+
+build_systems = {
+        'CMake' : CMakeProject
+    }
+
+#def builder(builder, 
+
+def recognize_and_process(idx, name, project, stats, out_log, err_log):
+
+    if project['status'] == 'unrecognized':
+        stats.unrecognized()
+    if 'build' in project:
+        # update if needed
+        return
+    source_dir = project['source']['dir']
+    for name, build_system in build_systems.items():
+        if build_system.recognize(source_dir):
+            build_system['build'] = {'system' : name}
+            #build_system(source_dir, out_log, err_log).configure()
+    #    if isCmakeProject(source_dir):
+    #        cmake_repo = CMakeProject(source_dir, out_log, error_log)
+    #        returnval = cmake_repo.configure(
+    #                c_compiler = get_c_compiler(),
+    #                cxx_compiler = get_cxx_compiler(),
+    #                force_update = True
+    #                )
+    #        if not returnval:
+    #            returnval = cmake_repo.build()
+    #        if not returnval:
+    #            cmake_repo.generate_bitcodes( join(target_dir, project.name()) )
+    #        if returnval:
+    #            incorrect_projects += 1
+    #            spec['status'] = 'fails'
+    #        else:
+    #            correct_projects += 1
+    #            spec['status'] = 'works'
+    #    else:
+    #        out_log.info('Unrecognized project %s' % source_dir)
+    #        unrecognized_projects += 1
+    #        spec['status'] = 'unrecognized'
+            return
+    

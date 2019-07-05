@@ -80,9 +80,11 @@ class GithubFetcher:
             # dict https://stackoverflow.com/questions/3420122/filter-dict-to-contain-only-certain-keys
             data = { key : repo[key] for key in ('git_url', 'updated_at', 'name', 'default_branch', 'language') }
             processed_results[ repo['full_name'] ] = {
-                    'type' : 'git_repository',
+                    'type' : 'git',
                     'recently_updated' : True,
-                    'codebase_data' : data}
+                    'codebase_data' : data,
+                    'owner' : repo['owner']['login'],
+                    }
 
         if data is None:
             return processed_results
