@@ -43,6 +43,7 @@ class GitProject:
             # TODO: why do I need this? when can it fail?
             except GitCommandError:
                 self.cloned_repo = Repo(repo_location)
+        return repo_location
 
     def source_dir(self):
         return self.cloned_repo.working_tree_dir

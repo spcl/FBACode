@@ -9,6 +9,8 @@ from re import search
 from subprocess import PIPE
 from sys import version_info
 
+from .environment import get_c_compiler, get_cxx_compiler
+
 
 def run(command, cwd = None, stdout = None, stderr = None):
 
@@ -25,15 +27,17 @@ def decode(stream):
 
 class CMakeProject:
 
-    def __init__(self, repo_dir, output_log, error_log):
+    def __init__(self, repo_dir, build_dir, idx, ctx):
         self.repository_path = repo_dir
-        self.output_log = output_log
-        self.error_log = error_log
+        self.build_dir = build_dir
+        self.idx = idx
+        self.ctx = ctx
+        self.output_log = ctx.out_log
+        self.error_log = ctx.err_log
 
-    def configure(self, c_compiler, cxx_compiler, force_update = False):
-        self.build_dir = self.repository_path + "_build"
-        if not exists(self.build_dir):
-            mkdir(self.build_dir)
+    def configure(self, force_update = False):
+        c_compiler = get_c_compiler()
+        cxx_compiler = get_cxx_compiler()
         if len(listdir(self.build_dir)) == 0 or force_update:
             c_compiler_opt = "-DCMAKE_C_COMPILER=" + c_compiler
             cpp_compiler_opt = "-DCMAKE_CXX_COMPILER=" + cxx_compiler
@@ -45,14 +49,15 @@ class CMakeProject:
                     stderr = PIPE
                     )
             if ret.returncode:
-                self.error_log.error('Failed CMake configure command: %s' % ' '.join(cmd))
-                self.error_log.error( decode(ret.stderr) )
+                self.error_log.print_info(self.idx, 'Failed CMake configure command: %s' % ' '.join(cmd))
+                self.error_log.print_error(self.idx, decode(ret.stderr))
+                return False
             else:
-                self.output_log.info('Configure %s to build in %s' % (self.repository_path, self.build_dir))
-                self.output_log.debug('CMake configure command: %s' % ' '.join(cmd))
-                self.output_log.debug( decode(ret.stdout) )
-            return ret.returncode
-        return False
+                self.output_log.print_info(self.idx, 'Configure %s to build in %s' % (self.repository_path, self.build_dir))
+                self.output_log.print_debug(self.idx, 'CMake configure command: %s' % ' '.join(cmd))
+                self.output_log.print_debug(self.idx, decode(ret.stdout) )
+            return True
+        return True
 
     def build(self):
         cmd = ["cmake", "--build", "."]
@@ -63,12 +68,13 @@ class CMakeProject:
                 stderr = PIPE
                 )
         if ret.returncode:
-            self.error_log.error(ret.stderr.decode('utf-8'))
+            self.error_log.print_error(self.idx, ret.stderr.decode('utf-8'))
+            return False
         else:
-            self.output_log.info('Build in %s' % self.build_dir)
-            self.output_log.debug('CMake build command: %s' % ' '.join(cmd))
-            self.output_log.debug( decode(ret.stdout) )
-        return ret.returncode
+            self.output_log.print_info(self.idx, 'Build in %s' % self.build_dir)
+            self.output_log.print_debug(self.idx, 'CMake build command: %s' % ' '.join(cmd))
+            self.output_log.print_debug(self.idx, decode(ret.stdout) )
+            return True
 
     def generate_bitcodes(self, target_dir):
         if not exists(target_dir):
@@ -102,9 +108,28 @@ def recognize_and_build(idx, name, project, ctx):
         # update if needed
         return
     source_dir = project['source']['dir']
-    for name, build_system in build_systems.items():
+    ctx.out_log.info(source_dir)
+    for build_name, build_system in build_systems.items():
         if build_system.recognize(source_dir):
-            build_system['build'] = {'system' : name}
+            build_dir = source_dir + "_build"
+            if not exists(build_dir):
+                mkdir(build_dir)
+            project['build'] = {'system' : build_name, 'dir' : build_dir}
+            project['status'] = 'fail'
+            builder = build_system(source_dir, build_dir, idx, ctx)
+            if not builder.configure(build_dir):
+                project['build']['configure'] = 'fail'
+                ctx.stats.add_incorrect_project()
+                continue
+            project['build']['configure'] = 'success'
+            if not builder.build():
+                project['build']['build'] = 'fail'
+                ctx.stats.add_incorrect_project()
+                continue
+            project['build']['build'] = 'success'
+            builder.generate_bitcodes(join(target_dir, project.name()))
+            ctx.stats.add_correct_project()
+
             #build_system(source_dir, out_log, err_log).configure()
     #    if isCmakeProject(source_dir):
     #        cmake_repo = CMakeProject(source_dir, out_log, error_log)
@@ -128,4 +153,6 @@ def recognize_and_build(idx, name, project, ctx):
     #        unrecognized_projects += 1
     #        spec['status'] = 'unrecognized'
             return
-
+    # nothing matched
+    ctx.stats.add_unrecognized_project()
+    ctx.out_log.print_info(idx, 'Unrecognized project %s in %s' % (name, source_dir))

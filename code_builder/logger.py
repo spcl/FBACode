@@ -42,11 +42,25 @@ class CountingLogger(LoggerAdapter):
             self.info(msg)
             self.extra['cur'] = old_cur
 
+    def print_debug(self, counter, msg):
+        with self.lock:
+            old_cur = self.extra['cur']
+            self.extra['cur'] = counter
+            self.debug(msg)
+            self.extra['cur'] = old_cur
+
+    def print_error(self, counter, msg):
+        with self.lock:
+            old_cur = self.extra['cur']
+            self.extra['cur'] = counter
+            self.error(msg)
+            self.extra['cur'] = old_cur
+
     def next(self):
         self.extra['cur'] += 1
 
     def next(self, step):
-        self.extra['cur'] += step
+        self.extra['cur'] += 1
 
     def step(self, val):
         self.extra['cur'] += val

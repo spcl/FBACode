@@ -21,3 +21,15 @@ class Statistics:
     def update_clone_time(self, clone_time):
         with self.lock:
             self.clone_time += clone_time
+
+    def add_unrecognized_project(self):
+        with self.lock:
+            self.unrecognized_projects += 1
+
+    def add_correct_project(self):
+        with self.lock:
+            self.correct_projects += 1
+
+    def add_incorrect_project(self):
+        with self.lock:
+            self.incorrect_projects += 1
