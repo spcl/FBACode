@@ -1,6 +1,4 @@
 
-from threading import Lock
-
 class Statistics:
 
     def __init__(self):
@@ -9,27 +7,24 @@ class Statistics:
         self.unrecognized_projects = 0
         self.clone_time = 0
         self.build_time = 0
-        self.lock = Lock()
 
-    def print_stats(self, out_log):
-        out_log.info('Repository clone time: %f seconds', self.clone_time)
-        out_log.info('Repository build time: %f seconds', self.build_time)
-        out_log.info('Succesfull builds: %d' % self.correct_projects)
-        out_log.info('Failed builds: %d' % self.incorrect_projects)
-        out_log.info('Unrecognized builds: %d' % self.unrecognized_projects)
+    def print_stats(self):
+        print('Repository clone time: %f seconds' % self.clone_time)
+        print('Repository build time: %f seconds' % self.build_time)
+        print('Succesfull builds: %d' % self.correct_projects)
+        print('Failed builds: %d' % self.incorrect_projects)
+        print('Unrecognized builds: %d' % self.unrecognized_projects)
 
-    def update_clone_time(self, clone_time):
-        with self.lock:
-            self.clone_time += clone_time
+    def update(self, project):
+        self.clone_time += project['source']['time']
+        if 'build' in project:
+            self.build_time += project['build']['time']
 
     def add_unrecognized_project(self):
-        with self.lock:
-            self.unrecognized_projects += 1
+        self.unrecognized_projects += 1
 
     def add_correct_project(self):
-        with self.lock:
-            self.correct_projects += 1
+        self.correct_projects += 1
 
     def add_incorrect_project(self):
-        with self.lock:
-            self.incorrect_projects += 1
+        self.incorrect_projects += 1

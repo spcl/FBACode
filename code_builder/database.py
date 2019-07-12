@@ -1,8 +1,9 @@
 
+import sys,os
 from os import path
 from time import time
-from threading import Lock
 from .repository import GitProject
+from .logger import create_stream_logger
 
 class GitHub:
 
@@ -10,7 +11,6 @@ class GitHub:
         self.build_dir = build_dir
         self.ctx = ctx
         self.clone_time = 0
-        self.lock = Lock()
 
     def clone(self, idx, name, project):
 
@@ -24,16 +24,11 @@ class GitHub:
         if project['status'] == 'new':
             project['status'] = 'cloned'
         if not 'source' in project:
-            project['source'] = {'dir' : path.join(source_dir)}
+            project['source'] = {'dir' : source_dir}
         end = time()
+        project['source']['time'] = end - start
         self.ctx.out_log.print_info(idx, "Cloned project %s from GitHub in %f seconds" % (name, end - start))
-        with self.lock:
-            self.clone_time += end - start
         return (idx, name, project)
-
-    # Save statistics and display info
-    def finish(self):
-        self.ctx.stats.update_clone_time(self.clone_time)
 
 databases = { 'github.org' : GitHub }
 

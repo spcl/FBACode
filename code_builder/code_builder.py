@@ -1,19 +1,35 @@
 
 import functools
-import threading
+#import threading
 import concurrent.futures
 
 from time import time
-from os import environ, mkdir
+from os import environ, mkdir, getpid
 from os.path import join, exists
 
 from .environment import Environment
 from .statistics import Statistics
 from .database import get_database
 from .build_systems import recognize_and_build
+from .driver import open_logfiles
 
-def map(exec, f, args):
-    return [exec.submit(f, *d) for d in zip(*args)]
+init = False
+loggers = None
+
+def initializer_func(ctx, f, args):
+    global init, loggers
+    if not init:
+        init = True
+        loggers = open_logfiles(ctx.cfg, getpid())
+        for log in loggers:
+            log.set_counter(ctx.projects_count)
+        ctx.set_loggers(*loggers)
+    else:
+        ctx.set_loggers(*loggers)
+    return f(*args)
+
+def map(exec, f, args, ctx):
+    return [exec.submit(functools.partial(initializer_func, ctx, f, d)) for d in zip(*args)]
 
 def when_all(futures, callback):
    return WhenAll(futures, callback)
@@ -32,28 +48,36 @@ class WhenAll:
 
 class Context:
 
-    def __init__(self, projects_count, cfg, out_log, err_log):
+    def __init__(self, projects_count, cfg):
         self.cfg = cfg
-        self.out_log = out_log
-        self.err_log = err_log
-        self.env = Environment()
-        self.stats = Statistics()
+        #self.stats = Statistics()
         self.projects_count = projects_count
 
-        # Force compilers to use our wrappers
-        self.env.overwrite_environment()
-        self.out_log.set_counter(projects_count)
-        self.err_log.set_counter(projects_count)
-
-    def close(self):
-        self.out_log.next(self.projects_count)
-        self.err_log.next(self.projects_count)
-        self.env.reset_environment()
-        self.stats.print_stats(self.out_log)
+    def set_loggers(self, out, err):
+        self.out_log = out
+        self.err_log = err
 
 
-def build_projects(build_dir, target_dir, repositories_db, force_update, cfg,
-        out_log, error_log):
+def copy_futures(dest, src):
+    if src.cancelled():
+        dest.cancel()
+    exc = src.exception()
+    if exc is not None:
+        dest.set_exception(exc)
+    else:
+        dest.set_result(src.result())
+
+def callback(pool, ctx, f, callback):
+    future = concurrent.futures.Future()
+
+    def local_callback(f):
+        res = pool.submit(functools.partial(initializer_func, ctx, callback, f.result()))
+        res.add_done_callback(functools.partial(copy_futures, future))
+
+    f.add_done_callback(local_callback)
+    return future
+
+def build_projects(build_dir, target_dir, repositories_db, force_update, cfg):
 
     if not exists(build_dir):
         mkdir(build_dir)
@@ -63,14 +87,18 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, cfg,
     projects_count = 0
     for database, repositories in repositories_db.items():
         projects_count += len(repositories)
-    ctx = Context(projects_count, cfg, out_log, error_log)
+    env = Environment()
+    env.overwrite_environment()
 
     repositories_idx = 0
     if cfg['clone']['multithreaded']:
         threads_count = cfg['clone']['threads']
     else:
         threads_count = 1
-    with concurrent.futures.ThreadPoolExecutor( int(threads_count) ) as pool:
+    contexts = []
+    ctx = Context(projects_count, cfg)
+    start = time()
+    with concurrent.futures.ProcessPoolExecutor( int(threads_count) ) as pool:
         projects = []
         database_processers = []
         for database, repositories in repositories_db.items():
@@ -80,20 +108,27 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, cfg,
             indices = list( range(repositories_idx + 1, repo_count + 1) )
             keys, values = zip(*repositories.items())
             # idx, repo, spec -> downloaded project
-            futures = map(pool, processer.clone, [indices, keys, values])
+            futures = map(pool, processer.clone, [indices, keys, values], ctx)
             # save statistics when database processer is done
-            when_all(futures, lambda: processer.finish())
+            #when_all(futures, lambda: processer.finish())
 
             # for each project, attach a builder
-            build_func = lambda fut: recognize_and_build(*fut.result(), ctx)
+            build_func = lambda fut: recognize_and_build(*fut.result(), target_dir, ctx)
             for project in futures:
-                project.add_done_callback(functools.partial(build_func))
-
-            #projects.extend(futures)
+                projects.append(callback(pool, ctx, project, functools.partial(recognize_and_build, target_dir = target_dir, ctx = ctx)))
             repositories_idx += repo_count
             database_processers.append(processer)
 
-    ctx.close()
+        stats = Statistics()
+        for project in projects:
+            idx, key, val = project.result()
+            repositories[key] = val
+            stats.update(val)
+        end = time()
+        print("Process repositorites in %f [s]" % (end - start))
+        stats.print_stats()
+
+    env.reset_environment()
 
     #for project in projects:
     #    out_log.next()

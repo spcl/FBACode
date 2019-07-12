@@ -1,11 +1,9 @@
 
-import threading
-
 from logging import LoggerAdapter, getLogger, INFO, DEBUG, FileHandler, Formatter, StreamHandler
 
 def create_stream_logger(name, stream, verbose):
     log = getLogger(name)
-    if verbose:
+    if verbose == 'True':
         log.setLevel(DEBUG)
     else:
         log.setLevel(INFO)
@@ -32,38 +30,33 @@ class CountingLogger(LoggerAdapter):
     def __init__(self, logger):
         super().__init__(logger, {})
         logger.propagate = False
-        self.lock = threading.Lock()
+        self.extra['cur'] = 0
+        self.extra['size'] = 0
 
     # Thread-safe alternative to overwrite counter value
     def print_info(self, counter, msg):
-        with self.lock:
-            old_cur = self.extra['cur']
-            self.extra['cur'] = counter
-            self.info(msg)
-            self.extra['cur'] = old_cur
+        old_cur = self.extra['cur']
+        self.extra['cur'] = counter
+        self.info(msg)
+        self.extra['cur'] = old_cur
 
     def print_debug(self, counter, msg):
-        with self.lock:
-            old_cur = self.extra['cur']
-            self.extra['cur'] = counter
-            self.debug(msg)
-            self.extra['cur'] = old_cur
+        old_cur = self.extra['cur']
+        self.extra['cur'] = counter
+        self.debug(msg)
+        self.extra['cur'] = old_cur
 
     def print_error(self, counter, msg):
-        with self.lock:
-            old_cur = self.extra['cur']
-            self.extra['cur'] = counter
-            self.error(msg)
-            self.extra['cur'] = old_cur
+        old_cur = self.extra['cur']
+        self.extra['cur'] = counter
+        self.error(msg)
+        self.extra['cur'] = old_cur
 
     def next(self):
         self.extra['cur'] += 1
 
     def next(self, step):
-        self.extra['cur'] += 1
-
-    def step(self, val):
-        self.extra['cur'] += val
+        self.extra['cur'] += step
 
     def process(self, msg, kwargs):
         if 'cur' in self.extra:

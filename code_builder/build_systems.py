@@ -1,13 +1,15 @@
 
 import subprocess
 
-from os.path import join, exists, isfile, dirname, basename
+import os
+from os.path import abspath, join, exists, isfile, dirname, basename
 from os import listdir, makedirs, mkdir, rename
 from shutil import rmtree
 from glob import iglob
 from re import search
 from subprocess import PIPE
 from sys import version_info
+from time import time
 
 from .environment import get_c_compiler, get_cxx_compiler
 
@@ -38,10 +40,11 @@ class CMakeProject:
     def configure(self, force_update = False):
         c_compiler = get_c_compiler()
         cxx_compiler = get_cxx_compiler()
+        self.output_log.info(self.build_dir)
         if len(listdir(self.build_dir)) == 0 or force_update:
             c_compiler_opt = "-DCMAKE_C_COMPILER=" + c_compiler
             cpp_compiler_opt = "-DCMAKE_CXX_COMPILER=" + cxx_compiler
-            cmd = ["cmake", self.repository_path, c_compiler_opt, cpp_compiler_opt]
+            cmd = ["cmake", abspath(self.repository_path), c_compiler_opt, cpp_compiler_opt]
             ret = run(
                     cmd,
                     cwd = self.build_dir,
@@ -77,8 +80,6 @@ class CMakeProject:
             return True
 
     def generate_bitcodes(self, target_dir):
-        if not exists(target_dir):
-            mkdir(target_dir)
         for file in iglob('{0}/**/*.bc'.format(self.build_dir), recursive=True):
             # CMake file format: {build_dir}/../CMakeFiles/{dir}.dir/relative_bc_location
             res = search(r'CMakeFiles/.*\.dir', file)
@@ -100,15 +101,16 @@ build_systems = {
 
 #def builder(builder, 
 
-def recognize_and_build(idx, name, project, ctx):
+def recognize_and_build(idx, name, project, target_dir, ctx):
 
     if project['status'] == 'unrecognized':
         ctx.stats.unrecognized()
     if 'build' in project:
         # update if needed
-        return
+        return (idx, name, project)
     source_dir = project['source']['dir']
-    ctx.out_log.info(source_dir)
+    failure = False
+    start = time()
     for build_name, build_system in build_systems.items():
         if build_system.recognize(source_dir):
             build_dir = source_dir + "_build"
@@ -119,16 +121,16 @@ def recognize_and_build(idx, name, project, ctx):
             builder = build_system(source_dir, build_dir, idx, ctx)
             if not builder.configure(build_dir):
                 project['build']['configure'] = 'fail'
-                ctx.stats.add_incorrect_project()
+                failure = True
                 continue
             project['build']['configure'] = 'success'
             if not builder.build():
                 project['build']['build'] = 'fail'
-                ctx.stats.add_incorrect_project()
+                failure = True
                 continue
             project['build']['build'] = 'success'
-            builder.generate_bitcodes(join(target_dir, project.name()))
-            ctx.stats.add_correct_project()
+            project['status'] = 'success'
+            builder.generate_bitcodes(join(abspath(target_dir), name))
 
             #build_system(source_dir, out_log, err_log).configure()
     #    if isCmakeProject(source_dir):
@@ -152,7 +154,14 @@ def recognize_and_build(idx, name, project, ctx):
     #        out_log.info('Unrecognized project %s' % source_dir)
     #        unrecognized_projects += 1
     #        spec['status'] = 'unrecognized'
-            return
+            end = time()
+            project['build']['time'] = end - start
+            ctx.out_log.print_info(idx, 'Finish processing %s in %f [s]' % (name, end - start))
+            return (idx, name, project)
+    end = time()
     # nothing matched
-    ctx.stats.add_unrecognized_project()
-    ctx.out_log.print_info(idx, 'Unrecognized project %s in %s' % (name, source_dir))
+    if not failure:
+        ctx.out_log.print_info(idx, 'Unrecognized project %s in %s' % (name, source_dir))
+    else:
+        project['build']['time'] = end - start
+    return (idx, name, project)

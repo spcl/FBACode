@@ -40,8 +40,11 @@ parser.add_argument('--verbose', dest='verbose', action='store_true',
         help='Verbose output.')
 
 parsed_args = parser.parse_args(argv[1:])
-output_log, error_log = open_logfiles(parsed_args)
-cfg = open_config(parsed_args, output_log, error_log, path.dirname(path.realpath(__file__)))
+cfg = open_config(parsed_args, path.dirname(path.realpath(__file__)))
+cfg['output'] = {'verbose' : parsed_args.verbose}
+if parsed_args.out_to_file:
+    cfg['output']['file'] = parsed_args.out_to_file
+cfg['output']['time'] = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
 
 with open(parsed_args.repositories_db) as repo_db:
     repositories = json.load(repo_db)
@@ -50,9 +53,7 @@ repositories = build_projects(  build_dir = parsed_args.build_dir,
                                 target_dir = parsed_args.results_dir,
                                 repositories_db = repositories,
                                 force_update = parsed_args.build_force_update,
-                                cfg = cfg,
-                                out_log = output_log,
-                                error_log = error_log)
+                                cfg = cfg)
 
 if parsed_args.export_repos is not None:
     export_projects(repositories, parsed_args.export_repos)
