@@ -6,6 +6,8 @@ from os import listdir, makedirs, mkdir, rename
 from subprocess import PIPE
 from shutil import rmtree
 from sys import version_info
+from glob import iglob
+from re import search
 
 from .environment import get_c_compiler, get_cxx_compiler
 
