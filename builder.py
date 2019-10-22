@@ -24,6 +24,8 @@ parser = ArgumentParser(description='Code builder')
 parser.add_argument('repositories_db', type=str, help='Load repositories database from file')
 parser.add_argument('--build-force-update', dest='build_force_update', action='store_true',
         help='Enforce update of configuration for repositories in database')
+parser.add_argument('--source-dir', dest='source_dir', default='source', action='store',
+        help='Directory used to store source codes')
 parser.add_argument('--build-dir', dest='build_dir', default='build', action='store',
         help='Directory used to build projects')
 parser.add_argument('--results-dir', dest='results_dir', default='bitcodes', action='store',
@@ -49,7 +51,8 @@ cfg['output']['time'] = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
 with open(parsed_args.repositories_db) as repo_db:
     repositories = json.load(repo_db)
 
-repositories = build_projects(  build_dir = parsed_args.build_dir,
+repositories = build_projects(  source_dir = parsed_args.source_dir, 
+                                build_dir = parsed_args.build_dir,
                                 target_dir = parsed_args.results_dir,
                                 repositories_db = repositories,
                                 force_update = parsed_args.build_force_update,

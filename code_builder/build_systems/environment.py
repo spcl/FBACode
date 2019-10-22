@@ -4,7 +4,7 @@ from os import pardir, environ
 
 
 def get_wrappers_dir():
-    return abspath(join(join(join(realpath(__file__), pardir), pardir), 'wrappers'))
+    return abspath(join(realpath(__file__), pardir, pardir, pardir, 'wrappers'))
 
 def get_c_compiler():
     return join(get_wrappers_dir(), "clang")

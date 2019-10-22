@@ -7,10 +7,9 @@ from time import time
 from os import environ, mkdir, getpid
 from os.path import join, exists
 
-from .environment import Environment
 from .statistics import Statistics
 from .database import get_database
-from .build_systems import recognize_and_build
+from .build_systems.build_systems import recognize_and_build
 from .driver import open_logfiles
 
 init = False
@@ -77,8 +76,10 @@ def callback(pool, ctx, f, callback):
     f.add_done_callback(local_callback)
     return future
 
-def build_projects(build_dir, target_dir, repositories_db, force_update, cfg):
+def build_projects(source_dir, build_dir, target_dir, repositories_db, force_update, cfg):
 
+    if not exists(source_dir):
+        mkdir(source_dir)
     if not exists(build_dir):
         mkdir(build_dir)
     if not exists(target_dir):
@@ -87,8 +88,8 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, cfg):
     projects_count = 0
     for database, repositories in repositories_db.items():
         projects_count += len(repositories)
-    env = Environment()
-    env.overwrite_environment()
+    #env = Environment()
+    #env.overwrite_environment()
 
     repositories_idx = 0
     if cfg['clone']['multithreaded']:
@@ -104,13 +105,15 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, cfg):
         for database, repositories in repositories_db.items():
 
             repo_count = len(repositories)
-            processer = get_database(database)(build_dir, ctx)
+            processer = get_database(database)(source_dir, ctx)
             indices = list( range(repositories_idx + 1, repo_count + 1) )
             keys, values = zip(*repositories.items())
             # idx, repo, spec -> downloaded project
             futures = map(pool, processer.clone, [indices, keys, values], ctx)
             # save statistics when database processer is done
             #when_all(futures, lambda: processer.finish())
+            
+            #TODO handle repository that is not updated
 
             # for each project, attach a builder
             build_func = lambda fut: recognize_and_build(*fut.result(), target_dir, ctx)
@@ -128,7 +131,7 @@ def build_projects(build_dir, target_dir, repositories_db, force_update, cfg):
         print("Process repositorites in %f [s]" % (end - start))
         stats.print_stats()
 
-    env.reset_environment()
+    #env.reset_environment()
 
     #for project in projects:
     #    out_log.next()
