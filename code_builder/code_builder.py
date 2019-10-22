@@ -2,10 +2,12 @@
 import functools
 #import threading
 import concurrent.futures
+import json
 
 from time import time
 from os import environ, mkdir, getpid
 from os.path import join, exists
+from sys import stdout
 
 from .statistics import Statistics
 from .database import get_database
@@ -76,7 +78,7 @@ def callback(pool, ctx, f, callback):
     f.add_done_callback(local_callback)
     return future
 
-def build_projects(source_dir, build_dir, target_dir, repositories_db, force_update, cfg):
+def build_projects(source_dir, build_dir, target_dir, repositories_db, force_update, cfg, output):
 
     if not exists(source_dir):
         mkdir(source_dir)
@@ -130,6 +132,9 @@ def build_projects(source_dir, build_dir, target_dir, repositories_db, force_upd
         end = time()
         print("Process repositorites in %f [s]" % (end - start))
         stats.print_stats()
+
+        f = stdout if output == '' else open(output, 'w')
+        print(json.dumps(repositories, indent=2), file=f)
 
     #env.reset_environment()
 

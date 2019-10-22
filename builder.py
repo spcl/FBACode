@@ -40,6 +40,8 @@ parser.add_argument('--log-to-file', dest='out_to_file', action='store',
         help='Store output and error logs to a file')
 parser.add_argument('--verbose', dest='verbose', action='store_true',
         help='Verbose output.')
+parser.add_argument('--output', dest='output', default='', action='store',
+        help='Output.')
 
 parsed_args = parser.parse_args(argv[1:])
 cfg = open_config(parsed_args, path.dirname(path.realpath(__file__)))
@@ -56,7 +58,8 @@ repositories = build_projects(  source_dir = parsed_args.source_dir,
                                 target_dir = parsed_args.results_dir,
                                 repositories_db = repositories,
                                 force_update = parsed_args.build_force_update,
-                                cfg = cfg)
+                                cfg = cfg,
+                                output = parsed_args.output)
 
 if parsed_args.export_repos is not None:
     export_projects(repositories, parsed_args.export_repos)

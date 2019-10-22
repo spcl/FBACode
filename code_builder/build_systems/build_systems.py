@@ -47,19 +47,23 @@ def recognize_and_build(idx, name, project, target_dir, ctx):
             if not exists(build_dir):
                 mkdir(build_dir)
             project['build'] = {'system' : build_name, 'dir' : build_dir}
-            project['status'] = 'fail'
+            # Updated -> Configure
+            project['status'] = 'configure'
             builder = build_system(source_dir, build_dir, idx, ctx)
             if not builder.configure(build_dir):
                 project['build']['configure'] = 'fail'
                 failure = True
                 continue
             project['build']['configure'] = 'success'
+            # Configure -> Build
+            project['status'] = 'build'
             if not builder.build():
                 project['build']['build'] = 'fail'
+                project['status'] = 'fail'
                 failure = True
                 continue
-            project['build']['build'] = 'success'
             project['status'] = 'success'
+            project['build']['build'] = 'success'
             builder.generate_bitcodes(join(abspath(target_dir), name))
 
             #build_system(source_dir, out_log, err_log).configure()

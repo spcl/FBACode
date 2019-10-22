@@ -19,6 +19,12 @@ class Statistics:
         self.clone_time += project['source']['time']
         if 'build' in project:
             self.build_time += project['build']['time']
+        if project['status'] == 'unrecognized':
+            self.add_unrecognized_project()
+        elif project['status'] == 'success':
+            self.add_correct_project()
+        else:
+            self.add_incorrect_project()
 
     def add_unrecognized_project(self):
         self.unrecognized_projects += 1
