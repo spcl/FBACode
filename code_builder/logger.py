@@ -13,13 +13,13 @@ def create_stream_logger(name, stream, verbose):
     log.addHandler(handler)
     return CountingLogger(log)
 
-def create_file_logger(filename, time):
+def create_file_logger(filename, time, verbose):
     log = getLogger(filename)
     if verbose:
         log.setLevel(DEBUG)
     else:
         log.setLevel(INFO)
-    handler = FileHandler('%s_%s.log' % (filename, time))
+    handler = FileHandler('%s_%s.log' % (filename, time) if time != '' else '%s.log' % filename)
     format = Formatter('%(levelname)s - %(message)s')
     handler.setFormatter(format)
     log.addHandler(handler)

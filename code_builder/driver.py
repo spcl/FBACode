@@ -4,7 +4,7 @@ from sys import stdout, stderr, exit
 from configparser import ConfigParser
 from os import path
 
-from code_builder import logger
+import logger
 
 def info(*args, **kwargs):
     print(*args, file=stdout, **kwargs)
@@ -12,14 +12,14 @@ def info(*args, **kwargs):
 def error(*args, **kwargs):
     print(*args, file=stderr, **kwargs)
 
-def open_logfiles(cfg, name):
+def open_logfiles(cfg, name, timestamp=''):
     verbose = cfg['output']['verbose']
     if 'file' in cfg['output']:
         output_log = logger.create_file_logger(
-                filename = "%s_%s " % (os.path.join(cfg['output']['file'], 'output'), name),
+                filename = "%s_%s" % (path.join(cfg['output']['file'], 'output'), name),
                 time = timestamp, verbose = verbose)
         error_log = logger.create_file_logger(
-                filename = "%s_%s" % (os.path.join(cfg['output']['file'], 'error'), name),
+                filename = "%s_%s" % (path.join(cfg['output']['file'], 'error'), name),
                 time = timestamp, verbose = verbose)
     else:
         output_log = logger.create_stream_logger(
