@@ -12,7 +12,7 @@ from sys import stdout
 from .statistics import Statistics
 from .database import get_database
 from .build_systems.build_systems import recognize_and_build
-from .driver import open_logfiles
+from .utils.driver import open_logfiles
 
 init = False
 loggers = None
@@ -118,9 +118,9 @@ def build_projects(source_dir, build_dir, target_dir, repositories_db, force_upd
             #TODO handle repository that is not updated
 
             # for each project, attach a builder
-            build_func = lambda fut: recognize_and_build(*fut.result(), target_dir, ctx)
+            #build_func = lambda fut: recognize_and_build(*fut.result(), build_dir, target_dir, ctx)
             for project in futures:
-                projects.append(callback(pool, ctx, project, functools.partial(recognize_and_build, target_dir = target_dir, ctx = ctx)))
+                projects.append(callback(pool, ctx, project, functools.partial(recognize_and_build, build_dir = build_dir, target_dir = target_dir, ctx = ctx)))
             repositories_idx += repo_count
             database_processers.append(processer)
 

@@ -7,10 +7,9 @@ from configparser import ConfigParser
 from datetime import datetime
 from os import path
 
-from code_builder import logger
 from code_builder.fetcher import fetch_projects
 from code_builder.code_builder import build_projects
-from code_builder.driver import open_config, open_logfiles
+from code_builder.utils.driver import open_config, open_logfiles
 
 # https://stackoverflow.com/questions/5574702/how-to-print-to-stderr-in-python
 def error_print(*args, **kwargs):

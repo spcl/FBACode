@@ -1,7 +1,12 @@
 
 import subprocess
-
 import os
+import docker
+import io
+import tarfile
+import json
+import tempfile
+
 from os.path import abspath, join, exists, isfile, dirname, basename
 from os import listdir, makedirs, mkdir, rename
 from shutil import rmtree
@@ -10,8 +15,6 @@ from re import search
 from subprocess import PIPE
 from sys import version_info
 from time import time
-
-from .environment import get_c_compiler, get_cxx_compiler
 
 from . import cmake
 
@@ -30,8 +33,10 @@ build_systems = {
         'CMake' : cmake.project
     }
 
+CONTAINER_NAME = 'fbacode-ubuntu-1804-clang-9'
 
-def recognize_and_build(idx, name, project, target_dir, ctx):
+
+def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
 
     if project['status'] == 'unrecognized':
         ctx.stats.unrecognized()
@@ -39,33 +44,58 @@ def recognize_and_build(idx, name, project, target_dir, ctx):
         # update if needed
         return (idx, name, project)
     source_dir = project['source']['dir']
+    source_name = basename(source_dir)
     failure = False
     start = time()
     for build_name, build_system in build_systems.items():
         if build_system.recognize(source_dir):
-            build_dir = source_dir + "_build"
+
+            build_dir = join(build_dir, source_name)
+            print(build_dir)
             if not exists(build_dir):
                 mkdir(build_dir)
-            project['build'] = {'system' : build_name, 'dir' : build_dir}
-            # Updated -> Configure
-            project['status'] = 'configure'
-            builder = build_system(source_dir, build_dir, idx, ctx)
-            if not builder.configure(build_dir):
-                project['build']['configure'] = 'fail'
-                failure = True
-                continue
-            project['build']['configure'] = 'success'
-            # Configure -> Build
-            project['status'] = 'build'
-            if not builder.build():
-                project['build']['build'] = 'fail'
-                project['status'] = 'fail'
-                failure = True
-                continue
-            project['status'] = 'success'
-            project['build']['build'] = 'success'
-            builder.generate_bitcodes(join(abspath(target_dir), name))
+            docker_client = docker.from_env()
+            tmp_file = tempfile.NamedTemporaryFile(mode = 'w')
+            json.dump({'idx' : idx, 'name' : name, 'verbose' : ctx.cfg['output']['verbose']}, tmp_file.file)
+            tmp_file.flush()
+            volumes = {}
+            volumes[abspath(source_dir)] = { 'mode' : 'ro', 'bind' : '/home/fba_code/source'}
+            volumes[abspath(build_dir)] = { 'mode' : 'rw', 'bind' : '/home/fba_code/build'}
+            volumes[abspath(tmp_file.name)] = { 'mode' : 'ro', 'bind' : '/home/fba_code/input.json'}
+            container = docker_client.containers.run(
+                    CONTAINER_NAME,
+                    detach = True,
+                    environment = ['BUILD_SYSTEM={}'.format(build_name.lower())],
+                    volumes = volumes
+            )
+            container.wait()
 
+            # Get output JSON
+            binary_data, _ = container.get_archive('/home/fba_code/output.json')
+            tar_file = tarfile.open(fileobj = io.BytesIO(next(binary_data)))
+            data = tar_file.extractfile(tar_file.getmember('output.json'))
+            project = {**project, **json.loads(data.read())['project'] }
+            
+#            project['build'] = {'system' : build_name, 'dir' : build_dir}
+#            # Updated -> Configure
+#            project['status'] = 'configure'
+#            builder = build_system(source_dir, build_dir, idx, ctx)
+#            if not builder.configure(build_dir):
+#                project['build']['configure'] = 'fail'
+#                failure = True
+#                continue
+#            project['build']['configure'] = 'success'
+#            # Configure -> Build
+#            project['status'] = 'build'
+#            if not builder.build():
+#                project['build']['build'] = 'fail'
+#                project['status'] = 'fail'
+#                failure = True
+#                continue
+#            project['status'] = 'success'
+#            project['build']['build'] = 'success'
+#            builder.generate_bitcodes(join(abspath(target_dir), name))
+#
             #build_system(source_dir, out_log, err_log).configure()
     #    if isCmakeProject(source_dir):
     #        cmake_repo = CMakeProject(source_dir, out_log, error_log)

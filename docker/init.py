@@ -1,14 +1,14 @@
 import json
 import sys
 import os
-import imp
+import importlib
 import glob
 
 from time import time
 from shutil import move
 from datetime import datetime
 
-from driver import open_logfiles
+from utils.driver import open_logfiles
 
 class Context:
 
@@ -27,13 +27,14 @@ json_input = json.load(open(sys.argv[1], 'r'))
 idx = json_input['idx']
 name = json_input['name']
 verbose = json_input['verbose']
-builder_mod = imp.load_source(build_system, build_system + '.py')
+builder_mod = importlib.import_module('build_systems.{}'.format(build_system))
+#builder_mod = imp.load_source(build_system, os.path.join('build_systems', build_system + '.py'))
 builder_class = getattr(builder_mod, 'project')
 
 cfg = { 'output' : { 'verbose' : verbose, 'file' : '/home/fba_code/' }}
 ctx = Context(cfg)
 timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-ctx.set_loggers(*open_logfiles(cfg, name, timestamp=timestamp))
+ctx.set_loggers(*open_logfiles(cfg, name.replace('/', '_'), timestamp=timestamp))
 
 
 # Updated -> Configure
@@ -61,7 +62,7 @@ ctx.out_log.print_info(idx, 'Finish processing %s in %f [s]' % (name, end - star
 
 out = { 'idx' : idx, 'name' : name, 'project' : project }
 # save output JSON
-print(json.dumps(out, indent=2), file=open('out.json', 'w'))
+print(json.dumps(out, indent=2), file=open('output.json', 'w'))
 # move logs to build directory
 for file in glob.glob('*.log'):
     move(file, 'build')

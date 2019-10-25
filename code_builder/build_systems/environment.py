@@ -1,10 +1,10 @@
 
-from os.path import abspath, realpath, join, dirname
+from os.path import abspath, realpath, join, dirname, basename
 from os import pardir, environ
 
 
 def get_wrappers_dir():
-    return abspath(join(dirname(realpath(__file__)), 'wrappers'))
+    return abspath(join(dirname(realpath(__file__)), pardir, 'wrappers'))
 
 def get_c_compiler():
     return join(get_wrappers_dir(), "clang")

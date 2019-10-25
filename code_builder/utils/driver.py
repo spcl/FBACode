@@ -4,7 +4,7 @@ from sys import stdout, stderr, exit
 from configparser import ConfigParser
 from os import path
 
-import logger
+from . import logger
 
 def info(*args, **kwargs):
     print(*args, file=stdout, **kwargs)

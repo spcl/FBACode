@@ -20,9 +20,8 @@ ENV BITCODES_DIR ${HOME_DIR}/bitcodes
 RUN mkdir -p ${HOME_DIR}
 WORKDIR ${HOME_DIR}
 ADD docker/init.py init.py
-ADD code_builder/driver.py .
-ADD code_builder/logger.py .
-ADD code_builder/build_systems/ .
-ADD wrappers/ wrappers
+ADD code_builder/utils/ utils
+ADD code_builder/build_systems/ build_systems
+ADD code_builder/wrappers/ wrappers
 
 CMD ["python3", "init.py", "input.json"]

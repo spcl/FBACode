@@ -2,8 +2,9 @@
 import sys,os
 from os import path
 from time import time
+
 from .repository import GitProject
-from .logger import create_stream_logger
+from .utils.logger import create_stream_logger
 
 class GitHub:
 

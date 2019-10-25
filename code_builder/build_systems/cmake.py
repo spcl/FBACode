@@ -9,7 +9,7 @@ from sys import version_info
 from glob import iglob
 from re import search
 
-from environment import get_c_compiler, get_cxx_compiler
+from .environment import get_c_compiler, get_cxx_compiler
 
 def decode(stream):
     return stream.decode('utf-8')
