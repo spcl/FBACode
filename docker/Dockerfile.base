@@ -24,3 +24,5 @@ ADD code_builder/driver.py .
 ADD code_builder/logger.py .
 ADD code_builder/build_systems/ .
 ADD wrappers/ wrappers
+
+CMD ["python3", "init.py", "input.json"]

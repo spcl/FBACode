@@ -2,8 +2,11 @@ import json
 import sys
 import os
 import imp
+import glob
 
 from time import time
+from shutil import move
+from datetime import datetime
 
 from driver import open_logfiles
 
@@ -29,7 +32,8 @@ builder_class = getattr(builder_mod, 'project')
 
 cfg = { 'output' : { 'verbose' : verbose, 'file' : '/home/fba_code/' }}
 ctx = Context(cfg)
-ctx.set_loggers(*open_logfiles(cfg, name))
+timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+ctx.set_loggers(*open_logfiles(cfg, name, timestamp=timestamp))
 
 
 # Updated -> Configure
@@ -56,4 +60,9 @@ project['build']['time'] = end - start
 ctx.out_log.print_info(idx, 'Finish processing %s in %f [s]' % (name, end - start))
 
 out = { 'idx' : idx, 'name' : name, 'project' : project }
-print(json.dumps(out, indent=2), open('out.json', 'w'))
+# save output JSON
+print(json.dumps(out, indent=2), file=open('out.json', 'w'))
+# move logs to build directory
+for file in glob.glob('*.log'):
+    move(file, 'build')
+
