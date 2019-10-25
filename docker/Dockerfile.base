@@ -1,0 +1,26 @@
+FROM ubuntu:18.04
+ARG DEBIAN_FRONTEND=noninteractive
+
+
+RUN deps='software-properties-common curl' soft='python3 cmake clang-9 clang++-9'\
+  && apt-get update && apt-get install -y ${deps}\
+  && curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -\
+  && add-apt-repository 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'\
+  && apt-get update && apt-get install -y ${soft}\
+  && apt-get install -y ${SOFT}\
+  && apt-get purge -y --auto-remove ${DEPS}\
+  && ln -s /usr/bin/clang-9 /usr/bin/clang\
+  && ln -s /usr/bin/clang++-9 /usr/bin/clang++
+
+ENV HOME_DIR /home/fba_code/
+ENV SRC_DIR ${HOME_DIR}/code
+ENV BUILD_DIR ${HOME_DIR}/build
+ENV BITCODES_DIR ${HOME_DIR}/bitcodes
+
+RUN mkdir -p ${HOME_DIR}
+WORKDIR ${HOME_DIR}
+ADD docker/init.py init.py
+ADD code_builder/driver.py .
+ADD code_builder/logger.py .
+ADD code_builder/build_systems/ .
+ADD wrappers/ wrappers
