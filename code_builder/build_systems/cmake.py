@@ -9,7 +9,7 @@ from sys import version_info
 from glob import iglob
 from re import search
 
-from .environment import get_c_compiler, get_cxx_compiler
+from environment import get_c_compiler, get_cxx_compiler
 
 def decode(stream):
     return stream.decode('utf-8')
@@ -23,6 +23,15 @@ def run(command, cwd = None, stdout = None, stderr = None):
         return subprocess.run(command, cwd=cwd, stdout = stdout, stderr = stderr)
     else:
         return subprocess.call(command, cwd=cwd, stdout = stdout, stderr = stderr)
+
+class Context:
+
+    def __init__(self, cfg):
+        self.cfg = cfg
+
+    def set_loggers(self, out, err):
+        self.out_log = out
+        self.err_log = err
 
 class project:
 
