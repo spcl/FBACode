@@ -51,7 +51,6 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
         if build_system.recognize(source_dir):
 
             build_dir = join(build_dir, source_name)
-            print(build_dir)
             if not exists(build_dir):
                 mkdir(build_dir)
             docker_client = docker.from_env()
@@ -65,6 +64,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             container = docker_client.containers.run(
                     CONTAINER_NAME,
                     detach = True,
+                    remove = True,
                     environment = ['BUILD_SYSTEM={}'.format(build_name.lower())],
                     volumes = volumes
             )
@@ -75,51 +75,18 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             tar_file = tarfile.open(fileobj = io.BytesIO(next(binary_data)))
             data = tar_file.extractfile(tar_file.getmember('output.json'))
             project = {**project, **json.loads(data.read())['project'] }
-            
-#            project['build'] = {'system' : build_name, 'dir' : build_dir}
-#            # Updated -> Configure
-#            project['status'] = 'configure'
-#            builder = build_system(source_dir, build_dir, idx, ctx)
-#            if not builder.configure(build_dir):
-#                project['build']['configure'] = 'fail'
-#                failure = True
-#                continue
-#            project['build']['configure'] = 'success'
-#            # Configure -> Build
-#            project['status'] = 'build'
-#            if not builder.build():
-#                project['build']['build'] = 'fail'
-#                project['status'] = 'fail'
-#                failure = True
-#                continue
-#            project['status'] = 'success'
-#            project['build']['build'] = 'success'
-#            builder.generate_bitcodes(join(abspath(target_dir), name))
-#
-            #build_system(source_dir, out_log, err_log).configure()
-    #    if isCmakeProject(source_dir):
-    #        cmake_repo = CMakeProject(source_dir, out_log, error_log)
-    #        returnval = cmake_repo.configure(
-    #                c_compiler = get_c_compiler(),
-    #                cxx_compiler = get_cxx_compiler(),
-    #                force_update = True
-    #                )
-    #        if not returnval:
-    #            returnval = cmake_repo.build()
-    #        if not returnval:
-    #            cmake_repo.generate_bitcodes( join(target_dir, project.name()) )
-    #        if returnval:
-    #            incorrect_projects += 1
-    #            spec['status'] = 'fails'
-    #        else:
-    #            correct_projects += 1
-    #            spec['status'] = 'works'
-    #    else:
-    #        out_log.info('Unrecognized project %s' % source_dir)
-    #        unrecognized_projects += 1
-    #        spec['status'] = 'unrecognized'
             end = time()
             project['build']['time'] = end - start
+
+
+            # Generate summary and stats data
+            project['build']['system'] = build_name.lower()
+            if 'bitcodes' in project:
+                bitcodes = [x for x in iglob('{0}/**/*.bc'.format(project['bitcodes']['dir']), recursive=True)]
+                size = sum(os.path.getsize(x) for x in bitcodes)
+                project['bitcodes']['files'] = len(bitcodes)
+                project['bitcodes']['size'] = size
+
             ctx.out_log.print_info(idx, 'Finish processing %s in %f [s]' % (name, end - start))
             return (idx, name, project)
     end = time()
