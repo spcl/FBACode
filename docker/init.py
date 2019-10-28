@@ -38,7 +38,7 @@ ctx.set_loggers(*open_logfiles(cfg, name.replace('/', '_'), timestamp=timestamp)
 
 
 # Updated -> Configure
-project = { 'status': 'configure', 'build' : {}}
+project = { 'status': 'configure', 'build' : {'dir' : build_dir}}
 start = time()
 builder = builder_class(source_dir, build_dir, idx, ctx)
 if not builder.configure(build_dir):
@@ -55,6 +55,7 @@ else:
     else:
         project['status'] = 'success'
         project['build']['build'] = 'success'
+        project['bitcodes'] = {'dir' : bitcodes_dir}
         builder.generate_bitcodes(bitcodes_dir)
 end = time()
 project['build']['time'] = end - start
