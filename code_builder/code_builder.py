@@ -1,6 +1,6 @@
-
 import functools
-#import threading
+
+# import threading
 import concurrent.futures
 import json
 
@@ -17,6 +17,7 @@ from .utils.driver import open_logfiles
 init = False
 loggers = None
 
+
 def initializer_func(ctx, f, args):
     global init, loggers
     if not init:
@@ -29,11 +30,16 @@ def initializer_func(ctx, f, args):
         ctx.set_loggers(*loggers)
     return f(*args)
 
+
 def map(exec, f, args, ctx):
-    return [exec.submit(functools.partial(initializer_func, ctx, f, d)) for d in zip(*args)]
+    return [
+        exec.submit(functools.partial(initializer_func, ctx, f, d)) for d in zip(*args)
+    ]
+
 
 def when_all(futures, callback):
-   return WhenAll(futures, callback)
+    return WhenAll(futures, callback)
+
 
 class WhenAll:
     def __init__(self, fs, callback):
@@ -47,11 +53,11 @@ class WhenAll:
         if len(self.futures) == 0:
             self.callback()
 
-class Context:
 
+class Context:
     def __init__(self, projects_count, cfg):
         self.cfg = cfg
-        #self.stats = Statistics()
+        # self.stats = Statistics()
         self.projects_count = projects_count
 
     def set_loggers(self, out, err):
@@ -68,17 +74,23 @@ def copy_futures(dest, src):
     else:
         dest.set_result(src.result())
 
+
 def callback(pool, ctx, f, callback):
     future = concurrent.futures.Future()
 
     def local_callback(f):
-        res = pool.submit(functools.partial(initializer_func, ctx, callback, f.result()))
+        res = pool.submit(
+            functools.partial(initializer_func, ctx, callback, f.result())
+        )
         res.add_done_callback(functools.partial(copy_futures, future))
 
     f.add_done_callback(local_callback)
     return future
 
-def build_projects(source_dir, build_dir, target_dir, repositories_db, force_update, cfg, output):
+
+def build_projects(
+    source_dir, build_dir, target_dir, repositories_db, force_update, cfg, output
+):
 
     if not exists(source_dir):
         mkdir(source_dir)
@@ -90,12 +102,12 @@ def build_projects(source_dir, build_dir, target_dir, repositories_db, force_upd
     projects_count = 0
     for database, repositories in repositories_db.items():
         projects_count += len(repositories)
-    #env = Environment()
-    #env.overwrite_environment()
+    # env = Environment()
+    # env.overwrite_environment()
 
     repositories_idx = 0
-    if cfg['clone']['multithreaded']:
-        threads_count = int(cfg['clone']['threads'])
+    if cfg["clone"]["multithreaded"]:
+        threads_count = int(cfg["clone"]["threads"])
     else:
         threads_count = 1
     contexts = []
@@ -108,19 +120,31 @@ def build_projects(source_dir, build_dir, target_dir, repositories_db, force_upd
 
             repo_count = len(repositories)
             processer = get_database(database)(source_dir, ctx)
-            indices = list( range(repositories_idx + 1, repo_count + 1) )
+            indices = list(range(repositories_idx + 1, repo_count + 1))
             keys, values = zip(*repositories.items())
             # idx, repo, spec -> downloaded project
             futures = map(pool, processer.clone, [indices, keys, values], ctx)
             # save statistics when database processer is done
-            #when_all(futures, lambda: processer.finish())
-            
-            #TODO handle repository that is not updated
+            # when_all(futures, lambda: processer.finish())
+
+            # TODO handle repository that is not updated
 
             # for each project, attach a builder
-            #build_func = lambda fut: recognize_and_build(*fut.result(), build_dir, target_dir, ctx)
+            # build_func = lambda fut: recognize_and_build(*fut.result(), build_dir, target_dir, ctx)
             for project in futures:
-                projects.append(callback(pool, ctx, project, functools.partial(recognize_and_build, build_dir = build_dir, target_dir = target_dir, ctx = ctx)))
+                projects.append(
+                    callback(
+                        pool,
+                        ctx,
+                        project,
+                        functools.partial(
+                            recognize_and_build,
+                            build_dir=build_dir,
+                            target_dir=target_dir,
+                            ctx=ctx,
+                        ),
+                    )
+                )
             repositories_idx += repo_count
             database_processers.append(processer)
 
@@ -133,12 +157,12 @@ def build_projects(source_dir, build_dir, target_dir, repositories_db, force_upd
         print("Process repositorites in %f [s]" % (end - start))
         stats.print_stats()
 
-        f = stdout if output == '' else open(output, 'w')
+        f = stdout if output == "" else open(output, "w")
         print(json.dumps(repositories, indent=2), file=f)
 
-    #env.reset_environment()
+    # env.reset_environment()
 
-    #for project in projects:
+    # for project in projects:
     #    out_log.next()
     #    error_log.next()
     #    # classify repository
@@ -164,5 +188,4 @@ def build_projects(source_dir, build_dir, target_dir, repositories_db, force_upd
     #        out_log.info('Unrecognized project %s' % source_dir)
     #        unrecognized_projects += 1
     #        spec['status'] = 'unrecognized'
-    #end = time()
-
+    # end = time()

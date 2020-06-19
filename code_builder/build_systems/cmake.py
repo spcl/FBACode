@@ -1,4 +1,3 @@
-
 import subprocess
 
 from os.path import abspath, join, isfile, dirname
@@ -11,21 +10,23 @@ from re import search
 
 from .environment import get_c_compiler, get_cxx_compiler
 
-def decode(stream):
-    return stream.decode('utf-8')
 
-def run(command, cwd = None, stdout = None, stderr = None):
+def decode(stream):
+    return stream.decode("utf-8")
+
+
+def run(command, cwd=None, stdout=None, stderr=None):
 
     # Python 3.5+ - subprocess.run
     # older - subprocess.call
     # TODO: capture_output added in 3.7 - verify it works
     if version_info.major >= 3 and version_info.minor >= 5:
-        return subprocess.run(command, cwd=cwd, stdout = stdout, stderr = stderr)
+        return subprocess.run(command, cwd=cwd, stdout=stdout, stderr=stderr)
     else:
-        return subprocess.call(command, cwd=cwd, stdout = stdout, stderr = stderr)
+        return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
+
 
 class Context:
-
     def __init__(self, cfg):
         self.cfg = cfg
 
@@ -33,8 +34,8 @@ class Context:
         self.out_log = out
         self.err_log = err
 
-class project:
 
+class project:
     def __init__(self, repo_dir, build_dir, idx, ctx):
         self.repository_path = repo_dir
         self.build_dir = build_dir
@@ -43,54 +44,59 @@ class project:
         self.output_log = ctx.out_log
         self.error_log = ctx.err_log
 
-    def configure(self, force_update = False):
+    def configure(self, force_update=False):
         c_compiler = get_c_compiler()
         cxx_compiler = get_cxx_compiler()
         if len(listdir(self.build_dir)) == 0 or force_update:
             c_compiler_opt = "-DCMAKE_C_COMPILER=" + c_compiler
             cpp_compiler_opt = "-DCMAKE_CXX_COMPILER=" + cxx_compiler
-            cmd = ["cmake", abspath(self.repository_path), c_compiler_opt, cpp_compiler_opt]
-            ret = run(
-                    cmd,
-                    cwd = self.build_dir,
-                    stdout = PIPE,
-                    stderr = PIPE
-                    )
+            cmd = [
+                "cmake",
+                abspath(self.repository_path),
+                c_compiler_opt,
+                cpp_compiler_opt,
+            ]
+            ret = run(cmd, cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
             if ret.returncode:
-                self.error_log.print_info(self.idx, 'Failed CMake configure command: %s' % ' '.join(cmd))
+                self.error_log.print_info(
+                    self.idx, "Failed CMake configure command: %s" % " ".join(cmd)
+                )
                 self.error_log.print_error(self.idx, decode(ret.stderr))
                 return False
             else:
-                self.output_log.print_info(self.idx, 'Configure %s to build in %s' % (self.repository_path, self.build_dir))
-                self.output_log.print_debug(self.idx, 'CMake configure command: %s' % ' '.join(cmd))
-                self.output_log.print_debug(self.idx, decode(ret.stdout) )
+                self.output_log.print_info(
+                    self.idx,
+                    "Configure %s to build in %s"
+                    % (self.repository_path, self.build_dir),
+                )
+                self.output_log.print_debug(
+                    self.idx, "CMake configure command: %s" % " ".join(cmd)
+                )
+                self.output_log.print_debug(self.idx, decode(ret.stdout))
             return True
         return True
 
     def build(self):
         cmd = ["cmake", "--build", "."]
-        ret = run(
-                cmd,
-                cwd = self.build_dir,
-                stdout = PIPE,
-                stderr = PIPE
-                )
+        ret = run(cmd, cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
         if ret.returncode:
-            self.error_log.print_error(self.idx, ret.stderr.decode('utf-8'))
+            self.error_log.print_error(self.idx, ret.stderr.decode("utf-8"))
             return False
         else:
-            self.output_log.print_info(self.idx, 'Build in %s' % self.build_dir)
-            self.output_log.print_debug(self.idx, 'CMake build command: %s' % ' '.join(cmd))
-            self.output_log.print_debug(self.idx, decode(ret.stdout) )
+            self.output_log.print_info(self.idx, "Build in %s" % self.build_dir)
+            self.output_log.print_debug(
+                self.idx, "CMake build command: %s" % " ".join(cmd)
+            )
+            self.output_log.print_debug(self.idx, decode(ret.stdout))
             return True
 
     def generate_bitcodes(self, target_dir):
-        for file in iglob('{0}/**/*.bc'.format(self.build_dir), recursive=True):
+        for file in iglob("{0}/**/*.bc".format(self.build_dir), recursive=True):
             # CMake file format: {build_dir}/../CMakeFiles/{dir}.dir/relative_bc_location
-            res = search(r'CMakeFiles/.*\.dir', file)
-            local_path = file[res.end(0) + 1 : ]
-            makedirs( join(target_dir, dirname(local_path)), exist_ok = True)
-            rename(file, join(target_dir, local_path) )
+            res = search(r"CMakeFiles/.*\.dir", file)
+            local_path = file[res.end(0) + 1 :]
+            makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
+            rename(file, join(target_dir, local_path))
 
     def clean(self):
         build_dir = self.repository_path + "_build"
@@ -98,4 +104,4 @@ class project:
         mkdir(build_dir)
 
     def recognize(repo_dir):
-        return isfile( join(repo_dir, 'CMakeLists.txt') )
+        return isfile(join(repo_dir, "CMakeLists.txt"))
