@@ -27,7 +27,7 @@ class GitHub:
         if project["status"] == "new":
             project["status"] = "cloned"
         if not "source" in project:
-            project["source"] = {"dir": source_dir}
+            project["source"] = { "dir": os.path.abspath(source_dir) }
         end = time()
         project["source"]["time"] = end - start
         self.ctx.out_log.print_info(
