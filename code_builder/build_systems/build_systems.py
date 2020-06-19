@@ -68,10 +68,14 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 "mode": "ro",
                 "bind": "/home/fba_code/input.json",
             }
+            environment = [
+                "BUILD_SYSTEM={}".format(build_name.lower()),
+                "BUILD_DIR={}".format(abspath(build_dir))
+            ]
             container = docker_client.containers.run(
                 CONTAINER_NAME,
                 detach=True,
-                environment=["BUILD_SYSTEM={}".format(build_name.lower())],
+                environment=environment,
                 volumes=volumes,
             )
             return_code = container.wait()

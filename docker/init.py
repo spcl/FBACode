@@ -23,6 +23,7 @@ source_dir = '/home/fba_code/source'
 build_dir = '/home/fba_code/build'
 bitcodes_dir = '/home/fba_code/bitcodes'
 build_system = os.environ['BUILD_SYSTEM']
+external_build_dir = os.environ['BUILD_DIR']
 json_input = json.load(open(sys.argv[1], 'r'))
 idx = json_input['idx']
 name = json_input['name']
@@ -38,7 +39,7 @@ ctx.set_loggers(*open_logfiles(cfg, name.replace('/', '_'), timestamp=timestamp)
 
 
 # Updated -> Configure
-project = { 'status': 'configure', 'build' : {'dir' : build_dir}}
+project = { 'status': 'configure', 'build' : {'dir' : external_build_dir}}
 start = time()
 builder = builder_class(source_dir, build_dir, idx, ctx)
 if not builder.configure(build_dir):
