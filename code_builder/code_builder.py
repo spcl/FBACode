@@ -95,13 +95,13 @@ def build_projects(source_dir, build_dir, target_dir, repositories_db, force_upd
 
     repositories_idx = 0
     if cfg['clone']['multithreaded']:
-        threads_count = cfg['clone']['threads']
+        threads_count = int(cfg['clone']['threads'])
     else:
         threads_count = 1
     contexts = []
     ctx = Context(projects_count, cfg)
     start = time()
-    with concurrent.futures.ProcessPoolExecutor( int(threads_count) ) as pool:
+    with concurrent.futures.ProcessPoolExecutor(threads_count) as pool:
         projects = []
         database_processers = []
         for database, repositories in repositories_db.items():
