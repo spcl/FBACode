@@ -33,7 +33,7 @@ build_systems = {
         'CMake' : cmake.project
     }
 
-CONTAINER_NAME = 'fbacode-ubuntu-1804-clang-9'
+CONTAINER_NAME = 'mcopik/fbacode:ubuntu-1804-clang-9'
 
 
 def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
@@ -62,13 +62,14 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             volumes[abspath(build_dir)] = { 'mode' : 'rw', 'bind' : '/home/fba_code/build'}
             volumes[abspath(tmp_file.name)] = { 'mode' : 'ro', 'bind' : '/home/fba_code/input.json'}
             container = docker_client.containers.run(
-                    CONTAINER_NAME,
-                    detach = True,
-                    remove = True,
-                    environment = ['BUILD_SYSTEM={}'.format(build_name.lower())],
-                    volumes = volumes
+                CONTAINER_NAME,
+                detach = True,
+                environment = ['BUILD_SYSTEM={}'.format(build_name.lower())],
+                volumes = volumes
             )
-            container.wait()
+            return_code = container.wait()
+            if return_code['StatusCode']:
+                raise RuntimeError('The build process failed! Return code {}, output: {}'.format(return_code, container.logs(stdout=True, stderr=True).decode()))
 
             # Get output JSON
             binary_data, _ = container.get_archive('/home/fba_code/output.json')
@@ -78,6 +79,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             end = time()
             project['build']['time'] = end - start
 
+            container.remove()
 
             # Generate summary and stats data
             project['build']['system'] = build_name.lower()
