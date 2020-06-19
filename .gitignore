@@ -90,6 +90,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+fbacode-virtualenv/
 
 # Spyder project settings
 .spyderproject
