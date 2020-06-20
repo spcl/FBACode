@@ -33,7 +33,6 @@ build_systems = {"CMake": cmake.project}
 
 CONTAINER_NAME = "mcopik/fbacode:ubuntu-1804-clang-9"
 
-
 def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
 
     if project["status"] == "unrecognized":
@@ -49,6 +48,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
         if build_system.recognize(source_dir):
 
             build_dir = join(build_dir, source_name)
+            target_dir = join(target_dir, source_name)
             if not exists(build_dir):
                 mkdir(build_dir)
             docker_client = docker.from_env()
@@ -64,13 +64,15 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 "bind": "/home/fba_code/source",
             }
             volumes[abspath(build_dir)] = {"mode": "rw", "bind": "/home/fba_code/build"}
+            volumes[abspath(target_dir)] = {"mode": "rw", "bind": "/home/fba_code/bitcodes"}
             volumes[abspath(tmp_file.name)] = {
                 "mode": "ro",
                 "bind": "/home/fba_code/input.json",
             }
             environment = [
                 "BUILD_SYSTEM={}".format(build_name.lower()),
-                "BUILD_DIR={}".format(abspath(build_dir))
+                "BUILD_DIR={}".format(abspath(build_dir)),
+                "BITCODES_DIR={}".format(abspath(target_dir))
             ]
             container = docker_client.containers.run(
                 CONTAINER_NAME,

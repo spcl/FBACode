@@ -24,6 +24,8 @@ build_dir = '/home/fba_code/build'
 bitcodes_dir = '/home/fba_code/bitcodes'
 build_system = os.environ['BUILD_SYSTEM']
 external_build_dir = os.environ['BUILD_DIR']
+external_bitcodes_dir = os.environ['BITCODES_DIR']
+
 json_input = json.load(open(sys.argv[1], 'r'))
 idx = json_input['idx']
 name = json_input['name']
@@ -56,7 +58,7 @@ else:
     else:
         project['status'] = 'success'
         project['build']['build'] = 'success'
-        project['bitcodes'] = {'dir' : bitcodes_dir}
+        project['bitcodes'] = {'dir' : external_bitcodes_dir}
         builder.generate_bitcodes(bitcodes_dir)
 end = time()
 project['build']['time'] = end - start
