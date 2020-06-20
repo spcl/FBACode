@@ -1,3 +1,4 @@
+import collections
 from datetime import datetime
 from sys import stdout, stderr, exit
 from configparser import ConfigParser
@@ -17,17 +18,19 @@ def error(*args, **kwargs):
 
 def open_logfiles(cfg, name, timestamp=""):
     verbose = cfg["output"]["verbose"]
+    LogFiles = collections.namedtuple('LogFiles', ['stdout', 'stderr', 'stdout_file', 'stderr_file'])
     if "file" in cfg["output"]:
-        output_log = logger.create_file_logger(
+        output_log, output_file = logger.create_file_logger(
             filename="%s_%s" % (path.join(cfg["output"]["file"], "output"), name),
             time=timestamp,
             verbose=verbose,
         )
-        error_log = logger.create_file_logger(
+        error_log, error_file = logger.create_file_logger(
             filename="%s_%s" % (path.join(cfg["output"]["file"], "error"), name),
             time=timestamp,
             verbose=verbose,
         )
+        return LogFiles(stdout=output_log, stderr=error_log, stdout_file=output_file, stderr_file=error_file)
     else:
         output_log = logger.create_stream_logger(
             name="output", stream=stdout, verbose=verbose
@@ -35,7 +38,8 @@ def open_logfiles(cfg, name, timestamp=""):
         error_log = logger.create_stream_logger(
             name="error", stream=stderr, verbose=verbose
         )
-    return [output_log, error_log]
+
+        return LogFiles(stdout=output_log, stderr=error_log, stdout_file=None, stderr_file=None)
 
 
 from collections import OrderedDict

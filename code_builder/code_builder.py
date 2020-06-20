@@ -23,11 +23,11 @@ def initializer_func(ctx, f, args):
     if not init:
         init = True
         loggers = open_logfiles(ctx.cfg, getpid())
-        for log in loggers:
+        for log in (loggers.stdout, loggers.stderr):
             log.set_counter(ctx.projects_count)
-        ctx.set_loggers(*loggers)
+        ctx.set_loggers(loggers.stdout, loggers.stderr)
     else:
-        ctx.set_loggers(*loggers)
+        ctx.set_loggers(loggers.stdout, loggers.stderr)
     return f(*args)
 
 

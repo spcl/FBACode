@@ -37,11 +37,18 @@ builder_class = getattr(builder_mod, 'project')
 cfg = { 'output' : { 'verbose' : verbose, 'file' : '/home/fba_code/' }}
 ctx = Context(cfg)
 timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-ctx.set_loggers(*open_logfiles(cfg, name.replace('/', '_'), timestamp=timestamp))
-
+loggers = open_logfiles(cfg, name.replace('/', '_'), timestamp=timestamp)
+ctx.set_loggers(loggers.stdout, loggers.stderr)
 
 # Updated -> Configure
-project = { 'status': 'configure', 'build' : {'dir' : external_build_dir}}
+project = {
+    'status': 'configure',
+    'build' : {
+        'dir' : external_build_dir,
+        'stdout': os.path.basename(loggers.stdout_file),
+        'stderr': os.path.basename(loggers.stderr_file)
+    }
+}
 start = time()
 builder = builder_class(source_dir, build_dir, idx, ctx)
 if not builder.configure(build_dir):

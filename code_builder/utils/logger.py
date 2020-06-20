@@ -28,13 +28,12 @@ def create_file_logger(filename, time, verbose):
         log.setLevel(DEBUG)
     else:
         log.setLevel(INFO)
-    handler = FileHandler(
-        "%s_%s.log" % (filename, time) if time != "" else "%s.log" % filename
-    )
+    filename = "%s_%s.log" % (filename, time) if time != "" else "%s.log" % filename
+    handler = FileHandler(filename)
     format = Formatter("%(levelname)s - %(message)s")
     handler.setFormatter(format)
     log.addHandler(handler)
-    return CountingLogger(log)
+    return CountingLogger(log), filename
 
 
 class CountingLogger(LoggerAdapter):

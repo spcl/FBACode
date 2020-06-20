@@ -30,16 +30,16 @@ parser.add_argument('--verbose', dest='verbose', action='store_true',
         help='Verbose output.')
 
 parsed_args = parser.parse_args(argv[1:])
-output_log, error_log = open_logfiles(parsed_args)
+logfiles = open_logfiles(parsed_args)
 cfg = open_config(parsed_args, path.dirname(path.realpath(__file__)))
 
 # fetch new data, possibley updating
 if parsed_args.repo_db is not None:
     with open(parsed_args.repo_db) as repo_db:
         repositories = json.load(repo_db)
-    update_projects(repositories, cfg, output_log, error_log)
+    update_projects(repositories, cfg, logfiles.stdout, logfiles.stderr)
 else:
-    repositories = fetch_projects(cfg, output_log, error_log,
+    repositories = fetch_projects(cfg, logfiles.stdout, logfiles.stderr,
             parsed_args.fetch_max)
 
 if parsed_args.export_repos is not None:
