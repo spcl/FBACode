@@ -1,7 +1,8 @@
+import shutil
 import subprocess
 
 from os.path import abspath, join, isfile, dirname
-from os import listdir, makedirs, mkdir, rename
+from os import listdir, makedirs, mkdir
 from subprocess import PIPE
 from shutil import rmtree
 from sys import version_info
@@ -96,7 +97,9 @@ class project:
             res = search(r"CMakeFiles/.*\.dir", file)
             local_path = file[res.end(0) + 1 :]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
-            rename(file, join(target_dir, local_path))
+            # os.rename does not work for target and destinations being on different filesystems
+            # we might operate on different volumes in Docker
+            shutil.move(file, join(target_dir, local_path))
 
     def clean(self):
         build_dir = self.repository_path + "_build"
