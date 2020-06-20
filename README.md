@@ -53,6 +53,8 @@ and compatibility reasons.
 Current implementation supports two build systems: [*CMake*](#cmake) projects
 and [*Debian*](#builder-debian) source packages.
 
+Try builder with `builder.py examples/github-repo.json`.
+
 #### CMake
 
 Current implementation supports default configuration without any configuration flags.

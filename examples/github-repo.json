@@ -1,0 +1,16 @@
+{
+  "github.org": {
+    "abseil/abseil-cpp": {
+      "type": "git_repository",
+      "recently_updated": true,
+      "owner": "abseil",
+      "status": "new",
+      "codebase_data": {
+        "git_url": "https://github.com/abseil/abseil-cpp",
+        "updated_at": "2018-10-25T11:19:44Z",
+        "name": "abseil-cpp",
+        "default_branch": "master"
+      }
+    }
+  }
+}
