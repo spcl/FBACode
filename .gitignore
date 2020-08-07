@@ -107,3 +107,7 @@ fbacode-virtualenv/
 
 # Vim
 *.swp
+
+# bitcodes directory
+bitcodes/
+source/

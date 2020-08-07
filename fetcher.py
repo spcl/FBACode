@@ -5,7 +5,7 @@ from sys import argv
 from argparse import ArgumentParser
 
 from code_builder.fetcher import fetch_projects
-from code_builder.driver import *
+from code_builder.utils.driver import *
 
 def export_projects(projects, name):
     with open(name, mode='w') as outfile:
@@ -30,8 +30,9 @@ parser.add_argument('--verbose', dest='verbose', action='store_true',
         help='Verbose output.')
 
 parsed_args = parser.parse_args(argv[1:])
-logfiles = open_logfiles(parsed_args)
+
 cfg = open_config(parsed_args, path.dirname(path.realpath(__file__)))
+logfiles = open_logfiles(cfg)
 
 # fetch new data, possibley updating
 if parsed_args.repo_db is not None:

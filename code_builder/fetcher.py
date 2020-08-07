@@ -28,7 +28,7 @@ class GithubFetcher:
         repos_per_page = pagination(self.cfg[self.name])
         page = 1
         if max_repos is None:
-            max_repos = max_repos(request_params)
+            max_repos = int(self.cfg[self.name]["max_repos"])
         repos_per_page = min(max_repos, repos_per_page)
         request_params["per_page"] = str(repos_per_page)
 

@@ -19,6 +19,7 @@ class Context:
         self.out_log = out
         self.err_log = err
 
+print("AM IN DOCKER NOW!")
 source_dir = '/home/fba_code/source'
 build_dir = '/home/fba_code/build'
 bitcodes_dir = '/home/fba_code/bitcodes'
@@ -27,6 +28,7 @@ external_build_dir = os.environ['BUILD_DIR']
 external_bitcodes_dir = os.environ['BITCODES_DIR']
 
 json_input = json.load(open(sys.argv[1], 'r'))
+
 idx = json_input['idx']
 name = json_input['name']
 verbose = json_input['verbose']
@@ -39,6 +41,7 @@ ctx = Context(cfg)
 timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
 loggers = open_logfiles(cfg, name.replace('/', '_'), timestamp=timestamp)
 ctx.set_loggers(loggers.stdout, loggers.stderr)
+print(json_input)
 
 # Updated -> Configure
 project = {
@@ -50,7 +53,10 @@ project = {
     }
 }
 start = time()
-builder = builder_class(source_dir, build_dir, idx, ctx)
+if build_system == "debian":
+    builder = builder_class(source_dir, build_dir, idx, ctx, name)
+else:
+    builder = builder_class(source_dir, build_dir, idx, ctx)
 if not builder.configure(build_dir):
     project['build']['configure'] = 'fail'
     failure = True

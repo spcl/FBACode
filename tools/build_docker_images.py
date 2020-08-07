@@ -13,6 +13,9 @@ REPOSITORY_NAME = 'mcopik/fbacode'
 images = {
     'ubuntu-1804-clang-9': {
         'dockerfile': 'Dockerfile.base'
+    },
+    'debian-buster': {
+        'dockerfile': 'Dockerfile_debian.base'
     }
 }
 

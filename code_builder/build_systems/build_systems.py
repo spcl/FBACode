@@ -16,6 +16,8 @@ from sys import version_info
 from time import time
 
 from . import cmake
+from . import debian
+
 
 
 def run(command, cwd=None, stdout=None, stderr=None):
@@ -28,10 +30,13 @@ def run(command, cwd=None, stdout=None, stderr=None):
     else:
         return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
 
+# add debian here
+build_systems = {"CMake": cmake.project, "debian": debian.project}
+# build_systems = {"CMake": cmake.project}
 
-build_systems = {"CMake": cmake.project}
 
-CONTAINER_NAME = "mcopik/fbacode:ubuntu-1804-clang-9"
+# CONTAINER_NAME = "mcopik/fbacode:ubuntu-1804-clang-9"
+CONTAINER_NAME = "mcopik/fbacode:debian-buster"
 
 def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
 
@@ -46,7 +51,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
     start = time()
     for build_name, build_system in build_systems.items():
         if build_system.recognize(source_dir):
-
+            print("buildsystem recognized as {}".format(build_name))
             build_dir = join(build_dir, source_name)
             target_dir = join(target_dir, source_name)
             if not exists(build_dir):
@@ -59,8 +64,9 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             )
             tmp_file.flush()
             volumes = {}
+            # changed source to rw, need to write into for debian since fetching happens in container
             volumes[abspath(source_dir)] = {
-                "mode": "ro",
+                "mode": "rw",
                 "bind": "/home/fba_code/source",
             }
             volumes[abspath(build_dir)] = {"mode": "rw", "bind": "/home/fba_code/build"}
@@ -74,12 +80,17 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 "BUILD_DIR={}".format(abspath(build_dir)),
                 "BITCODES_DIR={}".format(abspath(target_dir))
             ]
+            print(build_dir)
+            print(environment)
+            print(volumes)
             container = docker_client.containers.run(
                 CONTAINER_NAME,
                 detach=True,
                 environment=environment,
                 volumes=volumes,
             )
+            print("started docker container!")
+            print(container)
             return_code = container.wait()
             if return_code["StatusCode"]:
                 raise RuntimeError(

@@ -63,6 +63,8 @@ Current implementation supports default configuration without any configuration 
 
 TODO
 
+fetch via apt source xxx then get dependencies using apt build-dep xxx, then build using the debian/rules script.
+
 #### Missing features
 
 - Currently we don't perform any search for cloned repositories. Furthermore, it's possible that different platforms provide various versions of the same software, e.g. a GitHub project of a program delivered as a Debian package as well.

@@ -44,6 +44,7 @@ function run_compilation() {
     if [ "$intercept_compilation" == true ]; then
         shopt -s nocasematch
         echo "Run LLVM generation with flags: ${ARGS[@]}"
+        echo "first run this: ${compiler} ${@:2}"
         ${compiler} "${@:2}"
         ${compiler} -emit-llvm "${ARGS[@]}"
         #echo "${ARGS[@]}"
@@ -64,6 +65,7 @@ function run_compilation() {
         #done
     else
         #echo "Run linking with flags: "${IR_FILES[@]}""
+        echo "not generating llvm ir"
         ${compiler} "${@:2}"
         #${LLVM_INSTALL_DIRECTORY}/bin/llvm-as "${IR_FILES[@]}"
     fi

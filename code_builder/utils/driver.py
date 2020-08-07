@@ -16,7 +16,7 @@ def error(*args, **kwargs):
     print(*args, file=stderr, **kwargs)
 
 
-def open_logfiles(cfg, name, timestamp=""):
+def open_logfiles(cfg, name="out.log", timestamp=""):
     verbose = cfg["output"]["verbose"]
     LogFiles = collections.namedtuple('LogFiles', ['stdout', 'stderr', 'stdout_file', 'stderr_file'])
     if "file" in cfg["output"]:
