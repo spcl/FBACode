@@ -1,8 +1,8 @@
 import shutil
 import subprocess
 
-from os.path import abspath, join, isfile, dirname, isdir
-from os import listdir, makedirs, mkdir
+from os.path import abspath, join, isfile, dirname, isdir, exists
+from os import listdir, makedirs, mkdir, remove
 from subprocess import PIPE
 from shutil import rmtree
 from sys import version_info
@@ -36,7 +36,7 @@ class Context:
         self.err_log = err
 
 
-class project:
+class Project:
     def __init__(self, repo_dir, build_dir, idx, ctx, name):
         self.repository_path = repo_dir
         self.build_dir = build_dir
@@ -54,7 +54,9 @@ class project:
         mkdir(temp)
         out = run(["apt-get", "source", "-y", self.name], cwd=temp, stdout=subprocess.PIPE)
         if out.returncode != 0:
+            self.output_log.print_error(self.idx, str(out))
             return False
+        self.output_log.print_info(self.idx, str(out))
         # find out the name of the source code folder
         out = out.stdout
         search_str = "extracting {} in ".format(self.name)
@@ -62,24 +64,43 @@ class project:
         out = out[:out.find("\n")]
         # out should now contains the name of the source folder
         sourcedir = join(temp, out)
+        # clear source directory if it exists
         # move sources into the source volume
         sources = listdir(sourcedir)
         for f in sources:
-            if isdir(join(sourcedir, f)):
-                shutil.copytree(join(sourcedir, f), join(self.build_dir, f))
+            dest = join(self.build_dir, f)
+            src = join(sourcedir, f)
+            repo_dest = join(self.repository_path, f)
+            if isdir(src):
+                if exists(dest):
+                    shutil.rmtree(dest)
+                if exists(repo_dest):
+                    shutil.rmtree(repo_dest)
+                shutil.copytree(src, dest)
+                shutil.move(src, repo_dest)
             else:
-                shutil.copy(join(sourcedir, f), join(self.build_dir))
-            # shutil.rmtree(self.repository_path)
-            shutil.move(join(sourcedir, f), join(self.repository_path, f))
+                if exists(dest):
+                    remove(dest)
+                if exists(repo_dest):
+                    remove(repo_dest)
+                shutil.copy(src, dest)
+                shutil.move(src, repo_dest)
         # fetch dependencies
-        run(["apt-get", "build-dep", "-y", self.name], cwd=self.repository_path)
+        out = run(["apt-get", "build-dep", "-y", self.name], cwd=self.repository_path)
+        if out.returncode != 0:
+            self.output_log.print_error(self.idx, str(out))
+            return False
+        self.output_log.print_info(self.idx, str(out))
         return True
 
     def build(self):
         # basically run debian/rules
-        out = run([join("debian", "rules"), "build"], cwd=self.build_dir)
-        
-        return out.returncode == 0
+        out = run([join("debian", "rules"), "build"], cwd=self.build_dir, stdout=subprocess.PIPE)
+        if out.returncode != 0:
+            self.output_log.print_error(self.idx, str(out))
+            return False
+        self.output_log.print_info(self.idx, str(out))
+        return True
 
     def generate_bitcodes(self, target_dir):
         # maybe copy from cmake.py?

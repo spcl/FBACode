@@ -31,7 +31,7 @@ def run(command, cwd=None, stdout=None, stderr=None):
         return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
 
 # add debian here
-build_systems = {"CMake": cmake.project, "debian": debian.project}
+build_systems = {"debian": debian.Project, "CMake": cmake.Project}
 # build_systems = {"CMake": cmake.project}
 
 
@@ -88,6 +88,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 detach=True,
                 environment=environment,
                 volumes=volumes,
+                auto_remove = False,
+                remove = False
             )
             print("started docker container!")
             print(container)

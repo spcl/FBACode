@@ -36,7 +36,7 @@ class Context:
         self.err_log = err
 
 
-class project:
+class Project:
     def __init__(self, repo_dir, build_dir, idx, ctx):
         self.repository_path = repo_dir
         self.build_dir = build_dir

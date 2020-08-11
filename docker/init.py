@@ -20,6 +20,7 @@ class Context:
         self.err_log = err
 
 print("AM IN DOCKER NOW!")
+print(os.environ)
 source_dir = '/home/fba_code/source'
 build_dir = '/home/fba_code/build'
 bitcodes_dir = '/home/fba_code/bitcodes'
@@ -34,7 +35,7 @@ name = json_input['name']
 verbose = json_input['verbose']
 builder_mod = importlib.import_module('build_systems.{}'.format(build_system))
 #builder_mod = imp.load_source(build_system, os.path.join('build_systems', build_system + '.py'))
-builder_class = getattr(builder_mod, 'project')
+builder_class = getattr(builder_mod, 'Project')
 
 cfg = { 'output' : { 'verbose' : verbose, 'file' : '/home/fba_code/' }}
 ctx = Context(cfg)
