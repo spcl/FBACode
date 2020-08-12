@@ -21,7 +21,8 @@ images = {
 
 client = docker.from_env()
 
-for img, definitions in images.items():
+for i, (img, definitions) in enumerate(images.items()):
+    print("[{}/{}] building {}:{}".format(i + 1, len(images), REPOSITORY_NAME, img))
     dockerfile = definitions['dockerfile']
     client.images.build(
         path=PROJECT_DIR,
