@@ -37,6 +37,8 @@ class Context:
 
 
 class Project:
+    CONTAINER_NAME = "mcopik/fbacode:ubuntu-1804-clang-9"
+
     def __init__(self, repo_dir, build_dir, idx, ctx):
         self.repository_path = repo_dir
         self.build_dir = build_dir
