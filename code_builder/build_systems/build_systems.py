@@ -32,11 +32,6 @@ def run(command, cwd=None, stdout=None, stderr=None):
 
 # add debian here
 build_systems = {"debian": debian.Project, "CMake": cmake.Project}
-# build_systems = {"CMake": cmake.project}
-
-# TODO: make this dependant of the type of project
-# CONTAINER_NAME = "mcopik/fbacode:ubuntu-1804-clang-9"
-# CONTAINER_NAME = "mcopik/fbacode:debian-buster"
 
 def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
 
