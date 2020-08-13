@@ -1,0 +1,43 @@
+FROM debian:bullseye
+ENV DEBIAN_FRONTEND=noninteractive
+
+# add source code repos to debian
+RUN rm /etc/apt/sources.list
+COPY docker/sources_bullseye.list /etc/apt/sources.list
+RUN apt-get update
+
+RUN deps='software-properties-common curl gpg-agent build-essential fakeroot devscripts' soft='python3 cmake make clang-9 clang++-9'\
+  && apt-get update && apt-get install -y ${deps} --no-install-recommends\
+  && curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -\
+  && add-apt-repository 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'\
+  && apt-get update && apt-get install -y ${soft} --no-install-recommends\
+  && apt-get purge -y --auto-remove ${DEPS}\
+  && ln -s /usr/bin/clang-9 /usr/bin/clang\
+  && ln -s /usr/bin/clang++-9 /usr/bin/clang++
+
+ENV HOME_DIR /home/fba_code/
+ENV SRC_DIR ${HOME_DIR}/code
+ENV BUILD_DIR ${HOME_DIR}/build
+ENV BITCODES_DIR ${HOME_DIR}/bitcodes
+
+RUN mkdir -p ${HOME_DIR}
+WORKDIR ${HOME_DIR}
+ADD docker/init.py init.py
+ADD code_builder/utils/ utils
+ADD code_builder/build_systems/ build_systems
+ADD code_builder/wrappers/ wrappers
+
+
+
+# https://clang.debian.net/
+# https://github.com/sylvestre/debian-clang/blob/master/clang-setup.sh
+# force, since apt installed compilers
+RUN ln -fs ${HOME_DIR}/wrappers/clang /usr/bin/cc\
+  && ln -fs ${HOME_DIR}/wrappers/clang++ /usr/bin/c++\
+  && ln -fs ${HOME_DIR}/wrappers/clang /usr/bin/gcc\
+  && ln -fs ${HOME_DIR}/wrappers/clang++ /usr/bin/g++
+
+RUN apt search '^gcc-[0-9]*[.]*[0-9]*$' | grep -o '\bgcc[a-zA-Z0-9:_.-]*' |\
+  xargs -I {} echo "{}" hold | dpkg --set-selections
+
+ENTRYPOINT ["python3", "-u", "init.py", "input.json"]

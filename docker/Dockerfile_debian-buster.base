@@ -1,9 +1,9 @@
 FROM debian:buster
-ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # add source code repos to debian
 RUN rm /etc/apt/sources.list
-COPY docker/sources.list /etc/apt/sources.list
+COPY docker/sources_buster.list /etc/apt/sources.list
 RUN apt-get update
 
 RUN deps='software-properties-common curl gpg-agent build-essential fakeroot devscripts' soft='python3 cmake make clang-9 clang++-9'\

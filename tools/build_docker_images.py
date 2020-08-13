@@ -11,12 +11,18 @@ DOCKER_DIR = os.path.join(PROJECT_DIR, 'docker')
 REPOSITORY_NAME = 'mcopik/fbacode'
 
 images = {
-    'ubuntu-1804-clang-9': {
-        'dockerfile': 'Dockerfile.base'
-    },
+    # 'ubuntu-1804-clang-9': {
+    #     'dockerfile': 'Dockerfile.base'
+    # },
+    # 'debian-sid': {
+    #     'dockerfile': 'Dockerfile_debian-sid.base'
+    # },
     'debian-buster': {
-        'dockerfile': 'Dockerfile_debian.base'
-    }
+        'dockerfile': 'Dockerfile_debian-buster.base'
+    },
+    # 'debian-bullseye': {
+    #     'dockerfile': 'Dockerfile_debian-bullseye.base'
+    # }
 }
 
 client = docker.from_env()
@@ -26,6 +32,6 @@ for i, (img, definitions) in enumerate(images.items()):
     dockerfile = definitions['dockerfile']
     client.images.build(
         path=PROJECT_DIR,
-        dockerfile=os.path.join(DOCKER_DIR,dockerfile),
-        tag="{}:{}".format(REPOSITORY_NAME,img)
+        dockerfile=os.path.join(DOCKER_DIR, dockerfile),
+        tag="{}:{}".format(REPOSITORY_NAME, img)
     )

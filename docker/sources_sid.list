@@ -1,0 +1,4 @@
+# deb http://snapshot.debian.org/archive/debian/20200803T070000Z sid main
+deb-src http://deb.debian.org/debian sid main
+# deb http://snapshot.debian.org/archive/debian/20200803T070000Z sid main
+deb http://deb.debian.org/debian sid main

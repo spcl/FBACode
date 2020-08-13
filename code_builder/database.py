@@ -49,7 +49,7 @@ class debian:
         # TODO: maybe do fetching in separate container to building?
         # would also make it possible to time the download etc.
 
-        # create a file called debian, so we can recognize later
+        # create a file called .debianbuild, so we can recognize later
         if project["status"] == "new":
             project["status"] = "cloned"
         if not "source" in project:
