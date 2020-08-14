@@ -42,7 +42,7 @@ ctx = Context(cfg)
 timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
 loggers = open_logfiles(cfg, name.replace('/', '_'), timestamp=timestamp)
 ctx.set_loggers(loggers.stdout, loggers.stderr)
-print(json_input)
+# print(json_input)
 
 # Updated -> Configure
 project = {
@@ -58,11 +58,14 @@ if build_system == "debian":
     builder = builder_class(source_dir, build_dir, idx, ctx, name)
 else:
     builder = builder_class(source_dir, build_dir, idx, ctx)
-if not builder.configure(build_dir):
+configured_version = builder.configure(build_dir)
+if not configured_version:
     project['build']['configure'] = 'fail'
     failure = True
 else:
     project['build']['configure'] = 'success'
+    if build_system == "debian":
+        project['build']['built_version'] = configured_version
     # Configure -> Build
     project['status'] = 'build'
     if not builder.build():
@@ -72,7 +75,7 @@ else:
     else:
         project['status'] = 'success'
         project['build']['build'] = 'success'
-        project['bitcodes'] = {'dir' : external_bitcodes_dir}
+        project['bitcodes'] = {'dir': external_bitcodes_dir}
         builder.generate_bitcodes(bitcodes_dir)
 end = time()
 project['build']['time'] = end - start
