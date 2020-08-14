@@ -1,0 +1,362 @@
+{
+  "debian": {
+    "0ad": {
+      "type": "debian",
+      "version": "0.0.23.1-2",
+      "suite": "buster",
+      "recently_updated": true,
+      "status": "new",
+      "codebase_data": {
+        "sloc": [
+          [
+            "cpp",
+            245166
+          ],
+          [
+            "ansic",
+            200249
+          ],
+          [
+            "python",
+            13754
+          ],
+          [
+            "sh",
+            6104
+          ],
+          [
+            "perl",
+            4620
+          ],
+          [
+            "makefile",
+            977
+          ],
+          [
+            "xml",
+            810
+          ],
+          [
+            "java",
+            533
+          ],
+          [
+            "ruby",
+            229
+          ],
+          [
+            "erlang",
+            46
+          ],
+          [
+            "pascal",
+            30
+          ],
+          [
+            "sql",
+            21
+          ],
+          [
+            "tcl",
+            4
+          ]
+        ],
+        "vcs_url": "https://salsa.debian.org/games-team/0ad",
+        "vcs_type": "git"
+      }
+    },
+    "0xffff": {
+      "type": "debian",
+      "version": "0.8-1",
+      "suite": "buster",
+      "recently_updated": true,
+      "status": "new",
+      "codebase_data": {
+        "sloc": [
+          [
+            "ansic",
+            5913
+          ],
+          [
+            "makefile",
+            47
+          ],
+          [
+            "xml",
+            20
+          ]
+        ],
+        "vcs_url": "https://salsa.debian.org/debian/0xffff",
+        "vcs_type": "git"
+      }
+    },
+    "2048-qt": {
+      "type": "debian",
+      "version": "0.1.6-1",
+      "suite": "buster",
+      "recently_updated": true,
+      "status": "new",
+      "codebase_data": {
+        "sloc": [
+          [
+            "cpp",
+            102
+          ],
+          [
+            "sh",
+            6
+          ],
+          [
+            "makefile",
+            3
+          ]
+        ],
+        "vcs_url": "https://github.com/mogaal/2048-qt",
+        "vcs_type": "git"
+      }
+    },
+    "389-ds-base": {
+      "type": "debian",
+      "version": "1.4.0.21-1",
+      "suite": "buster",
+      "recently_updated": true,
+      "status": "new",
+      "codebase_data": {
+        "sloc": [
+          [
+            "ansic",
+            303582
+          ],
+          [
+            "python",
+            59673
+          ],
+          [
+            "cpp",
+            10380
+          ],
+          [
+            "perl",
+            5807
+          ],
+          [
+            "sh",
+            2654
+          ],
+          [
+            "makefile",
+            2457
+          ],
+          [
+            "yacc",
+            806
+          ],
+          [
+            "xml",
+            376
+          ],
+          [
+            "lex",
+            366
+          ],
+          [
+            "java",
+            50
+          ]
+        ],
+        "vcs_url": "https://salsa.debian.org/freeipa-team/389-ds-base.git",
+        "vcs_type": "git"
+      }
+    },
+    "3dchess": {
+      "type": "debian",
+      "version": "0.8.1-20",
+      "suite": "buster",
+      "recently_updated": true,
+      "status": "new",
+      "codebase_data": {
+        "sloc": [
+          [
+            "ansic",
+            3034
+          ],
+          [
+            "makefile",
+            45
+          ]
+        ],
+        "vcs_url": "https://anonscm.debian.org/viewvc/pkg-games/packages/trunk/3dchess/",
+        "vcs_type": "svn"
+      }
+    },
+    "3depict": {
+      "type": "debian",
+      "version": "0.0.21-1",
+      "suite": "buster",
+      "recently_updated": true,
+      "status": "new",
+      "codebase_data": {
+        "sloc": [
+          [
+            "cpp",
+            72771
+          ],
+          [
+            "sh",
+            6497
+          ],
+          [
+            "xml",
+            1576
+          ],
+          [
+            "python",
+            326
+          ],
+          [
+            "makefile",
+            194
+          ],
+          [
+            "ansic",
+            186
+          ]
+        ],
+        "vcs_url": "https://salsa.debian.org/science-team/3depict",
+        "vcs_type": "git"
+      }
+    },
+    "4pane": {
+      "type": "debian",
+      "version": "5.0-2",
+      "suite": "buster",
+      "recently_updated": true,
+      "status": "new",
+      "codebase_data": {
+        "sloc": [
+          [
+            "cpp",
+            37352
+          ],
+          [
+            "sh",
+            4109
+          ],
+          [
+            "ansic",
+            3620
+          ],
+          [
+            "makefile",
+            157
+          ],
+          [
+            "xml",
+            27
+          ]
+        ],
+        "vcs_url": "https://github.com/dghart/4pane-debian-dir/tree/master/",
+        "vcs_type": "git"
+      }
+    },
+    "4store": {
+      "type": "debian",
+      "version": "1.1.6+20151109-2",
+      "suite": "buster",
+      "recently_updated": true,
+      "status": "new",
+      "codebase_data": {
+        "sloc": [
+          [
+            "ansic",
+            65689
+          ],
+          [
+            "sh",
+            2916
+          ],
+          [
+            "perl",
+            2245
+          ],
+          [
+            "makefile",
+            281
+          ],
+          [
+            "python",
+            213
+          ]
+        ],
+        "vcs_url": "https://anonscm.debian.org/cgit/collab-maint/4store.git",
+        "vcs_type": "git"
+      }
+    },
+    "4ti2": {
+      "type": "debian",
+      "version": "1.6.9+ds-1",
+      "suite": "buster",
+      "recently_updated": true,
+      "status": "new",
+      "codebase_data": {
+        "sloc": [
+          [
+            "cpp",
+            21027
+          ],
+          [
+            "ansic",
+            3894
+          ],
+          [
+            "makefile",
+            941
+          ],
+          [
+            "sh",
+            241
+          ],
+          [
+            "lisp",
+            97
+          ],
+          [
+            "sed",
+            16
+          ]
+        ],
+        "vcs_url": "https://salsa.debian.org/science-team/4ti2",
+        "vcs_type": "git"
+      }
+    },
+    "6tunnel": {
+      "type": "debian",
+      "version": "1:0.12-1",
+      "suite": "buster",
+      "recently_updated": true,
+      "status": "new",
+      "codebase_data": {
+        "sloc": [
+          [
+            "ansic",
+            684
+          ],
+          [
+            "sh",
+            178
+          ],
+          [
+            "python",
+            101
+          ],
+          [
+            "makefile",
+            13
+          ]
+        ],
+        "vcs_url": "https://anonscm.debian.org/gitweb/?p=collab-maint/6tunnel.git",
+        "vcs_type": "git"
+      }
+    }
+  }
+}

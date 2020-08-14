@@ -1,5 +1,7 @@
 from requests import get
 from time import time, sleep
+from string import ascii_lowercase
+# import pprint
 
 
 def max_repos(cfg):
@@ -131,17 +133,119 @@ class GithubFetcher:
         else:
             return r.json()
 
+class DebianFetcher:
+    SUITE = "buster"
 
-code_sources = {"github.org": GithubFetcher}
+    def __init__(self, cfg, out_log, error_log):
+        self.cfg = cfg
+        self.out_log = out_log
+        self.error_log = error_log
+        self.name = "debian"
+        prefixes_nums = ['0', '2', '3', '4', '6', '7', '8', '9']
+        prefixes_lib = ["lib-", "lib3"] + ["lib" + x for x in ascii_lowercase]
+        self.prefixes = (prefixes_nums
+                         + list(ascii_lowercase[:12])
+                         + prefixes_lib
+                         + list(ascii_lowercase[12:]))
+
+    def fetch(self, max_repos=None):
+        # fetch results to self.results
+        if not max_repos:
+            max_repos = -1
+        repo_count = 0
+        self.results = []
+        for prefix in self.prefixes:
+            print("fetching pkgs with prefix {}".format(prefix))
+            prefix_response = get("https://sources.debian.org/copyright/api/prefix/{}/?suite={}".format(prefix, self.SUITE))
+            if prefix_response.status_code != 200:
+                # hmmm fuck
+                print("error fetching {}, code {}".format(prefix_response.url,
+                                                        prefix_response.status_code))
+                return False
+            data = prefix_response.json()
+
+            for pkg in data["packages"]:
+                if self.package_info(pkg):
+                    repo_count += 1
+                if repo_count == max_repos:
+                    break
+            if repo_count == max_repos:
+                    break
+        print("got {} c/c++ packages!".format(repo_count))
+        # pp = pprint.PrettyPrinter(indent=2)
+        # pp.pprint(self.results)
+        return True
+
+    def process_results(self, data):
+        if not self.results:
+            return False
+        processed_results = {}
+        for pkg in self.results:
+            processed_results[pkg["name"]] = {
+                "type": "debian",
+                "version": pkg["version"],
+                "suite": pkg["suite"],
+                "recently_updated": True,
+                "status": "new",
+                "codebase_data": {
+                    "sloc": pkg["sloc"],
+                    "vcs_url": pkg["vcs_browser"],
+                    "vcs_type": pkg["vcs_type"]
+                }
+            }
+        return processed_results
+
+    def update(self, existing_repo):
+        pass
+
+    def package_info(self, pkg):
+        # get the version number for this package
+        print("fetching info for {}".format(pkg["name"]))
+        response = get("https://sources.debian.org/api/src/{}/?suite={}".format(pkg["name"], self.SUITE))
+        if response.status_code != 200:
+            print("error fetching pkg versions for {}, code {}".format(
+                pkg["name"],
+                response.status_code))
+            return False
+        # first version should be correct because we specify suite in url
+        version = response.json()["versions"][0]["version"]
+        # get more info for package and version
+        response = get("https://sources.debian.org/api/info/package/{}/{}".format(pkg["name"], version))
+        if response.status_code != 200:
+            print("error fetching pkg info for {}, code {}".format(
+                pkg["name"],
+                response.status_code))
+            return False
+        # only keep packages with mostly c or c++
+        c_names = ["ansic", "cpp"]
+        # uncomment to include packages which contain any amount of c/c++
+        # c_sloc = [{lang[0]: lang[1]} for lang in response.json()["pkg_infos"]["sloc"] if lang[0] in c_names]
+        # if any(c_sloc):
+        if response.json()["pkg_infos"]["sloc"][0][0] in c_names:
+            print("is mainly c/c++!")
+            self.results.append({
+                # pkg["name"]: {
+                    "version": version,
+                    "name": pkg["name"],
+                    "sloc": response.json()["pkg_infos"]["sloc"],
+                    "suite": self.SUITE,
+                    "vcs_browser": response.json()["pkg_infos"]["vcs_browser"] if "vcs_browser" in response.json()["pkg_infos"] else None,
+                    "vcs_type": response.json()["pkg_infos"]["vcs_type"] if "vcs_type" in response.json()["pkg_infos"] else None
+                # }
+            })
+            return True
+
+
+code_sources = {"github.org": GithubFetcher, "debian": DebianFetcher}
 
 
 def fetch_projects(cfg, out_log, error_log, max_repos=None):
-
     data = {}
     for name, src in code_sources.items():
-        if not bool(cfg[name]["active"]):
+        if cfg[name]["active"] == "False":
             out_log.info("Skip inactive code source: {0}".format(name))
             continue
+        out_log.info("fetching {} repos for {}".format(max_repos, name))
         fetcher = src(cfg, out_log, error_log)
         fetcher.fetch(max_repos)
         data[name] = fetcher.process_results(data)
