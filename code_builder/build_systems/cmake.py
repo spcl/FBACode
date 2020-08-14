@@ -108,5 +108,6 @@ class Project:
         rmtree(build_dir)
         mkdir(build_dir)
 
+    @staticmethod
     def recognize(repo_dir):
         return isfile(join(repo_dir, "CMakeLists.txt"))

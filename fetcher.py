@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 import json
 
 from sys import argv
@@ -7,9 +7,11 @@ from argparse import ArgumentParser
 from code_builder.fetcher import fetch_projects
 from code_builder.utils.driver import *
 
+
 def export_projects(projects, name):
     with open(name, mode='w') as outfile:
-        json.dump(projects, outfile, indent = 2)
+        json.dump(projects, outfile, indent=2)
+
 
 parser = ArgumentParser(description='Code fetcher and builder')
 parser.add_argument('--fetch', dest='fetch', action='store_true',

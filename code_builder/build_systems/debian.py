@@ -3,13 +3,9 @@ import subprocess
 
 from os.path import abspath, join, isfile, dirname, isdir, exists
 from os import listdir, makedirs, mkdir, remove
-from subprocess import PIPE
-from shutil import rmtree
 from sys import version_info
 from glob import iglob
 from re import search
-
-from .environment import get_c_compiler, get_cxx_compiler
 
 
 def decode(stream):
@@ -22,9 +18,20 @@ def run(command, cwd=None, stdout=None, stderr=None):
     # older - subprocess.call
     # TODO: capture_output added in 3.7 - verify it works
     if version_info.major >= 3 and version_info.minor >= 5:
-        return subprocess.run(command, cwd=cwd, stdout=stdout, stderr=stderr, text=True)
+        return subprocess.run(
+            command, cwd=cwd,
+            stdout=stdout,
+            stderr=stderr,
+            text=True
+        )
     else:
-        return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr, text=True)
+        return subprocess.call(
+            command,
+            cwd=cwd,
+            stdout=stdout,
+            stderr=stderr,
+            text=True
+        )
 
 
 class Context:
@@ -54,7 +61,8 @@ class Project:
         # apt-get build-dep XXX
         temp = abspath("temp")
         mkdir(temp)
-        out = run(["apt-get", "source", "-y", self.name], cwd=temp, stdout=subprocess.PIPE)
+        out = run(["apt-get", "source", "-y", self.name],
+                  cwd=temp, stdout=subprocess.PIPE)
         if out.returncode != 0:
             self.output_log.print_error(self.idx, str(out))
             return False
@@ -88,7 +96,8 @@ class Project:
                 shutil.copy(src, dest)
                 shutil.move(src, repo_dest)
         # fetch dependencies
-        out = run(["apt-get", "build-dep", "-y", self.name], cwd=self.repository_path)
+        out = run(["apt-get", "build-dep", "-y", self.name],
+                  cwd=self.repository_path)
         if out.returncode != 0:
             self.output_log.print_error(self.idx, str(out))
             return False
@@ -97,7 +106,8 @@ class Project:
 
     def build(self):
         # basically run debian/rules
-        out = run([join("debian", "rules"), "build"], cwd=self.build_dir, stdout=subprocess.PIPE)
+        out = run([join("debian", "rules"), "build"],
+                  cwd=self.build_dir, stdout=subprocess.PIPE)
         if out.returncode != 0:
             self.output_log.print_error(self.idx, str(out))
             return False
@@ -110,9 +120,10 @@ class Project:
         for file in iglob("{0}/**/*.bc".format(self.build_dir), recursive=True):
             # debian has .bc files in normal build dir
             res = search(r"{}".format(self.build_dir), file)
-            local_path = file[res.end(0) + 1 :]
+            local_path = file[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
-            # os.rename does not work for target and destinations being on different filesystems
+            # os.rename does not work for target and destinations being on
+            # ifferent filesystems
             # we might operate on different volumes in Docker
             shutil.move(file, join(target_dir, local_path))
         return True
@@ -121,7 +132,8 @@ class Project:
         out = run(["debian/rules", "clean"], cwd=self.repository_path)
         return out.returncode == 0
 
+    @staticmethod
     def recognize(repo_dir):
         # if this file exists, we can build it using debian tools
-        # this will not work since we do not have source downloaded yet...
+        # we created this file in database.py so we can recognize it now
         return isfile(join(repo_dir, ".debianbuild"))

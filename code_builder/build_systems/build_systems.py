@@ -6,9 +6,8 @@ import tarfile
 import json
 import tempfile
 
-from os.path import abspath, join, exists, isfile, dirname, basename
-from os import listdir, makedirs, mkdir, rename
-from shutil import rmtree
+from os.path import abspath, join, exists, basename
+from os import mkdir
 from glob import iglob
 from re import search
 from subprocess import PIPE
@@ -17,7 +16,6 @@ from time import time
 
 from . import cmake
 from . import debian
-
 
 
 def run(command, cwd=None, stdout=None, stderr=None):
@@ -30,8 +28,9 @@ def run(command, cwd=None, stdout=None, stderr=None):
     else:
         return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
 
-# add debian here
+
 build_systems = {"debian": debian.Project, "CMake": cmake.Project}
+
 
 def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
 
@@ -53,19 +52,29 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 mkdir(build_dir)
             docker_client = docker.from_env()
             tmp_file = tempfile.NamedTemporaryFile(mode="w")
-            json.dump(
-                {"idx": idx, "name": name, "verbose": ctx.cfg["output"]["verbose"]},
+            json.dump({
+                "idx": idx,
+                "name": name,
+                "verbose": ctx.cfg["output"]["verbose"]
+            },
                 tmp_file.file,
             )
             tmp_file.flush()
             volumes = {}
-            # changed source to rw, need to write into for debian since fetching happens in container
+            # changed source to rw, need to write into for debian
+            # since fetching happens in container
             volumes[abspath(source_dir)] = {
                 "mode": "rw",
                 "bind": "/home/fba_code/source",
             }
-            volumes[abspath(build_dir)] = {"mode": "rw", "bind": "/home/fba_code/build"}
-            volumes[abspath(target_dir)] = {"mode": "rw", "bind": "/home/fba_code/bitcodes"}
+            volumes[abspath(build_dir)] = {
+                "mode": "rw",
+                "bind": "/home/fba_code/build"
+            }
+            volumes[abspath(target_dir)] = {
+                "mode": "rw",
+                "bind": "/home/fba_code/bitcodes"
+            }
             volumes[abspath(tmp_file.name)] = {
                 "mode": "ro",
                 "bind": "/home/fba_code/input.json",
@@ -83,8 +92,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 detach=True,
                 environment=environment,
                 volumes=volumes,
-                auto_remove = False,
-                remove = False
+                auto_remove=False,
+                remove=False
             )
             print("started docker container!")
             print(container)
@@ -92,12 +101,14 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             if return_code["StatusCode"]:
                 raise RuntimeError(
                     "The build process failed! Return code {}, output: {}".format(
-                        return_code, container.logs(stdout=True, stderr=True).decode()
+                        return_code, container.logs(
+                            stdout=True, stderr=True).decode()
                     )
                 )
 
             # Get output JSON
-            binary_data, _ = container.get_archive("/home/fba_code/output.json")
+            binary_data, _ = container.get_archive(
+                "/home/fba_code/output.json")
             tar_file = tarfile.open(fileobj=io.BytesIO(next(binary_data)))
             data = tar_file.extractfile(tar_file.getmember("output.json"))
             project = {**project, **json.loads(data.read())["project"]}
@@ -112,7 +123,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 bitcodes = [
                     x
                     for x in iglob(
-                        "{0}/**/*.bc".format(project["bitcodes"]["dir"]), recursive=True
+                        "{0}/**/*.bc".format(project["bitcodes"]["dir"]),
+                        recursive=True
                     )
                 ]
                 size = sum(os.path.getsize(x) for x in bitcodes)
