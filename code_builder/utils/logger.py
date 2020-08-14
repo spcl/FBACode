@@ -62,10 +62,7 @@ class CountingLogger(LoggerAdapter):
         self.error(msg)
         self.extra["cur"] = old_cur
 
-    def next(self):
-        self.extra["cur"] += 1
-
-    def next(self, step):
+    def next(self, step=1):
         self.extra["cur"] += step
 
     def process(self, msg, kwargs):

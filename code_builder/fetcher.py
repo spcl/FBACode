@@ -1,7 +1,7 @@
 from requests import get
 from time import time, sleep
 from string import ascii_lowercase
-# import pprint
+from random import shuffle
 
 
 def max_repos(cfg):
@@ -47,14 +47,16 @@ class GithubFetcher:
 
         while repos_processed < max_repos:
             request_params["page"] = str(page)
-            results_page = self.fetch_json(address, request_params, ["C", "Cpp"])
+            results_page = self.fetch_json(
+                address, request_params, ["C", "Cpp"])
             if results_page is None:
                 self.error_log.error("Incorrect results, end work!")
                 return
             elif results_page["incomplete_results"]:
                 repos_per_page /= 2
                 if repos_per_page < 1:
-                    self.error_log.error("Couldnt fetch a single repository, end work!")
+                    self.error_log.error(
+                        "Couldnt fetch a single repository, end work!")
                     return
                 request_params["per_page"] = str(repos_per_page)
                 self.error_log.error(
@@ -66,8 +68,8 @@ class GithubFetcher:
                 continue
             repos_processed += repos_per_page
             results += results_page["items"]
-            self.out_log.step(repos_per_page)
-            self.error_log.step(repos_per_page)
+            self.out_log.next(repos_per_page)
+            self.error_log.next(repos_per_page)
             self.out_log.info(
                 "Fetched %d repositories for C and C++ with GitHub API" % repos_per_page
             )
@@ -75,7 +77,8 @@ class GithubFetcher:
 
         end = time()
         self.out_log.info(
-            "Processed %d repositories in %f seconds" % (repos_processed, end - start)
+            "Processed %d repositories in %f seconds" % (
+                repos_processed, end - start)
         )
         # Mix C and C++ projects and sort them together
         reversed_order = request_params["order"] == "desc"
@@ -133,6 +136,7 @@ class GithubFetcher:
         else:
             return r.json()
 
+
 class DebianFetcher:
     SUITE = "buster"
 
@@ -141,6 +145,7 @@ class DebianFetcher:
         self.out_log = out_log
         self.error_log = error_log
         self.name = "debian"
+        # https://sources.debian.org/doc/api/
         prefixes_nums = ['0', '2', '3', '4', '6', '7', '8', '9']
         prefixes_lib = ["lib-", "lib3"] + ["lib" + x for x in ascii_lowercase]
         self.prefixes = (prefixes_nums
@@ -154,24 +159,35 @@ class DebianFetcher:
             max_repos = -1
         repo_count = 0
         self.results = []
-        for prefix in self.prefixes:
-            print("fetching pkgs with prefix {}".format(prefix))
-            prefix_response = get("https://sources.debian.org/copyright/api/prefix/{}/?suite={}".format(prefix, self.SUITE))
+        self.out_log.set_counter(max_repos)
+        self.error_log.set_counter(max_repos)
+        start = time()
+        # comment for predictable results
+        shuffle(self.prefixes)
+        for i, prefix in enumerate(self.prefixes):
+            self.out_log.info("fetching pkgs with prefix {}".format(prefix))
+            prefix_response = get(
+                "https://sources.debian.org/copyright/api/prefix/{}/?suite={}".format(prefix, self.SUITE))
             if prefix_response.status_code != 200:
                 # hmmm fuck
-                print("error fetching {}, code {}".format(prefix_response.url,
-                                                        prefix_response.status_code))
+                self.error_log.error("error fetching {}, code {}".format(
+                    prefix_response.url, prefix_response.status_code))
                 return False
             data = prefix_response.json()
-
+            # comment for predictable results
+            shuffle(data["packages"])
             for pkg in data["packages"]:
                 if self.package_info(pkg):
                     repo_count += 1
+                    self.out_log.next()
+                    self.error_log.next()
                 if repo_count == max_repos:
                     break
             if repo_count == max_repos:
-                    break
-        print("got {} c/c++ packages!".format(repo_count))
+                break
+        end = time()
+        self.out_log.info(
+            "got {} c/c++ packages in {} seconds!".format(repo_count, end - start))
         # pp = pprint.PrettyPrinter(indent=2)
         # pp.pprint(self.results)
         return True
@@ -200,19 +216,21 @@ class DebianFetcher:
 
     def package_info(self, pkg):
         # get the version number for this package
-        print("fetching info for {}".format(pkg["name"]))
-        response = get("https://sources.debian.org/api/src/{}/?suite={}".format(pkg["name"], self.SUITE))
+        self.out_log.info("fetching info for {}".format(pkg["name"]))
+        response = get(
+            "https://sources.debian.org/api/src/{}/?suite={}".format(pkg["name"], self.SUITE))
         if response.status_code != 200:
-            print("error fetching pkg versions for {}, code {}".format(
+            self.error_log.error("error fetching pkg versions for {}, code {}".format(
                 pkg["name"],
                 response.status_code))
             return False
         # first version should be correct because we specify suite in url
         version = response.json()["versions"][0]["version"]
         # get more info for package and version
-        response = get("https://sources.debian.org/api/info/package/{}/{}".format(pkg["name"], version))
+        response = get(
+            "https://sources.debian.org/api/info/package/{}/{}".format(pkg["name"], version))
         if response.status_code != 200:
-            print("error fetching pkg info for {}, code {}".format(
+            self.error_log.error("error fetching pkg info for {}, code {}".format(
                 pkg["name"],
                 response.status_code))
             return False
@@ -222,15 +240,15 @@ class DebianFetcher:
         # c_sloc = [{lang[0]: lang[1]} for lang in response.json()["pkg_infos"]["sloc"] if lang[0] in c_names]
         # if any(c_sloc):
         if response.json()["pkg_infos"]["sloc"][0][0] in c_names:
-            print("is mainly c/c++!")
+            self.out_log.info("is mainly c/c++!")
             self.results.append({
                 # pkg["name"]: {
-                    "version": version,
-                    "name": pkg["name"],
-                    "sloc": response.json()["pkg_infos"]["sloc"],
-                    "suite": self.SUITE,
-                    "vcs_browser": response.json()["pkg_infos"]["vcs_browser"] if "vcs_browser" in response.json()["pkg_infos"] else None,
-                    "vcs_type": response.json()["pkg_infos"]["vcs_type"] if "vcs_type" in response.json()["pkg_infos"] else None
+                "version": version,
+                "name": pkg["name"],
+                "sloc": response.json()["pkg_infos"]["sloc"],
+                "suite": self.SUITE,
+                "vcs_browser": response.json()["pkg_infos"]["vcs_browser"] if "vcs_browser" in response.json()["pkg_infos"] else None,
+                "vcs_type": response.json()["pkg_infos"]["vcs_type"] if "vcs_type" in response.json()["pkg_infos"] else None
                 # }
             })
             return True
