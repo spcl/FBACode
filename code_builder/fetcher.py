@@ -138,7 +138,6 @@ class GithubFetcher:
 
 
 class DebianFetcher:
-    SUITE = "buster"
 
     def __init__(self, cfg, out_log, error_log):
         self.cfg = cfg
@@ -152,6 +151,7 @@ class DebianFetcher:
                          + list(ascii_lowercase[:12])
                          + prefixes_lib
                          + list(ascii_lowercase[12:]))
+        self.suite = cfg["debian"]["suite"]
 
     def fetch(self, max_repos=None):
         # fetch results to self.results
@@ -167,7 +167,7 @@ class DebianFetcher:
         for i, prefix in enumerate(self.prefixes):
             self.out_log.info("fetching pkgs with prefix {}".format(prefix))
             prefix_response = get(
-                "https://sources.debian.org/copyright/api/prefix/{}/?suite={}".format(prefix, self.SUITE))
+                "https://sources.debian.org/copyright/api/prefix/{}/?suite={}".format(prefix, self.suite))
             if prefix_response.status_code != 200:
                 # hmmm fuck
                 self.error_log.error("error fetching {}, code {}".format(
@@ -218,7 +218,7 @@ class DebianFetcher:
         # get the version number for this package
         self.out_log.info("fetching info for {}".format(pkg["name"]))
         response = get(
-            "https://sources.debian.org/api/src/{}/?suite={}".format(pkg["name"], self.SUITE))
+            "https://sources.debian.org/api/src/{}/?suite={}".format(pkg["name"], self.suite))
         if response.status_code != 200:
             self.error_log.error("error fetching pkg versions for {}, code {}".format(
                 pkg["name"],
@@ -246,7 +246,7 @@ class DebianFetcher:
                 "version": version,
                 "name": pkg["name"],
                 "sloc": response.json()["pkg_infos"]["sloc"],
-                "suite": self.SUITE,
+                "suite": self.suite,
                 "vcs_browser": response.json()["pkg_infos"]["vcs_browser"] if "vcs_browser" in response.json()["pkg_infos"] else None,
                 "vcs_type": response.json()["pkg_infos"]["vcs_type"] if "vcs_type" in response.json()["pkg_infos"] else None
                 # }
