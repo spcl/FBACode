@@ -86,7 +86,7 @@ class Project:
                     shutil.rmtree(dest)
                 if exists(repo_dest):
                     shutil.rmtree(repo_dest)
-                shutil.copytree(src, dest)
+                shutil.copytree(src, dest, symlinks=True)
                 shutil.move(src, repo_dest)
             else:
                 if exists(dest):
