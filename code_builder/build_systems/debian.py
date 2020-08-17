@@ -66,7 +66,7 @@ class Project:
         out = run(["apt-get", "source", "-y", self.name],
                   cwd=temp, stdout=subprocess.PIPE)
         if out.returncode != 0:
-            self.output_log.print_error(self.idx, str(out))
+            self.error_log.print_error(self.idx, str(out))
             return False
         self.output_log.print_info(self.idx, str(out))
         # find out the name of the source code folder
@@ -80,7 +80,17 @@ class Project:
         # out = out[:out.find("\n")]
         # out should now contains the name of the source folder
         sourcedir = join(temp, sourcedir)
-        # clear source directory if it exists
+        # TODO delete everything except logs from source directory
+        buildfiles = listdir(self.build_dir)
+        for f in buildfiles:
+            if ".log" in f:
+                continue
+            p = join(self.build_dir, f)
+            if isdir(p):
+                shutil.rmtree(p)
+            else:
+                remove(p)
+
         # copy sources into the build volume
         sources = listdir(sourcedir)
         for f in sources:
@@ -109,9 +119,21 @@ class Project:
 
         # fetch dependencies
         out = run(["apt-get", "build-dep", "-y", self.name],
-                  cwd=self.repository_path)
+                  cwd=self.repository_path, stdout=subprocess.PIPE)
         if out.returncode != 0:
             self.output_log.print_error(self.idx, str(out))
+        else:
+            self.output_log.print_info(self.idx, str(out))
+        # https://stackoverflow.com/questions/33278928/how-to-overcome-aclocal-1-15-is-missing-on-your-system-warning
+        out = run(["autoreconf", "-f", "-i"], cwd=self.build_dir, stdout=subprocess.PIPE)
+        if out.returncode != 0:
+            self.error_log.print_error(self.idx, str(out))
+            return False
+        self.output_log.print_info(self.idx, str(out))
+        out = run([join("debian", "rules"), "clean"],
+                  cwd=self.build_dir, stdout=subprocess.PIPE)
+        if out.returncode != 0:
+            self.error_log.print_error(self.idx, str(out))
             return False
         self.output_log.print_info(self.idx, str(out))
         return version
@@ -121,7 +143,7 @@ class Project:
         out = run([join("debian", "rules"), "build"],
                   cwd=self.build_dir, stdout=subprocess.PIPE)
         if out.returncode != 0:
-            self.output_log.print_error(self.idx, str(out))
+            self.error_log.print_error(self.idx, str(out))
             return False
         self.output_log.print_info(self.idx, str(out))
         return True

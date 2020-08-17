@@ -2,6 +2,8 @@
 DIR="$(dirname "$(readlink -f "$0")")"
 source "${DIR}/clang-wrapper.cfg"
 source "${DIR}/clang-wrapper-functions.sh"
+# echo "###########################clang wrapper called"
+# echo "clang wrapper args: " "$@"
 # echo "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 run_compilation "clang" "$@"
 

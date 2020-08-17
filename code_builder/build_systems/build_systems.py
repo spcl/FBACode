@@ -45,7 +45,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
     start = time()
     for build_name, build_system in build_systems.items():
         if build_system.recognize(source_dir):
-            print("buildsystem recognized as {}".format(build_name))
+            # print("buildsystem recognized as {}".format(build_name))
             build_dir = join(build_dir, source_name)
             target_dir = join(target_dir, source_name)
             if not exists(build_dir):
@@ -84,9 +84,6 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 "BUILD_DIR={}".format(abspath(build_dir)),
                 "BITCODES_DIR={}".format(abspath(target_dir))
             ]
-            print(build_dir)
-            print(environment)
-            print(volumes)
             container = docker_client.containers.run(
                 build_system.CONTAINER_NAME,
                 detach=True,
@@ -95,8 +92,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 auto_remove=False,
                 remove=False
             )
-            print("started docker container!")
-            print(container)
+            ctx.out_log.print_info(
+                idx, "building {} in container {}".format(name, container.name))
             return_code = container.wait()
             if return_code["StatusCode"]:
                 raise RuntimeError(

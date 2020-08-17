@@ -22,6 +22,7 @@ class Statistics:
         elif project["status"] == "success":
             self.add_correct_project()
         else:
+            # probs do error statistics
             self.add_incorrect_project()
 
     def add_unrecognized_project(self):

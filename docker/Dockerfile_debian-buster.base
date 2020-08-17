@@ -1,4 +1,5 @@
 FROM debian:buster
+# set as env, we are noninteractive in the container too
 ENV DEBIAN_FRONTEND=noninteractive
 
 # add source code repos to debian
@@ -6,7 +7,7 @@ RUN rm /etc/apt/sources.list
 COPY docker/sources_buster.list /etc/apt/sources.list
 RUN apt-get update
 
-RUN deps='software-properties-common curl gpg-agent build-essential fakeroot devscripts' soft='python3 cmake make clang-9 clang++-9'\
+RUN deps='software-properties-common curl gpg-agent gnupg' soft='python3 cmake make clang-9 clang++-9 texinfo build-essential fakeroot devscripts'\
   && apt-get update && apt-get install -y ${deps} --no-install-recommends\
   && curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -\
   && add-apt-repository 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'\
@@ -32,10 +33,19 @@ ADD code_builder/wrappers/ wrappers
 # https://clang.debian.net/
 # https://github.com/sylvestre/debian-clang/blob/master/clang-setup.sh
 # force, since apt installed compilers
+
 RUN ln -fs ${HOME_DIR}/wrappers/clang /usr/bin/cc\
   && ln -fs ${HOME_DIR}/wrappers/clang++ /usr/bin/c++\
   && ln -fs ${HOME_DIR}/wrappers/clang /usr/bin/gcc\
   && ln -fs ${HOME_DIR}/wrappers/clang++ /usr/bin/g++
+
+# replace the version 8 of gcc
+RUN cd ${HOME_DIR}/wrappers && ./replace_compilers.sh 8
+
+
+# set the environment variables for c/cxx
+ENV CC ${HOME_DIR}/wrappers/clang
+ENV CXX ${HOME_DIR}/wrappers/clang++
 
 RUN apt search '^gcc-[0-9]*[.]*[0-9]*$' | grep -o '\bgcc[a-zA-Z0-9:_.-]*' |\
   xargs -I {} echo "{}" hold | dpkg --set-selections
