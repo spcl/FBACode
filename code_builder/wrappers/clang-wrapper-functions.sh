@@ -9,13 +9,19 @@ function run_compilation() {
     IR_FILES=()
     INPUT_ARGS=("$@")
     IGNORE_NEXT_ARG=false
+    echo "arguments: "
     for i in $(seq 1 $#);
     do
         var=${INPUT_ARGS[$i]}
-        #echo $var ${IGNORE_NEXT_ARG}
+        echo $var
         #echo $intercept_compilation
         # why was it =~?
         if [[ "$var" == "-c" ]]; then
+            intercept_compilation=true
+        fi
+        # match on an argument if it ends with .c, .cpp or .cxx
+        if [[ "$var" =~ .*(\.c|\.cpp|\.cxx)$ ]]; then
+            echo "one of the input files is a source file!"
             intercept_compilation=true
         fi
         if [[ ! "$var" == "-o" ]]; then
@@ -46,7 +52,7 @@ function run_compilation() {
         echo "Run LLVM generation with flags: ${ARGS[@]}"
         echo "first run this: ${compiler} ${@:2}"
         ${compiler} "${@:2}"
-        ${compiler} -emit-llvm "${ARGS[@]}"
+        ${compiler} -emit-llvm "${ARGS[@]}" -c
         #echo "${ARGS[@]}"
         #for var in "${ARGS[@]}"
         #do

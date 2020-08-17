@@ -237,10 +237,10 @@ class DebianFetcher:
         # only keep packages with mostly c or c++
         c_names = ["ansic", "cpp"]
         # uncomment to include packages which contain any amount of c/c++
-        # c_sloc = [{lang[0]: lang[1]} for lang in response.json()["pkg_infos"]["sloc"] if lang[0] in c_names]
-        # if any(c_sloc):
-        if response.json()["pkg_infos"]["sloc"][0][0] in c_names:
-            self.out_log.info("is mainly c/c++!")
+        c_sloc = [{lang[0]: lang[1]} for lang in response.json()["pkg_infos"]["sloc"] if lang[0] in c_names]
+        if any(c_sloc):
+        # if response.json()["pkg_infos"]["sloc"][0][0] in c_names:
+            self.out_log.info("contains c/c++!")
             self.results.append({
                 # pkg["name"]: {
                 "version": version,
