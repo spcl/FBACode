@@ -59,6 +59,8 @@ class Project:
         # fetch the source code and dependencies
         # apt-get source XXX
         # apt-get build-dep XXX
+        # c_compiler = get_c_compiler()
+        # cxx_compiler = get_cxx_compiler()
         temp = abspath("temp")
         mkdir(temp)
         out = run(["apt-get", "source", "-y", self.name],
@@ -79,26 +81,32 @@ class Project:
         # out should now contains the name of the source folder
         sourcedir = join(temp, sourcedir)
         # clear source directory if it exists
-        # move sources into the source volume
+        # copy sources into the build volume
         sources = listdir(sourcedir)
         for f in sources:
             dest = join(self.build_dir, f)
             src = join(sourcedir, f)
-            repo_dest = join(self.repository_path, f)
             if isdir(src):
                 if exists(dest):
                     shutil.rmtree(dest)
-                if exists(repo_dest):
-                    shutil.rmtree(repo_dest)
                 shutil.copytree(src, dest, symlinks=True)
-                shutil.move(src, repo_dest)
             else:
                 if exists(dest):
                     remove(dest)
+                shutil.copy(src, dest, follow_symlinks=True)
+        # and move to sources volume
+        for f in sources:
+            src = join(sourcedir, f)
+            repo_dest = join(self.repository_path, f)
+            if isdir(src):
+                if exists(repo_dest):
+                    shutil.rmtree(repo_dest)
+                shutil.move(src, repo_dest)
+            else:
                 if exists(repo_dest):
                     remove(repo_dest)
-                shutil.copy(src, dest)
                 shutil.move(src, repo_dest)
+
         # fetch dependencies
         out = run(["apt-get", "build-dep", "-y", self.name],
                   cwd=self.repository_path)
