@@ -87,4 +87,3 @@ print(json.dumps(out, indent=2), file=open('output.json', 'w'))
 # move logs to build directory
 for file in glob.glob('*.log'):
     move(file, 'build')
-
