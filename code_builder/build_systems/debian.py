@@ -5,7 +5,7 @@ from os.path import abspath, join, isfile, dirname, isdir, exists
 from os import listdir, makedirs, mkdir, remove
 from sys import version_info
 from glob import iglob
-from re import search
+from re import search, escape
 
 
 def decode(stream):
@@ -71,10 +71,10 @@ class Project:
         self.output_log.print_info(self.idx, str(out))
         # find out the name of the source code folder
         out = out.stdout
-        version = search(r"(?<= {0} ).*(?= \(dsc\) )".format(self.name), out)[0]
+        version = search(r"(?<= {0} ).*(?= \(dsc\) )".format(escape(self.name)), out)[0]
         # version = out[:out.find(" (dsc)")]
         # version = version[version.rfind(" ") + 1:]
-        sourcedir = search(r"(?<=extracting {0} in ).*(?=\n)".format(self.name), out)[0]
+        sourcedir = search(r"(?<=extracting {0} in ).*(?=\n)".format(escape(self.name)), out)[0]
         # search_str = "extracting {} in ".format(self.name)
         # out = out[out.find(search_str)+len(search_str):]
         # out = out[:out.find("\n")]
@@ -128,7 +128,6 @@ class Project:
         out = run(["autoreconf", "-f", "-i"], cwd=self.build_dir, stdout=subprocess.PIPE)
         if out.returncode != 0:
             self.error_log.print_error(self.idx, str(out))
-            return False
         self.output_log.print_info(self.idx, str(out))
         out = run([join("debian", "rules"), "clean"],
                   cwd=self.build_dir, stdout=subprocess.PIPE)
