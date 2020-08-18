@@ -5,6 +5,7 @@ function run_compilation() {
     compiler=$1
     # intercept compilation, ignore linking
     intercept_compilation=false
+    intercept_compilation_no_c=true
     ARGS=()
     IR_FILES=()
     INPUT_ARGS=("$@")
@@ -18,11 +19,13 @@ function run_compilation() {
         # why was it =~?
         if [[ "$var" == "-c" ]]; then
             intercept_compilation=true
+            # intercept_compilation_no_c=false
         fi
         # match on an argument if it ends with .c, .cpp or .cxx
-        if [[ "$var" =~ .*(\.c|\.cpp|\.cxx)$ ]]; then
+        if [[ "$var" =~ .*(\.c|\.cpp|\.cxx)$  && "$intercept_compilation" == false ]]; then
             # echo "one of the input files is a source file!"
             intercept_compilation=true
+            # intercept_compilation_no_c=true
         fi
         if [[ ! "$var" == "-o" ]]; then
             if ! ${IGNORE_NEXT_ARG}; then
@@ -33,7 +36,7 @@ function run_compilation() {
             fi         
         else
             IGNORE_NEXT_ARG=true
-            ARGS+=("$var")
+            # ARGS+=("$var")
             i=$((i+1)) 
             var=${INPUT_ARGS[$i]}
             #echo "$var"
@@ -42,17 +45,21 @@ function run_compilation() {
             filename="${filename%.*}"
             #echo "${dirname}/${filename}.ll"
             IR_FILES+=("${dirname}/${filename}.bc")
-            ARGS+=("${dirname}/${filename}.bc")
+            # ARGS+=("${dirname}/${filename}.bc")
         fi
     done
     #echo ${ARGS[@]}
     #echo $intercept_compilation
     if [ "$intercept_compilation" == true ]; then
         shopt -s nocasematch
-        # echo "Run LLVM generation with flags: ${ARGS[@]}"
-        # echo "first run this: ${compiler} ${@:2}"
+        echo "Run LLVM generation with flags: ${ARGS[@]}"
+        echo "first run this: ${compiler} ${@:2}"
+        echo "do compilation"
         ${compiler} "${@:2}"
-        ${compiler} -emit-llvm "${ARGS[@]}" -c
+        echo "now emit llvm"
+        ${compiler} -emit-llvm -c "${ARGS[@]}" # if there are multiple input files, -emit-llvm would faile with the -o option
+        # ${compiler} -emit-llvm "${ARGS[@]}"
+        # ${compiler} -emit-llvm "${ARGS[@]}"
         #echo "${ARGS[@]}"
         #for var in "${ARGS[@]}"
         #do
@@ -69,6 +76,10 @@ function run_compilation() {
         #        #${LLVM_INSTALL_DIRECTORY}/bin/opt -load ${LLVM_TOOL_DIRECTORY}/libLLVMLoopStatistics.so -loop-statistics -loop-statistics-out-dir ${OUT_DIR} -loop-statistics-log-name "$filename" < "$filename.ll" > /dev/null
         #    fi
         #done
+    elif [ "$intercep_compilation_no_c" ]; then
+        echo "Run LLVM generation with flags, add -c manually: ${ARGS[@]}"
+        ${compiler} "${@:2}"
+        ${compiler} -emit-llvm "${ARGS[@]}" -c
     else
         #echo "Run linking with flags: "${IR_FILES[@]}""
         # echo "not generating llvm ir"
