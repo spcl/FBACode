@@ -5,14 +5,17 @@ import io
 import tarfile
 import json
 import tempfile
+import re
 
 from os.path import abspath, join, exists, basename
 from os import mkdir
 from glob import iglob
-from re import search
+# from re import search
 from subprocess import PIPE
 from sys import version_info
 from time import time
+from datetime import datetime
+
 
 from . import cmake
 from . import debian
@@ -102,7 +105,11 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                             stdout=True, stderr=True).decode()
                     )
                 )
-
+            docker_log = container.logs()
+            timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            docker_log_file = "container_{}_{}.log".format(name.replace("/", "_"), timestamp)
+            with open(join(abspath(build_dir), docker_log_file), "w") as f:
+                f.write(docker_log.decode())
             # Get output JSON
             binary_data, _ = container.get_archive(
                 "/home/fba_code/output.json")
@@ -116,6 +123,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
 
             # Generate summary and stats data
             project["build"]["system"] = build_name.lower()
+            project["build"]["docker_log"] = docker_log_file
             if "bitcodes" in project:
                 bitcodes = [
                     x
