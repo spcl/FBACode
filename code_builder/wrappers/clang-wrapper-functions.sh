@@ -52,11 +52,11 @@ function run_compilation() {
     #echo $intercept_compilation
     if [ "$intercept_compilation" == true ]; then
         shopt -s nocasematch
-        echo "Run LLVM generation with flags: ${ARGS[@]}"
-        echo "first run this: ${compiler} ${@:2}"
-        echo "do compilation"
+        # echo "Run LLVM generation with flags: ${ARGS[@]}"
+        # echo "first run this: ${compiler} ${@:2}"
+        # echo "do compilation"
         ${compiler} "${@:2}"
-        echo "now emit llvm"
+        # echo "now emit llvm"
         ${compiler} -emit-llvm -c "${ARGS[@]}" # if there are multiple input files, -emit-llvm would faile with the -o option
         # ${compiler} -emit-llvm "${ARGS[@]}"
         # ${compiler} -emit-llvm "${ARGS[@]}"
@@ -77,7 +77,7 @@ function run_compilation() {
         #    fi
         #done
     elif [ "$intercep_compilation_no_c" ]; then
-        echo "Run LLVM generation with flags, add -c manually: ${ARGS[@]}"
+        # echo "Run LLVM generation with flags, add -c manually: ${ARGS[@]}"
         ${compiler} "${@:2}"
         ${compiler} -emit-llvm "${ARGS[@]}" -c
     else
