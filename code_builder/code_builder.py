@@ -8,6 +8,7 @@ from time import time
 from os import environ, mkdir, getpid
 from os.path import join, exists
 from sys import stdout
+from datetime import datetime
 
 from .statistics import Statistics
 from .database import get_database
@@ -16,6 +17,7 @@ from .utils.driver import open_logfiles
 
 init = False
 loggers = None
+builds_left = 0
 
 
 def initializer_func(ctx, f, args):
@@ -104,7 +106,7 @@ def build_projects(
         projects_count += len(repositories)
     # env = Environment()
     # env.overwrite_environment()
-
+    builds_left = projects_count
     repositories_idx = 0
     if cfg["clone"]["multithreaded"]:
         threads_count = int(cfg["clone"]["threads"])
@@ -155,10 +157,16 @@ def build_projects(
             stats.update(val)
         end = time()
         print("Process repositorites in %f [s]" % (end - start))
-        stats.print_stats()
-
+        stats.print_stats(stdout)
+        # close f again?
         f = stdout if output == "" else open(output, "w")
         print(json.dumps(repositories, indent=2), file=f)
+
+        timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+        with open(join("buildlogs", "summary_{}.txt".format(timestamp)), 'w') as o:
+            stats.print_stats(o)
+        with open(join("buildlogs", "build_details_{}.json".format(timestamp)), 'w') as o:
+            o.write(json.dumps(repositories, indent=2))
 
     # env.reset_environment()
 
