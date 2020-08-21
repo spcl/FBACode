@@ -82,53 +82,67 @@ class Project:
         sourcedir = join(temp, sourcedir)
         # TODO delete everything except logs from source directory
         buildfiles = listdir(self.build_dir)
-        for f in buildfiles:
-            if ".log" in f:
-                continue
-            p = join(self.build_dir, f)
-            if isdir(p):
-                shutil.rmtree(p)
-            else:
-                remove(p)
+        try:
+            for f in buildfiles:
+                if ".log" in f:
+                    continue
+                p = join(self.build_dir, f)
+                if isdir(p):
+                    shutil.rmtree(p)
+                else:
+                    remove(p)
 
-        # copy sources into the build volume
-        sources = listdir(sourcedir)
-        for f in sources:
-            dest = join(self.build_dir, f)
-            src = join(sourcedir, f)
-            if isdir(src):
-                if exists(dest):
-                    shutil.rmtree(dest)
-                shutil.copytree(src, dest, symlinks=True)
-            else:
-                if exists(dest):
-                    remove(dest)
-                shutil.copy(src, dest, follow_symlinks=True)
-        # and move to sources volume
-        for f in sources:
-            src = join(sourcedir, f)
-            repo_dest = join(self.repository_path, f)
-            if isdir(src):
-                if exists(repo_dest):
-                    shutil.rmtree(repo_dest)
-                shutil.move(src, repo_dest)
-            else:
-                if exists(repo_dest):
-                    remove(repo_dest)
-                shutil.move(src, repo_dest)
+            # copy sources into the build volume
+            sources = listdir(sourcedir)
+            self.output_log.print_debug(self.idx, sources)
+            for f in sources:
+                dest = join(self.build_dir, f)
+                src = join(sourcedir, f)
+                if isdir(src):
+                    # if exists(dest):
+                    #     shutil.rmtree(dest)
+                    # self.output_log.print_debug(self.idx, "copying directory {} to {}".format(dest, src))
+                    shutil.copytree(src, dest, symlinks=False)
+                else:
+                    # if exists(dest):
+                    #     remove(dest)
+                    # self.output_log.print_debug(self.idx, "copying file {} to {}".format(dest, src))
+                    shutil.copy(src, dest, follow_symlinks=False)
+            # and move to sources volume
+            for f in sources:
+                src = join(sourcedir, f)
+                repo_dest = join(self.repository_path, f)
+                if isdir(src):
+                    if exists(repo_dest):
+                        shutil.rmtree(repo_dest)
+                    shutil.move(src, repo_dest)
+                else:
+                    if exists(repo_dest):
+                        remove(repo_dest)
+                    shutil.move(src, repo_dest)
+        except Exception as e:
+            self.error_log.print_error(self.idx, e)
+            return False
 
         # fetch dependencies
+        
         out = run(["apt-get", "build-dep", "-y", self.name],
                   cwd=self.repository_path, stdout=subprocess.PIPE)
         if out.returncode != 0:
-            self.output_log.print_error(self.idx, str(out))
-        else:
-            self.output_log.print_info(self.idx, str(out))
-        # https://stackoverflow.com/questions/33278928/how-to-overcome-aclocal-1-15-is-missing-on-your-system-warning
-        out = run(["autoreconf", "-f", "-i"], cwd=self.build_dir, stdout=subprocess.PIPE)
-        if out.returncode != 0:
             self.error_log.print_error(self.idx, str(out))
+            return False
         self.output_log.print_info(self.idx, str(out))
+        # https://stackoverflow.com/questions/33278928/how-to-overcome-aclocal-1-15-is-missing-on-your-system-warning
+        # this sometimes fails, but no big deal
+        try:
+            out = run(["autoreconf", "-f", "-i"], cwd=self.build_dir,
+                      stdout=subprocess.PIPE)
+            if out.returncode != 0:
+                self.output_log.print_error(self.idx, str(out))
+            else:
+                self.output_log.print_info(self.idx, str(out))
+        except Exception as e:
+            self.output_log.print_info(self.idx, "autoreconf is not installed, error: {}".format(e))
         out = run([join("debian", "rules"), "clean"],
                   cwd=self.build_dir, stdout=subprocess.PIPE)
         if out.returncode != 0:
