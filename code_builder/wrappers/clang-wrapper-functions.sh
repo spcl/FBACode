@@ -22,7 +22,7 @@ function run_compilation() {
             # intercept_compilation_no_c=false
         fi
         # match on an argument if it ends with .c, .cpp or .cxx
-        if [[ "$var" =~ .*(\.c|\.cpp|\.cxx)$  && "$intercept_compilation" == false ]]; then
+        if [[ "$var" =~ .*(\.c|\.cpp|\.cxx|\.cc)$  && "$intercept_compilation" == false ]]; then
             # echo "one of the input files is a source file!"
             intercept_compilation=true
             # intercept_compilation_no_c=true
@@ -50,6 +50,7 @@ function run_compilation() {
     done
     #echo ${ARGS[@]}
     #echo $intercept_compilation
+    # TODO: also create AST files using -emit-ast flag
     if [ "$intercept_compilation" == true ]; then
         shopt -s nocasematch
         # echo "Run LLVM generation with flags: ${ARGS[@]}"
@@ -58,6 +59,7 @@ function run_compilation() {
         ${compiler} "${@:2}"
         # echo "now emit llvm"
         ${compiler} -emit-llvm -c "${ARGS[@]}" # if there are multiple input files, -emit-llvm would faile with the -o option
+        ${compiler} -emit-ast "${ARGS[@]}"
         # ${compiler} -emit-llvm "${ARGS[@]}"
         # ${compiler} -emit-llvm "${ARGS[@]}"
         #echo "${ARGS[@]}"
@@ -80,6 +82,7 @@ function run_compilation() {
         # echo "Run LLVM generation with flags, add -c manually: ${ARGS[@]}"
         ${compiler} "${@:2}"
         ${compiler} -emit-llvm "${ARGS[@]}" -c
+        ${compiler} -emit-ast "${ARGS[@]}"
     else
         #echo "Run linking with flags: "${IR_FILES[@]}""
         # echo "not generating llvm ir"

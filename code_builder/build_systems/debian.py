@@ -64,9 +64,9 @@ class Project:
         temp = abspath("temp")
         mkdir(temp)
         out = run(["apt-get", "source", "-y", self.name],
-                  cwd=temp, stdout=subprocess.PIPE)
+                  cwd=temp, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out))
+            self.error_log.print_error(self.idx, str(out.stderr))
             return False
         self.output_log.print_info(self.idx, str(out))
         # find out the name of the source code folder
@@ -127,16 +127,18 @@ class Project:
         # fetch dependencies
         
         out = run(["apt-get", "build-dep", "-y", self.name],
-                  cwd=self.repository_path, stdout=subprocess.PIPE)
+                  cwd=self.repository_path, stdout=subprocess.PIPE,
+                  stderr=subprocess.PIPE)
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out))
+            self.error_log.print_error(self.idx, str(out.stderr))
             return False
         self.output_log.print_info(self.idx, str(out))
         # https://stackoverflow.com/questions/33278928/how-to-overcome-aclocal-1-15-is-missing-on-your-system-warning
         # this sometimes fails, but no big deal
         try:
             out = run(["autoreconf", "-f", "-i"], cwd=self.build_dir,
-                      stdout=subprocess.PIPE)
+                      stdout=subprocess.PIPE,
+                      stderr=subprocess.PIPE)
             if out.returncode != 0:
                 self.output_log.print_error(self.idx, str(out))
             else:
@@ -144,9 +146,10 @@ class Project:
         except Exception as e:
             self.output_log.print_info(self.idx, "autoreconf is not installed, error: {}".format(e))
         out = run([join("debian", "rules"), "clean"],
-                  cwd=self.build_dir, stdout=subprocess.PIPE)
+                  cwd=self.build_dir, stdout=subprocess.PIPE,
+                  stderr=subprocess.PIPE)
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out))
+            self.error_log.print_error(self.idx, str(out.stderr))
             return False
         self.output_log.print_info(self.idx, str(out))
         return version
@@ -154,9 +157,10 @@ class Project:
     def build(self):
         # basically run debian/rules
         out = run([join("debian", "rules"), "build"],
-                  cwd=self.build_dir, stdout=subprocess.PIPE)
+                  cwd=self.build_dir, stdout=subprocess.PIPE,
+                  stderr=subprocess.PIPE)
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out))
+            self.error_log.print_error(self.idx, str(out.stderr))
             return False
         self.output_log.print_info(self.idx, str(out))
         return True
@@ -165,6 +169,18 @@ class Project:
         # maybe copy from cmake.py?
 
         for file in iglob("{0}/**/*.bc".format(self.build_dir), recursive=True):
+            # debian has .bc files in normal build dir
+            res = search(r"{}".format(self.build_dir), file)
+            local_path = file[res.end(0) + 1:]
+            makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
+            # os.rename does not work for target and destinations being on
+            # different filesystems
+            # we might operate on different volumes in Docker
+            shutil.move(file, join(target_dir, local_path))
+        return True
+    
+    def generate_ast(self, target_dir):
+        for file in iglob("{0}/**/*.ast".format(self.build_dir), recursive=True):
             # debian has .bc files in normal build dir
             res = search(r"{}".format(self.build_dir), file)
             local_path = file[res.end(0) + 1:]

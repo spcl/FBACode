@@ -12,7 +12,9 @@ class Statistics:
         "configure: error: could not find gnutls": "configure: error: could not find gnutls",
         "configure: error:": "configure_error",
         "error: use of undeclared identifier": "undeclared identifier",  #racket
-        "error: empty search path given via `-L`": "empty search path given via `-L`"  #rust-findshlibs
+        "error: empty search path given via `-L`": "empty search path given via `-L`",  #rust-findshlibs
+        "error: invalid suffix on literal": "error: invalid suffix on literal", #vdr-plugin-mp3
+        "error: 'iostream' file not found": "'iostream' not found",  #rapmap
 
     }
 
@@ -23,6 +25,7 @@ class Statistics:
         self.clone_time = 0
         self.build_time = 0
         self.errorypes = {self.errors_stdout[x]: 0 for x in self.errors_stdout}
+        self.errorypes["unrecognized"] = 0
 
     def print_stats(self, out):
         print("Repository clone time: %f seconds" % self.clone_time, file=out)
@@ -45,14 +48,15 @@ class Statistics:
             self.add_correct_project()
         else:
             if "build" in project:
-                docker_log = join(project["build"]["dir"], project["build"]["docker_log"])
+                docker_log = join(project["build"]["dir"], project["build"]["stderr"])
                 with open(docker_log, "r") as log:
                     text = log.read()
-                    print(text)
                     errors = [name for err, name in self.errors_stdout.items() if err in text]
                     for err in errors:
                         self.errorypes[err] += 1
                     project["build"]["errortypes"] = errors
+                    if not errors:
+                        self.errorypes["unrecognized"] += 1
             # probs do error statistics
             self.add_incorrect_project()
 

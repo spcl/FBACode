@@ -10,6 +10,7 @@ from datetime import datetime
 
 from utils.driver import open_logfiles
 
+
 class Context:
 
     def __init__(self, cfg):
@@ -19,8 +20,7 @@ class Context:
         self.out_log = out
         self.err_log = err
 
-print("AM IN DOCKER NOW!")
-print(os.environ)
+
 source_dir = '/home/fba_code/source'
 build_dir = '/home/fba_code/build'
 bitcodes_dir = '/home/fba_code/bitcodes'
@@ -34,8 +34,10 @@ idx = json_input['idx']
 name = json_input['name']
 verbose = json_input['verbose']
 builder_mod = importlib.import_module('build_systems.{}'.format(build_system))
-#builder_mod = imp.load_source(build_system, os.path.join('build_systems', build_system + '.py'))
+# builder_mod = imp.load_source(build_system, os.path.join('build_systems', build_system + '.py'))
 builder_class = getattr(builder_mod, 'Project')
+
+print("Building {} in here".format(name))
 
 cfg = { 'output' : { 'verbose' : verbose, 'file' : '/home/fba_code/' }}
 ctx = Context(cfg)
@@ -76,7 +78,9 @@ else:
         project['status'] = 'success'
         project['build']['build'] = 'success'
         project['bitcodes'] = {'dir': external_bitcodes_dir}
+        project['ast_files'] = {'dir': os.path.join(external_bitcodes_dir, "AST")}
         builder.generate_bitcodes(bitcodes_dir)
+        builder.generate_ast(os.path.join(bitcodes_dir, "AST"))
 end = time()
 project['build']['time'] = end - start
 ctx.out_log.print_info(idx, 'Finish processing %s in %f [s]' % (name, end - start))
