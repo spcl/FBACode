@@ -111,3 +111,4 @@ fbacode-virtualenv/
 # bitcodes directory
 bitcodes/
 source/
+buildlogs/
