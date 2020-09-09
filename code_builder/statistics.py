@@ -1,4 +1,6 @@
+import json
 from os.path import join
+from datetime import datetime
 
 
 class Statistics:
@@ -26,6 +28,8 @@ class Statistics:
         self.build_time = 0
         self.errorypes = {self.errors_stdout[x]: 0 for x in self.errors_stdout}
         self.errorypes["unrecognized"] = 0
+        # save the failed projects, so we can retry them later
+        self.rebuild_projects = {}
 
     def print_stats(self, out):
         print("Repository clone time: %f seconds" % self.clone_time, file=out)
@@ -38,12 +42,13 @@ class Statistics:
             if count > 0:
                 print("{}: {}".format(err, count), file=out)
 
-    def update(self, project):
+    def update(self, project, name):
         self.clone_time += project["source"]["time"]
         if "build" in project:
             self.build_time += project["build"]["time"]
         if project["status"] == "unrecognized":
             self.add_unrecognized_project()
+            self.add_rebuild_data(project, name)
         elif project["status"] == "success":
             self.add_correct_project()
         else:
@@ -59,7 +64,8 @@ class Statistics:
                         self.errorypes["unrecognized"] += 1
             # probs do error statistics
             self.add_incorrect_project()
-
+            self.add_rebuild_data(project, name)
+            
     def add_unrecognized_project(self):
         self.unrecognized_projects += 1
 
@@ -68,3 +74,23 @@ class Statistics:
 
     def add_incorrect_project(self):
         self.incorrect_projects += 1
+
+    def add_rebuild_data(self, project, name):
+        # generate info for rebuild
+        rebuild_data = {
+            "type": project["type"],
+            "suite": project["suite"] if "suite" in project else None,
+            "version": project["version"],
+            "status": project["status"],
+            "codebase_data": project["codebase_data"] if "codebase_data" in project else None
+            }
+        if project["type"] not in self.rebuild_projects:
+            self.rebuild_projects[project["type"]] = {}
+        self.rebuild_projects[project["type"]][name] = rebuild_data
+
+    def save_rebuild_json(self, path=None):
+        if path is None:
+            timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            path = join("buildlogs", "rebuild_{}.json".format(timestamp))
+        with open(path, 'w') as o:
+            o.write(json.dumps(self.rebuild_projects, indent=2))

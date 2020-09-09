@@ -154,14 +154,15 @@ def build_projects(
         for project in projects:
             idx, key, val = project.result()
             repositories[key] = val
-            stats.update(val)
+            stats.update(val, key)
+
         end = time()
         print("Process repositorites in %f [s]" % (end - start))
         stats.print_stats(stdout)
         # close f again?
         f = stdout if output == "" else open(output, "w")
         print(json.dumps(repositories, indent=2), file=f)
-
+        stats.save_rebuild_json()
         timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
         with open(join("buildlogs", "summary_{}.txt".format(timestamp)), 'w') as o:
             stats.print_stats(o)
