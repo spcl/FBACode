@@ -29,7 +29,8 @@ external_build_dir = os.environ['BUILD_DIR']
 external_bitcodes_dir = os.environ['BITCODES_DIR']
 
 json_input = json.load(open(sys.argv[1], 'r'))
-
+print("listdir:")
+print(os.listdir("/home/fba_code"))
 idx = json_input['idx']
 name = json_input['name']
 verbose = json_input['verbose']
@@ -39,7 +40,7 @@ builder_class = getattr(builder_mod, 'Project')
 
 print("Building {} in here".format(name))
 
-cfg = { 'output' : { 'verbose' : verbose, 'file' : '/home/fba_code/' }}
+cfg = {'output': {'verbose': verbose, 'file': '/home/fba_code/'}}
 ctx = Context(cfg)
 timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
 loggers = open_logfiles(cfg, name.replace('/', '_'), timestamp=timestamp)
@@ -49,8 +50,8 @@ ctx.set_loggers(loggers.stdout, loggers.stderr)
 # Updated -> Configure
 project = {
     'status': 'configure',
-    'build' : {
-        'dir' : external_build_dir,
+    'build': {
+        'dir': external_build_dir,
         'stdout': os.path.basename(loggers.stdout_file),
         'stderr': os.path.basename(loggers.stderr_file)
     }
@@ -78,14 +79,16 @@ else:
         project['status'] = 'success'
         project['build']['build'] = 'success'
         project['bitcodes'] = {'dir': external_bitcodes_dir}
-        project['ast_files'] = {'dir': os.path.join(external_bitcodes_dir, "AST")}
+        project['ast_files'] = {
+            'dir': os.path.join(external_bitcodes_dir, "AST")}
         builder.generate_bitcodes(bitcodes_dir)
         builder.generate_ast(os.path.join(bitcodes_dir, "AST"))
 end = time()
 project['build']['time'] = end - start
-ctx.out_log.print_info(idx, 'Finish processing %s in %f [s]' % (name, end - start))
+ctx.out_log.print_info(
+    idx, 'Finish processing %s in %f [s]' % (name, end - start))
 
-out = { 'idx' : idx, 'name' : name, 'project' : project }
+out = {'idx': idx, 'name': name, 'project': project}
 # save output JSON
 print(json.dumps(out, indent=2), file=open('output.json', 'w'))
 # move logs to build directory

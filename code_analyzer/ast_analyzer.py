@@ -5,7 +5,6 @@ from sys import argv
 from clang.cindex import CursorKind
 
 
-
 def find_typerefs(node, typename):
     # find all typerefs with name typename
     results = []
@@ -22,21 +21,26 @@ def find_typerefs(node, typename):
         results.extend(find_typerefs(c, typename))
     return results
 
+
 def find_callexp(node, fname):
     results = []
     # print("{} at {}, TYPE: {}".format(node.displayname, node.location, node.kind))
     # kind = CursorKind()
-    if node.kind == CursorKind.CALL_EXPR and node.displayname == fname:
+    if fname in node.displayname or fname in node.spelling:
+        print("{} at {}, TYPE: {}, spelling: {}".format(node.displayname, node.location, node.kind))
+    if node.kind == CursorKind.CALL_EXPR and fname in node.displayname:
         # print("IS CALLEXP")
         results.append(node)
     for c in node.get_children():
         results.extend(find_callexp(c, fname))
     return results
 
+
 def traverse_tree(node, indent):
     print("{}{} at {}, TYPE: {}".format(" " * indent, node.displayname, node.location, node.kind))
     for c in node.get_children():
         traverse_tree(c, indent + 1)
+
 
 def main():
     # idx = clang.cindex.Index.create()
@@ -62,6 +66,7 @@ def typeref_in_file(filename, typename, ast=False):
     results = find_typerefs(tu.cursor, typename)
     return results
 
+
 def callexp_in_file(filename, fname, ast=False):
     idx = clang.cindex.Index.create()
     if ast:
@@ -70,6 +75,7 @@ def callexp_in_file(filename, fname, ast=False):
         tu = idx.parse(filename)
     results = find_callexp(tu.cursor, fname)
     return results
+
 
 if __name__ == "__main__":
     main()
