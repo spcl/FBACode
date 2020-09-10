@@ -127,7 +127,7 @@ class Project:
         # fetch dependencies
         
         out = run(["apt-get", "build-dep", "-y", self.name],
-                  cwd=self.repository_path, stdout=subprocess.PIPE,
+                  cwd=self.repository_path,
                   stderr=subprocess.PIPE)
         if out.returncode != 0:
             self.error_log.print_error(self.idx, str(out.stderr))
@@ -137,7 +137,7 @@ class Project:
         # this sometimes fails, but no big deal
         try:
             out = run(["autoreconf", "-f", "-i"], cwd=self.build_dir,
-                      stdout=subprocess.PIPE,
+                      
                       stderr=subprocess.PIPE)
             if out.returncode != 0:
                 self.output_log.print_error(self.idx, str(out))
@@ -146,7 +146,7 @@ class Project:
         except Exception as e:
             self.output_log.print_info(self.idx, "autoreconf is not installed, error: {}".format(e))
         out = run([join("debian", "rules"), "clean"],
-                  cwd=self.build_dir, stdout=subprocess.PIPE,
+                  cwd=self.build_dir, 
                   stderr=subprocess.PIPE)
         if out.returncode != 0:
             self.error_log.print_error(self.idx, str(out.stderr))
@@ -157,7 +157,7 @@ class Project:
     def build(self):
         # basically run debian/rules
         out = run([join("debian", "rules"), "build"],
-                  cwd=self.build_dir, stdout=subprocess.PIPE,
+                  cwd=self.build_dir, 
                   stderr=subprocess.PIPE)
         if out.returncode != 0:
             self.error_log.print_error(self.idx, str(out.stderr))

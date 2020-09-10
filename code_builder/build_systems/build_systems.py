@@ -99,12 +99,21 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 idx, "building {} in container {}".format(name, container.name))
             return_code = container.wait()
             if return_code["StatusCode"]:
-                raise RuntimeError(
-                    "The build process failed! Return code {}, output: {}".format(
+                # the init.py or the docker container crashed unexpectadly
+                ctx.err_log.print_err(
+                    idx,
+                    "The build process failed! Return code {}, output: \n{}".format(
                         return_code, container.logs(
                             stdout=True, stderr=True).decode()
                     )
                 )
+                docker_log = container.logs()
+                timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+                docker_log_file = "container_{}_{}.log".format(name.replace("/", "_"), timestamp)
+                with open(join(abspath(build_dir), docker_log_file), "w") as f:
+                    f.write(docker_log.decode())
+                project["status"] = "crash"
+                return (idx, name, project)
             docker_log = container.logs()
             timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
             docker_log_file = "container_{}_{}.log".format(name.replace("/", "_"), timestamp)

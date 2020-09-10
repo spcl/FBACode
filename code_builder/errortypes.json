@@ -1,0 +1,140 @@
+{
+  "error: ordered comparison between pointer and zero": {
+    "name": "ordered comparison between pointer and zero",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "error\\:\\ ordered\\ comparison\\ between\\ pointer\\ and\\ zero"
+  },
+  "configure: error: something wrong with LDFLAGS": {
+    "name": "something wrong with LDFLAGS",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "configure\\:\\ error\\:\\ something\\ wrong\\ with\\ LDFLAGS"
+  },
+  "Project ERROR: failed to parse default search paths from compiler output": {
+    "name": "failed to parse default search paths from compiler output",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "Project\\ ERROR\\:\\ failed\\ to\\ parse\\ default\\ search\\ paths\\ from\\ compiler\\ output"
+  },
+  "clang: error: linker command failed": {
+    "name": "linker command failed",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed"
+  },
+  "error: embedding a directive within macro arguments has undefined behavior": {
+    "name": "embedding a directive within macro arguments has undefined behavior",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "error\\:\\ embedding\\ a\\ directive\\ within\\ macro\\ arguments\\ has\\ undefined\\ behavior"
+  },
+  "configure: error: could not find gnutls": {
+    "name": "configure: error: could not find gnutls",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "configure\\:\\ error\\:\\ could\\ not\\ find\\ gnutls"
+  },
+  "configure: error:": {
+    "name": "configure_error",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "configure\\:\\ error\\:"
+  },
+  "error: use of undeclared identifier": {
+    "name": "undeclared identifier",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "error\\:\\ use\\ of\\ undeclared\\ identifier"
+  },
+  "error: empty search path given via `-L`": {
+    "name": "empty search path given via `-L`",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "error\\:\\ empty\\ search\\ path\\ given\\ via\\ \\`\\-L\\`"
+  },
+  "error: invalid suffix on literal": {
+    "name": "error: invalid suffix on literal",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "error\\:\\ invalid\\ suffix\\ on\\ literal"
+  },
+  "error: 'iostream' file not found": {
+    "name": "'iostream' not found",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "error\\:\\ \\'iostream\\'\\ file\\ not\\ found"
+  },
+  "error: invalid suffix on literal; C++11 requires a space between literal and identifier [-Wreserved-user-defined-literal]": {
+    "name": "invalid suffix on literal; C++11 requires a space between literal and identifier [-Wreserved-user-defined-literal]",
+    "projects": [
+      "vdr-plugin-mp3"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ invalid\\ suffix\\ on\\ literal\\;\\ C\\+\\+11\\ requires\\ a\\ space\\ between\\ literal\\ and\\ identifier\\ \\[\\-Wreserved\\-user\\-defined\\-literal\\]"
+  },
+  "error: ordered comparison between pointer and zero ('char *' and 'int')": {
+    "name": "ordered comparison between pointer and zero ('char *' and 'int')",
+    "projects": [
+      "vdr-plugin-mp3"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ ordered\\ comparison\\ between\\ pointer\\ and\\ zero\\ \\(\\'char\\ \\*\\'\\ and\\ \\'int\\'\\)"
+  },
+  "error: expected ')'": {
+    "name": "expected ')'",
+    "projects": [
+      "visualboyadvance"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ expected\\ \\'\\)\\'"
+  },
+  "error: cast from pointer to smaller type 'unsigned int' loses information": {
+    "name": "cast from pointer to smaller type 'unsigned int' loses information",
+    "projects": [
+      "visualboyadvance"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ cast\\ from\\ pointer\\ to\\ smaller\\ type\\ \\'unsigned\\ int\\'\\ loses\\ information"
+  },
+  "error: linker command failed with exit code 1 (use -v to see invocation)": {
+    "name": "linker command failed with exit code 1 (use -v to see invocation)",
+    "projects": [
+      "libjogl2-java"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)"
+  },
+  "error: unused parameter 'argc' [-Werror,-Wunused-parameter]": {
+    "name": "unused parameter 'argc' [-Werror,-Wunused-parameter]",
+    "projects": [
+      "switchsh"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ unused\\ parameter\\ \\'argc\\'\\ \\[\\-Werror\\,\\-Wunused\\-parameter\\]"
+  },
+  "error: argument unused during compilation: '-s' [-Werror,-Wunused-command-line-argument]": {
+    "name": "argument unused during compilation: '-s' [-Werror,-Wunused-command-line-argument]",
+    "projects": [
+      "switchsh"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ argument\\ unused\\ during\\ compilation\\:\\ \\'\\-s\\'\\ \\[\\-Werror\\,\\-Wunused\\-command\\-line\\-argument\\]"
+  },
+  "error: in `/home/fba_code/build':": {
+    "name": "in `/home/fba_code/build':",
+    "projects": [
+      "pidgin-sipe"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ in\\ \\`\\/home\\/fba_code\\/build\\'\\:"
+  },
+  "error: sizeof(uuid_t) is not 16": {
+    "name": "sizeof(uuid_t) is not 16",
+    "projects": [
+      "pidgin-sipe"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ sizeof\\(uuid_t\\)\\ is\\ not\\ 16"
+  }
+}
