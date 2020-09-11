@@ -154,8 +154,8 @@ def build_projects(
         for project in projects:
             idx, key, val = project.result()
             repositories[key] = val
-            builds_left -= 1
-            print("{} builds left".format(builds_left))
+            # builds_left -= 1
+            # print("{} builds left".format(builds_left))
             stats.update(val, key)
 
         end = time()

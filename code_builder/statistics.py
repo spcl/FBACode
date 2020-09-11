@@ -5,21 +5,6 @@ from datetime import datetime
 
 
 class Statistics:
-    # define a few errors: "search term": "error name"
-    # errors_stdout = {
-    #     "error: ordered comparison between pointer and zero": "ordered comparison between pointer and zero",
-    #     "configure: error: something wrong with LDFLAGS": "something wrong with LDFLAGS",
-    #     "Project ERROR: failed to parse default search paths from compiler output": "failed to parse default search paths from compiler output",
-    #     "clang: error: linker command failed": "linker command failed",
-    #     "error: embedding a directive within macro arguments has undefined behavior": "embedding a directive within macro arguments has undefined behavior",
-    #     "configure: error: could not find gnutls": "configure: error: could not find gnutls",
-    #     "configure: error:": "configure_error",
-    #     "error: use of undeclared identifier": "undeclared identifier",  #racket
-    #     "error: empty search path given via `-L`": "empty search path given via `-L`",  #rust-findshlibs
-    #     "error: invalid suffix on literal": "error: invalid suffix on literal", #vdr-plugin-mp3
-    #     "error: 'iostream' file not found": "'iostream' not found",  #rapmap
-
-    # }
 
     def __init__(self):
         self.correct_projects = 0
@@ -33,10 +18,13 @@ class Statistics:
             if "regex" not in self.errors_stdout[err]:
                 self.errors_stdout[err]["regex"] = re.escape(err)
         self.save_errors_json()
-        self.errorypes = {self.errors_stdout[x]["name"]: 0 for x in self.errors_stdout}
+        self.errorypes = {
+            self.errors_stdout[x]["name"]: 0 for x in self.errors_stdout}
         self.errorypes["unrecognized"] = 0
         # save the failed projects, so we can retry them later
         self.rebuild_projects = {}
+        self.unrecognized_errs = []
+        self.new_errs = 0
 
     def print_stats(self, out):
         print("Repository clone time: %f seconds" % self.clone_time, file=out)
@@ -44,10 +32,14 @@ class Statistics:
         print("Succesfull builds: %d" % self.correct_projects, file=out)
         print("Failed builds: %d" % self.incorrect_projects, file=out)
         print("Unrecognized builds: %d" % self.unrecognized_projects, file=out)
+        print("newly discovered errors: {}".format(self.new_errs), file=out)
         print("Types of build errors:", file=out)
         for err, count in self.errorypes.items():
             if count > 0:
                 print("{}: {}".format(err, count), file=out)
+        print("unrecognized errors:")
+        for err in self.unrecognized_errs:
+            print(err, file=out)
 
     def update(self, project, name):
         self.clone_time += project["source"]["time"]
@@ -61,21 +53,24 @@ class Statistics:
         else:
             if "build" in project:
                 print("\nstarting error analysis for {}".format(name))
-                err_log = join(project["build"]["dir"], project["build"]["stderr"])
+                err_log = join(project["build"]["dir"],
+                               project["build"]["stderr"])
                 with open(err_log, "r") as log:
                     text = log.read()
-                    # try to find the normal clang error line
-                    errlines = re.findall(r"error:.*$", text, flags=re.MULTILINE)
+                    # try to find the normal clang error line (match to filename.xx:line:col: error: )
+                    errlines = re.findall(r".*\..*\:\d+\:\d+\:\ error\:.*$", text, flags=re.MULTILINE)
                     clang_errs = True
-                    print(name)
                     if errlines == []:
-                        print("could not find <error:> pattern..")
-                        errlines = re.findall(r"^.*error.*$", text, flags=re.IGNORECASE | re.MULTILINE)
+                        print("could not find clang error: pattern..")
+                        errlines = re.findall(
+                            r"^.*error.*$", text, flags=re.IGNORECASE | re.MULTILINE)
                         clang_errs = False
-                    print(errlines)
+                        print(errlines)
                     # if we have nicely formatted errs from clang, we just add to known errs
                     if clang_errs:
                         for err in errlines:
+                            # remove filename and lines etc.
+                            err = re.search(r"error\:.*$", err).group()
                             if err not in self.errors_stdout:
                                 self.errors_stdout[err] = {
                                     "name": err.replace("error: ", ''),
@@ -83,12 +78,53 @@ class Statistics:
                                     "origin": "clang",
                                     "regex": re.escape(err)
                                 }
-                                self.errorypes[err.replace("error: ", '')] = 0
+                                # string after error is the error name 
+                                self.errorypes[self.errors_stdout[err]["name"]] = 0
+                                self.new_errs += 1
                             elif name not in self.errors_stdout[err]["projects"]:
-                                self.errors_stdout[err]["projects"].append(name)
+                                self.errors_stdout[err]["projects"].append(
+                                    name)
                     else:
                         # figure out what to do with other error strings
-                        print("not clang errs")
+                        # this dict contains the error match and then thi origin, at the
+                        # end is the most generic one.
+                        err_patterns = [
+                            (r".*\.o\:" + re.escape(" 'linker' input unused") + r".*$", "clang_other", re.escape(".o: 'linker' input unused")),
+                            (re.escape("clang: error: ") + r".*$", "clang_other", False),
+                            (re.escape("configure: error :") + r".*$", "configure", False),
+                            (re.escape("E: Unable to find a source package") + r".*$", "debian", False),
+                            (r"\.\/configure.*syntax\ error.*$", "configure", False),
+                            (re.escape("fatal error: ") + r".*$", "fatal_error", False),
+                            (re.escape("error: ") + r".*$", "general_error", False),
+                            (re.escape("Error: ") + r".*$", "general_error", False),
+                            (re.escape("ERROR: ") + r".*$", "general_error", False)
+                        ]
+                        found_match = False
+                        for err in errlines:
+                            # the pattern error: could not find XXX indicates some missing thing
+                            for match, origin, title in err_patterns:
+                                regex_result = re.search(match, err)
+                                if regex_result:
+                                    err = re.search(title, err).group() if title else regex_result.group()
+                                    print("matched err {}".format(err))
+                                    if err not in self.errors_stdout:
+                                        self.errors_stdout[err] = {
+                                            "name": err,
+                                            "projects": [name],
+                                            "origin": origin,
+                                            "regex": re.escape(err)
+                                        }
+                                        self.errorypes[self.errors_stdout[err]["name"]] = 0
+                                        self.new_errs += 1
+                                    elif name not in self.errors_stdout[err]["projects"]:
+                                        self.errors_stdout[err]["projects"].append(
+                                            name)
+                                    found_match = True
+                                    break
+                        if not found_match:
+                            self.unrecognized_errs.append("{}:".format(name))
+                            self.unrecognized_errs.extend(errlines)
+
                     errors = [x["name"] for err, x in self.errors_stdout.items() if re.search(x["regex"], text) is not None]
                     for err in errors:
                         self.errorypes[err] += 1
@@ -98,7 +134,7 @@ class Statistics:
             # probs do error statistics
             self.add_incorrect_project()
             self.add_rebuild_data(project, name)
-      
+
     def add_unrecognized_project(self):
         self.unrecognized_projects += 1
 
@@ -116,7 +152,7 @@ class Statistics:
             "version": project["version"],
             "status": project["status"],
             "codebase_data": project["codebase_data"] if "codebase_data" in project else None
-            }
+        }
         if project["type"] not in self.rebuild_projects:
             self.rebuild_projects[project["type"]] = {}
         self.rebuild_projects[project["type"]][name] = rebuild_data

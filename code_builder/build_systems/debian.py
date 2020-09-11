@@ -57,8 +57,6 @@ class Project:
 
     def configure(self, force_update=False):
         # fetch the source code and dependencies
-        # apt-get source XXX
-        # apt-get build-dep XXX
         # c_compiler = get_c_compiler()
         # cxx_compiler = get_cxx_compiler()
         temp = abspath("temp")
@@ -72,13 +70,9 @@ class Project:
         # find out the name of the source code folder
         out = out.stdout
         version = search(r"(?<= {0} ).*(?= \(dsc\) )".format(escape(self.name)), out)[0]
-        # version = out[:out.find(" (dsc)")]
-        # version = version[version.rfind(" ") + 1:]
+
         sourcedir = search(r"(?<=extracting {0} in ).*(?=\n)".format(escape(self.name)), out)[0]
-        # search_str = "extracting {} in ".format(self.name)
-        # out = out[out.find(search_str)+len(search_str):]
-        # out = out[:out.find("\n")]
-        # out should now contains the name of the source folder
+
         sourcedir = join(temp, sourcedir)
         # TODO delete everything except logs from source directory
         buildfiles = listdir(self.build_dir)
@@ -137,7 +131,6 @@ class Project:
         # this sometimes fails, but no big deal
         try:
             out = run(["autoreconf", "-f", "-i"], cwd=self.build_dir,
-                      
                       stderr=subprocess.PIPE)
             if out.returncode != 0:
                 self.output_log.print_error(self.idx, str(out))
@@ -162,6 +155,7 @@ class Project:
         if out.returncode != 0:
             self.error_log.print_error(self.idx, str(out.stderr))
             return False
+        self.error_log.print_info(self.idx, str(out.stderr))
         self.output_log.print_info(self.idx, str(out))
         return True
 
