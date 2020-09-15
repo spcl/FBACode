@@ -3,13 +3,13 @@ import sys
 import os
 import importlib
 import glob
+import subprocess
 
 from time import time
 from shutil import move
 from datetime import datetime
 
 from utils.driver import open_logfiles
-
 
 class Context:
 
@@ -93,4 +93,15 @@ out = {'idx': idx, 'name': name, 'project': project}
 print(json.dumps(out, indent=2), file=open('output.json', 'w'))
 # move logs to build directory
 for file in glob.glob('*.log'):
-    move(file, 'build')
+    move(file, build_dir)
+
+# change the user and group to the one of the host, since we are root, and dont 
+host_uid = os.stat(build_dir).st_uid
+host_gid = os.stat(build_dir).st_gid
+
+dirs = [build_dir, bitcodes_dir, source_dir]
+
+for d in dirs:
+    out = subprocess.run(["chown", "-R", "{}:{}".format(host_uid, host_gid), d])
+    if out.returncode != 0:
+        print(out)
