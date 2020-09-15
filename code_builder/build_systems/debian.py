@@ -76,6 +76,7 @@ class Project:
         sourcedir = join(temp, sourcedir)
         # TODO delete everything except logs from source directory
         buildfiles = listdir(self.build_dir)
+        sourcefiles = listdir(self.repository_path)
         try:
             for f in buildfiles:
                 if ".log" in f:
@@ -85,39 +86,56 @@ class Project:
                     shutil.rmtree(p)
                 else:
                     remove(p)
-
-            # copy sources into the build volume
-            sources = listdir(sourcedir)
-            self.output_log.print_debug(self.idx, sources)
-            for f in sources:
-                dest = join(self.build_dir, f)
-                src = join(sourcedir, f)
-                if isdir(src):
-                    # if exists(dest):
-                    #     shutil.rmtree(dest)
-                    # self.output_log.print_debug(self.idx, "copying directory {} to {}".format(dest, src))
-                    shutil.copytree(src, dest, symlinks=False)
+            # delete source dir, othewise mv fails
+            for f in sourcefiles:
+                p = join(self.repository_path, f)
+                if isdir(p):
+                    shutil.rmtree(p)
                 else:
-                    # if exists(dest):
-                    #     remove(dest)
-                    # self.output_log.print_debug(self.idx, "copying file {} to {}".format(dest, src))
-                    shutil.copy(src, dest, follow_symlinks=False)
-            # and move to sources volume
-            for f in sources:
-                src = join(sourcedir, f)
-                repo_dest = join(self.repository_path, f)
-                if isdir(src):
-                    if exists(repo_dest):
-                        shutil.rmtree(repo_dest)
-                    shutil.move(src, repo_dest)
-                else:
-                    if exists(repo_dest):
-                        remove(repo_dest)
-                    shutil.move(src, repo_dest)
+                    remove(p)
+            # # copy sources into the build volume
+            # sources = listdir(sourcedir)
+            # self.output_log.print_debug(self.idx, sources)
+            # for f in sources:
+            #     dest = join(self.build_dir, f)
+            #     src = join(sourcedir, f)
+            #     if isdir(src):
+            #         # if exists(dest):
+            #         #     shutil.rmtree(dest)
+            #         # self.output_log.print_debug(self.idx, "copying directory {} to {}".format(dest, src))
+            #         shutil.copytree(src, dest, symlinks=False)
+            #     else:
+            #         # if exists(dest):
+            #         #     remove(dest)
+            #         # self.output_log.print_debug(self.idx, "copying file {} to {}".format(dest, src))
+            #         shutil.copy(src, dest, follow_symlinks=False)
+            # # and move to sources volume
+            # for f in sources:
+            #     src = join(sourcedir, f)
+            #     repo_dest = join(self.repository_path, f)
+            #     if isdir(src):
+            #         if exists(repo_dest):
+            #             shutil.rmtree(repo_dest)
+            #         shutil.move(src, repo_dest)
+            #     else:
+            #         if exists(repo_dest):
+            #             remove(repo_dest)
+            #         shutil.move(src, repo_dest)
         except Exception as e:
             self.error_log.print_error(self.idx, e)
             return False
-
+        # try copying using the shell instead of shutil, since we know we use linux and 
+        # this seems to work better regarding symlinks
+        # use sh -c "cp ..."here, so we can use globbing
+        
+        out = run(["sh", "-c", "cp -a {}/* {}".format(sourcedir, self.build_dir)], cwd=temp, stderr=subprocess.PIPE)
+        if out.returncode != 0:
+            self.error_log.print_error(self.idx, str(out))
+            return False
+        out = run(["mv", sourcedir, self.repository_path], cwd=temp, stderr=subprocess.PIPE)
+        if out.returncode != 0:
+            self.error_log.print_error(self.idx, str(out.stderr))
+            return False
         # fetch dependencies
         
         out = run(["apt-get", "build-dep", "-y", self.name],
