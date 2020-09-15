@@ -58,7 +58,8 @@ class Statistics:
                 with open(err_log, "r") as log:
                     text = log.read()
                     # try to find the normal clang error line (match to filename.xx:line:col: error: )
-                    errlines = re.findall(r".*\..*\:\d+\:\d+\:\ error\:.*$", text, flags=re.MULTILINE)
+                    errlines = re.findall(
+                        r".*\..*\:\d+\:\d+\:\ error\:.*$", text, flags=re.MULTILINE)
                     clang_errs = True
                     if errlines == []:
                         print("could not find clang error: pattern..")
@@ -78,8 +79,9 @@ class Statistics:
                                     "origin": "clang",
                                     "regex": re.escape(err)
                                 }
-                                # string after error is the error name 
-                                self.errorypes[self.errors_stdout[err]["name"]] = 0
+                                # string after error is the error name
+                                self.errorypes[self.errors_stdout[err]
+                                               ["name"]] = 0
                                 self.new_errs += 1
                             elif name not in self.errors_stdout[err]["projects"]:
                                 self.errors_stdout[err]["projects"].append(
@@ -89,12 +91,17 @@ class Statistics:
                         # this dict contains the error match and then thi origin, at the
                         # end is the most generic one.
                         err_patterns = [
-                            (r".*\.o\:" + re.escape(" 'linker' input unused") + r".*$", "clang_other", re.escape(".o: 'linker' input unused")),
-                            (re.escape("clang: error: ") + r".*$", "clang_other", False),
-                            (re.escape("configure: error :") + r".*$", "configure", False),
-                            (re.escape("E: Unable to find a source package") + r".*$", "debian", False),
+                            (r".*\.o\:" + re.escape(" 'linker' input unused") + r".*$",
+                             "clang_other", re.escape(".o: 'linker' input unused")),
+                            (re.escape("clang: error: ") +
+                             r".*$", "clang_other", False),
+                            (re.escape("configure: error :") +
+                             r".*$", "configure", False),
+                            (re.escape("E: Unable to find a source package") +
+                             r".*$", "debian", re.escape("E: Unable to find a source package")),
                             (r"\.\/configure.*syntax\ error.*$", "configure", False),
-                            (re.escape("fatal error: ") + r".*$", "fatal_error", False),
+                            (re.escape("fatal error: ") +
+                             r".*$", "fatal_error", False),
                             (re.escape("error: ") + r".*$", "general_error", False),
                             (re.escape("Error: ") + r".*$", "general_error", False),
                             (re.escape("ERROR: ") + r".*$", "general_error", False)
@@ -105,7 +112,8 @@ class Statistics:
                             for match, origin, title in err_patterns:
                                 regex_result = re.search(match, err)
                                 if regex_result:
-                                    err = re.search(title, err).group() if title else regex_result.group()
+                                    err = re.search(title, err).group(
+                                    ) if title else regex_result.group()
                                     print("matched err {}".format(err))
                                     if err not in self.errors_stdout:
                                         self.errors_stdout[err] = {
@@ -114,7 +122,8 @@ class Statistics:
                                             "origin": origin,
                                             "regex": re.escape(err)
                                         }
-                                        self.errorypes[self.errors_stdout[err]["name"]] = 0
+                                        self.errorypes[self.errors_stdout[err]
+                                                       ["name"]] = 0
                                         self.new_errs += 1
                                     elif name not in self.errors_stdout[err]["projects"]:
                                         self.errors_stdout[err]["projects"].append(
@@ -125,9 +134,12 @@ class Statistics:
                             self.unrecognized_errs.append("{}:".format(name))
                             self.unrecognized_errs.extend(errlines)
 
-                    errors = [x["name"] for err, x in self.errors_stdout.items() if re.search(x["regex"], text) is not None]
+                    errors = [err for err in self.errors_stdout if re.search(self.errors_stdout[err]["regex"], text) is not None]
+                    # we found the following errors
                     for err in errors:
-                        self.errorypes[err] += 1
+                        self.errorypes[self.errors_stdout[err]["name"]] += 1
+                        if name not in self.errors_stdout[err]["projects"]:
+                            self.errors_stdout[err]["projects"].append(name)
                     project["build"]["errortypes"] = errors
                     if not errors:
                         self.errorypes["unrecognized"] += 1
@@ -151,7 +163,8 @@ class Statistics:
             "suite": project["suite"] if "suite" in project else None,
             "version": project["version"],
             "status": project["status"],
-            "codebase_data": project["codebase_data"] if "codebase_data" in project else None
+            "codebase_data": project["codebase_data"] if "codebase_data" in project else None,
+            "previous_errors": project["build"]["errortypes"] if ("build" in project and "errortypes" in project["build"]) else None
         }
         if project["type"] not in self.rebuild_projects:
             self.rebuild_projects[project["type"]] = {}

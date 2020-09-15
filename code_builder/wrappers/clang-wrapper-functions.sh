@@ -58,8 +58,9 @@ function run_compilation() {
         # echo "do compilation"
         ${compiler} "${@:2}"
         # echo "now emit llvm"
-        ${compiler} -emit-llvm -c "${ARGS[@]}" # if there are multiple input files, -emit-llvm would faile with the -o option
-        ${compiler} -emit-ast "${ARGS[@]}"
+        # if there are multiple input files, -emit-llvm would faile with the -o option
+        ${compiler} -Qunused-arguments -emit-llvm -c "${ARGS[@]}"
+        ${compiler} -Qunused-arguments -emit-ast "${ARGS[@]}"
         # ${compiler} -emit-llvm "${ARGS[@]}"
         # ${compiler} -emit-llvm "${ARGS[@]}"
         #echo "${ARGS[@]}"
@@ -81,8 +82,8 @@ function run_compilation() {
     elif [ "$intercep_compilation_no_c" ]; then
         # echo "Run LLVM generation with flags, add -c manually: ${ARGS[@]}"
         ${compiler} "${@:2}"
-        ${compiler} -emit-llvm "${ARGS[@]}" -c
-        ${compiler} -emit-ast "${ARGS[@]}"
+        ${compiler} -Qunused-arguments -emit-llvm "${ARGS[@]}" -c
+        ${compiler} -Qunused-arguments -emit-ast "${ARGS[@]}"
     else
         #echo "Run linking with flags: "${IR_FILES[@]}""
         # echo "not generating llvm ir"

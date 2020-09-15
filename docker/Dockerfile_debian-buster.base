@@ -7,6 +7,9 @@ RUN rm /etc/apt/sources.list
 COPY docker/sources_buster.list /etc/apt/sources.list
 RUN apt-get update
 
+
+
+
 RUN deps='software-properties-common curl gpg-agent gnupg' soft='python3 cmake make clang-9 clang++-9 texinfo build-essential fakeroot devscripts'\
   && apt-get update && apt-get install -y ${deps} --no-install-recommends\
   && curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -\
@@ -44,10 +47,23 @@ RUN cd ${HOME_DIR}/wrappers && ./replace_compilers.sh 8
 
 
 # set the environment variables for c/cxx
-ENV CC ${HOME_DIR}/wrappers/clang
-ENV CXX ${HOME_DIR}/wrappers/clang++
+# ENV CC ${HOME_DIR}/wrappers/clang
+# ENV CXX ${HOME_DIR}/wrappers/clang++
 
 RUN apt search '^gcc-[0-9]*[.]*[0-9]*$' | grep -o '\bgcc[a-zA-Z0-9:_.-]*' |\
   xargs -I {} echo "{}" hold | dpkg --set-selections
+
+# Check if gcc, g++ & cpp are actually clang
+RUN gcc --version|grep clang > /dev/null || exit 1
+RUN g++ --version|grep clang > /dev/null || exit 1
+
+# set up a user with id and group of current user to avoid user rights conflicts
+# https://vsupalov.com/docker-shared-permissions/
+# ARG USER_ID
+# ARG GROUP_ID
+
+# RUN addgroup --gid $GROUP_ID user
+# RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
+# USER user
 
 ENTRYPOINT ["python3", "-u", "init.py", "input.json"]

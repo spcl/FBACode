@@ -1,5 +1,4 @@
 #!/bin/bash
 
-rm -rf ./build/*
-rm -rf ./bitcodes/*
+find ./build/*/* -maxdepth 0 ! -name '*.log' -exec rm -rf {} \;
 rm -rf ./source/*

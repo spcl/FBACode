@@ -49,19 +49,18 @@ class debian:
         # also getting dependencies since we maybe wont have access to apt on host
         # TODO: maybe do fetching in separate container to building?
         # would also make it possible to time the download etc.
-
+        # print("cloning debian package {}".format(name))
         # create a file called .debianbuild, so we can recognize later
         if project["status"] == "new":
             project["status"] = "cloned"
-        if not "source" in project:
-            project["source"] = { "dir": os.path.abspath(join(self.build_dir, name)) }
+        if "source" not in project:
+            project["source"] = {"dir": os.path.abspath(join(self.build_dir, name))}
         project["source"]["time"] = 0
         makedirs(join(self.build_dir, name), exist_ok=True)
         open(join(self.build_dir, name, ".debianbuild"), 'a').close()
         return (idx, name, project)
 
 
-# databases = {"github.org": GitHub}
 databases = {"github.org": GitHub, "debian": debian}
 
 
