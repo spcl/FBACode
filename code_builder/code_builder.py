@@ -150,7 +150,7 @@ def build_projects(
             repositories_idx += repo_count
             database_processers.append(processer)
 
-        stats = Statistics()
+        stats = Statistics(projects_count)
         for project in projects:
             idx, key, val = project.result()
             repositories[key] = val
@@ -167,9 +167,9 @@ def build_projects(
         stats.save_rebuild_json()
         stats.save_errors_json()
         timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-        with open(join("buildlogs", "summary_{}.txt".format(timestamp)), 'w') as o:
+        with open(join("buildlogs", "summary_{}_{}.txt".format(projects_count, timestamp)), 'w') as o:
             stats.print_stats(o)
-        with open(join("buildlogs", "build_details_{}.json".format(timestamp)), 'w') as o:
+        with open(join("buildlogs", "build_details_{}_{}.json".format(projects_count, timestamp)), 'w') as o:
             o.write(json.dumps(repositories, indent=2))
 
     # env.reset_environment()

@@ -6,7 +6,7 @@ from datetime import datetime
 
 class Statistics:
 
-    def __init__(self):
+    def __init__(self, project_count):
         self.correct_projects = 0
         self.incorrect_projects = 0
         self.unrecognized_projects = 0
@@ -25,6 +25,7 @@ class Statistics:
         self.rebuild_projects = {}
         self.unrecognized_errs = []
         self.new_errs = 0
+        self.project_count = project_count
 
     def print_stats(self, out):
         print("Repository clone time: %f seconds" % self.clone_time, file=out)
@@ -173,7 +174,7 @@ class Statistics:
     def save_rebuild_json(self, path=None):
         if path is None:
             timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-            path = join("buildlogs", "rebuild_{}.json".format(timestamp))
+            path = join("buildlogs", "rebuild_{}_{}.json".format(self.project_count, timestamp))
         with open(path, 'w') as o:
             o.write(json.dumps(self.rebuild_projects, indent=2))
 
