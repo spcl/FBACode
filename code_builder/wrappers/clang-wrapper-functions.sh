@@ -16,13 +16,17 @@ function run_compilation() {
         var=${INPUT_ARGS[$i]}
         # echo $var
         #echo $intercept_compilation
-        # why was it =~?
-        if [[ "$var" == "-c" ]]; then
+        
+        # flag already present, change nothing
+        if [[ "$var" == "-emit-llvm" ]] || [[ "$var" == "-emit-ast" ]]; then
+            intercept_compilation=false
+            intercep_compilation_no_c=false
+            break
+        elif [[ "$var" == "-c" ]]; then
             intercept_compilation=true
             # intercept_compilation_no_c=false
-        fi
         # match on an argument if it ends with .c, .cpp or .cxx
-        if [[ "$var" =~ .*(\.c|\.cpp|\.cxx|\.cc)$  && "$intercept_compilation" == false ]]; then
+        elif [[ "$var" =~ .*(\.c|\.cpp|\.cxx|\.cc)$  && "$intercept_compilation" == false ]]; then
             # echo "one of the input files is a source file!"
             intercept_compilation=true
             # intercept_compilation_no_c=true
@@ -51,10 +55,12 @@ function run_compilation() {
     #echo ${ARGS[@]}
     #echo $intercept_compilation
     # TODO: also create AST files using -emit-ast flag
+    # echo "######################## clang call" >> /home/fba_code/build/wrapper-fun.log
+    # echo "${@:2}"  >> /home/fba_code/build/wrapper-fun.log
     if [ "$intercept_compilation" == true ]; then
         shopt -s nocasematch
-        # echo "Run LLVM generation with flags: ${ARGS[@]}"
-        # echo "first run this: ${compiler} ${@:2}"
+        # echo "Run LLVM generation with flags: ${ARGS[@]}" > /dev/stderr
+        # echo "first run this: ${compiler} ${@:2}" > /dev/stderr
         # echo "do compilation"
         ${compiler} "${@:2}"
         # echo "now emit llvm"
@@ -79,8 +85,8 @@ function run_compilation() {
         #        #${LLVM_INSTALL_DIRECTORY}/bin/opt -load ${LLVM_TOOL_DIRECTORY}/libLLVMLoopStatistics.so -loop-statistics -loop-statistics-out-dir ${OUT_DIR} -loop-statistics-log-name "$filename" < "$filename.ll" > /dev/null
         #    fi
         #done
-    elif [ "$intercep_compilation_no_c" ]; then
-        # echo "Run LLVM generation with flags, add -c manually: ${ARGS[@]}"
+    elif [ "$intercep_compilation_no_c" == true ]; then
+        # echo "Run LLVM generation with flags, add -c manually: ${ARGS[@]}" > /dev/stderr
         ${compiler} "${@:2}"
         ${compiler} -Qunused-arguments -emit-llvm "${ARGS[@]}" -c
         ${compiler} -Qunused-arguments -emit-ast "${ARGS[@]}"

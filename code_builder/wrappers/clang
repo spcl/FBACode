@@ -1,7 +1,20 @@
 #!/bin/bash
+
+# check if the arguments with which the parent was called match this call
+# if yes, we probably have recursion
+PARENT_COMMAND=$(ps -o args= $PPID)
+PARENT_ARGS=$(echo "$PARENT_COMMAND" | cut -d' ' -f2- -)
+if [[ "$PARENT_ARGS" == "$@" ]]; then
+    echo "error: Recursion in wrapper detected, aborting..."
+    echo "error: Recursion in wrapper detected, aborting..." > /dev/stderr
+    exit 1
+fi
+
 DIR="$(dirname "$(readlink -f "$0")")"
 source "${DIR}/clang-wrapper.cfg"
 source "${DIR}/clang-wrapper-functions.sh"
-
+# echo "######################## clang call" >> /home/fba_code/build/wrapper.log
+# echo $PARENT_ARGS  >> /home/fba_code/build/wrapper.log
+# echo $@  >> /home/fba_code/build/wrapper.log
 run_compilation "clang" "$@"
 
