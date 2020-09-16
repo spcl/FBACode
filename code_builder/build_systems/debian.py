@@ -59,8 +59,8 @@ class Project:
         # fetch the source code and dependencies
         # c_compiler = get_c_compiler()
         # cxx_compiler = get_cxx_compiler()
-        temp = abspath("temp")
-        mkdir(temp)
+        temp = join(self.build_dir, "..")
+        # mkdir(temp)
         out = run(["apt-get", "source", "-y", self.name],
                   cwd=temp, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if out.returncode != 0:
