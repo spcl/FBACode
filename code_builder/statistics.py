@@ -59,11 +59,12 @@ class Statistics:
                 with open(err_log, "r") as log:
                     text = log.read()
                     # try to find the normal clang error line (match to filename.xx:line:col: error: )
+                    path_regex = r"(?:\.\.|\.)?(?:[/]*/)+\S*\.\S+(?:\sline\s\d+:?)?(?=\s|$|\.)"
                     errlines = re.findall(
                         r".*\..*\:\d+\:\d+\:\ error\:.*$", text, flags=re.MULTILINE)
                     clang_errs = True
                     if errlines == []:
-                        print("could not find clang error: pattern..")
+                        print("could not find clang error pattern..")
                         errlines = re.findall(
                             r"^.*error.*$", text, flags=re.IGNORECASE | re.MULTILINE)
                         clang_errs = False
@@ -72,7 +73,8 @@ class Statistics:
                     if clang_errs:
                         for err in errlines:
                             # remove filename and lines etc.
-                            err = re.search(r"error\:.*$", err).group()
+                            err = re.sub(path_regex, "PATH/FILE.EXT", err)
+                            err = re.search(r"error\:.*$", err).group(0)
                             if err not in self.errors_stdout:
                                 self.errors_stdout[err] = {
                                     "name": err.replace("error: ", ''),
@@ -109,12 +111,13 @@ class Statistics:
                         ]
                         found_match = False
                         for err in errlines:
-                            # the pattern error: could not find XXX indicates some missing thing
+                            err = re.sub(path_regex, "PATH/FILE.EXT", err)
                             for match, origin, title in err_patterns:
                                 regex_result = re.search(match, err)
                                 if regex_result:
+                                    # regex to extract paths and filenames
                                     err = re.search(title, err).group(
-                                    ) if title else regex_result.group()
+                                        ) if title else regex_result.group()
                                     print("matched err {}".format(err))
                                     if err not in self.errors_stdout:
                                         self.errors_stdout[err] = {
