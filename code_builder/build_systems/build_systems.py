@@ -90,7 +90,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             container = docker_client.containers.run(
                 build_system.CONTAINER_NAME,
                 detach=True,
-                name="{}_{}".format(name, build_name),
+                # name="{}_{}".format(name, build_name),
                 environment=environment,
                 volumes=volumes,
                 auto_remove=False,
