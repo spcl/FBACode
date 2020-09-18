@@ -90,13 +90,16 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             container = docker_client.containers.run(
                 build_system.CONTAINER_NAME,
                 detach=True,
+                name="{}_{}".format(name, build_system),
                 environment=environment,
                 volumes=volumes,
                 auto_remove=False,
-                remove=False
+                remove=False,
+                mem_limit="3g"  # limit memory to 3GB to protect the host
             )
             ctx.out_log.print_info(
                 idx, "building {} in container {}".format(name, container.name))
+            # TODO: maybe configure a timeout?
             return_code = container.wait()
             if return_code["StatusCode"]:
                 # the init.py or the docker container crashed unexpectadly
