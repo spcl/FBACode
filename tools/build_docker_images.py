@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
-import argparse
 import docker
-import json
 import os
-import shutil
+import json
 
-PROJECT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir)
+PROJECT_DIR = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), os.path.pardir)
 DOCKER_DIR = os.path.join(PROJECT_DIR, 'docker')
 REPOSITORY_NAME = 'mcopik/fbacode'
 
@@ -28,10 +27,28 @@ images = {
 client = docker.from_env()
 
 for i, (img, definitions) in enumerate(images.items()):
-    print("[{}/{}] building {}:{}".format(i + 1, len(images), REPOSITORY_NAME, img))
+    print("[{}/{}] building {}:{}".format(i +
+                                          1, len(images), REPOSITORY_NAME, img))
     dockerfile = definitions['dockerfile']
-    client.images.build(
+    # image, log = client.images.build(
+    #     path=PROJECT_DIR,
+    #     dockerfile=os.path.join(DOCKER_DIR, dockerfile),
+    #     tag="{}:{}".format(REPOSITORY_NAME, img)
+    # )
+    # for i in log:
+    #     print(i)
+    cli = docker.APIClient()
+    response = cli.build(
         path=PROJECT_DIR,
         dockerfile=os.path.join(DOCKER_DIR, dockerfile),
+        rm=False,
         tag="{}:{}".format(REPOSITORY_NAME, img)
     )
+    for i in response:
+        resp = json.loads(i.decode())
+        if "stream" in resp:
+            print(resp["stream"], end='')
+        elif "error" in resp:
+            print("ERROR: {}".format(resp["error"]), end='')
+            print(resp["errorDetail"], end='')
+
