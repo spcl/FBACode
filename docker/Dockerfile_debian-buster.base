@@ -2,23 +2,28 @@ FROM debian:buster
 # set as env, we are noninteractive in the container too
 ENV DEBIAN_FRONTEND=noninteractive
 
+ARG CLANG_VERSION=9
+
 # add source code repos to debian
 RUN rm /etc/apt/sources.list
+# TODO: do this with sed or something
 COPY docker/sources_buster.list /etc/apt/sources.list
+
+
+
+
+ARG deps='software-properties-common curl gpg-agent gnupg' 
+ARG soft="python3 cmake make clang-${CLANG_VERSION} libomp-${CLANG_VERSION}-dev clang++-${CLANG_VERSION} texinfo build-essential fakeroot devscripts"
+RUN echo ${CLANG_VERSION}
+RUN apt-get update 
+RUN apt-get install -y ${deps} --no-install-recommends --force-yes
+RUN curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+RUN add-apt-repository "deb http://apt.llvm.org/buster/ llvm-toolchain-buster-${CLANG_VERSION} main"
 RUN apt-get update
-
-
-
-
-RUN deps='software-properties-common curl gpg-agent gnupg' soft='python3 cmake make clang-9 clang++-9 texinfo build-essential fakeroot devscripts'\
-  && apt-get update && apt-get install -y ${deps} --no-install-recommends\
-  && curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -\
-  && add-apt-repository 'deb http://apt.llvm.org/buster/ llvm-toolchain-buster-9 main'\
-  # && add-apt-repository 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'\
-  && apt-get update && apt-get install -y ${soft} --no-install-recommends\
-  && apt-get purge -y --auto-remove ${DEPS}\
-  && ln -s /usr/bin/clang-9 /usr/bin/clang\
-  && ln -s /usr/bin/clang++-9 /usr/bin/clang++
+RUN apt-get install -y ${soft} --no-install-recommends --force-yes
+RUN apt-get purge -y --auto-remove ${DEPS}
+RUN ln -s /usr/bin/clang-${CLANG_VERSION} /usr/bin/clang
+RUN ln -s /usr/bin/clang++-${CLANG_VERSION} /usr/bin/clang++
 
 ENV HOME_DIR /home/fba_code/
 ENV SRC_DIR ${HOME_DIR}/code
@@ -40,16 +45,32 @@ ADD code_builder/wrappers/ wrappers
 
 RUN ln -fs ${HOME_DIR}/wrappers/clang /usr/bin/cc\
   && ln -fs ${HOME_DIR}/wrappers/clang++ /usr/bin/c++\
+  && ln -fs ${HOME_DIR}/wrappers/clang++ /usr/bin/cpp\
   && ln -fs ${HOME_DIR}/wrappers/clang /usr/bin/gcc\
   && ln -fs ${HOME_DIR}/wrappers/clang++ /usr/bin/g++
 
 # replace the version 8 of gcc
-RUN cd ${HOME_DIR}/wrappers && ./replace_compilers.sh 8
+RUN cd ${HOME_DIR}/wrappers && ./replace_compilers.sh 4.6 4.7 4.8 4.9 5 6 7 8 9 10
 
 
 # set the environment variables for c/cxx
 # ENV CC ${HOME_DIR}/wrappers/clang
 # ENV CXX ${HOME_DIR}/wrappers/clang++
+
+# fixes for qmake
+# https://salsa.debian.org/lucas/collab-qa-tools/-/blob/master/modes/clang10
+# Force the configruation of qmake to workaround this issue:
+# https://clang.debian.net/status.php?version=9.0.1&key=FAILED_PARSE_DEFAULT
+
+RUN apt install --yes --no-install-recommends --force-yes qt5-qmake
+RUN cp /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang/* /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/
+RUN ls -al /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/
+RUN cat /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf
+ENV QMAKESPEC=/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang/
+
+RUN sed -i -e "s|compare_problem(2,|compare_problem(0,|g" /usr/bin/dpkg-gensymbols
+RUN sed -i -e "s|compare_problem(1,|compare_problem(0,|g" /usr/bin/dpkg-gensymbols
+RUN grep "compare_problem(" /usr/bin/dpkg-gensymbols
 
 RUN apt search '^gcc-[0-9]*[.]*[0-9]*$' | grep -o '\bgcc[a-zA-Z0-9:_.-]*' |\
   xargs -I {} echo "{}" hold | dpkg --set-selections
@@ -57,14 +78,6 @@ RUN apt search '^gcc-[0-9]*[.]*[0-9]*$' | grep -o '\bgcc[a-zA-Z0-9:_.-]*' |\
 # Check if gcc, g++ & cpp are actually clang
 RUN gcc --version|grep clang > /dev/null || exit 1
 RUN g++ --version|grep clang > /dev/null || exit 1
-
-# set up a user with id and group of current user to avoid user rights conflicts
-# https://vsupalov.com/docker-shared-permissions/
-# ARG USER_ID
-# ARG GROUP_ID
-
-# RUN addgroup --gid $GROUP_ID user
-# RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
-# USER user
+RUN cpp --version|grep clang > /dev/null || exit 1
 
 ENTRYPOINT ["python3", "-u", "init.py", "input.json"]

@@ -11,10 +11,6 @@ for VERSION in "$@"; do
 
     echo "Block the installation of new gcc version $VERSION"
     echo "gcc-$VERSION hold"|dpkg --set-selections
-    echo "cpp-$VERSION hold"|dpkg --set-selections
     echo "g++-$VERSION hold"|dpkg --set-selections
-    echo "cc-$VERSION hold"|dpkg --set-selections
 done
 
-echo "Check if gcc, g++ & cpp are actually clang"
-gcc --version|grep clang > /dev/null || exit 1
