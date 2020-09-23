@@ -2,6 +2,7 @@ import json
 import re
 from os.path import join
 from datetime import datetime
+from collections import OrderedDict
 
 
 class Statistics:
@@ -17,10 +18,10 @@ class Statistics:
         for err in self.errors_stdout:
             if "regex" not in self.errors_stdout[err]:
                 self.errors_stdout[err]["regex"] = re.escape(err)
+            if "amount" not in self.errors_stdout[err]:
+                self.errors_stdout[err]["amount"] = 0
         self.save_errors_json()
-        self.errorypes = {
-            self.errors_stdout[x]["name"]: 0 for x in self.errors_stdout}
-        self.errorypes["unrecognized"] = 0
+        self.errortypes = {"unrecognized": {"amount": 0, "projects": []}}
         # save the failed projects, so we can retry them later
         self.rebuild_projects = {}
         self.unrecognized_errs = []
@@ -35,9 +36,9 @@ class Statistics:
         print("Unrecognized builds: %d" % self.unrecognized_projects, file=out)
         print("newly discovered errors: {}".format(self.new_errs), file=out)
         print("Types of build errors:", file=out)
-        for err, count in self.errorypes.items():
-            if count > 0:
-                print("{}: {}".format(err, count), file=out)
+        self.errortypes = OrderedDict(sorted(self.errortypes.items(), key=lambda i: i[1]['amount'], reverse=True))
+        for err, data in self.errortypes.items():
+            print("{}: {}".format(err, data["amount"]), file=out)
         print("unrecognized errors:")
         for err in self.unrecognized_errs:
             print(err, file=out)
@@ -82,9 +83,7 @@ class Statistics:
                                     "origin": "clang",
                                     "regex": re.escape(err)
                                 }
-                                # string after error is the error name
-                                self.errorypes[self.errors_stdout[err]
-                                               ["name"]] = 0
+                                
                                 self.new_errs += 1
                             elif name not in self.errors_stdout[err]["projects"]:
                                 self.errors_stdout[err]["projects"].append(
@@ -126,8 +125,6 @@ class Statistics:
                                             "origin": origin,
                                             "regex": re.escape(err)
                                         }
-                                        self.errorypes[self.errors_stdout[err]
-                                                       ["name"]] = 0
                                         self.new_errs += 1
                                     elif name not in self.errors_stdout[err]["projects"]:
                                         self.errors_stdout[err]["projects"].append(
@@ -141,12 +138,27 @@ class Statistics:
                     errors = [err for err in self.errors_stdout if re.search(self.errors_stdout[err]["regex"], text) is not None]
                     # we found the following errors
                     for err in errors:
-                        self.errorypes[self.errors_stdout[err]["name"]] += 1
+                        if err in self.errortypes:
+                            self.errortypes[err]["amount"] += 1
+                            if name not in self.errortypes[err]["projects"]:
+                                self.errortypes[err]["projects"].append(name)
+                        else:
+                            self.errortypes[err] = self.errors_stdout[err]
+                            self.errortypes[err]["amount"] = 1
+                            self.errortypes[err]["projects"] = [name]
+
                         if name not in self.errors_stdout[err]["projects"]:
                             self.errors_stdout[err]["projects"].append(name)
-                    project["build"]["errortypes"] = errors
+                        if "amount" in self.errors_stdout[err]:
+                            self.errors_stdout[err]["amount"] += 1
+                        else:
+                            self.errors_stdout[err]["amount"] = 1
+                        project["build"]["errortypes"] = errors
                     if not errors:
-                        self.errorypes["unrecognized"] += 1
+                        self.errortypes["unrecognized"]["amount"] += 1
+                        if name not in self.errortypes["unrecognized"]["projects"]:
+                            self.errortypes["unrecognized"]["projects"].append(name)
+                        project["build"]["errortypes"] = ["unrecognized"]
             # probs do error statistics
             self.add_incorrect_project()
             self.add_rebuild_data(project, name)
@@ -174,15 +186,32 @@ class Statistics:
             self.rebuild_projects[project["type"]] = {}
         self.rebuild_projects[project["type"]][name] = rebuild_data
 
+    def save_errorstat_json(self, path=None):
+        if path is None:
+            timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            path = join(
+                "buildlogs",
+                "errorstats_{}_{}.json".format(self.project_count, timestamp))
+        self.errortypes = OrderedDict(sorted(self.errortypes.items(),
+                                             key=lambda i: i[1]['amount'],
+                                             reverse=True))
+        with open(path, 'w') as o:
+            o.write(json.dumps(self.errortypes, indent=2))
+
     def save_rebuild_json(self, path=None):
         if path is None:
             timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-            path = join("buildlogs", "rebuild_{}_{}.json".format(self.project_count, timestamp))
+            path = join(
+                "buildlogs",
+                "rebuild_{}_{}.json".format(self.project_count, timestamp))
         with open(path, 'w') as o:
             o.write(json.dumps(self.rebuild_projects, indent=2))
 
     def save_errors_json(self, path=None):
         if path is None:
             path = join("code_builder", "errortypes.json")
+        self.errors_stdout = OrderedDict(sorted(self.errors_stdout.items(),
+                                                key=lambda i: i[1]['amount'],
+                                                reverse=True))
         with open(path, 'w') as o:
             o.write(json.dumps(self.errors_stdout, indent=2))

@@ -166,6 +166,7 @@ def build_projects(
         print(json.dumps(repositories, indent=2), file=f)
         stats.save_rebuild_json()
         stats.save_errors_json()
+        stats.save_errorstat_json()
         timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
         with open(join("buildlogs", "summary_{}_{}.txt".format(projects_count, timestamp)), 'w') as o:
             stats.print_stats(o)
