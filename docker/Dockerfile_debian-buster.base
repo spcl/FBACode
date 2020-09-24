@@ -30,6 +30,29 @@ ENV SRC_DIR ${HOME_DIR}/code
 ENV BUILD_DIR ${HOME_DIR}/build
 ENV BITCODES_DIR ${HOME_DIR}/bitcodes
 
+# set the environment variables for c/cxx
+# ENV CC ${HOME_DIR}/wrappers/clang
+# ENV CXX ${HOME_DIR}/wrappers/clang++
+
+# fixes for qmake
+# https://salsa.debian.org/lucas/collab-qa-tools/-/blob/master/modes/clang10
+# Force the configruation of qmake to workaround this issue:
+# https://clang.debian.net/status.php?version=9.0.1&key=FAILED_PARSE_DEFAULT
+
+RUN apt install --yes --no-install-recommends --force-yes qt5-qmake
+RUN cp /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang/* /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/
+RUN ls -al /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/
+RUN cat /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf
+ENV QMAKESPEC=/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang/
+
+RUN sed -i -e "s|compare_problem(2,|compare_problem(0,|g" /usr/bin/dpkg-gensymbols
+RUN sed -i -e "s|compare_problem(1,|compare_problem(0,|g" /usr/bin/dpkg-gensymbols
+RUN grep "compare_problem(" /usr/bin/dpkg-gensymbols
+
+RUN apt search '^gcc-[0-9]*[.]*[0-9]*$' | grep -o '\bgcc[a-zA-Z0-9:_.-]*' |\
+  xargs -I {} echo "{}" hold | dpkg --set-selections
+
+
 RUN mkdir -p ${HOME_DIR}
 WORKDIR ${HOME_DIR}
 ADD docker/init.py init.py
@@ -53,27 +76,6 @@ RUN ln -fs ${HOME_DIR}/wrappers/clang /usr/bin/cc\
 RUN cd ${HOME_DIR}/wrappers && ./replace_compilers.sh 4.6 4.7 4.8 4.9 5 6 7 8 9 10
 
 
-# set the environment variables for c/cxx
-# ENV CC ${HOME_DIR}/wrappers/clang
-# ENV CXX ${HOME_DIR}/wrappers/clang++
-
-# fixes for qmake
-# https://salsa.debian.org/lucas/collab-qa-tools/-/blob/master/modes/clang10
-# Force the configruation of qmake to workaround this issue:
-# https://clang.debian.net/status.php?version=9.0.1&key=FAILED_PARSE_DEFAULT
-
-RUN apt install --yes --no-install-recommends --force-yes qt5-qmake
-RUN cp /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang/* /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/
-RUN ls -al /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/
-RUN cat /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf
-ENV QMAKESPEC=/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang/
-
-RUN sed -i -e "s|compare_problem(2,|compare_problem(0,|g" /usr/bin/dpkg-gensymbols
-RUN sed -i -e "s|compare_problem(1,|compare_problem(0,|g" /usr/bin/dpkg-gensymbols
-RUN grep "compare_problem(" /usr/bin/dpkg-gensymbols
-
-RUN apt search '^gcc-[0-9]*[.]*[0-9]*$' | grep -o '\bgcc[a-zA-Z0-9:_.-]*' |\
-  xargs -I {} echo "{}" hold | dpkg --set-selections
 
 # Check if gcc, g++ & cpp are actually clang
 RUN gcc --version|grep clang > /dev/null || exit 1
