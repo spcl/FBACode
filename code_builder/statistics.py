@@ -1,5 +1,6 @@
 import json
 import re
+import copy
 from os.path import join
 from datetime import datetime
 from collections import OrderedDict
@@ -36,7 +37,8 @@ class Statistics:
         print("Unrecognized builds: %d" % self.unrecognized_projects, file=out)
         print("newly discovered errors: {}".format(self.new_errs), file=out)
         print("Types of build errors:", file=out)
-        self.errortypes = OrderedDict(sorted(self.errortypes.items(), key=lambda i: i[1]['amount'], reverse=True))
+        self.errortypes = OrderedDict(sorted(self.errortypes.items(),
+                                      key=lambda i: i[1].get("amount", 0), reverse=True))
         for err, data in self.errortypes.items():
             print("{}: {}".format(err, data["amount"]), file=out)
         print("unrecognized errors:")
@@ -143,7 +145,7 @@ class Statistics:
                             if name not in self.errortypes[err]["projects"]:
                                 self.errortypes[err]["projects"].append(name)
                         else:
-                            self.errortypes[err] = self.errors_stdout[err]
+                            self.errortypes[err] = copy.deepcopy(self.errors_stdout[err])
                             self.errortypes[err]["amount"] = 1
                             self.errortypes[err]["projects"] = [name]
 
@@ -179,7 +181,7 @@ class Statistics:
             "suite": project["suite"] if "suite" in project else None,
             "version": project["version"],
             "status": project["status"],
-            "codebase_data": project["codebase_data"] if "codebase_data" in project else None,
+            "codebase_data": project.get("codebase_data", None),
             "previous_errors": project["build"]["errortypes"] if ("build" in project and "errortypes" in project["build"]) else None
         }
         if project["type"] not in self.rebuild_projects:
@@ -193,7 +195,7 @@ class Statistics:
                 "buildlogs",
                 "errorstats_{}_{}.json".format(self.project_count, timestamp))
         self.errortypes = OrderedDict(sorted(self.errortypes.items(),
-                                             key=lambda i: i[1]['amount'],
+                                             key=lambda i: i[1].get("amount", 0),
                                              reverse=True))
         with open(path, 'w') as o:
             o.write(json.dumps(self.errortypes, indent=2))
@@ -211,7 +213,7 @@ class Statistics:
         if path is None:
             path = join("code_builder", "errortypes.json")
         self.errors_stdout = OrderedDict(sorted(self.errors_stdout.items(),
-                                                key=lambda i: i[1]['amount'],
+                                                key=lambda i: i[1].get("amount", 0),
                                                 reverse=True))
         with open(path, 'w') as o:
             o.write(json.dumps(self.errors_stdout, indent=2))
