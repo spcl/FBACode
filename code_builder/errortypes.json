@@ -1,294 +1,262 @@
 {
+  "E: Unable to find a source package": {
+    "name": "E: Unable to find a source package",
+    "projects": [
+      "isdnactivecards",
+      "iozone3"
+    ],
+    "origin": "debian",
+    "regex": "E\\:\\ Unable\\ to\\ find\\ a\\ source\\ package",
+    "amount": 3
+  },
+  "clang: error: linker command failed": {
+    "name": "linker command failed",
+    "projects": [
+      "libaccounts-qt",
+      "libace-perl"
+    ],
+    "origin": "hardcoded",
+    "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed",
+    "amount": 3
+  },
+  "clang: error: linker command failed with exit code 1 (use -v to see invocation)": {
+    "name": "clang: error: linker command failed with exit code 1 (use -v to see invocation)",
+    "projects": [
+      "libaccounts-qt",
+      "libace-perl"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
+    "amount": 3
+  },
+  "error: unsupported inline asm: input with type 'long' matching output with type 'char'": {
+    "name": "unsupported inline asm: input with type 'long' matching output with type 'char'",
+    "projects": [
+      "sphde"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ unsupported\\ inline\\ asm\\:\\ input\\ with\\ type\\ \\'long\\'\\ matching\\ output\\ with\\ type\\ \\'char\\'",
+    "amount": 2
+  },
+  "error: 'boostPATH/FILE.EXT file not found": {
+    "name": "'boostPATH/FILE.EXT file not found",
+    "projects": [
+      "google-compute-image-packages"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'boost(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
+    "amount": 2
+  },
+  "error: typedef redefinition with different types ('long long' vs '__off64_t' (aka 'long'))": {
+    "name": "typedef redefinition with different types ('long long' vs '__off64_t' (aka 'long'))",
+    "projects": [
+      "iozone3"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ typedef\\ redefinition\\ with\\ different\\ types\\ \\(\\'long\\ long\\'\\ vs\\ \\'__off64_t\\'\\ \\(aka\\ \\'long\\'\\)\\)",
+    "amount": 1
+  },
+  "clang: error: unknown argument: '-fmacro-prefix-map=PATH/FILE.EXT": {
+    "name": "clang: error: unknown argument: '-fmacro-prefix-map=PATH/FILE.EXT",
+    "projects": [
+      "libappimage"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ unknown\\ argument\\:\\ \\'\\-fmacro\\-prefix\\-map\\=(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
+    "amount": 1
+  },
+  "[Error] Package cmake is not installed": {
+    "name": "[Error] Package cmake is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ cmake\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "[Error] Package ibus is not installed": {
+    "name": "[Error] Package ibus is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ ibus\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "[Error] Package ibus-devel is not installed": {
+    "name": "[Error] Package ibus-devel is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ ibus\\-devel\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "[Error] Package libchewing is not installed": {
+    "name": "[Error] Package libchewing is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ libchewing\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "[Error] Package libchewing-devel is not installed": {
+    "name": "[Error] Package libchewing-devel is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ libchewing\\-devel\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "[Error] Package glib2-devel is not installed": {
+    "name": "[Error] Package glib2-devel is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ glib2\\-devel\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "[Error] Package gtk2 is not installed": {
+    "name": "[Error] Package gtk2 is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ gtk2\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "[Error] Package gtk2-devel is not installed": {
+    "name": "[Error] Package gtk2-devel is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ gtk2\\-devel\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "[Error] Package gob2 is not installed": {
+    "name": "[Error] Package gob2 is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ gob2\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "[Error] Package libX11-devel is not installed": {
+    "name": "[Error] Package libX11-devel is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ libX11\\-devel\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "[Error] Package gettext is not installed": {
+    "name": "[Error] Package gettext is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ gettext\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "[Error] Package findutils is not installed": {
+    "name": "[Error] Package findutils is not installed",
+    "projects": [
+      "ibus-chewing"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ findutils\\ is\\ not\\ installed",
+    "amount": 1
+  },
+  "error: poPATH/FILE.EXT was not created by intltoolize.": {
+    "name": "error: poPATH/FILE.EXT was not created by intltoolize.",
+    "projects": [
+      "ibus-unikey"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ po(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ was\\ not\\ created\\ by\\ intltoolize\\.",
+    "amount": 1
+  },
+  "make target not found": {
+    "name": "make target not found",
+    "projects": [],
+    "origin": "hardcoded",
+    "regex": "make.*No\\ rule\\ to\\ make\\ target.*Stop:",
+    "amount": 0
+  },
   "error: ordered comparison between pointer and zero": {
     "name": "ordered comparison between pointer and zero",
     "projects": [],
     "origin": "hardcoded",
-    "regex": "error\\:\\ ordered\\ comparison\\ between\\ pointer\\ and\\ zero"
+    "regex": "error\\:\\ ordered\\ comparison\\ between\\ pointer\\ and\\ zero",
+    "amount": 0
   },
   "configure: error: something wrong with LDFLAGS": {
     "name": "something wrong with LDFLAGS",
     "projects": [],
     "origin": "hardcoded",
-    "regex": "configure\\:\\ error\\:\\ something\\ wrong\\ with\\ LDFLAGS"
+    "regex": "configure\\:\\ error\\:\\ something\\ wrong\\ with\\ LDFLAGS",
+    "amount": 0
   },
   "Project ERROR: failed to parse default search paths from compiler output": {
     "name": "failed to parse default search paths from compiler output",
     "projects": [],
     "origin": "hardcoded",
-    "regex": "Project\\ ERROR\\:\\ failed\\ to\\ parse\\ default\\ search\\ paths\\ from\\ compiler\\ output"
-  },
-  "clang: error: linker command failed": {
-    "name": "linker command failed",
-    "projects": [],
-    "origin": "hardcoded",
-    "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed"
+    "regex": "Project\\ ERROR\\:\\ failed\\ to\\ parse\\ default\\ search\\ paths\\ from\\ compiler\\ output",
+    "amount": 0
   },
   "error: embedding a directive within macro arguments has undefined behavior": {
     "name": "embedding a directive within macro arguments has undefined behavior",
     "projects": [],
     "origin": "hardcoded",
-    "regex": "error\\:\\ embedding\\ a\\ directive\\ within\\ macro\\ arguments\\ has\\ undefined\\ behavior"
+    "regex": "error\\:\\ embedding\\ a\\ directive\\ within\\ macro\\ arguments\\ has\\ undefined\\ behavior",
+    "amount": 0
   },
   "configure: error: could not find gnutls": {
     "name": "configure: error: could not find gnutls",
     "projects": [],
     "origin": "hardcoded",
-    "regex": "configure\\:\\ error\\:\\ could\\ not\\ find\\ gnutls"
+    "regex": "configure\\:\\ error\\:\\ could\\ not\\ find\\ gnutls",
+    "amount": 0
   },
   "configure: error:": {
     "name": "configure_error",
     "projects": [],
     "origin": "hardcoded",
-    "regex": "configure\\:\\ error\\:"
+    "regex": "configure\\:\\ error\\:",
+    "amount": 0
   },
   "error: use of undeclared identifier": {
     "name": "undeclared identifier",
     "projects": [],
     "origin": "hardcoded",
-    "regex": "error\\:\\ use\\ of\\ undeclared\\ identifier"
+    "regex": "error\\:\\ use\\ of\\ undeclared\\ identifier",
+    "amount": 0
   },
   "error: empty search path given via `-L`": {
     "name": "empty search path given via `-L`",
     "projects": [],
     "origin": "hardcoded",
-    "regex": "error\\:\\ empty\\ search\\ path\\ given\\ via\\ \\`\\-L\\`"
+    "regex": "error\\:\\ empty\\ search\\ path\\ given\\ via\\ \\`\\-L\\`",
+    "amount": 0
   },
   "error: invalid suffix on literal": {
     "name": "error: invalid suffix on literal",
     "projects": [],
     "origin": "hardcoded",
-    "regex": "error\\:\\ invalid\\ suffix\\ on\\ literal"
+    "regex": "error\\:\\ invalid\\ suffix\\ on\\ literal",
+    "amount": 0
   },
   "error: 'iostream' file not found": {
     "name": "'iostream' not found",
     "projects": [],
     "origin": "hardcoded",
-    "regex": "error\\:\\ \\'iostream\\'\\ file\\ not\\ found"
-  },
-  "error: invalid suffix on literal; C++11 requires a space between literal and identifier [-Wreserved-user-defined-literal]": {
-    "name": "invalid suffix on literal; C++11 requires a space between literal and identifier [-Wreserved-user-defined-literal]",
-    "projects": [
-      "vdr-plugin-mp3"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ invalid\\ suffix\\ on\\ literal\\;\\ C\\+\\+11\\ requires\\ a\\ space\\ between\\ literal\\ and\\ identifier\\ \\[\\-Wreserved\\-user\\-defined\\-literal\\]"
-  },
-  "error: ordered comparison between pointer and zero ('char *' and 'int')": {
-    "name": "ordered comparison between pointer and zero ('char *' and 'int')",
-    "projects": [
-      "vdr-plugin-mp3"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ ordered\\ comparison\\ between\\ pointer\\ and\\ zero\\ \\(\\'char\\ \\*\\'\\ and\\ \\'int\\'\\)"
-  },
-  "error: expected ')'": {
-    "name": "expected ')'",
-    "projects": [
-      "visualboyadvance"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ expected\\ \\'\\)\\'"
-  },
-  "error: cast from pointer to smaller type 'unsigned int' loses information": {
-    "name": "cast from pointer to smaller type 'unsigned int' loses information",
-    "projects": [
-      "visualboyadvance"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ cast\\ from\\ pointer\\ to\\ smaller\\ type\\ \\'unsigned\\ int\\'\\ loses\\ information"
-  },
-  "error: linker command failed with exit code 1 (use -v to see invocation)": {
-    "name": "linker command failed with exit code 1 (use -v to see invocation)",
-    "projects": [
-      "libjogl2-java"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)"
-  },
-  "error: unused parameter 'argc' [-Werror,-Wunused-parameter]": {
-    "name": "unused parameter 'argc' [-Werror,-Wunused-parameter]",
-    "projects": [
-      "switchsh"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ unused\\ parameter\\ \\'argc\\'\\ \\[\\-Werror\\,\\-Wunused\\-parameter\\]"
-  },
-  "error: argument unused during compilation: '-s' [-Werror,-Wunused-command-line-argument]": {
-    "name": "argument unused during compilation: '-s' [-Werror,-Wunused-command-line-argument]",
-    "projects": [
-      "switchsh"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ argument\\ unused\\ during\\ compilation\\:\\ \\'\\-s\\'\\ \\[\\-Werror\\,\\-Wunused\\-command\\-line\\-argument\\]"
-  },
-  "error: sizeof(uuid_t) is not 16": {
-    "name": "sizeof(uuid_t) is not 16",
-    "projects": [
-      "pidgin-sipe"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ sizeof\\(uuid_t\\)\\ is\\ not\\ 16"
-  },
-  "error: could not find libpthread": {
-    "name": "could not find libpthread",
-    "projects": [
-      "libmemcached"
-    ],
-    "origin": "configure",
-    "regex": "error\\:\\ could\\ not\\ find\\ libpthread"
-  },
-  "error: unknown kind of pragma comment": {
-    "name": "unknown kind of pragma comment",
-    "projects": [
-      "libmdsp"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ unknown\\ kind\\ of\\ pragma\\ comment"
-  },
-  "E: Unable to find a source package for opentyrian": {
-    "name": "E: Unable to find a source package for opentyrian",
-    "projects": [
-      "opentyrian"
-    ],
-    "origin": "debian",
-    "regex": "E\\:\\ Unable\\ to\\ find\\ a\\ source\\ package\\ for\\ opentyrian"
-  },
-  "E: Unable to find a source package": {
-    "name": "E: Unable to find a source package",
-    "projects": [
-      "opentyrian"
-    ],
-    "origin": "debian",
-    "regex": "E\\:\\ Unable\\ to\\ find\\ a\\ source\\ package"
-  },
-  "clang: error: -Wl,-z,relro: 'linker' input unused [-Werror,-Wunused-command-line-argument]": {
-    "name": "clang: error: -Wl,-z,relro: 'linker' input unused [-Werror,-Wunused-command-line-argument]",
-    "projects": [
-      "libzstd"
-    ],
-    "origin": "clang_other",
-    "regex": "clang\\:\\ error\\:\\ \\-Wl\\,\\-z\\,relro\\:\\ \\'linker\\'\\ input\\ unused\\ \\[\\-Werror\\,\\-Wunused\\-command\\-line\\-argument\\]"
-  },
-  "clang: error: -Wl,-z,now: 'linker' input unused [-Werror,-Wunused-command-line-argument]": {
-    "name": "clang: error: -Wl,-z,now: 'linker' input unused [-Werror,-Wunused-command-line-argument]",
-    "projects": [
-      "libzstd"
-    ],
-    "origin": "clang_other",
-    "regex": "clang\\:\\ error\\:\\ \\-Wl\\,\\-z\\,now\\:\\ \\'linker\\'\\ input\\ unused\\ \\[\\-Werror\\,\\-Wunused\\-command\\-line\\-argument\\]"
-  },
-  ".o: 'linker' input unused": {
-    "name": ".o: 'linker' input unused",
-    "projects": [
-      "libzstd"
-    ],
-    "origin": "clang_other",
-    "regex": "\\.o\\:\\ \\'linker\\'\\ input\\ unused"
-  },
-  "error: POSIX threads support is required": {
-    "name": "error: POSIX threads support is required",
-    "projects": [
-      "libomxxvideo",
-      "libomxmad",
-      "libomxalsa"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ POSIX\\ threads\\ support\\ is\\ required"
-  },
-  "error: in `/home/fba_code/build':": {
-    "name": "error: in `/home/fba_code/build':",
-    "projects": [
-      "libomxcamera",
-      "libolecf",
-      "libomxfbdevsink",
-      "libomxvideosrc",
-      "libomxvorbis"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ in\\ \\`\\/home\\/fba_code\\/build\\'\\:"
-  },
-  "error: C compiler cannot create executables": {
-    "name": "error: C compiler cannot create executables",
-    "projects": [
-      "libomxcamera",
-      "libomxfbdevsink",
-      "libomxvideosrc",
-      "libomxvorbis"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ C\\ compiler\\ cannot\\ create\\ executables"
-  },
-  "error: invalid value: boost_major_version='167boost-lib-version=1'": {
-    "name": "error: invalid value: boost_major_version='167boost-lib-version=1'",
-    "projects": [
-      "liborcus",
-      "libopenraw"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ invalid\\ value\\:\\ boost_major_version\\=\\'167boost\\-lib\\-version\\=1\\'"
-  },
-  "error: unrecognized option: `-DLIB_INSTALL_DIR=lib/x86_64-linux-gnu'": {
-    "name": "error: unrecognized option: `-DLIB_INSTALL_DIR=lib/x86_64-linux-gnu'",
-    "projects": [
-      "libosmosdr"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ unrecognized\\ option\\:\\ \\`\\-DLIB_INSTALL_DIR\\=lib\\/x86_64\\-linux\\-gnu\\'"
-  },
-  "error: Missing function: mkdir": {
-    "name": "error: Missing function: mkdir",
-    "projects": [
-      "libolecf"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ Missing\\ function\\:\\ mkdir"
-  },
-  "ERROR: failed to parse default search paths from compiler output": {
-    "name": "ERROR: failed to parse default search paths from compiler output",
-    "projects": [
-      "liborigin2"
-    ],
-    "origin": "general_error",
-    "regex": "ERROR\\:\\ failed\\ to\\ parse\\ default\\ search\\ paths\\ from\\ compiler\\ output"
-  },
-  "error: libdl is required": {
-    "name": "error: libdl is required",
-    "projects": [
-      "libomxil-bellagio"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ libdl\\ is\\ required"
-  },
-  "error: reference to 'UnitTest' is ambiguous": {
-    "name": "reference to 'UnitTest' is ambiguous",
-    "projects": [
-      "libopenshot"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ reference\\ to\\ \\'UnitTest\\'\\ is\\ ambiguous"
-  },
-  "error: expected class name": {
-    "name": "expected class name",
-    "projects": [
-      "libopenshot"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ expected\\ class\\ name"
-  },
-  "error: member initializer 'Test' does not name a non-static data member or base class": {
-    "name": "member initializer 'Test' does not name a non-static data member or base class",
-    "projects": [
-      "libopenshot"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ member\\ initializer\\ \\'Test\\'\\ does\\ not\\ name\\ a\\ non\\-static\\ data\\ member\\ or\\ base\\ class"
-  },
-  "error: 'dprintf' macro redefined [-Werror,-Wmacro-redefined]": {
-    "name": "'dprintf' macro redefined [-Werror,-Wmacro-redefined]",
-    "projects": [
-      "liboping"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ \\'dprintf\\'\\ macro\\ redefined\\ \\[\\-Werror\\,\\-Wmacro\\-redefined\\]"
+    "regex": "error\\:\\ \\'iostream\\'\\ file\\ not\\ found",
+    "amount": 0
   }
 }
