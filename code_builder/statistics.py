@@ -4,9 +4,13 @@ import copy
 from os.path import join
 from datetime import datetime
 from collections import OrderedDict
+from fuzzywuzzy import process
+from fuzzywuzzy import fuzz
 
 
 class Statistics:
+
+    path_regex = r"(?:\.\.|\.)?(?:[/]*/)+\S*\.\S+(?:\sline\s\d+:?)?(?=\s|$|\.)"
 
     def __init__(self, project_count):
         self.correct_projects = 0
@@ -59,15 +63,41 @@ class Statistics:
             self.add_rebuild_data(project, name)
         else:
             if "build" in project:
+                # new plan:
+                # first try to match stderr to existing errors using regex
+                # then try to match to existing errors using levenshtein distance (fuzzywuzzy)
+                #   - how to handle path substitutions?
+                # then add new error pattern
+                project["build"]["errortypes"] = []
                 print("\nstarting error analysis for {}".format(name))
                 err_log = join(project["build"]["dir"], project["build"]["stderr"])
                 with open(err_log, "r") as log:
-                    self.analyze_log(project, name, log)
+                    text = log.read()
+                    if self.match_error_with_regex(project, name, text):
+                        print("found err by regex!")
+                    elif self.match_error_fuzzy(project, name, text):
+                        print("found err by fuzzy search!")
+                    elif self.new_errors(project, name, text):
+                        print("matched new errors!")
+                    else:
+                        print("no error found yet, looking at docker log...")
                 # found no errs yet, check docker log (stdout of build)
-                if "errortypes" not in project["build"] or not project["build"]["errortypes"]:
+                if not project["build"]["errortypes"]:
                     docker_log = join(project["build"]["dir"], project["build"]["docker_log"])
                     with open(docker_log, "r") as log:
-                        self.analyze_log(project, name, log)
+                        text = log.read()
+                    if self.match_error_with_regex(project, name, text):
+                        print("found err by regex!")
+                    elif self.match_error_fuzzy(project, name, text):
+                        print("found err by fuzzy search!")
+                    elif self.new_errors(project, name, text):
+                        print("matched new errors!")
+                    else:
+                        print("no errors found... fuck")
+                        self.errortypes["unrecognized"]["amount"] += 1
+                        if name not in self.errortypes["unrecognized"]["projects"]:
+                            self.errortypes["unrecognized"]["projects"].append(name)
+                        project["build"]["errortypes"] = ["unrecognized"]
             self.add_incorrect_project()
             self.add_rebuild_data(project, name)
 
@@ -80,99 +110,7 @@ class Statistics:
     def add_incorrect_project(self):
         self.incorrect_projects += 1
 
-    def analyze_log(self, project, name, log):
-        text = log.read()
-        # try to find the normal clang error line (match to filename.xx:line:col: error: )
-        path_regex = r"(?:\.\.|\.)?(?:[/]*/)+\S*\.\S+(?:\sline\s\d+:?)?(?=\s|$|\.)"
-        errlines = re.findall(
-            r"^.*\..*\:\d+\:\d+\:.*error\:.*$", text, flags=re.MULTILINE)
-        clang_errs = True
-        if errlines == []:
-            print("could not find clang error pattern..")
-            errlines = re.findall(
-                r"^.*error.*$", text, flags=re.IGNORECASE | re.MULTILINE)
-            clang_errs = False
-            print(errlines)
-        # if we have nicely formatted errs from clang, we just add to known errs
-        if clang_errs:
-            for err in errlines:
-                # remove filename and lines etc.
-                err = re.sub(path_regex, "PATH/FILE.EXT", err)
-                err = re.search(r"error\:.*$", err).group(0)
-                if err not in self.errors_stdout:
-                    self.errors_stdout[err] = {
-                        "name": err.replace("error: ", ''),
-                        "projects": [name],
-                        "origin": "clang",
-                        "regex": re.escape(err).replace(
-                            re.escape("PATH/FILE.EXT"), path_regex)
-                    }
-                    self.new_errs += 1
-                elif name not in self.errors_stdout[err]["projects"]:
-                    self.errors_stdout[err]["projects"].append(
-                        name)
-        else:
-            # figure out what to do with other error strings
-            # this dict contains the error match and then thi origin, at the
-            # end is the most generic one.
-            err_patterns = [
-                (r".*\.o\:" + re.escape(" 'linker' input unused") + r".*$",
-                    "clang_other", re.escape(".o: 'linker' input unused")),
-                (re.escape("[Error] Package ") + r".*" +
-                    re.escape(" is not installed"), "cmake - dependency", False),
-                (re.escape("clang: error: ") +
-                    r".*$", "clang_other", False),
-                (re.escape("ERROR - ") + r".*" + re.escape("not found"),
-                    "dependency", False),
-                (re.escape("ERROR - ") + r".*" + re.escape("No such file or directory"),
-                    "dependency", False),
-                (re.escape("configure: error :") +
-                    r".*$", "configure", False),
-                (re.escape("Errors while running CTest"), "testing", False),
-                (re.escape("E: Unable to find a source package") +
-                    r".*$", "debian", re.escape("E: Unable to find a source package")),
-                (r"\.\/configure.*syntax\ error.*$", "configure", False),
-                (re.escape("ERROR - ") + r".*syntax\ error.*",
-                    "syntax error", False),
-                (re.escape("fatal error: ") +
-                    r".*$", "fatal_error", False),
-                (re.escape("error: ") + r".*$", "general_error", False),
-                (re.escape("Error: ") + r".*$", "general_error", False),
-                (re.escape("ERROR: ") + r".*$", "general_error", False)
-            ]
-            found_match = False
-            for err in errlines:
-                # remove paths
-                err = re.sub(path_regex, "PATH/FILE.EXT", err)
-                # remove file in beginning of line e.g. makefile 96:420: 
-                err = re.sub(r"^\S*\.\S*(?:\:|\ )?\d+(?:\:\d+)?\:\ ", "", err)
-                for match, origin, title in err_patterns:
-                    regex_result = re.search(match, err)
-                    if regex_result:
-                        # regex to extract paths and filenames
-                        err = re.search(title, err).group(
-                            ) if title else regex_result.group()
-                        print("matched err {}".format(err))
-                        if err not in self.errors_stdout:
-                            self.errors_stdout[err] = {
-                                "name": err,
-                                "projects": [name],
-                                "origin": origin,
-                                "regex": re.escape(err).replace(
-                                    re.escape("PATH/FILE.EXT"), path_regex)
-                            }
-                            self.new_errs += 1
-                        elif name not in self.errors_stdout[err]["projects"]:
-                            self.errors_stdout[err]["projects"].append(
-                                name)
-                        found_match = True
-                        break
-            if not found_match:
-                self.unrecognized_errs.append("{}:".format(name))
-                self.unrecognized_errs.extend(errlines)
-
-        errors = [err for err in self.errors_stdout if re.search(self.errors_stdout[err]["regex"], text) is not None]
-        # we found the following errors
+    def add_errors(self, project, name, errors):
         for err in errors:
             if err in self.errortypes:
                 self.errortypes[err]["amount"] += 1
@@ -189,12 +127,110 @@ class Statistics:
                 self.errors_stdout[err]["amount"] += 1
             else:
                 self.errors_stdout[err]["amount"] = 1
-            project["build"]["errortypes"] = errors
-        if not errors:
-            self.errortypes["unrecognized"]["amount"] += 1
-            if name not in self.errortypes["unrecognized"]["projects"]:
-                self.errortypes["unrecognized"]["projects"].append(name)
-            project["build"]["errortypes"] = ["unrecognized"]
+            project["build"]["errortypes"].extend(errors)
+
+    def match_error_with_regex(self, project, name, log):
+        errors = [err for err in self.errors_stdout
+                  if re.search(self.errors_stdout[err]["regex"], log) is not None]
+        # we found the following errors
+        self.add_errors(project, name, errors)
+        return bool(errors)
+
+    def match_error_fuzzy(self, project, name, log):
+        lines = [re.sub(self.path_regex, "PATH/FILE.TXT", l) for l in log.splitlines()]
+        errors = []
+        for l in lines:
+            matches = process.extract(l, self.errors_stdout.keys(),
+                                      limit=5, scorer=fuzz.token_sort_ratio)
+            # what threshold??
+            errors.extend([m[0] for m in matches if m[1] >= 90])
+        self.add_errors(project, name, errors)
+        return bool(errors)
+
+    def find_new_errors(self, project, name, log):
+        # try to find the normal clang error line (match to filename.xx:line:col: error: )
+        errlines = re.findall(
+            r"^.*\..*\:\d+\:\d+\:.*error\:.*$", log, flags=re.MULTILINE)
+        # if we have nicely formatted errs from clang, we just add to known errs
+        if errlines:
+            for err in errlines:
+                # remove filename and lines etc.
+                err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
+                err = re.search(r"error\:.*$", err).group(0)
+                if err not in self.errors_stdout:
+                    self.errors_stdout[err] = {
+                        "name": err.replace("error: ", ''),
+                        "projects": [name],
+                        "origin": "clang",
+                        "regex": re.escape(err).replace(
+                            re.escape("PATH/FILE.EXT"), self.path_regex)
+                    }
+                    self.new_errs += 1
+                self.add_errors(project, name, [err])
+            return True
+        print("could not find clang error pattern..")
+        errlines = re.findall(
+            r"^.*error.*$", log, flags=re.IGNORECASE | re.MULTILINE)
+        print(errlines)
+        # figure out what to do with other error strings
+        # this dict contains the error match and then thi origin, at the
+        # end is the most generic one.
+        err_patterns = [
+            (r".*\.o\:" + re.escape(" 'linker' input unused") + r".*$",
+                "clang_other", re.escape(".o: 'linker' input unused")),
+            (re.escape("[Error] Package ") + r".*" +
+                re.escape(" is not installed"), "cmake - dependency", False),
+            (re.escape("clang: error: ") +
+                r".*$", "clang_other", False),
+            (re.escape("ERROR - ") + r".*" + re.escape("not found"),
+                "dependency", False),
+            (re.escape("ERROR - ") + r".*" + re.escape("No such file or directory"),
+                "dependency", False),
+            (re.escape("configure: error :") +
+                r".*$", "configure", False),
+            (re.escape("Errors while running CTest"), "testing", False),
+            (re.escape("E: Unable to find a source package") +
+                r".*$", "debian", re.escape("E: Unable to find a source package")),
+            (r"\.\/configure.*syntax\ error.*$", "configure", False),
+            (re.escape("ERROR - ") + r".*syntax\ error.*",
+                "syntax error", False),
+            (re.escape("ERROR - ") + r".*" + re.escape("Compatibility levels before "),
+                "syntax error", False),
+            (re.escape("fatal error: ") +
+                r".*$", "fatal_error", False),
+            (re.escape("error: ") + r".*$", "general_error", False),
+            (re.escape("Error: ") + r".*$", "general_error", False),
+            (re.escape("ERROR: ") + r".*$", "general_error", False)
+        ]
+        found_match = False
+        for err in errlines:
+            # remove paths
+            err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
+            # remove file in beginning of line e.g. makefile 96:420: 
+            err = re.sub(r"^\S*\.\S*(?:\:|\ )?\d+(?:\:\d+)?\:\ ", "", err)
+            for match, origin, title in err_patterns:
+                regex_result = re.search(match, err)
+                if regex_result:
+                    # regex to extract paths and filenames
+                    err = re.search(title, err).group(
+                        ) if title else regex_result.group()
+                    print("matched err {}".format(err))
+                    if err not in self.errors_stdout:
+                        self.errors_stdout[err] = {
+                            "name": err,
+                            "projects": [name],
+                            "origin": origin,
+                            "regex": re.escape(err).replace(
+                                re.escape("PATH/FILE.EXT"), self.path_regex)
+                        }
+                        self.new_errs += 1
+                    # elif name not in self.errors_stdout[err]["projects"]:
+                    #     self.errors_stdout[err]["projects"].append(
+                    #         name)
+                    self.add_errors(project, name, [err])
+                    found_match = True
+                    break
+        return found_match
 
     def add_rebuild_data(self, project, name):
         # generate info for rebuild
