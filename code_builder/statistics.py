@@ -77,7 +77,7 @@ class Statistics:
                         print("found err by regex!")
                     elif self.match_error_fuzzy(project, name, text):
                         print("found err by fuzzy search!")
-                    elif self.new_errors(project, name, text):
+                    elif self.find_new_errors(project, name, text):
                         print("matched new errors!")
                     else:
                         print("no error found yet, looking at docker log...")
@@ -141,10 +141,11 @@ class Statistics:
         errors = []
         for l in lines:
             matches = process.extract(l, self.errors_stdout.keys(),
-                                      limit=5, scorer=fuzz.token_sort_ratio)
+                                      limit=5, scorer=fuzz.partial_ratio)
             # what threshold??
             errors.extend([m[0] for m in matches if m[1] >= 90])
-        self.add_errors(project, name, errors)
+        # remove dups
+        self.add_errors(project, name, list(set(errors)))
         return bool(errors)
 
     def find_new_errors(self, project, name, log):
