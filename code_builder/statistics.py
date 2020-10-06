@@ -90,7 +90,7 @@ class Statistics:
                         print("found err by regex!")
                     elif self.match_error_fuzzy(project, name, text):
                         print("found err by fuzzy search!")
-                    elif self.new_errors(project, name, text):
+                    elif self.find_new_errors(project, name, text):
                         print("matched new errors!")
                     else:
                         print("no errors found... fuck")

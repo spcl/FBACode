@@ -69,7 +69,8 @@ class Project:
         self.output_log.print_info(self.idx, str(out))
         # find out the name of the source code folder
         out = out.stdout
-        replace_name = search(r"(?<=Picking ').*(?=' as source package instead of \'{0}\')".format(self.name), out)
+        replace_name = search(r"(?<=Picking ').*(?=' as source package instead of \'{0}\')"
+                              .format(escape(self.name)), out)
         if replace_name:
             # apt chose a package with a different name:
             self.name = replace_name[0]
