@@ -228,7 +228,8 @@ class Statistics:
                     # elif name not in self.errors_stdout[err]["projects"]:
                     #     self.errors_stdout[err]["projects"].append(
                     #         name)
-                    self.add_errors(project, name, [err])
+                    if err not in project["errortypes"]:
+                        self.add_errors(project, name, [err])
                     found_match = True
                     break
         return found_match
