@@ -1,4 +1,38 @@
 {
+  "clang: error: linker command failed with exit code 1 (use -v to see invocation)": {
+    "name": "clang: error: linker command failed with exit code 1 (use -v to see invocation)",
+    "projects": [
+      "libaccounts-qt",
+      "libace-perl",
+      "libinih",
+      "libiodbc2",
+      "erlang-jiffy",
+      "eterm",
+      "ethereal-chess",
+      "encfs",
+      "efivar",
+      "ecdsautils",
+      "epm",
+      "scrm",
+      "soapyremote",
+      "stockfish"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
+    "amount": 15
+  },
+  "error: invalid suffix on literal; C++11 requires a space between literal and identifier [-Wreserved-user-defined-literal]": {
+    "name": "invalid suffix on literal; C++11 requires a space between literal and identifier [-Wreserved-user-defined-literal]",
+    "projects": [
+      "epcr",
+      "espeakedit",
+      "speech-dispatcher",
+      "sdl-ball"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ invalid\\ suffix\\ on\\ literal\\;\\ C\\+\\+11\\ requires\\ a\\ space\\ between\\ literal\\ and\\ identifier\\ \\[\\-Wreserved\\-user\\-defined\\-literal\\]",
+    "amount": 4
+  },
   "E: Unable to find a source package": {
     "name": "E: Unable to find a source package",
     "projects": [
@@ -9,24 +43,13 @@
     "regex": "E\\:\\ Unable\\ to\\ find\\ a\\ source\\ package",
     "amount": 3
   },
-  "clang: error: linker command failed": {
-    "name": "linker command failed",
+  "error: 'boostPATH/FILE.EXT file not found": {
+    "name": "'boostPATH/FILE.EXT file not found",
     "projects": [
-      "libaccounts-qt",
-      "libace-perl"
+      "google-compute-image-packages"
     ],
-    "origin": "hardcoded",
-    "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed",
-    "amount": 3
-  },
-  "clang: error: linker command failed with exit code 1 (use -v to see invocation)": {
-    "name": "clang: error: linker command failed with exit code 1 (use -v to see invocation)",
-    "projects": [
-      "libaccounts-qt",
-      "libace-perl"
-    ],
-    "origin": "clang_other",
-    "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
+    "origin": "clang",
+    "regex": "error\\:\\ \\'boost(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
     "amount": 3
   },
   "error: unsupported inline asm: input with type 'long' matching output with type 'char'": {
@@ -38,13 +61,54 @@
     "regex": "error\\:\\ unsupported\\ inline\\ asm\\:\\ input\\ with\\ type\\ \\'long\\'\\ matching\\ output\\ with\\ type\\ \\'char\\'",
     "amount": 2
   },
-  "error: 'boostPATH/FILE.EXT file not found": {
-    "name": "'boostPATH/FILE.EXT file not found",
+  "error: poPATH/FILE.EXT was not created by intltoolize.": {
+    "name": "error: poPATH/FILE.EXT was not created by intltoolize.",
     "projects": [
-      "google-compute-image-packages"
+      "ibus-unikey",
+      "scim-tables"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ po(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ was\\ not\\ created\\ by\\ intltoolize\\.",
+    "amount": 2
+  },
+  "error: function definition is not allowed here": {
+    "name": "function definition is not allowed here",
+    "projects": [
+      "ekg2",
+      "eurephia"
     ],
     "origin": "clang",
-    "regex": "error\\:\\ \\'boost(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
+    "regex": "error\\:\\ function\\ definition\\ is\\ not\\ allowed\\ here",
+    "amount": 2
+  },
+  "error: non-constant-expression cannot be narrowed from type 'unsigned long' to '__time_t' (aka 'long') in initializer list [-Wc++11-narrowing]": {
+    "name": "non-constant-expression cannot be narrowed from type 'unsigned long' to '__time_t' (aka 'long') in initializer list [-Wc++11-narrowing]",
+    "projects": [
+      "eris",
+      "skstream"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'unsigned\\ long\\'\\ to\\ \\'__time_t\\'\\ \\(aka\\ \\'long\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 2
+  },
+  "error: non-constant-expression cannot be narrowed from type 'unsigned long' to '__suseconds_t' (aka 'long') in initializer list [-Wc++11-narrowing]": {
+    "name": "non-constant-expression cannot be narrowed from type 'unsigned long' to '__suseconds_t' (aka 'long') in initializer list [-Wc++11-narrowing]",
+    "projects": [
+      "eris",
+      "skstream"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'unsigned\\ long\\'\\ to\\ \\'__suseconds_t\\'\\ \\(aka\\ \\'long\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 2
+  },
+  "error: no acceptable ld found in $PATH": {
+    "name": "error: no acceptable ld found in $PATH",
+    "projects": [
+      "elpa",
+      "esys-particle"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ no\\ acceptable\\ ld\\ found\\ in\\ \\$PATH",
     "amount": 2
   },
   "error: typedef redefinition with different types ('long long' vs '__off64_t' (aka 'long'))": {
@@ -173,13 +237,472 @@
     "regex": "\\[Error\\]\\ Package\\ findutils\\ is\\ not\\ installed",
     "amount": 1
   },
-  "error: poPATH/FILE.EXT was not created by intltoolize.": {
-    "name": "error: poPATH/FILE.EXT was not created by intltoolize.",
+  "./configure: line 11900: syntax error near unexpected token `LIBGNUTLS,'": {
+    "name": "./configure: line 11900: syntax error near unexpected token `LIBGNUTLS,'",
     "projects": [
-      "ibus-unikey"
+      "libisds"
+    ],
+    "origin": "configure",
+    "regex": "\\.\\/configure\\:\\ line\\ 11900\\:\\ syntax\\ error\\ near\\ unexpected\\ token\\ \\`LIBGNUTLS\\,\\'",
+    "amount": 1
+  },
+  "Error:  Can't load 'PATH/FILE.EXT for module indirect: PATH/FILE.EXT undefined symbol: perl_tsa_mutex_lock at PATH/FILE.EXT.": {
+    "name": "Error:  Can't load 'PATH/FILE.EXT for module indirect: PATH/FILE.EXT undefined symbol: perl_tsa_mutex_lock at PATH/FILE.EXT.",
+    "projects": [
+      "libindirect-perl"
     ],
     "origin": "general_error",
-    "regex": "error\\:\\ po(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ was\\ not\\ created\\ by\\ intltoolize\\.",
+    "regex": "Error\\:\\ \\ Can\\'t\\ load\\ \\'(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ for\\ module\\ indirect\\:\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ undefined\\ symbol\\:\\ perl_tsa_mutex_lock\\ at\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\.",
+    "amount": 1
+  },
+  "error: invalid value: boost_major_version='167boost-lib-version=1'": {
+    "name": "error: invalid value: boost_major_version='167boost-lib-version=1'",
+    "projects": [
+      "libixion"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ invalid\\ value\\:\\ boost_major_version\\=\\'167boost\\-lib\\-version\\=1\\'",
+    "amount": 1
+  },
+  "ERROR: sh(c++ c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT -Wl,-z,relro -Wl,-z,now  -flto -lstdc++ -shared  -L\"PATH/FILE.EXT -lerl_interface -lei -o privPATH/FILE.EXT": {
+    "name": "ERROR: sh(c++ c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT -Wl,-z,relro -Wl,-z,now  -flto -lstdc++ -shared  -L\"PATH/FILE.EXT -lerl_interface -lei -o privPATH/FILE.EXT",
+    "projects": [
+      "erlang-jiffy"
+    ],
+    "origin": "general_error",
+    "regex": "ERROR\\:\\ sh\\(c\\+\\+\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\-Wl\\,\\-z\\,relro\\ \\-Wl\\,\\-z\\,now\\ \\ \\-flto\\ \\-lstdc\\+\\+\\ \\-shared\\ \\ \\-L\\\"(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\-lerl_interface\\ \\-lei\\ \\-o\\ priv(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
+    "amount": 1
+  },
+  "ERROR: compile failed while processing /home/fba_code/build: rebar_abort": {
+    "name": "ERROR: compile failed while processing /home/fba_code/build: rebar_abort",
+    "projects": [
+      "erlang-jiffy"
+    ],
+    "origin": "general_error",
+    "regex": "ERROR\\:\\ compile\\ failed\\ while\\ processing\\ \\/home\\/fba_code\\/build\\:\\ rebar_abort",
+    "amount": 1
+  },
+  "error: non-constant-expression cannot be narrowed from type 'int' to 'ext2_ino_t' (aka 'unsigned int') in initializer list [-Wc++11-narrowing]": {
+    "name": "non-constant-expression cannot be narrowed from type 'int' to 'ext2_ino_t' (aka 'unsigned int') in initializer list [-Wc++11-narrowing]",
+    "projects": [
+      "extundelete"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'int\\'\\ to\\ \\'ext2_ino_t\\'\\ \\(aka\\ \\'unsigned\\ int\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 1
+  },
+  "error: use of undeclared identifier 'conn_find_outstream'": {
+    "name": "use of undeclared identifier 'conn_find_outstream'",
+    "projects": [
+      "ekg2"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ use\\ of\\ undeclared\\ identifier\\ \\'conn_find_outstream\\'",
+    "amount": 1
+  },
+  "error: use of undeclared identifier 'conn_find_slaveless_conn'": {
+    "name": "use of undeclared identifier 'conn_find_slaveless_conn'",
+    "projects": [
+      "ekg2"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ use\\ of\\ undeclared\\ identifier\\ \\'conn_find_slaveless_conn\\'",
+    "amount": 1
+  },
+  "error: format string is not a string literal [-Werror,-Wformat-nonliteral]": {
+    "name": "format string is not a string literal [-Werror,-Wformat-nonliteral]",
+    "projects": [
+      "evince"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ format\\ string\\ is\\ not\\ a\\ string\\ literal\\ \\[\\-Werror\\,\\-Wformat\\-nonliteral\\]",
+    "amount": 1
+  },
+  "ERROR - [80/0] /usr/bin/ld: PATH/FILE.EXT error loading plugin: PATH/FILE.EXT cannot open shared object file: No such file or directory": {
+    "name": "ERROR - [80/0] /usr/bin/ld: PATH/FILE.EXT error loading plugin: PATH/FILE.EXT cannot open shared object file: No such file or directory",
+    "projects": [
+      "ethereal-chess"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[80\\/0\\]\\ \\/usr\\/bin\\/ld\\:\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ error\\ loading\\ plugin\\:\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ cannot\\ open\\ shared\\ object\\ file\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 1
+  },
+  "error: gettext infrastructure mismatch: using a Makefile.in.in from gettext version 0.17 but the autoconf macros are from gettext version 0.19": {
+    "name": "error: gettext infrastructure mismatch: using a Makefile.in.in from gettext version 0.17 but the autoconf macros are from gettext version 0.19",
+    "projects": [
+      "efax-gtk"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ gettext\\ infrastructure\\ mismatch\\:\\ using\\ a\\ Makefile\\.in\\.in\\ from\\ gettext\\ version\\ 0\\.17\\ but\\ the\\ autoconf\\ macros\\ are\\ from\\ gettext\\ version\\ 0\\.19",
+    "amount": 1
+  },
+  "clang: error: '-I-' not supported, please use -iquote instead": {
+    "name": "clang: error: '-I-' not supported, please use -iquote instead",
+    "projects": [
+      "elph"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ \\'\\-I\\-\\'\\ not\\ supported\\,\\ please\\ use\\ \\-iquote\\ instead",
+    "amount": 1
+  },
+  "error: exception specification in declaration does not match previous declaration": {
+    "name": "exception specification in declaration does not match previous declaration",
+    "projects": [
+      "exactimage"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ exception\\ specification\\ in\\ declaration\\ does\\ not\\ match\\ previous\\ declaration",
+    "amount": 1
+  },
+  "error: ld returned 1 exit status": {
+    "name": "error: ld returned 1 exit status",
+    "projects": [
+      "exodusii"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ ld\\ returned\\ 1\\ exit\\ status",
+    "amount": 1
+  },
+  "error: redefinition of 'log' as different kind of symbol": {
+    "name": "redefinition of 'log' as different kind of symbol",
+    "projects": [
+      "empire-lafe"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ redefinition\\ of\\ \\'log\\'\\ as\\ different\\ kind\\ of\\ symbol",
+    "amount": 1
+  },
+  "error: non-object type 'double (double)' is not assignable": {
+    "name": "non-object type 'double (double)' is not assignable",
+    "projects": [
+      "empire-lafe"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-object\\ type\\ \\'double\\ \\(double\\)\\'\\ is\\ not\\ assignable",
+    "amount": 1
+  },
+  "ERROR - [148/0] /bin/sh: 1: [[: not found": {
+    "name": "ERROR - [148/0] /bin/sh: 1: [[: not found",
+    "projects": [
+      "efivar"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[148\\/0\\]\\ \\/bin\\/sh\\:\\ 1\\:\\ \\[\\[\\:\\ not\\ found",
+    "amount": 1
+  },
+  "clang: error: unknown argument: '-fno-toplevel-reorder'": {
+    "name": "clang: error: unknown argument: '-fno-toplevel-reorder'",
+    "projects": [
+      "efitools"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ unknown\\ argument\\:\\ \\'\\-fno\\-toplevel\\-reorder\\'",
+    "amount": 1
+  },
+  "error: no matching function for call to 'yyerror'": {
+    "name": "no matching function for call to 'yyerror'",
+    "projects": [
+      "exult"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ no\\ matching\\ function\\ for\\ call\\ to\\ \\'yyerror\\'",
+    "amount": 1
+  },
+  "error: case value evaluates to 2147483656, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 2147483656, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "eviacam"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ case\\ value\\ evaluates\\ to\\ 2147483656\\,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ \\'int\\'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 1
+  },
+  "error: case value evaluates to 2147483664, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 2147483664, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "eviacam"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ case\\ value\\ evaluates\\ to\\ 2147483664\\,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ \\'int\\'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 1
+  },
+  "error: case value evaluates to 2147483680, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 2147483680, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "eviacam"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ case\\ value\\ evaluates\\ to\\ 2147483680\\,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ \\'int\\'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 1
+  },
+  "error: non-void function 'process_attachments' should return a value [-Wreturn-type]": {
+    "name": "non-void function 'process_attachments' should return a value [-Wreturn-type]",
+    "projects": [
+      "evolution-rss"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-void\\ function\\ \\'process_attachments\\'\\ should\\ return\\ a\\ value\\ \\[\\-Wreturn\\-type\\]",
+    "amount": 1
+  },
+  "Errors while running CTest": {
+    "name": "Errors while running CTest",
+    "projects": [
+      "easyloggingpp"
+    ],
+    "origin": "testing",
+    "regex": "Errors\\ while\\ running\\ CTest",
+    "amount": 1
+  },
+  "error: non-constant-expression cannot be narrowed from type 'int' to 'rlim_t' (aka 'unsigned long') in initializer list [-Wc++11-narrowing]": {
+    "name": "non-constant-expression cannot be narrowed from type 'int' to 'rlim_t' (aka 'unsigned long') in initializer list [-Wc++11-narrowing]",
+    "projects": [
+      "entropybroker"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'int\\'\\ to\\ \\'rlim_t\\'\\ \\(aka\\ \\'unsigned\\ long\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 1
+  },
+  "error: conflicting types for 'canonicalize_file_name'": {
+    "name": "conflicting types for 'canonicalize_file_name'",
+    "projects": [
+      "ebnetd"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ conflicting\\ types\\ for\\ \\'canonicalize_file_name\\'",
+    "amount": 1
+  },
+  "error: gcc with GNU99 support required": {
+    "name": "error: gcc with GNU99 support required",
+    "projects": [
+      "elfutils"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ gcc\\ with\\ GNU99\\ support\\ required",
+    "amount": 1
+  },
+  "error: non-constant-expression cannot be narrowed from type 'int' to 'Uint16' (aka 'unsigned short') in initializer list [-Wc++11-narrowing]": {
+    "name": "non-constant-expression cannot be narrowed from type 'int' to 'Uint16' (aka 'unsigned short') in initializer list [-Wc++11-narrowing]",
+    "projects": [
+      "einstein"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'int\\'\\ to\\ \\'Uint16\\'\\ \\(aka\\ \\'unsigned\\ short\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 1
+  },
+  "error: non-constant-expression cannot be narrowed from type 'int' to 'Sint16' (aka 'short') in initializer list [-Wc++11-narrowing]": {
+    "name": "non-constant-expression cannot be narrowed from type 'int' to 'Sint16' (aka 'short') in initializer list [-Wc++11-narrowing]",
+    "projects": [
+      "einstein"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'int\\'\\ to\\ \\'Sint16\\'\\ \\(aka\\ \\'short\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 1
+  },
+  "error: non-void function 'mad_getSamples' should return a value [-Wreturn-type]": {
+    "name": "non-void function 'mad_getSamples' should return a value [-Wreturn-type]",
+    "projects": [
+      "sdl-mixer1.2"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-void\\ function\\ \\'mad_getSamples\\'\\ should\\ return\\ a\\ value\\ \\[\\-Wreturn\\-type\\]",
+    "amount": 1
+  },
+  "error: type 'double' cannot be narrowed to 'guint16' (aka 'unsigned short') in initializer list [-Wc++11-narrowing]": {
+    "name": "type 'double' cannot be narrowed to 'guint16' (aka 'unsigned short') in initializer list [-Wc++11-narrowing]",
+    "projects": [
+      "scim"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ type\\ \\'double\\'\\ cannot\\ be\\ narrowed\\ to\\ \\'guint16\\'\\ \\(aka\\ \\'unsigned\\ short\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 1
+  },
+  "error: No suitable database library (PDL or BerkeleyDB version 3 or higher) found.": {
+    "name": "error: No suitable database library (PDL or BerkeleyDB version 3 or higher) found.",
+    "projects": [
+      "spamprobe"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ No\\ suitable\\ database\\ library\\ \\(PDL\\ or\\ BerkeleyDB\\ version\\ 3\\ or\\ higher\\)\\ found\\.",
+    "amount": 1
+  },
+  "error: typedef 'btree_impl' cannot be referenced with a class specifier": {
+    "name": "typedef 'btree_impl' cannot be referenced with a class specifier",
+    "projects": [
+      "stx-btree"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ typedef\\ \\'btree_impl\\'\\ cannot\\ be\\ referenced\\ with\\ a\\ class\\ specifier",
+    "amount": 1
+  },
+  "./configure: line 13054: syntax error near unexpected token `memdebug,'": {
+    "name": "./configure: line 13054: syntax error near unexpected token `memdebug,'",
+    "projects": [
+      "swish-e"
+    ],
+    "origin": "configure",
+    "regex": "\\.\\/configure\\:\\ line\\ 13054\\:\\ syntax\\ error\\ near\\ unexpected\\ token\\ \\`memdebug\\,\\'",
+    "amount": 1
+  },
+  "./configure: line 3586: syntax error near unexpected token `}'": {
+    "name": "./configure: line 3586: syntax error near unexpected token `}'",
+    "projects": [
+      "scrollz"
+    ],
+    "origin": "configure",
+    "regex": "\\.\\/configure\\:\\ line\\ 3586\\:\\ syntax\\ error\\ near\\ unexpected\\ token\\ \\`\\}\\'",
+    "amount": 1
+  },
+  "error: Platform not supported!": {
+    "name": "Platform not supported!",
+    "projects": [
+      "sidplay"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ Platform\\ not\\ supported\\!",
+    "amount": 1
+  },
+  "error: called object type 'unsigned long' is not a function or function pointer": {
+    "name": "called object type 'unsigned long' is not a function or function pointer",
+    "projects": [
+      "salmon"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ called\\ object\\ type\\ \\'unsigned\\ long\\'\\ is\\ not\\ a\\ function\\ or\\ function\\ pointer",
+    "amount": 1
+  },
+  "clang: error: argument unused during compilation: '-mhtm' [-Werror,-Wunused-command-line-argument]": {
+    "name": "clang: error: argument unused during compilation: '-mhtm' [-Werror,-Wunused-command-line-argument]",
+    "projects": [
+      "sphde"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ argument\\ unused\\ during\\ compilation\\:\\ \\'\\-mhtm\\'\\ \\[\\-Werror\\,\\-Wunused\\-command\\-line\\-argument\\]",
+    "amount": 1
+  },
+  "error: parameter declarator cannot be qualified": {
+    "name": "parameter declarator cannot be qualified",
+    "projects": [
+      "source-highlight"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ parameter\\ declarator\\ cannot\\ be\\ qualified",
+    "amount": 1
+  },
+  "error: member reference base type 'boost::regex_error (boost::regex_error)' is not a structure or union": {
+    "name": "member reference base type 'boost::regex_error (boost::regex_error)' is not a structure or union",
+    "projects": [
+      "source-highlight"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ member\\ reference\\ base\\ type\\ \\'boost\\:\\:regex_error\\ \\(boost\\:\\:regex_error\\)\\'\\ is\\ not\\ a\\ structure\\ or\\ union",
+    "amount": 1
+  },
+  "error: 'cmath' file not found": {
+    "name": "'cmath' file not found",
+    "projects": [
+      "simgear"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'cmath\\'\\ file\\ not\\ found",
+    "amount": 1
+  },
+  "ERROR - [402/0] Makefile:362: .depsPATH/FILE.EXT No such file or directory": {
+    "name": "ERROR - [402/0] Makefile:362: .depsPATH/FILE.EXT No such file or directory",
+    "projects": [
+      "smalt"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[402\\/0\\]\\ Makefile\\:362\\:\\ \\.deps(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 1
+  },
+  "error: cannot find install-sh, install.sh, or shtool in \".\" \"PATH/FILE.EXT \"PATH/FILE.EXT": {
+    "name": "error: cannot find install-sh, install.sh, or shtool in \".\" \"PATH/FILE.EXT \"PATH/FILE.EXT",
+    "projects": [
+      "spellcast"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ cannot\\ find\\ install\\-sh\\,\\ install\\.sh\\,\\ or\\ shtool\\ in\\ \\\"\\.\\\"\\ \\\"(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\\"(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
+    "amount": 1
+  },
+  "error: invalid argument '-std=gnu99' not allowed with 'C++'": {
+    "name": "error: invalid argument '-std=gnu99' not allowed with 'C++'",
+    "projects": [
+      "samblaster"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ invalid\\ argument\\ \\'\\-std\\=gnu99\\'\\ not\\ allowed\\ with\\ \\'C\\+\\+\\'",
+    "amount": 1
+  },
+  "./configure: line 4265: syntax error near unexpected token `fi'": {
+    "name": "./configure: line 4265: syntax error near unexpected token `fi'",
+    "projects": [
+      "scanssh"
+    ],
+    "origin": "configure",
+    "regex": "\\.\\/configure\\:\\ line\\ 4265\\:\\ syntax\\ error\\ near\\ unexpected\\ token\\ \\`fi\\'",
+    "amount": 1
+  },
+  "error: case value evaluates to -5, which cannot be narrowed to type 'unsigned long' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to -5, which cannot be narrowed to type 'unsigned long' [-Wc++11-narrowing]",
+    "projects": [
+      "stressapptest"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ case\\ value\\ evaluates\\ to\\ \\-5\\,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ \\'unsigned\\ long\\'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 1
+  },
+  "ERROR - [455/0] cat: profile.log: No such file or directory": {
+    "name": "ERROR - [455/0] cat: profile.log: No such file or directory",
+    "projects": [
+      "syrthes"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[455\\/0\\]\\ cat\\:\\ profile\\.log\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 1
+  },
+  "ERROR - [462/0] ldd: _build/bin/snap-exec: No such file or directory": {
+    "name": "ERROR - [462/0] ldd: _build/bin/snap-exec: No such file or directory",
+    "projects": [
+      "snapd"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[462\\/0\\]\\ ldd\\:\\ _build\\/bin\\/snap\\-exec\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 1
+  },
+  "error: ' X11 .rules' file not found": {
+    "name": "' X11 .rules' file not found",
+    "projects": [
+      "spim"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'\\ X11\\ \\.rules\\'\\ file\\ not\\ found",
+    "amount": 1
+  },
+  "clang: error: cannot specify -o when generating multiple output files": {
+    "name": "clang: error: cannot specify -o when generating multiple output files",
+    "projects": [
+      "sysvinit"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ cannot\\ specify\\ \\-o\\ when\\ generating\\ multiple\\ output\\ files",
+    "amount": 1
+  },
+  "error: invalid token at start of a preprocessor expression": {
+    "name": "invalid token at start of a preprocessor expression",
+    "projects": [
+      "styx"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ invalid\\ token\\ at\\ start\\ of\\ a\\ preprocessor\\ expression",
+    "amount": 1
+  },
+  "error: unknown warning option '-Werror=clobbered' [-Werror,-Wunknown-warning-option]": {
+    "name": "error: unknown warning option '-Werror=clobbered' [-Werror,-Wunknown-warning-option]",
+    "projects": [
+      "scanbd"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ unknown\\ warning\\ option\\ \\'\\-Werror\\=clobbered\\'\\ \\[\\-Werror\\,\\-Wunknown\\-warning\\-option\\]",
     "amount": 1
   },
   "make target not found": {
@@ -224,32 +747,11 @@
     "regex": "configure\\:\\ error\\:\\ could\\ not\\ find\\ gnutls",
     "amount": 0
   },
-  "configure: error:": {
-    "name": "configure_error",
-    "projects": [],
-    "origin": "hardcoded",
-    "regex": "configure\\:\\ error\\:",
-    "amount": 0
-  },
-  "error: use of undeclared identifier": {
-    "name": "undeclared identifier",
-    "projects": [],
-    "origin": "hardcoded",
-    "regex": "error\\:\\ use\\ of\\ undeclared\\ identifier",
-    "amount": 0
-  },
   "error: empty search path given via `-L`": {
     "name": "empty search path given via `-L`",
     "projects": [],
     "origin": "hardcoded",
     "regex": "error\\:\\ empty\\ search\\ path\\ given\\ via\\ \\`\\-L\\`",
-    "amount": 0
-  },
-  "error: invalid suffix on literal": {
-    "name": "error: invalid suffix on literal",
-    "projects": [],
-    "origin": "hardcoded",
-    "regex": "error\\:\\ invalid\\ suffix\\ on\\ literal",
     "amount": 0
   },
   "error: 'iostream' file not found": {
