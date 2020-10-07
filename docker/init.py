@@ -6,7 +6,7 @@ import glob
 import subprocess
 
 from time import time
-from shutil import move
+from shutil import move, copyfile
 from datetime import datetime
 
 from utils.driver import open_logfiles
@@ -94,8 +94,9 @@ print(json.dumps(out, indent=2), file=open('output.json', 'w'))
 # move logs to build directory
 for file in glob.glob('*.log'):
     move(file, build_dir)
+copyfile("output.json", os.path.join(build_dir, "output.json"))
 
-# change the user and group to the one of the host, since we are root, and dont 
+# change the user and group to the one of the host, since we are root
 host_uid = os.stat(build_dir).st_uid
 host_gid = os.stat(build_dir).st_gid
 
