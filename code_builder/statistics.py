@@ -111,7 +111,8 @@ class Statistics:
         self.incorrect_projects += 1
 
     def add_errors(self, project, name, errors):
-        for err in errors:
+        new_errors = [e for e in errors if e not in project['build']['errortypes']]
+        for err in new_errors:
             if err in self.errortypes:
                 self.errortypes[err]["amount"] += 1
                 if name not in self.errortypes[err]["projects"]:
@@ -127,7 +128,7 @@ class Statistics:
                 self.errors_stdout[err]["amount"] += 1
             else:
                 self.errors_stdout[err]["amount"] = 1
-            project["build"]["errortypes"].extend(errors)
+        project["build"]["errortypes"].extend(new_errors)
 
     def match_error_with_regex(self, project, name, log):
         errors = [err for err in self.errors_stdout
@@ -196,7 +197,7 @@ class Statistics:
             (re.escape("ERROR - ") + r".*syntax\ error.*",
                 "syntax error", False),
             (re.escape("ERROR - ") + r".*" + re.escape("Compatibility levels before "),
-                "syntax error", False),
+                "compatibility error", False),
             (re.escape("fatal error: ") +
                 r".*$", "fatal_error", False),
             (re.escape("error: ") + r".*$", "general_error", False),
@@ -228,8 +229,7 @@ class Statistics:
                     # elif name not in self.errors_stdout[err]["projects"]:
                     #     self.errors_stdout[err]["projects"].append(
                     #         name)
-                    if err not in project["build"]["errortypes"]:
-                        self.add_errors(project, name, [err])
+                    self.add_errors(project, name, [err])
                     found_match = True
                     break
         return found_match
