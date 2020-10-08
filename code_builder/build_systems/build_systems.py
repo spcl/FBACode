@@ -100,6 +100,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             ctx.out_log.print_info(
                 idx, "building {} in container {}".format(name, container.name))
             # TODO: maybe configure a timeout?
+            # TODO: do a loop and check if the docker exited and check the logs
             return_code = container.wait(timeout=3600)
             if return_code["StatusCode"]:
                 # the init.py or the docker container crashed unexpectadly

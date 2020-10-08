@@ -61,6 +61,28 @@ class Statistics:
         elif project["status"] == "crash":
             self.add_incorrect_project()
             self.add_rebuild_data(project, name)
+            err = "docker_crash"
+            if err not in self.errors_stdout:
+                self.errors_stdout[err] = {
+                    "name": err,
+                    "projects": [name],
+                    "origin": "docker",
+                    # match to nothing, since crashes are not visible in logs
+                    "regex": "$^",
+                    "amount": 1
+                }
+            elif name not in self.errors_stdout[err]["projects"]:
+                self.errors_stdout[err]["projects"].append(name)
+                self.errors_stdout[err]["amount"] += 1
+            if err in self.errortypes:
+                self.errortypes[err]["amount"] += 1
+                if name not in self.errortypes[err]["projects"]:
+                    self.errortypes[err]["projects"].append(name)
+            else:
+                self.errortypes[err] = copy.deepcopy(self.errors_stdout[err])
+                self.errortypes[err]["amount"] = 1
+                self.errortypes[err]["projects"] = [name]
+
         else:
             if "build" in project:
                 # new plan:
@@ -242,7 +264,8 @@ class Statistics:
             "version": project["version"],
             "status": project["status"],
             "codebase_data": project.get("codebase_data", None),
-            "previous_errors": project["build"]["errortypes"] if ("build" in project and "errortypes" in project["build"]) else None
+            "previous_errors": project["build"]["errortypes"]
+            if ("build" in project and "errortypes" in project["build"]) else None
         }
         if project["type"] not in self.rebuild_projects:
             self.rebuild_projects[project["type"]] = {}

@@ -173,7 +173,11 @@ class Project:
 
     def build(self):
         # basically run debian/rules
-        out = run([join("debian", "rules"), "build"],
+        # dpgk-source -b
+        # out = run([join("debian", "rules"), "build"],
+        #           cwd=self.build_dir, 
+        #           stderr=subprocess.PIPE)
+        out = run(["dpkg-buildpackage", "--no-sign"],
                   cwd=self.build_dir, 
                   stderr=subprocess.PIPE)
         if out.returncode != 0:
