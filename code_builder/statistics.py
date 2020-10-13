@@ -4,8 +4,8 @@ import copy
 from os.path import join
 from datetime import datetime
 from collections import OrderedDict
-from fuzzywuzzy import process
-from fuzzywuzzy import fuzz
+from fuzzywuzzy import process, fuzz
+import fuzzywuzzy
 
 
 class Statistics:
@@ -163,7 +163,11 @@ class Statistics:
         lines = [re.sub(self.path_regex, "PATH/FILE.TXT", l) for l in log.splitlines()]
         errors = []
         for l in lines:
-            matches = process.extract(l, self.errors_stdout.keys(),
+            # check if string has any processable character, otherwise continue
+            processed = fuzzywuzzy.utils.full_process(l)
+            if not processed:
+                continue
+            matches = process.extract(processed, self.errors_stdout.keys(),
                                       limit=5, scorer=fuzz.partial_ratio)
             # what threshold??
             errors.extend([m[0] for m in matches if m[1] >= 90])
@@ -230,7 +234,7 @@ class Statistics:
         for err in errlines:
             # remove paths
             err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
-            # remove file in beginning of line e.g. makefile 96:420: 
+            # remove file in beginning of line e.g. makefile 96:420:
             err = re.sub(r"^\S*\.\S*(?:\:|\ )?\d+(?:\:\d+)?\:\ ", "", err)
             for match, origin, title in err_patterns:
                 regex_result = re.search(match, err)
