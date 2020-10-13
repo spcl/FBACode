@@ -6,6 +6,7 @@ from os import listdir, makedirs, mkdir, remove
 from sys import version_info
 from glob import iglob
 from re import search, escape
+import pathlib
 
 
 def decode(stream):
@@ -80,18 +81,19 @@ class Project:
         sourcedir = search(r"(?<=extracting {0} in ).*(?=\n)".format(escape(self.name)), out)[0]
 
         sourcedir = join(temp, sourcedir)
-        # TODO delete everything except logs from source directory
+        self.temp_build_dir = sourcedir
+        # delete everything except logs from source directory
         buildfiles = listdir(self.build_dir)
         sourcefiles = listdir(self.repository_path)
         try:
-            for f in buildfiles:
-                if ".log" in f:
-                    continue
-                p = join(self.build_dir, f)
-                if isdir(p):
-                    shutil.rmtree(p)
-                else:
-                    remove(p)
+            # for f in buildfiles:
+            #     if ".log" in f:
+            #         continue
+            #     p = join(self.build_dir, f)
+            #     if isdir(p):
+            #         shutil.rmtree(p)
+            #     else:
+            #         remove(p)
             # delete source dir, othewise mv fails
             for f in sourcefiles:
                 p = join(self.repository_path, f)
@@ -134,14 +136,15 @@ class Project:
         # this seems to work better regarding symlinks
         # use sh -c "cp ..."here, so we can use globbing
         
-        out = run(["sh", "-c", "cp -a {}/* {}".format(sourcedir, self.build_dir)], cwd=temp, stderr=subprocess.PIPE)
+        out = run(["sh", "-c", "cp -a {}/* {}".format(sourcedir, self.repository_path)],
+                  cwd=temp, stderr=subprocess.PIPE)
         if out.returncode != 0:
             self.error_log.print_error(self.idx, str(out))
             return False
-        out = run(["mv", sourcedir, self.repository_path], cwd=temp, stderr=subprocess.PIPE)
-        if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out.stderr))
-            return False
+        # out = run(["mv", sourcedir, self.build_dir], cwd=temp, stderr=subprocess.PIPE)
+        # if out.returncode != 0:
+        #     self.error_log.print_error(self.idx, str(out.stderr))
+        #     return False
         # fetch dependencies
         
         out = run(["apt-get", "build-dep", "-y", self.name],
@@ -153,22 +156,22 @@ class Project:
         self.output_log.print_info(self.idx, str(out))
         # https://stackoverflow.com/questions/33278928/how-to-overcome-aclocal-1-15-is-missing-on-your-system-warning
         # this sometimes fails, but no big deal
-        try:
-            out = run(["autoreconf", "-f", "-i"], cwd=self.build_dir,
-                      stderr=subprocess.PIPE)
-            if out.returncode != 0:
-                self.output_log.print_error(self.idx, str(out))
-            else:
-                self.output_log.print_info(self.idx, str(out))
-        except Exception as e:
-            self.output_log.print_info(self.idx, "autoreconf is not installed, error: {}".format(e))
-        out = run([join("debian", "rules"), "clean"],
-                  cwd=self.build_dir, 
-                  stderr=subprocess.PIPE)
-        if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out.stderr))
-            return False
-        self.output_log.print_info(self.idx, str(out))
+        # try:
+        #     out = run(["autoreconf", "-f", "-i"], cwd=self.build_dir,
+        #               stderr=subprocess.PIPE)
+        #     if out.returncode != 0:
+        #         self.output_log.print_error(self.idx, str(out))
+        #     else:
+        #         self.output_log.print_info(self.idx, str(out))
+        # except Exception as e:
+        #     self.output_log.print_info(self.idx, "autoreconf is not installed, error: {}".format(e))
+        # out = run([join("debian", "rules"), "clean"],
+        #           cwd=self.build_dir, 
+        #           stderr=subprocess.PIPE)
+        # if out.returncode != 0:
+        #     self.error_log.print_error(self.idx, str(out.stderr))
+        #     return False
+        # self.output_log.print_info(self.idx, str(out))
         return version
 
     def build(self):
@@ -177,23 +180,42 @@ class Project:
         # out = run([join("debian", "rules"), "build"],
         #           cwd=self.build_dir, 
         #           stderr=subprocess.PIPE)
-        out = run(["dpkg-buildpackage", "--no-sign"],
-                  cwd=self.build_dir, 
+        print("starting actual build...")
+        # -i to ignore changes
+        out = run(["dpkg-buildpackage", "--no-sign", '-i="*"'],
+                  cwd=self.temp_build_dir,
                   stderr=subprocess.PIPE)
+        print("done building")
+        print(out.stderr)
         if out.returncode != 0:
             self.error_log.print_error(self.idx, str(out.stderr))
             return False
         self.error_log.print_info(self.idx, str(out.stderr))
         self.output_log.print_info(self.idx, str(out))
+        # move build files to attached volume
+        for f in listdir(self.build_dir):
+            if ".log" in f:
+                continue
+            p = join(self.build_dir, f)
+            if isdir(p):
+                shutil.rmtree(p)
+            else:
+                remove(p)
+        temp = join(self.build_dir, "..")
+        out = run(["sh", "-c", "mv -f {}/* {}".format(self.temp_build_dir, self.build_dir)],
+                  cwd=temp, stderr=subprocess.PIPE)
+        if out.returncode != 0:
+            self.error_log.print_error(self.idx, str(out))
+            return False
         return True
 
     def generate_bitcodes(self, target_dir):
         # maybe copy from cmake.py?
-
-        for file in iglob("{0}/**/*.bc".format(self.build_dir), recursive=True):
+        # for file in iglob("{0}/**/*.bc".format(self.build_dir), recursive=True):
+        for file in pathlib.Path(self.build_dir).glob("**/*.bc"):
             # debian has .bc files in normal build dir
-            res = search(r"{}".format(self.build_dir), file)
-            local_path = file[res.end(0) + 1:]
+            res = search(r"{}".format(self.build_dir), str(file))
+            local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
             # os.rename does not work for target and destinations being on
             # different filesystems
@@ -202,10 +224,11 @@ class Project:
         return True
     
     def generate_ast(self, target_dir):
-        for file in iglob("{0}/**/*.ast".format(self.build_dir), recursive=True):
+        # for file in iglob("{0}/**/*.ast".format(self.build_dir), recursive=True):
+        for file in pathlib.Path(self.build_dir).glob("**/*.ast"):
             # debian has .bc files in normal build dir
-            res = search(r"{}".format(self.build_dir), file)
-            local_path = file[res.end(0) + 1:]
+            res = search(r"{}".format(self.build_dir), str(file))
+            local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
             # os.rename does not work for target and destinations being on
             # ifferent filesystems
