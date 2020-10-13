@@ -1,6 +1,8 @@
 FROM debian:buster
 # set as env, we are noninteractive in the container too
 ENV DEBIAN_FRONTEND=noninteractive
+# do not run tests on builds (does not work for all pkgs)
+ENV DEB_BUILD_OPTIONS=nocheck
 
 ARG CLANG_VERSION=9
 
