@@ -90,7 +90,9 @@ ctx.out_log.print_info(
 
 out = {'idx': idx, 'name': name, 'project': project}
 # save output JSON
-print(json.dumps(out, indent=2), file=open('output.json', 'w'))
+with open("output.json", "w") as f:
+    json.dump(out, f, indent=2)
+
 # move logs to build directory
 for file in glob.glob('*.log'):
     move(file, build_dir)
@@ -101,8 +103,8 @@ host_uid = os.stat(build_dir).st_uid
 host_gid = os.stat(build_dir).st_gid
 
 dirs = [build_dir, bitcodes_dir, source_dir]
-
 for d in dirs:
+    print("chowning {}...".format(d))
     out = subprocess.run(["chown", "-R", "{}:{}".format(host_uid, host_gid), d])
     if out.returncode != 0:
         print(out)

@@ -41,7 +41,8 @@ for i, (img, definitions) in enumerate(images.items()):
     response = cli.build(
         path=PROJECT_DIR,
         dockerfile=os.path.join(DOCKER_DIR, dockerfile),
-        rm=False,
+        rm=True,
+        # nocache=True,
         tag="{}:{}".format(REPOSITORY_NAME, img)
     )
     for i in response:
