@@ -3,6 +3,7 @@
 import docker
 import os
 import json
+import sys
 
 PROJECT_DIR = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), os.path.pardir)
@@ -24,25 +25,23 @@ images = {
     # }
 }
 
+no_cache = False
+if len(sys.argv) > 1 and sys.argv[1] == "--nocache":
+    no_cache = True
+
+
 client = docker.from_env()
 
 for i, (img, definitions) in enumerate(images.items()):
     print("[{}/{}] building {}:{}".format(i +
                                           1, len(images), REPOSITORY_NAME, img))
     dockerfile = definitions['dockerfile']
-    # image, log = client.images.build(
-    #     path=PROJECT_DIR,
-    #     dockerfile=os.path.join(DOCKER_DIR, dockerfile),
-    #     tag="{}:{}".format(REPOSITORY_NAME, img)
-    # )
-    # for i in log:
-    #     print(i)
     cli = docker.APIClient()
     response = cli.build(
         path=PROJECT_DIR,
         dockerfile=os.path.join(DOCKER_DIR, dockerfile),
         rm=True,
-        # nocache=True,
+        nocache=no_cache,
         tag="{}:{}".format(REPOSITORY_NAME, img)
     )
     for i in response:
@@ -52,4 +51,3 @@ for i, (img, definitions) in enumerate(images.items()):
         elif "error" in resp:
             print("ERROR: {}".format(resp["error"]), end='')
             print(resp["errorDetail"], end='')
-
