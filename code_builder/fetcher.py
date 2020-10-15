@@ -2,7 +2,7 @@ from requests import get
 from time import time, sleep
 
 
-def max_repos(cfg):
+def maximum_repos(cfg):
     return int(cfg["max_repos"])
 
 
@@ -28,7 +28,7 @@ class GithubFetcher:
         repos_per_page = pagination(self.cfg[self.name])
         page = 1
         if max_repos is None:
-            max_repos = max_repos(request_params)
+            max_repos = maximum_repos(self.cfg[self.name])
         repos_per_page = min(max_repos, repos_per_page)
         request_params["per_page"] = str(repos_per_page)
 
@@ -64,8 +64,8 @@ class GithubFetcher:
                 continue
             repos_processed += repos_per_page
             results += results_page["items"]
-            self.out_log.step(repos_per_page)
-            self.error_log.step(repos_per_page)
+            self.out_log.next(repos_per_page)
+            self.error_log.next(repos_per_page)
             self.out_log.info(
                 "Fetched %d repositories for C and C++ with GitHub API" % repos_per_page
             )

@@ -1,11 +1,14 @@
+#!/usr/bin/env python3
 
 import json
 
+from datetime import datetime
+from os import path
 from sys import argv
 from argparse import ArgumentParser
 
 from code_builder.fetcher import fetch_projects
-from code_builder.driver import *
+from code_builder.utils.driver import open_logfiles, open_config
 
 def export_projects(projects, name):
     with open(name, mode='w') as outfile:
@@ -30,8 +33,12 @@ parser.add_argument('--verbose', dest='verbose', action='store_true',
         help='Verbose output.')
 
 parsed_args = parser.parse_args(argv[1:])
-logfiles = open_logfiles(parsed_args)
 cfg = open_config(parsed_args, path.dirname(path.realpath(__file__)))
+cfg['output'] = {'verbose' : parsed_args.verbose}
+if parsed_args.out_to_file:
+    cfg['output']['file'] = parsed_args.out_to_file
+cfg['output']['time'] = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+logfiles = open_logfiles(cfg, "fetcher")
 
 # fetch new data, possibley updating
 if parsed_args.repo_db is not None:
