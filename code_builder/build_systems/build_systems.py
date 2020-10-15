@@ -13,8 +13,10 @@ from glob import iglob
 # from re import search
 from subprocess import PIPE
 from sys import version_info
-from time import time
-from datetime import datetime
+from time import sleep, time
+from datetime import datetime, timedelta
+
+from requests.exceptions import Timeout
 
 
 from . import cmake
@@ -101,6 +103,21 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 idx, "building {} in container {}".format(name, container.name))
             # TODO: maybe configure a timeout?
             # TODO: do a loop and check if the docker exited and check the logs
+            sleep(10)
+            container.reload()
+            while(container.status == "running"):
+                # get the current time of the container, can differ from host bc timezone
+                # time = container.stats(stream=False)["read"]
+                # try with utc time, should be faster
+                # TODO: make timeout configurable
+                timeout = datetime.utcnow() - timedelta(minutes=30)
+                logs = container.logs(since=timeout, tail=1)
+                # ctx.out_log.print_info(idx, logs)
+                if logs == b"":
+                    container.stop(timeout=3)
+                sleep(10)
+                container.reload()
+            # just use this to get exit code
             return_code = container.wait()
             if return_code["StatusCode"]:
                 # the init.py or the docker container crashed unexpectadly
