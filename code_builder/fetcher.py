@@ -46,11 +46,13 @@ class GithubFetcher:
         while repos_processed < max_repos:
             request_params["page"] = str(page)
             results_page = self.fetch_json(address, request_params, ["C", "Cpp"])
+            items = len(results_page['items'])
             if results_page is None:
                 self.error_log.error("Incorrect results, end work!")
                 return
-            elif results_page["incomplete_results"]:
-                repos_per_page /= 2
+            # some times GH returns the desired number of results but still, it prints incomplete results
+            elif results_page["incomplete_results"] and not items == repos_per_page:
+                repos_per_page = int(repos_per_page / 2)
                 if repos_per_page < 1:
                     self.error_log.error("Couldnt fetch a single repository, end work!")
                     return
