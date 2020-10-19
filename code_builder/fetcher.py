@@ -120,11 +120,18 @@ class GithubFetcher:
         # language:C+Cpp+...
         # https://developer.github.com/v3/search/
         params["q"] = r"+".join(map(lambda l: "language:%s" % l, languages))
+        # New API - GH doesn't want to have token passed in the query
+        # https://developer.github.com/changes/2020-02-10-deprecating-auth-through-query-param/
+        token = params["access_token"]
+        params_to_parse = dict(params)
+        del params_to_parse["access_token"]
         # Avoid percent encoding of plus sign - GH does not like that
         params_str = "&".join(
-            "{0}={1}".format(key, value) for key, value in params.items()
+            "{0}={1}".format(key, value) for key, value in params_to_parse.items()
         )
-        r = get(address, params_str)
+        headers = {'Authorization': token}
+
+        r = get(address, params_str, headers=headers)
         if r.status_code != 200:
             self.error_log.error(
                 "Failed to fetch from GitHub, url %s, text %s", r.url, r.text
