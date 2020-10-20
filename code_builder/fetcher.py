@@ -6,7 +6,7 @@ from random import shuffle
 
 def maximum_repos(cfg):
     return int(cfg["max_repos"])
- 
+
 
 def pagination(cfg):
     return int(cfg["pagination"])
@@ -47,13 +47,14 @@ class GithubFetcher:
 
         while repos_processed < max_repos:
             request_params["page"] = str(page)
-            results_page = self.fetch_json(
-                address, request_params, ["C", "Cpp"])
+            results_page = self.fetch_json(address, request_params, ["C", "Cpp"])
+            items = len(results_page['items'])
             if results_page is None:
                 self.error_log.error("Incorrect results, end work!")
                 return
-            elif results_page["incomplete_results"]:
-                repos_per_page /= 2
+            # some times GH returns the desired number of results but still, it prints incomplete results
+            elif results_page["incomplete_results"] and not items == repos_per_page:
+                repos_per_page = int(repos_per_page / 2)
                 if repos_per_page < 1:
                     self.error_log.error(
                         "Couldnt fetch a single repository, end work!")
@@ -123,11 +124,18 @@ class GithubFetcher:
         # language:C+Cpp+...
         # https://developer.github.com/v3/search/
         params["q"] = r"+".join(map(lambda l: "language:%s" % l, languages))
+        # New API - GH doesn't want to have token passed in the query
+        # https://developer.github.com/changes/2020-02-10-deprecating-auth-through-query-param/
+        token = params["access_token"]
+        params_to_parse = dict(params)
+        del params_to_parse["access_token"]
         # Avoid percent encoding of plus sign - GH does not like that
         params_str = "&".join(
-            "{0}={1}".format(key, value) for key, value in params.items()
+            "{0}={1}".format(key, value) for key, value in params_to_parse.items()
         )
-        r = get(address, params_str)
+        headers = {'Authorization': token}
+
+        r = get(address, params_str, headers=headers)
         if r.status_code != 200:
             self.error_log.error(
                 "Failed to fetch from GitHub, url %s, text %s", r.url, r.text
