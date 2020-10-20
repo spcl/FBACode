@@ -4,9 +4,9 @@ from string import ascii_lowercase
 from random import shuffle
 
 
-def max_repos(cfg):
+def maximum_repos(cfg):
     return int(cfg["max_repos"])
-
+ 
 
 def pagination(cfg):
     return int(cfg["pagination"])
@@ -30,7 +30,7 @@ class GithubFetcher:
         repos_per_page = pagination(self.cfg[self.name])
         page = 1
         if max_repos is None:
-            max_repos = int(self.cfg[self.name]["max_repos"])
+            max_repos = maximum_repos(self.cfg[self.name])
         repos_per_page = min(max_repos, repos_per_page)
         request_params["per_page"] = str(repos_per_page)
 
@@ -188,8 +188,6 @@ class DebianFetcher:
         end = time()
         self.out_log.info(
             "got {} c/c++ packages in {} seconds!".format(repo_count, end - start))
-        # pp = pprint.PrettyPrinter(indent=2)
-        # pp.pprint(self.results)
         return True
 
     def process_results(self, data):
