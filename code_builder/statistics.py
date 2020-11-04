@@ -6,6 +6,7 @@ from datetime import datetime
 from collections import OrderedDict
 from fuzzywuzzy import process, fuzz
 import fuzzywuzzy
+from . import dep_finder
 
 
 class Statistics:
@@ -32,6 +33,8 @@ class Statistics:
         self.unrecognized_errs = []
         self.new_errs = 0
         self.project_count = project_count
+        self.dep_finder = dep_finder.DepFinder()
+        self.dependencies = {}
 
     def print_stats(self, out):
         print("Repository clone time: %f seconds" % self.clone_time, file=out)
@@ -42,12 +45,18 @@ class Statistics:
         print("newly discovered errors: {}".format(self.new_errs), file=out)
         print("Types of build errors:", file=out)
         self.errortypes = OrderedDict(sorted(self.errortypes.items(),
-                                      key=lambda i: i[1].get("amount", 0), reverse=True))
+                                             key=lambda i: i[1].get("amount", 0),
+                                             reverse=True))
         for err, data in self.errortypes.items():
             print("{}: {}".format(err, data["amount"]), file=out)
         print("unrecognized errors:")
         for err in self.unrecognized_errs:
             print(err, file=out)
+        print("\ndetected missing dependencies:", file=out)
+        self.dependencies = OrderedDict(sorted(self.dependencies.items(),
+                                               key=lambda i: i[1].get("amount", 0),
+                                               reverse=True))
+        print(json.dumps(self.dependencies, indent=2), file=out)
 
     def update(self, project, name):
         self.clone_time += project["source"]["time"]
@@ -68,7 +77,7 @@ class Statistics:
                     "projects": [name],
                     "origin": "docker",
                     # match to nothing, since crashes are not visible in logs
-                    "regex": "$^",
+                    "regex": r"$a",
                     "amount": 1
                 }
             elif name not in self.errors_stdout[err]["projects"]:
@@ -115,13 +124,14 @@ class Statistics:
                     elif self.find_new_errors(project, name, text):
                         print("matched new errors!")
                     else:
-                        print("no errors found... fuck")
+                        print("no errors found for {}... fuck".format(name))
                         self.errortypes["unrecognized"]["amount"] += 1
                         if name not in self.errortypes["unrecognized"]["projects"]:
                             self.errortypes["unrecognized"]["projects"].append(name)
                         project["build"]["errortypes"] = ["unrecognized"]
             self.add_incorrect_project()
             self.add_rebuild_data(project, name)
+            self.find_deps(project, name)
 
     def add_unrecognized_project(self):
         self.unrecognized_projects += 1
@@ -168,8 +178,11 @@ class Statistics:
             if not processed:
                 continue
             matches = process.extract(processed, self.errors_stdout.keys(),
-                                      limit=5, scorer=fuzz.partial_ratio)
+                                      limit=5, scorer=fuzz.ratio)
             # what threshold??
+            new_errs = [m[0] for m in matches if m[1] >= 90]
+            if new_errs:
+                print("matched \n{}\nto\n{} using fuzzy".format(l, new_errs), sep='\n')
             errors.extend([m[0] for m in matches if m[1] >= 90])
         # remove dups
         self.add_errors(project, name, list(set(errors)))
@@ -196,10 +209,8 @@ class Statistics:
                     self.new_errs += 1
                 self.add_errors(project, name, [err])
             return True
-        print("could not find clang error pattern..")
         errlines = re.findall(
             r"^.*error.*$", log, flags=re.IGNORECASE | re.MULTILINE)
-        print(errlines)
         # figure out what to do with other error strings
         # this dict contains the error match and then thi origin, at the
         # end is the most generic one.
@@ -260,14 +271,29 @@ class Statistics:
                     break
         return found_match
 
+    def find_deps(self, project, name):
+        dependencies = self.dep_finder.analyze_logs(project, name)
+        self.add_depencenies(dependencies, name)
+        project["build"]["missing_dependencies"] = dependencies
+        self.rebuild_projects[project["type"]][name]["missing_deps"] = dependencies
+
+    def add_depencenies(self, deps, name):
+        for dep in deps:
+            if dep in self.dependencies:
+                self.dependencies[dep]["count"] += 1
+                self.dependencies[dep]["projects"].add(name)
+            else:
+                self.dependencies[dep]["count"] = 1
+                self.dependencies[dep]["projects"] = set([name])
+
     def add_rebuild_data(self, project, name):
         # generate info for rebuild
         rebuild_data = {
             "type": project["type"],
-            "suite": project["suite"] if "suite" in project else None,
-            "version": project["version"],
+            "suite": project.get("suite"),
+            "version": project.get("version"),
             "status": project["status"],
-            "codebase_data": project.get("codebase_data", None),
+            "codebase_data": project.get("codebase_data"),
             "previous_errors": project["build"]["errortypes"]
             if ("build" in project and "errortypes" in project["build"]) else None
         }
@@ -304,3 +330,15 @@ class Statistics:
                                                 reverse=True))
         with open(path, 'w') as o:
             o.write(json.dumps(self.errors_stdout, indent=2))
+    
+    def save_dependencies_json(self, path=None):
+        if path is None:
+            timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            path = join(
+                "buildlogs",
+                "dependencies_{}_{}.json".format(self.project_count, timestamp))
+        self.dependencies = OrderedDict(sorted(self.dependencies.items(),
+                                               key=lambda i: i[1].get("amount", 0),
+                                               reverse=True))
+        with open(path, 'w') as o:
+            o.write(json.dumps(self.dependencies, indent=2))
