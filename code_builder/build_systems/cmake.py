@@ -1,5 +1,6 @@
 import shutil
 import subprocess
+import pathlib
 
 from os.path import abspath, join, isfile, dirname
 from os import listdir, makedirs, mkdir
@@ -81,7 +82,7 @@ class Project:
 
     def build(self):
         cmd = ["cmake", "--build", "."]
-        ret = run(cmd, cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
+        ret = run(cmd, cwd=self.build_dir, stderr=PIPE)
         if ret.returncode:
             self.error_log.print_error(self.idx, ret.stderr.decode("utf-8"))
             return False
@@ -90,7 +91,7 @@ class Project:
             self.output_log.print_debug(
                 self.idx, "CMake build command: %s" % " ".join(cmd)
             )
-            self.output_log.print_debug(self.idx, decode(ret.stdout))
+            # self.output_log.print_debug(self.idx, decode(ret.stdout))
             return True
 
     def generate_bitcodes(self, target_dir):
@@ -102,6 +103,14 @@ class Project:
             # os.rename does not work for target and destinations being on different filesystems
             # we might operate on different volumes in Docker
             shutil.move(file, join(target_dir, local_path))
+    
+    def generate_ast(self, target_dir):
+        for file in pathlib.Path(self.build_dir).glob("**/*.ast"):
+            res = search(r"{}".format(self.build_dir), str(file))
+            local_path = str(file)[res.end(0) + 1:]
+            makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
+            shutil.move(file, join(target_dir, local_path))
+        return True
 
     def clean(self):
         build_dir = self.repository_path + "_build"
