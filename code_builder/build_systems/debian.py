@@ -4,7 +4,6 @@ import subprocess
 from os.path import abspath, join, isfile, dirname, isdir, exists
 from os import listdir, makedirs, mkdir, remove
 from sys import version_info
-from glob import iglob
 from re import search, escape
 import pathlib
 
@@ -86,49 +85,13 @@ class Project:
         buildfiles = listdir(self.build_dir)
         sourcefiles = listdir(self.repository_path)
         try:
-            # for f in buildfiles:
-            #     if ".log" in f:
-            #         continue
-            #     p = join(self.build_dir, f)
-            #     if isdir(p):
-            #         shutil.rmtree(p)
-            #     else:
-            #         remove(p)
-            # delete source dir, othewise mv fails
             for f in sourcefiles:
                 p = join(self.repository_path, f)
                 if isdir(p):
                     shutil.rmtree(p)
                 else:
                     remove(p)
-            # # copy sources into the build volume
-            # sources = listdir(sourcedir)
-            # self.output_log.print_debug(self.idx, sources)
-            # for f in sources:
-            #     dest = join(self.build_dir, f)
-            #     src = join(sourcedir, f)
-            #     if isdir(src):
-            #         # if exists(dest):
-            #         #     shutil.rmtree(dest)
-            #         # self.output_log.print_debug(self.idx, "copying directory {} to {}".format(dest, src))
-            #         shutil.copytree(src, dest, symlinks=False)
-            #     else:
-            #         # if exists(dest):
-            #         #     remove(dest)
-            #         # self.output_log.print_debug(self.idx, "copying file {} to {}".format(dest, src))
-            #         shutil.copy(src, dest, follow_symlinks=False)
-            # # and move to sources volume
-            # for f in sources:
-            #     src = join(sourcedir, f)
-            #     repo_dest = join(self.repository_path, f)
-            #     if isdir(src):
-            #         if exists(repo_dest):
-            #             shutil.rmtree(repo_dest)
-            #         shutil.move(src, repo_dest)
-            #     else:
-            #         if exists(repo_dest):
-            #             remove(repo_dest)
-            #         shutil.move(src, repo_dest)
+            
         except Exception as e:
             self.error_log.print_error(self.idx, e)
             return False
@@ -136,7 +99,7 @@ class Project:
         # this seems to work better regarding symlinks
         # use sh -c "cp ..."here, so we can use globbing
         
-        out = run(["sh", "-c", "cp -a {}/* {}".format(sourcedir, self.repository_path)],
+        out = run(["bash", "-c", "shopt -s dotglob; cp -a {}/* {}".format(sourcedir, self.repository_path)],
                   cwd=temp, stderr=subprocess.PIPE)
         if out.returncode != 0:
             self.error_log.print_error(self.idx, str(out))
@@ -202,7 +165,7 @@ class Project:
             else:
                 remove(p)
         temp = join(self.build_dir, "..")
-        out = run(["sh", "-c", "mv -f {}/* {}".format(self.temp_build_dir, self.build_dir)],
+        out = run(["bash", "-c", "shopt -s dotglob; mv -f {}/* {}".format(self.temp_build_dir, self.build_dir)],
                   cwd=temp, stderr=subprocess.PIPE)
         if out.returncode != 0:
             self.error_log.print_error(self.idx, str(out))
@@ -210,29 +173,18 @@ class Project:
         return True
 
     def generate_bitcodes(self, target_dir):
-        # maybe copy from cmake.py?
-        # for file in iglob("{0}/**/*.bc".format(self.build_dir), recursive=True):
         for file in pathlib.Path(self.build_dir).glob("**/*.bc"):
-            # debian has .bc files in normal build dir
             res = search(r"{}".format(self.build_dir), str(file))
             local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
-            # os.rename does not work for target and destinations being on
-            # different filesystems
-            # we might operate on different volumes in Docker
             shutil.move(file, join(target_dir, local_path))
         return True
     
     def generate_ast(self, target_dir):
-        # for file in iglob("{0}/**/*.ast".format(self.build_dir), recursive=True):
         for file in pathlib.Path(self.build_dir).glob("**/*.ast"):
-            # debian has .bc files in normal build dir
             res = search(r"{}".format(self.build_dir), str(file))
             local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
-            # os.rename does not work for target and destinations being on
-            # ifferent filesystems
-            # we might operate on different volumes in Docker
             shutil.move(file, join(target_dir, local_path))
         return True
 
