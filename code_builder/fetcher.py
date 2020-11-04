@@ -105,7 +105,7 @@ class GithubFetcher:
                 )
             }
             processed_results[repo["full_name"]] = {
-                "type": "git",
+                "type": "github.org",
                 "status": "new",
                 "recently_updated": True,
                 "codebase_data": data,

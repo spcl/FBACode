@@ -294,8 +294,9 @@ class Statistics:
             "version": project.get("version"),
             "status": project["status"],
             "codebase_data": project.get("codebase_data"),
+            "build_system": project.get("build_system", "unrecognized"),
             "previous_errors": project["build"]["errortypes"]
-            if ("build" in project and "errortypes" in project["build"]) else None
+              if ("build" in project and "errortypes" in project["build"]) else None
         }
         if project["type"] not in self.rebuild_projects:
             self.rebuild_projects[project["type"]] = {}
