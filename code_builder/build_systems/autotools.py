@@ -79,7 +79,7 @@ class Project:
                 ret = run(
                     ["./configure"], cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
                 if ret.returncode:
-                    self.error_log.print_info(
+                    self.error_log.print_error(
                         self.idx, "Failed make configure command"
                     )
                     self.error_log.print_error(self.idx, decode(ret.stderr))

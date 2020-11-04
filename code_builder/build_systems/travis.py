@@ -65,7 +65,7 @@ class Project:
         for cmd in script_list:
             out = run(["bash", "-c", cmd], cwd=self.build_dir, stderr=subprocess.PIPE)
             if out.returncode != 0:
-                self.error_log.print_error("running command \n{}\nfailed".format(cmd))
+                self.error_log.print_error(self.idx, "running command \n{}\nfailed".format(cmd))
                 self.error_log.print_error(self.idx, str(out))
                 return False
 
@@ -78,7 +78,7 @@ class Project:
                    "--no-install-recommends", apt]
             out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
             if out.returncode != 0:
-                self.error_log.print_error("apt_packages install from .travis.yml failed")
+                self.error_log.print_error(self.idx, "apt_packages install from .travis.yml failed")
                 self.error_log.print_error(self.idx, str(out))
                 return False
         # in case it is more complicated
@@ -107,36 +107,40 @@ class Project:
                         cmd = ["sh", "-c", "wget -q0 - {} | apt-key add -".format(key_url)]
                         out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                         if out.returncode != 0:
-                            self.error_log.print_error("adding key to repo failed")
+                            self.error_log.print_error(self.idx, "adding key to repo failed")
                             self.error_log.print_error(self.idx, str(out))
                             return False
                     if source_url is None:
-                        self.error_log.print_error("something went wrong with apt and travis")
+                        self.error_log.print_error(self.idx, "something went wrong with apt and travis")
                         return False
                     cmd = ["add-apt-repository", source_url]
                     out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                     if out.returncode != 0:
-                        self.error_log.print_error("adding repo failed")
+                        self.error_log.print_error(self.idx, "adding repo failed")
                         self.error_log.print_error(self.idx, str(out))
                         return False
             if apt.get("update") or do_update:
                 cmd = ["apt-get", "update"]
                 out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                 if out.returncode != 0:
-                    self.error_log.print_error("apt update from .travis.yml failed")
+                    self.error_log.print_error(self.idx, "apt update from .travis.yml failed")
                     self.error_log.print_error(self.idx, str(out))
                     return False
             if "packages" in apt:
                 if isinstance(apt["packages"], str):
+                    print("am string")
                     cmd = ["apt-get", "install", "-y", "--force-yes",
-                        "--no-install-recommends", apt["packages"]]
-                else: 
+                           "--no-install-recommends", apt["packages"]]
+                else:
                     # we have a list of packages
-                    cmd = ["apt-get", "install", "-y", "--force-yes",
-                        "--no-install-recommends"].extend(apt["packages"])
+                    print("am not string, am {}".format(type(apt["packages"])))
+                    cmd = ["apt-get", "install", "-yq", "--force-yes",
+                           "--no-install-recommends"]
+                    cmd.extend(apt["packages"])
+                print(cmd)
                 out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                 if out.returncode != 0:
-                    self.error_log.print_error("apt install from .travis.yml failed")
+                    self.error_log.print_error(self.idx, "apt install from .travis.yml failed")
                     self.error_log.print_error(self.idx, str(out))
                     return False
 
@@ -146,7 +150,7 @@ class Project:
                    "--no-install-recommends", apt]
             out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
             if out.returncode != 0:
-                self.error_log.print_error("apt_packages install from .travis.yml failed")
+                self.error_log.print_error(self.idx, "apt_packages install from .travis.yml failed")
                 self.error_log.print_error(self.idx, str(out))
                 return False
         # run the snap module
@@ -157,7 +161,7 @@ class Project:
                 cmd = ["snap", "install", snaps]
                 out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                 if out.returncode != 0:
-                    self.error_log.print_error("snap install from .travis.yml failed")
+                    self.error_log.print_error(self.idx, "snap install from .travis.yml failed")
                     self.error_log.print_error(self.idx, str(out))
                     return False
             else:
@@ -166,7 +170,7 @@ class Project:
                         cmd = ["snap", "install", snap]
                     else:
                         if "name" not in snap:
-                            self.error_log.print_error("invalid yaml file")
+                            self.error_log.print_error(self.idx, "invalid yaml file")
                             return False
                         cmd = ["snap", "install", snap["name"]]
                         if "confinement" in snap:
@@ -175,7 +179,7 @@ class Project:
                             cmd.append("--channel={}".format(snap["channel"]))
                     out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                     if out.returncode != 0:
-                        self.error_log.print_error("snap install from .travis.yml failed")
+                        self.error_log.print_error(self.idx, "snap install from .travis.yml failed")
                         self.error_log.print_error(self.idx, str(out))
                         return False
         return True
@@ -200,7 +204,6 @@ class Project:
                 return False
         with open(join(self.build_dir, ".travis.yml"), 'r') as f:
             yml = yaml.load(f, Loader=FullLoader)
-            print(yml)
             self.yml = yml
         # set global env vars specified in the yaml
         for var in self.yml.get("env").get("global"):
@@ -217,7 +220,6 @@ class Project:
         os.environ["CC"] = c_compiler
         os.environ["CC_FOR_BUILD"] = c_compiler
         # look for a good configuration of env or jobs or matrix:
-        
         jobs = yml.get("jobs", yml.get("matrix", {})).get("include", None)
         if jobs and isinstance(jobs, list):
             # split this list into stages, since each stage need to be run afaik
