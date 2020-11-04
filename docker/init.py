@@ -38,7 +38,7 @@ builder_mod = importlib.import_module('build_systems.{}'.format(build_system))
 # builder_mod = imp.load_source(build_system, os.path.join('build_systems', build_system + '.py'))
 builder_class = getattr(builder_mod, 'Project')
 
-print("Building {} in here".format(name))
+print("Building {} in here using {}".format(name, build_system))
 
 cfg = {'output': {'verbose': verbose, 'file': '/home/fba_code/'}}
 ctx = Context(cfg)
