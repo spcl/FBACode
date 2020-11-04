@@ -11,9 +11,9 @@ DOCKER_DIR = os.path.join(PROJECT_DIR, 'docker')
 REPOSITORY_NAME = 'mcopik/fbacode'
 
 images = {
-    # 'ubuntu-1804-clang-9': {
-    #     'dockerfile': 'Dockerfile.base'
-    # },
+    'ubuntu-1804-clang-9': {
+        'dockerfile': 'ubuntu-1804-clang-9.dockerfile'
+    },
     # 'debian-sid': {
     #     'dockerfile': 'Dockerfile_debian-sid.base'
     # },
@@ -23,6 +23,9 @@ images = {
     # 'debian-bullseye': {
     #     'dockerfile': 'Dockerfile_debian-bullseye.base'
     # }
+    'ubuntu-2004-travis': {
+        'dockerfile': 'ubuntu-2004-travis.dockerfile'
+    }
 }
 
 no_cache = False
@@ -31,7 +34,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "--nocache":
 
 
 client = docker.from_env()
-
+errors = 0
 for i, (img, definitions) in enumerate(images.items()):
     print("[{}/{}] building {}:{}".format(i +
                                           1, len(images), REPOSITORY_NAME, img))
@@ -51,3 +54,6 @@ for i, (img, definitions) in enumerate(images.items()):
         elif "error" in resp:
             print("ERROR: {}".format(resp["error"]), end='')
             print(resp["errorDetail"], end='')
+            errors += 1
+print("\n {} errors in {} docker builds".format(errors, len(images)))
+sys.exit(bool(errors))
