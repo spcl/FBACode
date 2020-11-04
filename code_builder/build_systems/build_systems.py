@@ -21,6 +21,9 @@ from requests.exceptions import Timeout
 
 from . import cmake
 from . import debian
+from . import autotools
+from . import make
+from . import travis
 
 
 def run(command, cwd=None, stdout=None, stderr=None):
@@ -34,7 +37,13 @@ def run(command, cwd=None, stdout=None, stderr=None):
         return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
 
 
-build_systems = {"debian": debian.Project, "CMake": cmake.Project}
+build_systems = {
+    "debian": debian.Project,
+    "CMake": cmake.Project,
+    "make": make.Project,
+    "Autotools": autotools.Project,
+    "travis": travis.Project
+    }
 
 
 def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
@@ -50,7 +59,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
     start = time()
     for build_name, build_system in build_systems.items():
         if build_system.recognize(source_dir):
-            # print("buildsystem recognized as {}".format(build_name))
+            project["build_system"] = build_name.lower()
+            print("{} recognized as {}".format(name, build_name))
             build_dir = join(build_dir, source_name)
             target_dir = join(target_dir, source_name)
             if not exists(build_dir):
@@ -100,7 +110,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 mem_limit="3g"  # limit memory to 3GB to protect the host
             )
             ctx.out_log.print_info(
-                idx, "building {} in container {}".format(name, container.name))
+                idx, "building {} in container {} as {}".format(name, container.name, build_name))
             # TODO: maybe configure a timeout?
             # TODO: do a loop and check if the docker exited and check the logs
             sleep(10)
@@ -152,7 +162,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             container.remove()
 
             # Generate summary and stats data
-            project["build"]["system"] = build_name.lower()
+            
             project["build"]["docker_log"] = docker_log_file
             if "bitcodes" in project:
                 bitcodes = [
@@ -176,6 +186,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
         ctx.out_log.print_info(
             idx, "Unrecognized project %s in %s" % (name, source_dir)
         )
+        project["status"] = "unrecognized"
     else:
         project["build"]["time"] = end - start
     return (idx, name, project)
