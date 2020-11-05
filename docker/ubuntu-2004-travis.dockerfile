@@ -6,7 +6,9 @@ ENV SNAPCRAFT_SETUP_CORE=1
 ARG CLANG_VERSION=9
 
 ARG deps='software-properties-common curl gpg-agent gnupg' 
-ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} libomp-${CLANG_VERSION}-dev clang++-${CLANG_VERSION} texinfo build-essential fakeroot devscripts automake autotools-dev wget snapd git ruby-full"
+ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} libomp-${CLANG_VERSION}-dev \
+  clang++-${CLANG_VERSION} texinfo build-essential fakeroot devscripts automake autotools-dev \
+  wget snapd git ruby-full sudo"
 RUN echo ${CLANG_VERSION}
 RUN apt-get update 
 RUN apt-get install -y ${deps} --no-install-recommends --force-yes
@@ -19,6 +21,8 @@ RUN ln -s /usr/bin/clang-${CLANG_VERSION} /usr/bin/clang
 RUN ln -s /usr/bin/clang++-${CLANG_VERSION} /usr/bin/clang++
 # install needed python modules
 RUN python3 -m pip install pyyaml
+# so travis can use sudo
+RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 
 ENV HOME_DIR /home/fba_code/
 ENV SRC_DIR ${HOME_DIR}/code

@@ -40,9 +40,10 @@ def run(command, cwd=None, stdout=None, stderr=None):
 build_systems = {
     "debian": debian.Project,
     "CMake": cmake.Project,
+    "travis": travis.Project,
     "make": make.Project,
     "Autotools": autotools.Project,
-    "travis": travis.Project
+    
     }
 
 

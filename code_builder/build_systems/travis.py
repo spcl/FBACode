@@ -58,6 +58,7 @@ class Project:
             env_var = env_var.split("=")
             if len(env_var) >= 2:
                 os.environ[env_var[0]] = env_var[1]
+        return True
 
     def run_scripts(self, script_list):
         if isinstance(script_list, str):
@@ -66,8 +67,9 @@ class Project:
             out = run(["bash", "-c", cmd], cwd=self.build_dir, stderr=subprocess.PIPE)
             if out.returncode != 0:
                 self.error_log.print_error(self.idx, "running command \n{}\nfailed".format(cmd))
-                self.error_log.print_error(self.idx, str(out))
+                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                 return False
+        return True
 
     def run_addons(self, addons):
         apt = addons.get("apt")
@@ -79,12 +81,12 @@ class Project:
             out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
             if out.returncode != 0:
                 self.error_log.print_error(self.idx, "apt_packages install from .travis.yml failed")
-                self.error_log.print_error(self.idx, str(out))
+                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                 return False
-        # in case it is more complicated
+        # in case it is more complicated 
         elif apt:
             do_update = False
-            if "sources" in apt:
+            if apt.get("sources", None) is not None:
                 # add apt sources accoring to the yaml
                 do_update = True
                 # download apt source safelist file
@@ -92,7 +94,7 @@ class Project:
                 url = "https://raw.githubusercontent.com/travis-ci/apt-source-safelist/master/ubuntu.json"
                 with urllib.request.urlopen(url) as resp:
                     safelist = json.loads(resp.read().decode())
-                for source in apt["sources"]:
+                for source in apt.get("sources", []):
                     key_url = None
                     source_url = None
                     if isinstance(source, str):
@@ -101,32 +103,32 @@ class Project:
                         key_url = safelist_entry.get("canonical_key_url", None)
                         source_url = safelist_entry.get("sourceline")
                     else:
-                        key_url = source.get("canonical_key_url", None)
+                        key_url = source.get("key_url", None)
                         source_url = source.get("sourceline")
                     if key_url:
                         cmd = ["sh", "-c", "wget -q0 - {} | apt-key add -".format(key_url)]
                         out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                         if out.returncode != 0:
                             self.error_log.print_error(self.idx, "adding key to repo failed")
-                            self.error_log.print_error(self.idx, str(out))
+                            self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                             return False
                     if source_url is None:
-                        self.error_log.print_error(self.idx, "something went wrong with apt and travis")
+                        self.error_log.print_error(self.idx, "wrong format of sourceline in travis")
                         return False
                     cmd = ["add-apt-repository", source_url]
                     out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                     if out.returncode != 0:
                         self.error_log.print_error(self.idx, "adding repo failed")
-                        self.error_log.print_error(self.idx, str(out))
+                        self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                         return False
             if apt.get("update") or do_update:
                 cmd = ["apt-get", "update"]
                 out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                 if out.returncode != 0:
                     self.error_log.print_error(self.idx, "apt update from .travis.yml failed")
-                    self.error_log.print_error(self.idx, str(out))
+                    self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                     return False
-            if "packages" in apt:
+            if apt.get("packages") is not None:
                 if isinstance(apt["packages"], str):
                     print("am string")
                     cmd = ["apt-get", "install", "-y", "--force-yes",
@@ -141,7 +143,7 @@ class Project:
                 out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                 if out.returncode != 0:
                     self.error_log.print_error(self.idx, "apt install from .travis.yml failed")
-                    self.error_log.print_error(self.idx, str(out))
+                    self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                     return False
 
         apt_packages = addons.get("apt_packages")
@@ -151,18 +153,18 @@ class Project:
             out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
             if out.returncode != 0:
                 self.error_log.print_error(self.idx, "apt_packages install from .travis.yml failed")
-                self.error_log.print_error(self.idx, str(out))
+                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                 return False
         # run the snap module
         snaps = addons.get("snaps")
-        if snaps:
+        if snaps is not None:
 
             if isinstance(snaps, str):
                 cmd = ["snap", "install", snaps]
                 out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                 if out.returncode != 0:
                     self.error_log.print_error(self.idx, "snap install from .travis.yml failed")
-                    self.error_log.print_error(self.idx, str(out))
+                    self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                     return False
             else:
                 for snap in snaps:
@@ -170,17 +172,17 @@ class Project:
                         cmd = ["snap", "install", snap]
                     else:
                         if "name" not in snap:
-                            self.error_log.print_error(self.idx, "invalid yaml file")
+                            self.error_log.print_error(self.idx, "invalid yaml file, snap name missing")
                             return False
                         cmd = ["snap", "install", snap["name"]]
-                        if "confinement" in snap:
+                        if snap.get("confinement") is not None:
                             cmd.append("--{}".format(snap["confinement"]))
-                        if "channel" in snap:
+                        if snap.get("channel") is not None:
                             cmd.append("--channel={}".format(snap["channel"]))
                     out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
                     if out.returncode != 0:
                         self.error_log.print_error(self.idx, "snap install from .travis.yml failed")
-                        self.error_log.print_error(self.idx, str(out))
+                        self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                         return False
         return True
 
@@ -194,13 +196,16 @@ class Project:
                     continue
                 p = join(self.build_dir, f)
                 if isdir(p):
-                    shutil.rmtree(p)
+                    try:
+                        shutil.rmtree(p)
+                    except FileNotFoundError:
+                        run(["rm", "-rf", p])
                 else:
                     remove(p)
             cmd = ["bash", "-c", "shopt -s dotglob; cp -a {}/* {}".format(self.repository_path, self.build_dir)]
             out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
             if out.returncode != 0:
-                self.error_log.print_error(self.idx, str(out))
+                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                 return False
         with open(join(self.build_dir, ".travis.yml"), 'r') as f:
             yml = yaml.load(f, Loader=FullLoader)
@@ -236,7 +241,7 @@ class Project:
             i = 0
             for job in jobs:
                 if "stage" in job:
-                    if len(travis_stages[0] > 0):
+                    if len(travis_stages[0]) > 0:
                         i += 1
                         travis_stages.append([])
                     travis_stages[i].append(job)
@@ -254,23 +259,29 @@ class Project:
                 if len(clang_jobs) > 0:
                     stage = clang_jobs
                 # pick the first one of the matrix, idk how to handle it
-                if "env" in stage[0]:
+                if stage[0].get("env", None) is not None:
                     for var in stage[0]["env"]:
                         self.set_env_vars(var)
-                if "addons" in stage[0]:
-                    if not self.run_addons(yml["addons"]):
+                if stage[0].get("addons") is not None:
+                    if not self.run_addons(stage[0]["addons"]):
                         return False
-                if "before_install" in stage[0]:
-                    return self.run_scripts(yml["before_install"])
+                if stage[0].get("before_install") is not None:
+                    if not self.run_scripts(stage[0]["before_install"]):
+                        return False
                 # run the install
-                if "install" in stage[0]:
-                    return self.run_scripts(yml["install"])
+                if stage[0].get("install") is not None:
+                    if not self.run_scripts(stage[0]["install"]):
+                        return False
                 # run the before_script part
-                if "before_script" in stage[0]:
-                    return self.run_scripts(yml["before_script"])
+                if stage[0].get("before_script") is not None:
+                    if not self.run_scripts(stage[0]["before_script"]):
+                        return False
+                if stage[0].get("script") is not None:
+                    if not self.run_scripts(stage[0]["script"]):
+                        return False
 
         # package addons
-        if "addons" in yml:
+        if yml.get("addons") is not None:
             if not self.run_addons(yml["addons"]):
                 return False
         #  TODO: pick a configuration from the env and rest of matrix
@@ -284,19 +295,26 @@ class Project:
         os.environ["CC"] = c_compiler
         os.environ["CC_FOR_BUILD"] = c_compiler
         
-        if "before_install" in yml:
-            return self.run_scripts(yml["before_install"])
+        if yml.get("before_install") is not None:
+            if not self.run_scripts(yml["before_install"]):
+                return False
         # run the install
-        if "install" in yml:
-            return self.run_scripts(yml["install"])
+        if yml.get("install") is not None:
+            if not self.run_scripts(yml["install"]):
+                return False
         # run the before_script part
-        if "before_script" in yml:
-            return self.run_scripts(yml["before_script"])
+        if yml.get("before_script") is not None:
+            if not self.run_scripts(yml["before_script"]):
+                return False
+        return True
 
     def build(self):
         # run the script
-        if "script" in self.yml:
-            return self.run_scripts(self.yml["script"])
+        if self.yml.get("script") is not None:
+            if not self.run_scripts(self.yml["script"]):
+                return False
+
+        return True
         # before_cache would be run here, look into this
 
         # maybe do after_success of after_failure?
