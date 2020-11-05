@@ -281,10 +281,12 @@ class Statistics:
         for dep in deps:
             if dep in self.dependencies:
                 self.dependencies[dep]["count"] += 1
-                self.dependencies[dep]["projects"].add(name)
+                if name not in self.dependencies[dep]["projects"]:
+                    self.dependencies[dep]["projects"].append(name)
             else:
+                self.dependencies[dep] = {}
                 self.dependencies[dep]["count"] = 1
-                self.dependencies[dep]["projects"] = set([name])
+                self.dependencies[dep]["projects"] = [name]
 
     def add_rebuild_data(self, project, name):
         # generate info for rebuild

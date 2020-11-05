@@ -69,7 +69,7 @@ class Project:
                    "cp -a {}/* {}".format(self.repository_path, self.build_dir)]
             out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
             if out.returncode != 0:
-                self.error_log.print_error(self.idx, str(out))
+                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                 return False
             if isfile(join(self.build_dir, "configure")):
                 ret = run(

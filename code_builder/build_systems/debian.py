@@ -64,11 +64,11 @@ class Project:
         out = run(["apt-get", "source", "-y", self.name],
                   cwd=temp, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out.stderr))
+            self.error_log.print_error(self.idx, str(out.stderr.decode("utf-8")))
             return False
-        self.output_log.print_info(self.idx, str(out))
+        self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
         # find out the name of the source code folder
-        out = out.stdout
+        out = out.stdout.decode("utf-8")
         replace_name = search(r"(?<=Picking ').*(?=' as source package instead of \'{0}\')"
                               .format(escape(self.name)), out)
         if replace_name:
@@ -102,11 +102,11 @@ class Project:
         out = run(["bash", "-c", "shopt -s dotglob; cp -a {}/* {}".format(sourcedir, self.repository_path)],
                   cwd=temp, stderr=subprocess.PIPE)
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out))
+            self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
             return False
         # out = run(["mv", sourcedir, self.build_dir], cwd=temp, stderr=subprocess.PIPE)
         # if out.returncode != 0:
-        #     self.error_log.print_error(self.idx, str(out.stderr))
+        #     self.error_log.print_error(self.idx, str(out.stderr.decode("utf-8")))
         #     return False
         # fetch dependencies
         
@@ -114,27 +114,27 @@ class Project:
                   cwd=self.repository_path,
                   stderr=subprocess.PIPE)
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out.stderr))
+            self.error_log.print_error(self.idx, str(out.stderr.decode("utf-8")))
             return False
-        self.output_log.print_info(self.idx, str(out))
+        self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
         # https://stackoverflow.com/questions/33278928/how-to-overcome-aclocal-1-15-is-missing-on-your-system-warning
         # this sometimes fails, but no big deal
         # try:
         #     out = run(["autoreconf", "-f", "-i"], cwd=self.build_dir,
         #               stderr=subprocess.PIPE)
         #     if out.returncode != 0:
-        #         self.output_log.print_error(self.idx, str(out))
+        #         self.output_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
         #     else:
-        #         self.output_log.print_info(self.idx, str(out))
+        #         self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
         # except Exception as e:
         #     self.output_log.print_info(self.idx, "autoreconf is not installed, error: {}".format(e))
         # out = run([join("debian", "rules"), "clean"],
         #           cwd=self.build_dir, 
         #           stderr=subprocess.PIPE)
         # if out.returncode != 0:
-        #     self.error_log.print_error(self.idx, str(out.stderr))
+        #     self.error_log.print_error(self.idx, str(out.stderr.decode("utf-8")))
         #     return False
-        # self.output_log.print_info(self.idx, str(out))
+        # self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
         return version
 
     def build(self):
@@ -149,12 +149,12 @@ class Project:
                   cwd=self.temp_build_dir,
                   stderr=subprocess.PIPE)
         print("done building")
-        print(out.stderr)
+        print(out.stderr.decode("utf-8"))
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out.stderr))
+            self.error_log.print_error(self.idx, str(out.stderr.decode("utf-8")))
             return False
-        self.error_log.print_info(self.idx, str(out.stderr))
-        self.output_log.print_info(self.idx, str(out))
+        self.error_log.print_info(self.idx, str(out.stderr.decode("utf-8")))
+        self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
         # move build files to attached volume
         for f in listdir(self.build_dir):
             if ".log" in f:
@@ -168,7 +168,7 @@ class Project:
         out = run(["bash", "-c", "shopt -s dotglob; mv -f {}/* {}".format(self.temp_build_dir, self.build_dir)],
                   cwd=temp, stderr=subprocess.PIPE)
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out))
+            self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
             return False
         return True
 
