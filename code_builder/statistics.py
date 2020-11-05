@@ -77,7 +77,7 @@ class Statistics:
                     "projects": [name],
                     "origin": "docker",
                     # match to nothing, since crashes are not visible in logs
-                    "regex": r"$a",
+                    "regex": None,
                     "amount": 1
                 }
             elif name not in self.errors_stdout[err]["projects"]:
@@ -164,7 +164,8 @@ class Statistics:
 
     def match_error_with_regex(self, project, name, log):
         errors = [err for err in self.errors_stdout
-                  if re.search(self.errors_stdout[err]["regex"], log) is not None]
+                  if self.errors_stdout[err]["regex"] is not None
+                  and re.search(self.errors_stdout[err]["regex"], log) is not None]
         # we found the following errors
         self.add_errors(project, name, errors)
         return bool(errors)
