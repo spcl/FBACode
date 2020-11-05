@@ -206,19 +206,28 @@ class Project:
             yml = yaml.load(f, Loader=FullLoader)
             self.yml = yml
         # set global env vars specified in the yaml
-        for var in self.yml.get("env").get("global"):
-            self.set_env_vars(var)
-        # set default env variables
+        if isinstance(self.yml.get("env"), list):
+            for var in self.yml.get("env"):
+                if isinstance(var, str):
+                    self.set_env_vars(var)
+                    break
+        else:
+            for var in self.yml.get("env", {}).get("global", []):
+                self.set_env_vars(var)
+            # take the first configuration, idk
+            for var in self.yml.get("env", {}).get("jobs", []):
+                if isinstance(var, str):
+                    self.set_env_vars(var)
+                    break
+            for var in self.yml.get("env", {}).get("matrix", []):
+                if isinstance(var, str):
+                    self.set_env_vars(var)
+                    break
         # https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
         os.environ["TRAVIS_BUILD_DIR"] = self.build_dir
         os.environ["CI"] = "true"
         os.environ["TRAVIS"] = "true"
-        c_compiler = get_c_compiler()
-        cxx_compiler = get_cxx_compiler()
-        os.environ["CXX"] = cxx_compiler
-        os.environ["CXX_FOR_BUILD"] = cxx_compiler
-        os.environ["CC"] = c_compiler
-        os.environ["CC_FOR_BUILD"] = c_compiler
+        
         # look for a good configuration of env or jobs or matrix:
         jobs = yml.get("jobs", yml.get("matrix", {})).get("include", None)
         if jobs and isinstance(jobs, list):
@@ -234,7 +243,10 @@ class Project:
                 else:
                     travis_stages[i].append(job)
             for stage in travis_stages:
-                # try and filter out linux and clang jobs
+                # try and filter out amd64, linux and clang jobs
+                amd64_jobs = [i for i in stage if i.get("os") == "amd64"]
+                if len(amd64_jobs) > 0:
+                    stage = amd64_jobs
                 linux_jobs = [i for i in stage if i.get("os") == "linux"]
                 if len(linux_jobs) > 0:
                     stage = linux_jobs
@@ -265,6 +277,13 @@ class Project:
         # cache components
         # i dont think there is anything to do
         # run the before_install script, if any
+        c_compiler = get_c_compiler()
+        cxx_compiler = get_cxx_compiler()
+        os.environ["CXX"] = cxx_compiler
+        os.environ["CXX_FOR_BUILD"] = cxx_compiler
+        os.environ["CC"] = c_compiler
+        os.environ["CC_FOR_BUILD"] = c_compiler
+        
         if "before_install" in yml:
             return self.run_scripts(yml["before_install"])
         # run the install
