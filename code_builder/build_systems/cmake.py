@@ -105,12 +105,13 @@ class Project:
             return True
 
     def generate_bitcodes(self, target_dir):
-        for file in iglob("{0}/**/*.bc".format(self.build_dir), recursive=True):
+        for file in pathlib.Path(self.build_dir).glob("**/*.bc"):
             # CMake file format: {build_dir}/../CMakeFiles/{dir}.dir/relative_bc_location
-            res = search(r"CMakeFiles/.*\.dir", file)
-            local_path = file[res.end(0) + 1 :]
+            res = search(r"{}/CMakeFiles/".format(self.build_dir), str(file))
+            local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
-            # os.rename does not work for target and destinations being on different filesystems
+            # os.rename does not work for target and destinations being
+            # on different filesystems
             # we might operate on different volumes in Docker
             shutil.move(file, join(target_dir, local_path))
     
