@@ -80,9 +80,9 @@ project = {
 }
 start = time()
 if build_system == "debian":
-    builder = builder_class(source_dir, build_dir, idx, ctx, name)
+    builder = builder_class(source_dir, build_dir, idx, ctx, name, project)
 else:
-    builder = builder_class(source_dir, build_dir, idx, ctx)
+    builder = builder_class(source_dir, build_dir, idx, ctx, project)
 configured_version = builder.configure(build_dir)
 if not configured_version:
     project['build']['configure'] = 'fail'
