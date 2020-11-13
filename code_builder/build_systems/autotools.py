@@ -10,6 +10,7 @@ from sys import version_info
 from re import search
 import pathlib
 
+from .dependency_installer import parse_travis
 from .environment import get_c_compiler, get_cxx_compiler
 
 
@@ -40,13 +41,14 @@ class Context:
 class Project:
     CONTAINER_NAME = "mcopik/fbacode:ubuntu-1804-clang-9"
 
-    def __init__(self, repo_dir, build_dir, idx, ctx):
+    def __init__(self, repo_dir, build_dir, idx, ctx, project):
         self.repository_path = repo_dir
         self.build_dir = build_dir
         self.idx = idx
         self.ctx = ctx
         self.output_log = ctx.out_log
         self.error_log = ctx.err_log
+        self.project = project
 
     def configure(self, force_update=True):
         # run autoreconf -i --force
@@ -55,6 +57,13 @@ class Project:
         cxx_compiler = get_cxx_compiler()
         os.environ["CC"] = c_compiler
         os.environ["CXX"] = cxx_compiler
+        if isfile(join(self.repository_path, ".travis.yml")):
+            if not parse_travis(self, self.repository_path):
+                self.error_log.print_error(
+                    self.idx,
+                    "error trying to install dependencies using travis!")
+            else:
+                self.project["build"]["travis_installer"] = True
         if len(listdir(self.build_dir)) == 0 or force_update:
             # clean build dir and copy source over
             # we cant always build in separate directory from build

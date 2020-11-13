@@ -12,6 +12,7 @@ from shutil import rmtree
 from sys import version_info
 from re import search
 import pathlib
+from .dependency_installer import travis_addons
 
 from yaml.loader import FullLoader
 
@@ -42,13 +43,14 @@ class Context:
 class Project:
     CONTAINER_NAME = "mcopik/fbacode:ubuntu-2004-travis"
 
-    def __init__(self, repo_dir, build_dir, idx, ctx):
+    def __init__(self, repo_dir, build_dir, idx, ctx, project):
         self.repository_path = repo_dir
         self.build_dir = build_dir
         self.idx = idx
         self.ctx = ctx
         self.output_log = ctx.out_log
         self.error_log = ctx.err_log
+        self.project = project
     
     def set_env_vars(self, var):
         if not isinstance(var, str):
@@ -70,7 +72,7 @@ class Project:
                 self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                 return False
         return True
-
+    '''
     def run_addons(self, addons):
         apt = addons.get("apt")
         # in case its just a string or list of strings
@@ -83,7 +85,7 @@ class Project:
                 self.error_log.print_error(self.idx, "apt_packages install from .travis.yml failed")
                 self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                 return False
-        # in case it is more complicated 
+        # in case it is more complicated
         elif apt:
             do_update = False
             if apt.get("sources", None) is not None:
@@ -123,7 +125,7 @@ class Project:
                         return False
             if apt.get("update") or do_update:
                 cmd = ["apt-get", "update"]
-                out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
+                out = run(cmd, stderr=subprocess.PIPE)
                 if out.returncode != 0:
                     self.error_log.print_error(self.idx, "apt update from .travis.yml failed")
                     self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
@@ -140,7 +142,7 @@ class Project:
                            "--no-install-recommends"]
                     cmd.extend(apt["packages"])
                 print(cmd)
-                out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
+                out = run(cmd, stderr=subprocess.PIPE)
                 if out.returncode != 0:
                     self.error_log.print_error(self.idx, "apt install from .travis.yml failed")
                     self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
@@ -150,7 +152,7 @@ class Project:
         if apt_packages:
             cmd = ["apt-get", "install", "-y", "--force-yes",
                    "--no-install-recommends", apt]
-            out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
+            out = run(cmd, stderr=subprocess.PIPE)
             if out.returncode != 0:
                 self.error_log.print_error(self.idx, "apt_packages install from .travis.yml failed")
                 self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
@@ -161,7 +163,7 @@ class Project:
 
             if isinstance(snaps, str):
                 cmd = ["snap", "install", snaps]
-                out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
+                out = run(cmd, stderr=subprocess.PIPE)
                 if out.returncode != 0:
                     self.error_log.print_error(self.idx, "snap install from .travis.yml failed")
                     self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
@@ -185,7 +187,7 @@ class Project:
                         self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                         return False
         return True
-
+    '''
     def configure(self, force_update=True):
         # open the .travis.yml file
         if len(listdir(self.build_dir)) == 0 or force_update:
@@ -263,7 +265,7 @@ class Project:
                     for var in stage[0]["env"]:
                         self.set_env_vars(var)
                 if stage[0].get("addons") is not None:
-                    if not self.run_addons(stage[0]["addons"]):
+                    if not travis_addons(self, stage[0]["addons"]):
                         return False
                 if stage[0].get("before_install") is not None:
                     if not self.run_scripts(stage[0]["before_install"]):
@@ -282,7 +284,7 @@ class Project:
 
         # package addons
         if yml.get("addons") is not None:
-            if not self.run_addons(yml["addons"]):
+            if not travis_addons(self, yml["addons"]):
                 return False
         #  TODO: pick a configuration from the env and rest of matrix
         # cache components

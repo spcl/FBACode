@@ -11,6 +11,7 @@ from glob import iglob
 from re import search
 
 from .environment import get_c_compiler, get_cxx_compiler
+from .dependency_installer import parse_travis
 
 
 def decode(stream):
@@ -40,18 +41,27 @@ class Context:
 class Project:
     CONTAINER_NAME = "mcopik/fbacode:ubuntu-1804-clang-9"
 
-    def __init__(self, repo_dir, build_dir, idx, ctx):
+    def __init__(self, repo_dir, build_dir, idx, ctx, project):
         self.repository_path = repo_dir
         self.build_dir = build_dir
         self.idx = idx
         self.ctx = ctx
         self.output_log = ctx.out_log
         self.error_log = ctx.err_log
+        self.project = project
 
-    def configure(self, force_update=False):
+    def configure(self, force_update=True):
         c_compiler = get_c_compiler()
         cxx_compiler = get_cxx_compiler()
         if len(listdir(self.build_dir)) == 0 or force_update:
+            # check if we have a travis file and use it to install dependencies
+            if isfile(join(self.repository_path, ".travis.yml")):
+                if not parse_travis(self, self.repository_path):
+                    self.error_log.print_error(
+                        self.idx,
+                        "error trying to install dependencies using travis!")
+                else:
+                    self.project["build"]["travis_installer"] = True
             c_compiler_opt = "-DCMAKE_C_COMPILER=" + c_compiler
             cpp_compiler_opt = "-DCMAKE_CXX_COMPILER=" + cxx_compiler
             cmd = [
