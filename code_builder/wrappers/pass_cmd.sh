@@ -1,0 +1,3 @@
+#!/bin/bash
+# just run the command passed...
+"$@"

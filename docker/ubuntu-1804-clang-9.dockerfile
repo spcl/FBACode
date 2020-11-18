@@ -54,6 +54,14 @@ ADD code_builder/utils/ utils
 ADD code_builder/build_systems/ build_systems
 ADD code_builder/wrappers/ wrappers
 
+# fake travis commands so scripts don't fail
+RUN ln -s "${HOME_DIR}/wrappers/travis_retry.sh" /usr/bin/travis_retry
+RUN ln -s "${HOME_DIR}/wrappers/travis_cmd.sh" /usr/bin/travis_cmd
+RUN ln -s "${HOME_DIR}/wrappers/exit0.sh" /usr/bin/travis_time_start
+RUN ln -s "${HOME_DIR}/wrappers/exit0.sh" /usr/bin/travis_time_finish
+RUN ln -s "${HOME_DIR}/wrappers/exit0.sh" /usr/bin/travis_terminate
+RUN ln -s "${HOME_DIR}/wrappers/pass_cmd.sh" /usr/bin/travis_wait
+RUN ln -s "${HOME_DIR}/wrappers/exit0.sh" /usr/bin/travis_assert
 
 
 # https://clang.debian.net/
