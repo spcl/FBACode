@@ -39,11 +39,7 @@ def run_travis_scripts(project, script_list, travis_path):
             project.idx, "travis script not string or list: {}".format(script_list)
         )
         return True
-    substitutions = {"sudo": ""}
     for cmd in script_list:
-        # we remove sudo since we are root in docker anyway
-        for i, j in substitutions.items():
-            cmd = cmd.replace(i, j)
         print("TRAVIS: {}".format(cmd))
         out = run(["bash", "-c", cmd], cwd=travis_path, stderr=PIPE)
         if out.returncode != 0:

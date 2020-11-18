@@ -68,10 +68,7 @@ class Project:
         elif not isinstance(script_list, list):
             self.error_log.print_error(self.idx, "travis script not string or list: {}".format(script_list))
             return True
-        substitutions = {"sudo": ""}
         for cmd in script_list:
-            for i, j in substitutions.items():
-                cmd = cmd.replace(i, j)
             print("TRAVIS: {}".format(cmd))
             out = run(["bash", "-c", cmd], cwd=self.build_dir, stderr=subprocess.PIPE)
             if out.returncode != 0:
