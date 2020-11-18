@@ -29,9 +29,11 @@ images = {
 }
 
 no_cache = False
-if len(sys.argv) > 1 and sys.argv[1] == "--nocache":
+verbose = False
+if len(sys.argv) > 1 and "--nocache" in sys.argv:
     no_cache = True
-
+if len(sys.argv) > 1 and "-v" in sys.argv:
+    verbose = True
 
 client = docker.from_env()
 errors = 0
@@ -49,9 +51,11 @@ for i, (img, definitions) in enumerate(images.items()):
     )
     for i in response:
         resp = json.loads(i.decode())
-        if "stream" in resp:
+        if verbose and "stream" in resp:
             print(resp["stream"], end='')
         elif "error" in resp:
+            if "stream" in resp:
+                print(resp["stream"], end='')
             print("ERROR: {}".format(resp["error"]), end='')
             print(resp["errorDetail"], end='')
             errors += 1
