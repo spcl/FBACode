@@ -1,5 +1,5 @@
 from subprocess import run, PIPE
-import urllib
+import urllib.request
 import json
 import yaml
 from os.path import join
@@ -15,14 +15,17 @@ def parse_travis(project, path):
     os.environ["TRAVIS_BUILD_DIR"] = path
     # not sure if it is a good idea to also run scripts...
     if yml.get("before_install") is not None:
+        print("TRAVIS: running before_install")
         if not run_travis_scripts(project, yml["before_install"], path):
             return False
     # run the install
     if yml.get("install") is not None:
+        print("TRAVIS: running install")
         if not run_travis_scripts(project, yml["install"], path):
             return False
     # run the before_script part
     if yml.get("before_script") is not None:
+        print("TRAVIS: running before_script")
         if not run_travis_scripts(project, yml["before_script"], path):
             return False
     return True
@@ -31,18 +34,32 @@ def parse_travis(project, path):
 def run_travis_scripts(project, script_list, travis_path):
     if isinstance(script_list, str):
         script_list = [script_list]
+    elif not isinstance(script_list, list):
+        project.error_log.print_error(
+            project.idx, "travis script not string or list: {}".format(script_list)
+        )
+        return True
+    substitutions = {"sudo": ""}
     for cmd in script_list:
+        # we remove sudo since we are root in docker anyway
+        for i, j in substitutions.items():
+            cmd = cmd.replace(i, j)
+        print("TRAVIS: {}".format(cmd))
         out = run(["bash", "-c", cmd], cwd=travis_path, stderr=PIPE)
         if out.returncode != 0:
-            project.error_log.print_error(project.idx, "running command \n{}\nfailed".format(cmd))
-            project.error_log.print_error(project.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+            project.error_log.print_error(
+                project.idx, "running command \n{}\nfailed".format(cmd)
+            )
+            project.error_log.print_error(
+                project.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8"))
+            )
             return False
     return True
 
 
 def travis_addons(project, addons):
     apt = addons.get("apt")
-    # in case its just a string or list of strings
+    # in case it's just a string or list of strings
     if apt and (isinstance(apt, str) or
                 isinstance(apt, list) and all(isinstance(i, str) for i in apt)):
         cmd = ["apt-get", "install", "-y", "--force-yes",
@@ -68,7 +85,7 @@ def travis_addons(project, addons):
                 source_url = None
                 if isinstance(source, str):
                     # this should be in safelist
-                    safelist_entry = next(i for i in safelist if safelist["alias"] == source)
+                    safelist_entry = next(i for i in safelist if i["alias"] == source)
                     key_url = safelist_entry.get("canonical_key_url", None)
                     source_url = safelist_entry.get("sourceline")
                 else:

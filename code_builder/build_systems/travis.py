@@ -65,129 +65,21 @@ class Project:
     def run_scripts(self, script_list):
         if isinstance(script_list, str):
             script_list = [script_list]
+        elif not isinstance(script_list, list):
+            self.error_log.print_error(self.idx, "travis script not string or list: {}".format(script_list))
+            return True
+        substitutions = {"sudo": ""}
         for cmd in script_list:
+            for i, j in substitutions.items():
+                cmd = cmd.replace(i, j)
+            print("TRAVIS: {}".format(cmd))
             out = run(["bash", "-c", cmd], cwd=self.build_dir, stderr=subprocess.PIPE)
             if out.returncode != 0:
                 self.error_log.print_error(self.idx, "running command \n{}\nfailed".format(cmd))
                 self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                 return False
         return True
-    '''
-    def run_addons(self, addons):
-        apt = addons.get("apt")
-        # in case its just a string or list of strings
-        if apt and (isinstance(apt, str) or
-                    isinstance(apt, list) and all(isinstance(i, str) for i in apt)):
-            cmd = ["apt-get", "install", "-y", "--force-yes",
-                   "--no-install-recommends", apt]
-            out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
-            if out.returncode != 0:
-                self.error_log.print_error(self.idx, "apt_packages install from .travis.yml failed")
-                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
-                return False
-        # in case it is more complicated
-        elif apt:
-            do_update = False
-            if apt.get("sources", None) is not None:
-                # add apt sources accoring to the yaml
-                do_update = True
-                # download apt source safelist file
-                safelist = None
-                url = "https://raw.githubusercontent.com/travis-ci/apt-source-safelist/master/ubuntu.json"
-                with urllib.request.urlopen(url) as resp:
-                    safelist = json.loads(resp.read().decode())
-                for source in apt.get("sources", []):
-                    key_url = None
-                    source_url = None
-                    if isinstance(source, str):
-                        # this should be in safelist
-                        safelist_entry = next(i for i in safelist if safelist["alias"] == source)
-                        key_url = safelist_entry.get("canonical_key_url", None)
-                        source_url = safelist_entry.get("sourceline")
-                    else:
-                        key_url = source.get("key_url", None)
-                        source_url = source.get("sourceline")
-                    if key_url:
-                        cmd = ["sh", "-c", "wget -q0 - {} | apt-key add -".format(key_url)]
-                        out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
-                        if out.returncode != 0:
-                            self.error_log.print_error(self.idx, "adding key to repo failed")
-                            self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
-                            return False
-                    if source_url is None:
-                        self.error_log.print_error(self.idx, "wrong format of sourceline in travis")
-                        return False
-                    cmd = ["add-apt-repository", source_url]
-                    out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
-                    if out.returncode != 0:
-                        self.error_log.print_error(self.idx, "adding repo failed")
-                        self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
-                        return False
-            if apt.get("update") or do_update:
-                cmd = ["apt-get", "update"]
-                out = run(cmd, stderr=subprocess.PIPE)
-                if out.returncode != 0:
-                    self.error_log.print_error(self.idx, "apt update from .travis.yml failed")
-                    self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
-                    return False
-            if apt.get("packages") is not None:
-                if isinstance(apt["packages"], str):
-                    print("am string")
-                    cmd = ["apt-get", "install", "-y", "--force-yes",
-                           "--no-install-recommends", apt["packages"]]
-                else:
-                    # we have a list of packages
-                    print("am not string, am {}".format(type(apt["packages"])))
-                    cmd = ["apt-get", "install", "-yq", "--force-yes",
-                           "--no-install-recommends"]
-                    cmd.extend(apt["packages"])
-                print(cmd)
-                out = run(cmd, stderr=subprocess.PIPE)
-                if out.returncode != 0:
-                    self.error_log.print_error(self.idx, "apt install from .travis.yml failed")
-                    self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
-                    return False
-
-        apt_packages = addons.get("apt_packages")
-        if apt_packages:
-            cmd = ["apt-get", "install", "-y", "--force-yes",
-                   "--no-install-recommends", apt]
-            out = run(cmd, stderr=subprocess.PIPE)
-            if out.returncode != 0:
-                self.error_log.print_error(self.idx, "apt_packages install from .travis.yml failed")
-                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
-                return False
-        # run the snap module
-        snaps = addons.get("snaps")
-        if snaps is not None:
-
-            if isinstance(snaps, str):
-                cmd = ["snap", "install", snaps]
-                out = run(cmd, stderr=subprocess.PIPE)
-                if out.returncode != 0:
-                    self.error_log.print_error(self.idx, "snap install from .travis.yml failed")
-                    self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
-                    return False
-            else:
-                for snap in snaps:
-                    if isinstance(snap, str):
-                        cmd = ["snap", "install", snap]
-                    else:
-                        if "name" not in snap:
-                            self.error_log.print_error(self.idx, "invalid yaml file, snap name missing")
-                            return False
-                        cmd = ["snap", "install", snap["name"]]
-                        if snap.get("confinement") is not None:
-                            cmd.append("--{}".format(snap["confinement"]))
-                        if snap.get("channel") is not None:
-                            cmd.append("--channel={}".format(snap["channel"]))
-                    out = run(cmd, cwd=self.build_dir, stderr=subprocess.PIPE)
-                    if out.returncode != 0:
-                        self.error_log.print_error(self.idx, "snap install from .travis.yml failed")
-                        self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
-                        return False
-        return True
-    '''
+    
     def configure(self, force_update=True):
         # open the .travis.yml file
         if len(listdir(self.build_dir)) == 0 or force_update:
@@ -261,6 +153,7 @@ class Project:
                 if len(clang_jobs) > 0:
                     stage = clang_jobs
                 # pick the first one of the matrix, idk how to handle it
+                print("TRAVIS: running stage\n{}\n".format(stage[0]))
                 if stage[0].get("env", None) is not None:
                     for var in stage[0]["env"]:
                         self.set_env_vars(var)
@@ -298,14 +191,17 @@ class Project:
         os.environ["CC_FOR_BUILD"] = c_compiler
         
         if yml.get("before_install") is not None:
+            print("TRAVIS: running before_install")
             if not self.run_scripts(yml["before_install"]):
                 return False
         # run the install
         if yml.get("install") is not None:
+            print("TRAVIS: running install")
             if not self.run_scripts(yml["install"]):
                 return False
         # run the before_script part
         if yml.get("before_script") is not None:
+            print("TRAVIS: running before_script")
             if not self.run_scripts(yml["before_script"]):
                 return False
         return True
@@ -313,6 +209,7 @@ class Project:
     def build(self):
         # run the script
         if self.yml.get("script") is not None:
+            print("TRAVIS: running script")
             if not self.run_scripts(self.yml["script"]):
                 return False
 
