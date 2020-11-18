@@ -8,7 +8,7 @@ ARG CLANG_VERSION=9
 ARG deps='software-properties-common curl gpg-agent gnupg' 
 ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} libomp-${CLANG_VERSION}-dev \
   clang++-${CLANG_VERSION} texinfo build-essential fakeroot devscripts automake autotools-dev \
-  wget snapd git ruby-full sudo python python-pip"
+  wget snapd git ruby-full sudo python2"
 RUN echo ${CLANG_VERSION}
 RUN apt-get update 
 RUN apt-get install -y ${deps} --no-install-recommends --force-yes
