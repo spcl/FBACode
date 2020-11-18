@@ -14,6 +14,7 @@ RUN apt-get update
 RUN apt-get install -y ${deps} --no-install-recommends --force-yes
 RUN curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal main"
+RUN add-apt-repository universe
 RUN apt-get update
 RUN apt-get install -y ${soft} --no-install-recommends --force-yes
 RUN apt-get purge -y --auto-remove ${DEPS}
