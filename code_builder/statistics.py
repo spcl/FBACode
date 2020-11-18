@@ -16,7 +16,7 @@ class Statistics:
     def __init__(self, project_count):
         self.correct_projects = 0
         self.incorrect_projects = 0
-        self.unrecognized_projects = 0
+        self.unrecognized_projects = []
         self.clone_time = 0
         self.build_time = 0
         with open("code_builder/errortypes.json", "r") as f:
@@ -41,7 +41,9 @@ class Statistics:
         print("Repository build time: %f seconds" % self.build_time, file=out)
         print("Succesfull builds: %d" % self.correct_projects, file=out)
         print("Failed builds: %d" % self.incorrect_projects, file=out)
-        print("Unrecognized builds: %d" % self.unrecognized_projects, file=out)
+        print("Unrecognized builds: %d" % len(self.unrecognized_projects), file=out)
+        for p in self.unrecognized_projects:
+            print("  {}".format(p), file=out)
         print("newly discovered errors: {}".format(self.new_errs), file=out)
         print("Types of build errors:", file=out)
         self.errortypes = OrderedDict(sorted(self.errortypes.items(),
@@ -63,7 +65,7 @@ class Statistics:
         if "build" in project:
             self.build_time += project["build"]["time"]
         if project["status"] == "unrecognized":
-            self.add_unrecognized_project()
+            self.add_unrecognized_project(name)
             self.add_rebuild_data(project, name)
         elif project["status"] == "success":
             self.add_correct_project()
@@ -133,8 +135,8 @@ class Statistics:
             self.add_rebuild_data(project, name)
             self.find_deps(project, name)
 
-    def add_unrecognized_project(self):
-        self.unrecognized_projects += 1
+    def add_unrecognized_project(self, name):
+        self.unrecognized_projects.append(name)
 
     def add_correct_project(self):
         self.correct_projects += 1
@@ -210,8 +212,9 @@ class Statistics:
                     self.new_errs += 1
                 self.add_errors(project, name, [err])
             return True
-        errlines = re.findall(
-            r"^.*error.*$", log, flags=re.IGNORECASE | re.MULTILINE)
+        # errlines = re.findall(
+        #     r"^.*error.*$", log, flags=re.IGNORECASE | re.MULTILINE)
+        errlines = log.splitlines()
         # figure out what to do with other error strings
         # this dict contains the error match and then thi origin, at the
         # end is the most generic one.
@@ -243,11 +246,30 @@ class Statistics:
             (re.escape("ERROR: ") + r".*$", "general_error", False)
         ]
         found_match = False
+        match_next = False
         for err in errlines:
             # remove paths
             err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
             # remove file in beginning of line e.g. makefile 96:420:
             err = re.sub(r"^\S*\.\S*(?:\:|\ )?\d+(?:\:\d+)?\:\ ", "", err)
+            if match_next:
+                if err not in self.errors_stdout:
+                    self.errors_stdout[err] = {
+                        "name": err,
+                        "projects": [name],
+                        "origin": "CMake",
+                        "regex": re.escape(err).replace(
+                            re.escape("PATH/FILE.EXT"), self.path_regex)
+                    }
+                    self.new_errs += 1
+                self.add_errors(project, name, [err])
+                found_match = True
+                match_next = False
+                continue
+            # cmake has a line where it prints CMake ERROR at blabla.txt: and then the error in next line
+            if "CMake Error at" in err:
+                match_next = True
+                continue
             for match, origin, title in err_patterns:
                 regex_result = re.search(match, err)
                 if regex_result:

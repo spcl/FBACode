@@ -5,11 +5,12 @@ import re
 class DepFinder:
     def __init__(self):
         self.patterns = [
-            re.escape("bash:") + r"(.*)" + re.escape(": command not found"),
+            re.escape("bash:") + r".*\s(.*)" + re.escape(": command not found"),
             re.escape("ERROR - ") + r"(.*)" + re.escape("not found"),
             re.escape("ERROR - ") + r"(.*)" + re.escape("No such file or directory"),
             re.escape("[Error] Package ") + r"(.*)" + re.escape(" is not installed"),
-            
+            re.escape("Error: No module named '") + r"(.*)\'",
+            re.escape("Error: missing ") + r"(.+?(?=\s|\.\s))"  #match everyting until a . or .(space)
         ]
 
     def analyze_logs(self, project, name):
