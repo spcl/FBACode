@@ -15,7 +15,7 @@ COPY docker/sources_buster.list /etc/apt/sources.list
 
 
 ARG deps='software-properties-common curl gpg-agent gnupg' 
-ARG soft="python3 cmake make clang-${CLANG_VERSION} libomp-${CLANG_VERSION}-dev clang++-${CLANG_VERSION} texinfo build-essential fakeroot devscripts"
+ARG soft="python3 cmake make clang-${CLANG_VERSION} libomp-${CLANG_VERSION}-dev clang++-${CLANG_VERSION} texinfo build-essential fakeroot devscripts wget"
 RUN echo ${CLANG_VERSION}
 RUN apt-get update 
 RUN apt-get install -y ${deps} --no-install-recommends --force-yes
