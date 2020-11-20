@@ -21,7 +21,7 @@ class DepFinder:
         if "build" not in project:
             print("no logfiles found for {}".format(name))
             return []
-        print("\nstarting dependency analysis for {}".format(name))
+        # print("\nstarting dependency analysis for {}".format(name))
         lognames = ["stderr", "docker_log", "stdout"]
         for logfiles in lognames:
             err_log = join(project["build"]["dir"], project["build"][logfiles])
