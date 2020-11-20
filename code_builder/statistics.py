@@ -35,13 +35,17 @@ class Statistics:
         self.project_count = project_count
         self.dep_finder = dep_finder.DepFinder()
         self.dependencies = {}
+        self.build_systems = {}
 
     def print_stats(self, out):
         print("Repository clone time: %f seconds" % self.clone_time, file=out)
         print("Repository build time: %f seconds" % self.build_time, file=out)
         print("Succesfull builds: %d" % self.correct_projects, file=out)
         print("Failed builds: %d" % self.incorrect_projects, file=out)
-        print("Unrecognized builds: %d" % len(self.unrecognized_projects), file=out)
+        print("Build systems:", file=out)
+        for name, count in self.build_systems.items():
+            print("  {}: {}".format(name, count), file=out)
+        print("Unrecognized build systems: %d" % len(self.unrecognized_projects), file=out)
         for p in self.unrecognized_projects:
             print("  {}".format(p), file=out)
         print("newly discovered errors: {}".format(self.new_errs), file=out)
@@ -56,11 +60,14 @@ class Statistics:
             print(err, file=out)
         print("\ndetected missing dependencies:", file=out)
         self.dependencies = OrderedDict(sorted(self.dependencies.items(),
-                                               key=lambda i: i[1].get("amount", 0),
+                                               key=lambda i: i[1].get("count", 0),
                                                reverse=True))
         print(json.dumps(self.dependencies, indent=2), file=out)
 
     def update(self, project, name):
+        # update build_systems statistic
+        build_system = project.get("build_system", "unrecognized")
+        self.build_systems[build_system] = self.build_systems.get(build_system, 0) + 1
         self.clone_time += project["source"]["time"]
         if "build" in project:
             self.build_time += project["build"]["time"]
@@ -102,31 +109,38 @@ class Statistics:
                 #   - how to handle path substitutions?
                 # then add new error pattern
                 project["build"]["errortypes"] = []
-                print("\nstarting error analysis for {}".format(name))
+                # print("\nstarting error analysis for {}".format(name))
                 err_log = join(project["build"]["dir"], project["build"]["stderr"])
                 with open(err_log, "r") as log:
                     text = log.read()
                     if self.match_error_with_regex(project, name, text):
-                        print("found err by regex!")
+                        pass
+                        # print("found err by regex!")
                     elif self.match_error_fuzzy(project, name, text):
-                        print("found err by fuzzy search!")
+                        pass
+                        # print("found err by fuzzy search!")
                     elif self.find_new_errors(project, name, text):
-                        print("matched new errors!")
+                        pass
+                        # print("matched new errors!")
                     else:
-                        print("no error found yet, looking at docker log...")
+                        pass
+                        # print("no error found yet, looking at docker log...")
                 # found no errs yet, check docker log (stdout of build)
                 if not project["build"]["errortypes"]:
                     docker_log = join(project["build"]["dir"], project["build"]["docker_log"])
                     with open(docker_log, "r") as log:
                         text = log.read()
                     if self.match_error_with_regex(project, name, text):
-                        print("found err by regex!")
+                        pass
+                        # print("found err by regex!")
                     elif self.match_error_fuzzy(project, name, text):
-                        print("found err by fuzzy search!")
+                        pass
+                        # print("found err by fuzzy search!")
                     elif self.find_new_errors(project, name, text):
-                        print("matched new errors!")
+                        pass
+                        # print("matched new errors!")
                     else:
-                        print("no errors found for {}... fuck".format(name))
+                        # print("no errors found for {}... fuck".format(name))
                         self.errortypes["unrecognized"]["amount"] += 1
                         if name not in self.errortypes["unrecognized"]["projects"]:
                             self.errortypes["unrecognized"]["projects"].append(name)
@@ -185,7 +199,8 @@ class Statistics:
             # what threshold??
             new_errs = [m[0] for m in matches if m[1] >= 90]
             if new_errs:
-                print("matched \n{}\nto\n{} using fuzzy".format(l, new_errs), sep='\n')
+                pass
+                # print("matched \n{}\nto\n{} using fuzzy".format(l, new_errs), sep='\n')
             errors.extend([m[0] for m in matches if m[1] >= 90])
         # remove dups
         self.add_errors(project, name, list(set(errors)))
@@ -288,7 +303,7 @@ class Statistics:
                     # regex to extract paths and filenames
                     err = re.search(title, err).group(
                         ) if title else regex_result.group()
-                    print("matched err {}".format(err))
+                    # print("matched err {}".format(err))
                     if err not in self.errors_stdout:
                         self.errors_stdout[err] = {
                             "name": err,
@@ -376,7 +391,7 @@ class Statistics:
                 "buildlogs",
                 "dependencies_{}_{}.json".format(self.project_count, timestamp))
         self.dependencies = OrderedDict(sorted(self.dependencies.items(),
-                                               key=lambda i: i[1].get("amount", 0),
+                                               key=lambda i: i[1].get("count", 0),
                                                reverse=True))
         with open(path, 'w') as o:
             o.write(json.dumps(self.dependencies, indent=2))

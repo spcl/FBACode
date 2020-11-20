@@ -56,7 +56,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
     for build_name, build_system in build_systems.items():
         if build_system.recognize(source_dir):
             project["build_system"] = build_name.lower()
-            print("{} recognized as {}".format(name, build_name))
+            # print("{} recognized as {}".format(name, build_name))
             build_dir = join(build_dir, source_name)
             target_dir = join(target_dir, source_name)
             if not exists(build_dir):
@@ -129,10 +129,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 # the init.py or the docker container crashed unexpectadly
                 ctx.err_log.print_error(
                     idx,
-                    "The build process failed! Return code {}, output: \n{}".format(
-                        return_code, container.logs(
-                            stdout=True, stderr=True).decode()
-                    )
+                    "The build process failed! Return code {}, output: \n".format(
+                        return_code)
                 )
                 docker_log = container.logs()
                 timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
