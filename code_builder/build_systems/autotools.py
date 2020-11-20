@@ -2,7 +2,7 @@ import shutil
 import subprocess
 import os
 
-from os.path import abspath, join, isfile, dirname, isdir
+from os.path import join, isfile, dirname, isdir
 from os import listdir, makedirs, mkdir, remove
 from subprocess import PIPE
 from shutil import rmtree
@@ -75,15 +75,18 @@ class Project:
                     shutil.rmtree(p)
                 else:
                     remove(p)
-            cmd = ["bash", "-c", "shopt -s dotglob; cp -a {}/* {}".format(self.repository_path, self.build_dir)]
+            cmd = ["bash", "-c", "shopt -s dotglob; cp -a {}/* {}".format(
+                self.repository_path, self.build_dir)]
             out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
             if out.returncode != 0:
-                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+                self.error_log.print_error(self.idx, "{}:\n{}".format(
+                    out.args, out.stderr.decode("utf-8")))
                 return False
             cmd = ["autoreconf", "-i", "--force"]
             out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
             if out.returncode != 0:
-                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+                self.error_log.print_error(self.idx, "{}:\n{}".format(
+                    out.args, out.stderr.decode("utf-8")))
             if isfile(join(self.build_dir, "configure")):
                 ret = run(
                     ["./configure"], cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
@@ -117,7 +120,8 @@ class Project:
             self.error_log.print_error(self.idx, ret.stderr.decode("utf-8"))
             return False
         else:
-            self.output_log.print_info(self.idx, "Build in {}".format(self.build_dir))
+            self.output_log.print_info(
+                self.idx, "Build in {}".format(self.build_dir))
             self.output_log.print_debug(
                 self.idx, "CMake build command: {}".format(" ".join(cmd))
             )
@@ -129,7 +133,8 @@ class Project:
             # CMake file format: {build_dir}/../CMakeFiles/{dir}.dir/relative_bc_location
             res = search(r"{}".format(self.build_dir), str(file))
             if res is None:
-                self.error_log.print_error(self.idx, "error while globbing for .bc files: {}".format(file))
+                self.error_log.print_error(
+                    self.idx, "error while globbing for .bc files: {}".format(file))
                 continue
             local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
@@ -142,7 +147,8 @@ class Project:
         for file in pathlib.Path(self.build_dir).glob("**/*.ast"):
             res = search(r"{}".format(self.build_dir), str(file))
             if res is None:
-                self.error_log.print_error(self.idx, "error while globbing for .bc files: {}".format(file))
+                self.error_log.print_error(
+                    self.idx, "error while globbing for .bc files: {}".format(file))
                 continue
             local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)

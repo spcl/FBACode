@@ -1,6 +1,5 @@
 from os.path import join
 import re
-from re import escape
 
 
 class DepFinder:
@@ -11,7 +10,8 @@ class DepFinder:
             r".*\s(.+?)" + re.escape(": No such file or directory"),
             re.escape("[Error] Package ") + r"(.*)" + re.escape(" is not installed"),
             re.escape("Error: No module named '") + r"(.*)\'",
-            re.escape("Error: missing ") + r"(.+?(?=\s|\.\s))",  # match everyting until a (space) or .(space)
+            # match everyting until a (space) or .(space)
+            re.escape("Error: missing ") + r"(.+?(?=\s|\.\s))",
             re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))",
             r".*\s(.+?)" + re.escape(": No such file or directory"),
         ]
@@ -53,7 +53,5 @@ class DepFinder:
                         else:
                             deps.append(name[1])
                         break
-
-
         # remove duplicates
         return list(set(deps))
