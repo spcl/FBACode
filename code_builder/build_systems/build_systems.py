@@ -15,15 +15,9 @@ from subprocess import PIPE
 from sys import version_info
 from time import sleep, time
 from datetime import datetime, timedelta
-
 from requests.exceptions import Timeout
 
-
-from . import cmake
-from . import debian
-from . import autotools
-from . import make
-from . import travis
+from . import cmake, debian, autotools, make, travis, github_actions, circleci
 
 
 def run(command, cwd=None, stdout=None, stderr=None):
@@ -40,10 +34,11 @@ def run(command, cwd=None, stdout=None, stderr=None):
 build_systems = {
     "debian": debian.Project,
     "CMake": cmake.Project,
-    "travis": travis.Project,
     "make": make.Project,
     "Autotools": autotools.Project,
-    
+    "travis": travis.Project,
+    "circleci": circleci.Project,
+    "github_actions": github_actions.Project
     }
 
 
@@ -108,7 +103,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 volumes=volumes,
                 auto_remove=False,
                 remove=False,
-                mem_limit="3g"  # limit memory to 3GB to protect the host
+                # mem_limit="3g"  # limit memory to 3GB to protect the host
             )
             ctx.out_log.print_info(
                 idx, "building {} in container {} as {}".format(name, container.name, build_name))
