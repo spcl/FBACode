@@ -7,6 +7,8 @@ import os
 
 
 def parse_travis(project, path):
+    os.environ["TRAVIS_BUILD_DIR"] = path
+    os.environ["TRAVIS_OS"] = "linux"
     with open(join(path, ".travis.yml"), "r") as f:
         yml = yaml.load(f, Loader=yaml.loader.FullLoader)
     if yml.get("addons") is not None:
@@ -81,9 +83,13 @@ def travis_addons(project, addons):
                 source_url = None
                 if isinstance(source, str):
                     # this should be in safelist
-                    safelist_entry = next(i for i in safelist if i["alias"] == source)
-                    key_url = safelist_entry.get("canonical_key_url", None)
-                    source_url = safelist_entry.get("sourceline")
+                    safelist_entry = [i for i in safelist if i["alias"] == source]
+                    if not safelist_entry:
+                        # found nothing in safelist, try to use this string as url
+                        source_url = source
+                    else:
+                        key_url = safelist_entry[0].get("canonical_key_url", None)
+                        source_url = safelist_entry[0].get("sourceline")
                 else:
                     key_url = source.get("key_url", None)
                     source_url = source.get("sourceline")

@@ -123,6 +123,7 @@ class Project:
         os.environ["TRAVIS_BUILD_DIR"] = self.build_dir
         os.environ["CI"] = "true"
         os.environ["TRAVIS"] = "true"
+        os.environ["TRAVIS_OS"] = "linux"
         
         # look for a good configuration of env or jobs or matrix:
         jobs = yml.get("jobs", yml.get("matrix", {})).get("include", None)
