@@ -128,6 +128,9 @@ class Project:
         for file in pathlib.Path(self.build_dir).glob("**/*.bc"):
             # CMake file format: {build_dir}/../CMakeFiles/{dir}.dir/relative_bc_location
             res = search(r"{}".format(self.build_dir), str(file))
+            if res is None:
+                self.error_log.print_error(self.idx, "error while globbing for .bc files: {}".format(file))
+                continue
             local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
             # os.rename does not work for target and destinations being
@@ -138,6 +141,9 @@ class Project:
     def generate_ast(self, target_dir):
         for file in pathlib.Path(self.build_dir).glob("**/*.ast"):
             res = search(r"{}".format(self.build_dir), str(file))
+            if res is None:
+                self.error_log.print_error(self.idx, "error while globbing for .bc files: {}".format(file))
+                continue
             local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
             shutil.move(file, join(target_dir, local_path))
