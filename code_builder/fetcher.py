@@ -45,6 +45,7 @@ class GithubFetcher:
         self.error_log.set_counter(max_repos)
         self.results = None
 
+        unique_names = set()
         while repos_processed < max_repos:
             request_params["page"] = str(page)
             results_page = self.fetch_json(address, request_params, ["C", "Cpp"])
@@ -53,6 +54,7 @@ class GithubFetcher:
                 self.error_log.error("Incorrect results, end work!")
                 return
             # some times GH returns the desired number of results but still, it prints incomplete results
+            # restart with more fine-grained paging
             elif results_page["incomplete_results"] and not items == repos_per_page:
                 repos_per_page = int(repos_per_page / 2)
                 if repos_per_page < 1:
@@ -64,11 +66,15 @@ class GithubFetcher:
                     "Incomplete results at GitHub API for %d repositories, start again with %d"
                     % (repos_per_page * 2, repos_per_page)
                 )
+                page = 0
                 sleep(backoff)
                 backoff *= 2
                 continue
-            repos_processed += repos_per_page
-            results += results_page["items"]
+            # paging restart can let to duplicating some results
+            for result in results_page["items"]:
+                if result['full_name'] not in unique_names:
+                    results.append(result)
+                    repos_processed += 1
             self.out_log.next(repos_per_page)
             self.error_log.next(repos_per_page)
             self.out_log.info(
