@@ -7,10 +7,28 @@ import os
 
 
 def parse_travis(project, path):
-    os.environ["TRAVIS_BUILD_DIR"] = path
-    os.environ["TRAVIS_OS"] = "linux"
     with open(join(path, ".travis.yml"), "r") as f:
         yml = yaml.load(f, Loader=yaml.loader.FullLoader)
+    # set env vars
+    if isinstance(yml.get("env"), list):
+        for var in yml.get("env"):
+            if isinstance(var, str):
+                set_env_vars(var)
+                break
+    else:
+        for var in yml.get("env", {}).get("global", []):
+            set_env_vars(var)
+        # take the first configuration, idk
+        for var in yml.get("env", {}).get("jobs", []):
+            if isinstance(var, str):
+                set_env_vars(var)
+                break
+        for var in yml.get("env", {}).get("matrix", []):
+            if isinstance(var, str):
+                set_env_vars(var)
+                break
+    os.environ["TRAVIS_BUILD_DIR"] = path
+    os.environ["TRAVIS_OS"] = "linux"
     if yml.get("addons") is not None:
         if not travis_addons(project, yml["addons"]):
             return False
@@ -38,7 +56,8 @@ def run_travis_scripts(project, script_list, travis_path):
         script_list = [script_list]
     elif not isinstance(script_list, list):
         project.error_log.print_error(
-            project.idx, "travis script not string or list: {}".format(script_list)
+            project.idx, "travis script not string or list: {}".format(
+                script_list)
         )
         return True
     for cmd in script_list:
@@ -49,9 +68,21 @@ def run_travis_scripts(project, script_list, travis_path):
                 project.idx, "running command \n{}\nfailed".format(cmd)
             )
             project.error_log.print_error(
-                project.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8"))
+                project.idx, "{}:\n{}".format(
+                    out.args, out.stderr.decode("utf-8"))
             )
             return False
+    return True
+
+
+def set_env_vars(var):
+    if not isinstance(var, str):
+        return False
+    env_vars = var.split(" ")
+    for env_var in env_vars:
+        env_var = env_var.split("=")
+        if len(env_var) >= 2:
+            os.environ[env_var[0]] = env_var[1]
     return True
 
 
@@ -61,11 +92,13 @@ def travis_addons(project, addons):
     if apt and (isinstance(apt, str) or
                 isinstance(apt, list) and all(isinstance(i, str) for i in apt)):
         cmd = ["apt-get", "install", "-y", "--force-yes",
-                "--no-install-recommends", apt]
+               "--no-install-recommends", apt]
         out = run(cmd, stderr=PIPE)
         if out.returncode != 0:
-            project.error_log.print_error(project.idx, "apt_packages install from .travis.yml failed")
-            project.error_log.print_error(project.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+            project.error_log.print_error(
+                project.idx, "apt_packages install from .travis.yml failed")
+            project.error_log.print_error(project.idx, "{}:\n{}".format(
+                out.args, out.stderr.decode("utf-8")))
             return False
     # in case it is more complicated
     elif apt:
@@ -83,38 +116,48 @@ def travis_addons(project, addons):
                 source_url = None
                 if isinstance(source, str):
                     # this should be in safelist
-                    safelist_entry = [i for i in safelist if i["alias"] == source]
+                    safelist_entry = [
+                        i for i in safelist if i["alias"] == source]
                     if not safelist_entry:
                         # found nothing in safelist, try to use this string as url
                         source_url = source
                     else:
-                        key_url = safelist_entry[0].get("canonical_key_url", None)
+                        key_url = safelist_entry[0].get(
+                            "canonical_key_url", None)
                         source_url = safelist_entry[0].get("sourceline")
                 else:
                     key_url = source.get("key_url", None)
                     source_url = source.get("sourceline")
                 if key_url:
-                    cmd = ["sh", "-c", "wget -q0 - {} | apt-key add -".format(key_url)]
+                    cmd = ["sh", "-c",
+                           "wget -q0 - {} | apt-key add -".format(key_url)]
                     out = run(cmd, cwd=project.build_dir, stderr=PIPE)
                     if out.returncode != 0:
-                        project.error_log.print_error(project.idx, "adding key to repo failed")
-                        project.error_log.print_error(project.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+                        project.error_log.print_error(
+                            project.idx, "adding key to repo failed")
+                        project.error_log.print_error(project.idx, "{}:\n{}".format(
+                            out.args, out.stderr.decode("utf-8")))
                         return False
                 if source_url is None:
-                    project.error_log.print_error(project.idx, "wrong format of sourceline in travis")
+                    project.error_log.print_error(
+                        project.idx, "wrong format of sourceline in travis")
                     return False
                 cmd = ["add-apt-repository", source_url]
                 out = run(cmd, cwd=project.build_dir, stderr=PIPE)
                 if out.returncode != 0:
-                    project.error_log.print_error(project.idx, "adding repo failed")
-                    project.error_log.print_error(project.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+                    project.error_log.print_error(
+                        project.idx, "adding repo failed")
+                    project.error_log.print_error(project.idx, "{}:\n{}".format(
+                        out.args, out.stderr.decode("utf-8")))
                     return False
         if apt.get("update") or do_update:
             cmd = ["apt-get", "update"]
             out = run(cmd, stderr=PIPE)
             if out.returncode != 0:
-                project.error_log.print_error(project.idx, "apt update from .travis.yml failed")
-                project.error_log.print_error(project.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+                project.error_log.print_error(
+                    project.idx, "apt update from .travis.yml failed")
+                project.error_log.print_error(project.idx, "{}:\n{}".format(
+                    out.args, out.stderr.decode("utf-8")))
                 return False
         if apt.get("packages") is not None:
             if isinstance(apt["packages"], str):
@@ -130,18 +173,22 @@ def travis_addons(project, addons):
             print(cmd)
             out = run(cmd, stderr=PIPE)
             if out.returncode != 0:
-                project.error_log.print_error(project.idx, "apt install from .travis.yml failed")
-                project.error_log.print_error(project.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+                project.error_log.print_error(
+                    project.idx, "apt install from .travis.yml failed")
+                project.error_log.print_error(project.idx, "{}:\n{}".format(
+                    out.args, out.stderr.decode("utf-8")))
                 return False
 
     apt_packages = addons.get("apt_packages")
     if apt_packages:
         cmd = ["apt-get", "install", "-y", "--force-yes",
-                "--no-install-recommends", apt]
+               "--no-install-recommends", apt]
         out = run(cmd, stderr=PIPE)
         if out.returncode != 0:
-            project.error_log.print_error(project.idx, "apt_packages install from .travis.yml failed")
-            project.error_log.print_error(project.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+            project.error_log.print_error(
+                project.idx, "apt_packages install from .travis.yml failed")
+            project.error_log.print_error(project.idx, "{}:\n{}".format(
+                out.args, out.stderr.decode("utf-8")))
             return False
     # run the snap module
     snaps = addons.get("snaps")
@@ -151,8 +198,10 @@ def travis_addons(project, addons):
             cmd = ["snap", "install", snaps]
             out = run(cmd, stderr=PIPE)
             if out.returncode != 0:
-                project.error_log.print_error(project.idx, "snap install from .travis.yml failed")
-                project.error_log.print_error(project.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+                project.error_log.print_error(
+                    project.idx, "snap install from .travis.yml failed")
+                project.error_log.print_error(project.idx, "{}:\n{}".format(
+                    out.args, out.stderr.decode("utf-8")))
                 return False
         else:
             for snap in snaps:
@@ -160,7 +209,8 @@ def travis_addons(project, addons):
                     cmd = ["snap", "install", snap]
                 else:
                     if "name" not in snap:
-                        project.error_log.print_error(project.idx, "invalid yaml file, snap name missing")
+                        project.error_log.print_error(
+                            project.idx, "invalid yaml file, snap name missing")
                         return False
                     cmd = ["snap", "install", snap["name"]]
                     if snap.get("confinement") is not None:
@@ -169,7 +219,9 @@ def travis_addons(project, addons):
                         cmd.append("--channel={}".format(snap["channel"]))
                 out = run(cmd, cwd=project.build_dir, stderr=PIPE)
                 if out.returncode != 0:
-                    project.error_log.print_error(project.idx, "snap install from .travis.yml failed")
-                    project.error_log.print_error(project.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+                    project.error_log.print_error(
+                        project.idx, "snap install from .travis.yml failed")
+                    project.error_log.print_error(project.idx, "{}:\n{}".format(
+                        out.args, out.stderr.decode("utf-8")))
                     return False
     return True
