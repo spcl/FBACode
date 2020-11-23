@@ -1,4 +1,13 @@
 {
+  "Error: Unable to shut down server with process id 1810": {
+    "name": "Error: Unable to shut down server with process id 1810",
+    "projects": [
+      "php/php-src"
+    ],
+    "origin": "general_error",
+    "regex": "Error\\:\\ Unable\\ to\\ shut\\ down\\ server\\ with\\ process\\ id\\ 1810",
+    "amount": 18
+  },
   "clang: error: linker command failed with exit code 1 (use -v to see invocation)": {
     "name": "clang: error: linker command failed with exit code 1 (use -v to see invocation)",
     "projects": [
@@ -21,55 +30,203 @@
     "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
     "amount": 15
   },
+  "error: Libtool library used but 'LIBTOOL' is undefined\\nMakefile.am:8:   The usual way to define 'LIBTOOL' is to add 'LT_INIT'\\nMakefile.am:8:   to 'configure.ac' and run 'aclocal' and 'autoconf' again.\\nMakefile.am:8:   If 'LT_INIT' is in 'configure.ac', make sure\\nMakefile.am:8:   its definition is in aclocal's search path.\\nMakefile.am: installing 'build-auxPATH/FILE.EXT error: am__fastdepCXX does not appear in AM_CONDITIONAL\\nPATH/FILE.EXT   The usual way to define 'am__fastdepCXX' is to add 'AC_PROG_CXX'\\nPATH/FILE.EXT   to 'configure.ac' and run 'aclocal' and 'autoconf' again\\nPATH/FILE.EXT error: AMDEP does not appear in AM_CONDITIONAL\\nPATH/FILE.EXT   The usual way to define 'AMDEP' is to add one of the compiler tests\\nPATH/FILE.EXT     AC_PROG_CC, AC_PROG_CXX, AC_PROG_OBJC, AC_PROG_OBJCXX,\\nPATH/FILE.EXT     AM_PROG_AS, AM_PROG_GCJ, AM_PROG_UPC\\nPATH/FILE.EXT   to 'configure.ac' and run 'aclocal' and 'autoconf' again\\nMakefile.am: error: C++ source seen but 'CXX' is undefined\\nMakefile.am:   The usual way to define 'CXX' is to add 'AC_PROG_CXX'\\nMakefile.am:   to 'configure.ac' and run 'autoconf' again.\\nparallel-tests: installing 'build-aux/test-driver'\\nautoreconf: automake failed with exit status: 1\\n\")": {
+    "name": "error: Libtool library used but 'LIBTOOL' is undefined\\nMakefile.am:8:   The usual way to define 'LIBTOOL' is to add 'LT_INIT'\\nMakefile.am:8:   to 'configure.ac' and run 'aclocal' and 'autoconf' again.\\nMakefile.am:8:   If 'LT_INIT' is in 'configure.ac', make sure\\nMakefile.am:8:   its definition is in aclocal's search path.\\nMakefile.am: installing 'build-auxPATH/FILE.EXT error: am__fastdepCXX does not appear in AM_CONDITIONAL\\nPATH/FILE.EXT   The usual way to define 'am__fastdepCXX' is to add 'AC_PROG_CXX'\\nPATH/FILE.EXT   to 'configure.ac' and run 'aclocal' and 'autoconf' again\\nPATH/FILE.EXT error: AMDEP does not appear in AM_CONDITIONAL\\nPATH/FILE.EXT   The usual way to define 'AMDEP' is to add one of the compiler tests\\nPATH/FILE.EXT     AC_PROG_CC, AC_PROG_CXX, AC_PROG_OBJC, AC_PROG_OBJCXX,\\nPATH/FILE.EXT     AM_PROG_AS, AM_PROG_GCJ, AM_PROG_UPC\\nPATH/FILE.EXT   to 'configure.ac' and run 'aclocal' and 'autoconf' again\\nMakefile.am: error: C++ source seen but 'CXX' is undefined\\nMakefile.am:   The usual way to define 'CXX' is to add 'AC_PROG_CXX'\\nMakefile.am:   to 'configure.ac' and run 'autoconf' again.\\nparallel-tests: installing 'build-aux/test-driver'\\nautoreconf: automake failed with exit status: 1\\n\")",
+    "projects": [
+      "bitcoin/bitcoin",
+      "pytorch/pytorch"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ Libtool\\ library\\ used\\ but\\ \\'LIBTOOL\\'\\ is\\ undefined\\\\nMakefile\\.am\\:8\\:\\ \\ \\ The\\ usual\\ way\\ to\\ define\\ \\'LIBTOOL\\'\\ is\\ to\\ add\\ \\'LT_INIT\\'\\\\nMakefile\\.am\\:8\\:\\ \\ \\ to\\ \\'configure\\.ac\\'\\ and\\ run\\ \\'aclocal\\'\\ and\\ \\'autoconf\\'\\ again\\.\\\\nMakefile\\.am\\:8\\:\\ \\ \\ If\\ \\'LT_INIT\\'\\ is\\ in\\ \\'configure\\.ac\\'\\,\\ make\\ sure\\\\nMakefile\\.am\\:8\\:\\ \\ \\ its\\ definition\\ is\\ in\\ aclocal\\'s\\ search\\ path\\.\\\\nMakefile\\.am\\:\\ installing\\ \\'build\\-aux(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ error\\:\\ am__fastdepCXX\\ does\\ not\\ appear\\ in\\ AM_CONDITIONAL\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ The\\ usual\\ way\\ to\\ define\\ \\'am__fastdepCXX\\'\\ is\\ to\\ add\\ \\'AC_PROG_CXX\\'\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ to\\ \\'configure\\.ac\\'\\ and\\ run\\ \\'aclocal\\'\\ and\\ \\'autoconf\\'\\ again\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ error\\:\\ AMDEP\\ does\\ not\\ appear\\ in\\ AM_CONDITIONAL\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ The\\ usual\\ way\\ to\\ define\\ \\'AMDEP\\'\\ is\\ to\\ add\\ one\\ of\\ the\\ compiler\\ tests\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ \\ \\ AC_PROG_CC\\,\\ AC_PROG_CXX\\,\\ AC_PROG_OBJC\\,\\ AC_PROG_OBJCXX\\,\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ \\ \\ AM_PROG_AS\\,\\ AM_PROG_GCJ\\,\\ AM_PROG_UPC\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ to\\ \\'configure\\.ac\\'\\ and\\ run\\ \\'aclocal\\'\\ and\\ \\'autoconf\\'\\ again\\\\nMakefile\\.am\\:\\ error\\:\\ C\\+\\+\\ source\\ seen\\ but\\ \\'CXX\\'\\ is\\ undefined\\\\nMakefile\\.am\\:\\ \\ \\ The\\ usual\\ way\\ to\\ define\\ \\'CXX\\'\\ is\\ to\\ add\\ \\'AC_PROG_CXX\\'\\\\nMakefile\\.am\\:\\ \\ \\ to\\ \\'configure\\.ac\\'\\ and\\ run\\ \\'autoconf\\'\\ again\\.\\\\nparallel\\-tests\\:\\ installing\\ \\'build\\-aux\\/test\\-driver\\'\\\\nautoreconf\\:\\ automake\\ failed\\ with\\ exit\\ status\\:\\ 1\\\\n\\\"\\)",
+    "amount": 15
+  },
+  "error: 'boostPATH/FILE.EXT file not found": {
+    "name": "'boostPATH/FILE.EXT file not found",
+    "projects": [
+      "google-compute-image-packages",
+      "lilypond"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'boost(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
+    "amount": 8
+  },
+  "[Error] Package cmake is not installed": {
+    "name": "[Error] Package cmake is not installed",
+    "projects": [
+      "ibus-chewing",
+      "apple/swift"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ cmake\\ is\\ not\\ installed",
+    "amount": 6
+  },
+  "[Error] Package ibus is not installed": {
+    "name": "[Error] Package ibus is not installed",
+    "projects": [
+      "ibus-chewing",
+      "apple/swift"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ ibus\\ is\\ not\\ installed",
+    "amount": 6
+  },
+  "[Error] Package ibus-devel is not installed": {
+    "name": "[Error] Package ibus-devel is not installed",
+    "projects": [
+      "ibus-chewing",
+      "apple/swift"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ ibus\\-devel\\ is\\ not\\ installed",
+    "amount": 6
+  },
+  "[Error] Package libchewing is not installed": {
+    "name": "[Error] Package libchewing is not installed",
+    "projects": [
+      "ibus-chewing",
+      "apple/swift"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ libchewing\\ is\\ not\\ installed",
+    "amount": 6
+  },
+  "[Error] Package libchewing-devel is not installed": {
+    "name": "[Error] Package libchewing-devel is not installed",
+    "projects": [
+      "ibus-chewing",
+      "apple/swift"
+    ],
+    "origin": "cmake",
+    "regex": "\\[Error\\]\\ Package\\ libchewing\\-devel\\ is\\ not\\ installed",
+    "amount": 6
+  },
   "error: invalid suffix on literal; C++11 requires a space between literal and identifier [-Wreserved-user-defined-literal]": {
     "name": "invalid suffix on literal; C++11 requires a space between literal and identifier [-Wreserved-user-defined-literal]",
     "projects": [
       "epcr",
       "espeakedit",
       "speech-dispatcher",
-      "sdl-ball"
+      "sdl-ball",
+      "lilypond"
     ],
     "origin": "clang",
     "regex": "error\\:\\ invalid\\ suffix\\ on\\ literal\\;\\ C\\+\\+11\\ requires\\ a\\ space\\ between\\ literal\\ and\\ identifier\\ \\[\\-Wreserved\\-user\\-defined\\-literal\\]",
-    "amount": 4
+    "amount": 5
+  },
+  "error: No suitable database library (PDL or BerkeleyDB version 3 or higher) found.": {
+    "name": "error: No suitable database library (PDL or BerkeleyDB version 3 or higher) found.",
+    "projects": [
+      "spamprobe",
+      "pytorch/pytorch"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ No\\ suitable\\ database\\ library\\ \\(PDL\\ or\\ BerkeleyDB\\ version\\ 3\\ or\\ higher\\)\\ found\\.",
+    "amount": 5
+  },
+  "ERROR - [1/0] dpkg-buildpackage: error: cannot open file debian/changelog: No such file or directory": {
+    "name": "ERROR - [1/0] dpkg-buildpackage: error: cannot open file debian/changelog: No such file or directory",
+    "projects": [
+      "lsh-utils",
+      "tensorflow/tensorflow"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[1\\/0\\]\\ dpkg\\-buildpackage\\:\\ error\\:\\ cannot\\ open\\ file\\ debian\\/changelog\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 5
+  },
+  "ERROR - [16/0] CompletedProcess(args=['bash', '-c', 'pod --version'], returncode=127, stderr=b'bash: pod: command not found": {
+    "name": "ERROR - [16/0] CompletedProcess(args=['bash', '-c', 'pod --version'], returncode=127, stderr=b'bash: pod: command not found",
+    "projects": [
+      "grpc/grpc"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[16\\/0\\]\\ CompletedProcess\\(args\\=\\[\\'bash\\'\\,\\ \\'\\-c\\'\\,\\ \\'pod\\ \\-\\-version\\'\\]\\,\\ returncode\\=127\\,\\ stderr\\=b\\'bash\\:\\ pod\\:\\ command\\ not\\ found",
+    "amount": 5
   },
   "E: Unable to find a source package": {
     "name": "E: Unable to find a source package",
     "projects": [
       "isdnactivecards",
-      "iozone3"
+      "iozone3",
+      "lilypond"
     ],
     "origin": "debian",
     "regex": "E\\:\\ Unable\\ to\\ find\\ a\\ source\\ package",
-    "amount": 3
+    "amount": 4
   },
-  "error: 'boostPATH/FILE.EXT file not found": {
-    "name": "'boostPATH/FILE.EXT file not found",
+  "error: dpkg-source -b . subprocess returned exit status 2": {
+    "name": "error: dpkg-source -b . subprocess returned exit status 2",
     "projects": [
-      "google-compute-image-packages"
+      "lice5",
+      "lsh-utils",
+      "loqui"
     ],
-    "origin": "clang",
-    "regex": "error\\:\\ \\'boost(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
-    "amount": 3
+    "origin": "general_error",
+    "regex": "error\\:\\ dpkg\\-source\\ \\-b\\ \\.\\ subprocess\\ returned\\ exit\\ status\\ 2",
+    "amount": 4
   },
   "error: unsupported inline asm: input with type 'long' matching output with type 'char'": {
     "name": "unsupported inline asm: input with type 'long' matching output with type 'char'",
     "projects": [
-      "sphde"
+      "sphde",
+      "lilypond"
     ],
     "origin": "clang",
     "regex": "error\\:\\ unsupported\\ inline\\ asm\\:\\ input\\ with\\ type\\ \\'long\\'\\ matching\\ output\\ with\\ type\\ \\'char\\'",
-    "amount": 2
+    "amount": 3
   },
   "error: poPATH/FILE.EXT was not created by intltoolize.": {
     "name": "error: poPATH/FILE.EXT was not created by intltoolize.",
     "projects": [
       "ibus-unikey",
-      "scim-tables"
+      "scim-tables",
+      "lilypond"
     ],
     "origin": "general_error",
     "regex": "error\\:\\ po(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ was\\ not\\ created\\ by\\ intltoolize\\.",
-    "amount": 2
+    "amount": 3
+  },
+  "error: non-constant-expression cannot be narrowed from type 'unsigned long' to '__time_t' (aka 'long') in initializer list [-Wc++11-narrowing]": {
+    "name": "non-constant-expression cannot be narrowed from type 'unsigned long' to '__time_t' (aka 'long') in initializer list [-Wc++11-narrowing]",
+    "projects": [
+      "eris",
+      "skstream",
+      "lilypond"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'unsigned\\ long\\'\\ to\\ \\'__time_t\\'\\ \\(aka\\ \\'long\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 3
+  },
+  "error: non-constant-expression cannot be narrowed from type 'unsigned long' to '__suseconds_t' (aka 'long') in initializer list [-Wc++11-narrowing]": {
+    "name": "non-constant-expression cannot be narrowed from type 'unsigned long' to '__suseconds_t' (aka 'long') in initializer list [-Wc++11-narrowing]",
+    "projects": [
+      "eris",
+      "skstream",
+      "lilypond"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'unsigned\\ long\\'\\ to\\ \\'__suseconds_t\\'\\ \\(aka\\ \\'long\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 3
+  },
+  "error: aborting due to unexpected upstream changes, see PATH/FILE.EXT": {
+    "name": "error: aborting due to unexpected upstream changes, see PATH/FILE.EXT",
+    "projects": [
+      "lice5",
+      "lsh-utils"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ aborting\\ due\\ to\\ unexpected\\ upstream\\ changes\\,\\ see\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
+    "amount": 3
+  },
+  "docker_crash": {
+    "name": "docker_crash",
+    "projects": [
+      "cmatrix",
+      "opencv/opencv",
+      "grpc/grpc"
+    ],
+    "origin": "docker",
+    "regex": null,
+    "amount": 3
   },
   "error: function definition is not allowed here": {
     "name": "function definition is not allowed here",
@@ -79,26 +236,6 @@
     ],
     "origin": "clang",
     "regex": "error\\:\\ function\\ definition\\ is\\ not\\ allowed\\ here",
-    "amount": 2
-  },
-  "error: non-constant-expression cannot be narrowed from type 'unsigned long' to '__time_t' (aka 'long') in initializer list [-Wc++11-narrowing]": {
-    "name": "non-constant-expression cannot be narrowed from type 'unsigned long' to '__time_t' (aka 'long') in initializer list [-Wc++11-narrowing]",
-    "projects": [
-      "eris",
-      "skstream"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'unsigned\\ long\\'\\ to\\ \\'__time_t\\'\\ \\(aka\\ \\'long\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
-    "amount": 2
-  },
-  "error: non-constant-expression cannot be narrowed from type 'unsigned long' to '__suseconds_t' (aka 'long') in initializer list [-Wc++11-narrowing]": {
-    "name": "non-constant-expression cannot be narrowed from type 'unsigned long' to '__suseconds_t' (aka 'long') in initializer list [-Wc++11-narrowing]",
-    "projects": [
-      "eris",
-      "skstream"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'unsigned\\ long\\'\\ to\\ \\'__suseconds_t\\'\\ \\(aka\\ \\'long\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
     "amount": 2
   },
   "error: no acceptable ld found in $PATH": {
@@ -114,65 +251,219 @@
   "error: typedef redefinition with different types ('long long' vs '__off64_t' (aka 'long'))": {
     "name": "typedef redefinition with different types ('long long' vs '__off64_t' (aka 'long'))",
     "projects": [
-      "iozone3"
+      "iozone3",
+      "lilypond"
     ],
     "origin": "clang",
     "regex": "error\\:\\ typedef\\ redefinition\\ with\\ different\\ types\\ \\(\\'long\\ long\\'\\ vs\\ \\'__off64_t\\'\\ \\(aka\\ \\'long\\'\\)\\)",
-    "amount": 1
+    "amount": 2
   },
   "clang: error: unknown argument: '-fmacro-prefix-map=PATH/FILE.EXT": {
     "name": "clang: error: unknown argument: '-fmacro-prefix-map=PATH/FILE.EXT",
     "projects": [
-      "libappimage"
+      "libappimage",
+      "lilypond"
     ],
     "origin": "clang_other",
     "regex": "clang\\:\\ error\\:\\ unknown\\ argument\\:\\ \\'\\-fmacro\\-prefix\\-map\\=(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
-    "amount": 1
+    "amount": 2
   },
-  "[Error] Package cmake is not installed": {
-    "name": "[Error] Package cmake is not installed",
+  "Error:  Can't load 'PATH/FILE.EXT for module indirect: PATH/FILE.EXT undefined symbol: perl_tsa_mutex_lock at PATH/FILE.EXT.": {
+    "name": "Error:  Can't load 'PATH/FILE.EXT for module indirect: PATH/FILE.EXT undefined symbol: perl_tsa_mutex_lock at PATH/FILE.EXT.",
     "projects": [
-      "ibus-chewing"
+      "libindirect-perl",
+      "lilypond"
     ],
-    "origin": "cmake",
-    "regex": "\\[Error\\]\\ Package\\ cmake\\ is\\ not\\ installed",
-    "amount": 1
+    "origin": "general_error",
+    "regex": "Error\\:\\ \\ Can\\'t\\ load\\ \\'(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ for\\ module\\ indirect\\:\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ undefined\\ symbol\\:\\ perl_tsa_mutex_lock\\ at\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\.",
+    "amount": 2
   },
-  "[Error] Package ibus is not installed": {
-    "name": "[Error] Package ibus is not installed",
+  "ERROR: sh(c++ c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT -Wl,-z,relro -Wl,-z,now  -flto -lstdc++ -shared  -L\"PATH/FILE.EXT -lerl_interface -lei -o privPATH/FILE.EXT": {
+    "name": "ERROR: sh(c++ c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT -Wl,-z,relro -Wl,-z,now  -flto -lstdc++ -shared  -L\"PATH/FILE.EXT -lerl_interface -lei -o privPATH/FILE.EXT",
     "projects": [
-      "ibus-chewing"
+      "erlang-jiffy",
+      "lilypond"
     ],
-    "origin": "cmake",
-    "regex": "\\[Error\\]\\ Package\\ ibus\\ is\\ not\\ installed",
-    "amount": 1
+    "origin": "general_error",
+    "regex": "ERROR\\:\\ sh\\(c\\+\\+\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\-Wl\\,\\-z\\,relro\\ \\-Wl\\,\\-z\\,now\\ \\ \\-flto\\ \\-lstdc\\+\\+\\ \\-shared\\ \\ \\-L\\\"(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\-lerl_interface\\ \\-lei\\ \\-o\\ priv(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
+    "amount": 2
   },
-  "[Error] Package ibus-devel is not installed": {
-    "name": "[Error] Package ibus-devel is not installed",
+  "ERROR: compile failed while processing /home/fba_code/build: rebar_abort": {
+    "name": "ERROR: compile failed while processing /home/fba_code/build: rebar_abort",
     "projects": [
-      "ibus-chewing"
+      "erlang-jiffy",
+      "lilypond"
     ],
-    "origin": "cmake",
-    "regex": "\\[Error\\]\\ Package\\ ibus\\-devel\\ is\\ not\\ installed",
-    "amount": 1
+    "origin": "general_error",
+    "regex": "ERROR\\:\\ compile\\ failed\\ while\\ processing\\ \\/home\\/fba_code\\/build\\:\\ rebar_abort",
+    "amount": 2
   },
-  "[Error] Package libchewing is not installed": {
-    "name": "[Error] Package libchewing is not installed",
+  "error: non-constant-expression cannot be narrowed from type 'int' to 'ext2_ino_t' (aka 'unsigned int') in initializer list [-Wc++11-narrowing]": {
+    "name": "non-constant-expression cannot be narrowed from type 'int' to 'ext2_ino_t' (aka 'unsigned int') in initializer list [-Wc++11-narrowing]",
     "projects": [
-      "ibus-chewing"
+      "extundelete",
+      "lilypond"
     ],
-    "origin": "cmake",
-    "regex": "\\[Error\\]\\ Package\\ libchewing\\ is\\ not\\ installed",
-    "amount": 1
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'int\\'\\ to\\ \\'ext2_ino_t\\'\\ \\(aka\\ \\'unsigned\\ int\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 2
   },
-  "[Error] Package libchewing-devel is not installed": {
-    "name": "[Error] Package libchewing-devel is not installed",
+  "error: ld returned 1 exit status": {
+    "name": "error: ld returned 1 exit status",
     "projects": [
-      "ibus-chewing"
+      "exodusii",
+      "loqui"
     ],
-    "origin": "cmake",
-    "regex": "\\[Error\\]\\ Package\\ libchewing\\-devel\\ is\\ not\\ installed",
-    "amount": 1
+    "origin": "general_error",
+    "regex": "error\\:\\ ld\\ returned\\ 1\\ exit\\ status",
+    "amount": 2
+  },
+  "error: non-void function 'process_attachments' should return a value [-Wreturn-type]": {
+    "name": "non-void function 'process_attachments' should return a value [-Wreturn-type]",
+    "projects": [
+      "evolution-rss",
+      "loqui"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-void\\ function\\ \\'process_attachments\\'\\ should\\ return\\ a\\ value\\ \\[\\-Wreturn\\-type\\]",
+    "amount": 2
+  },
+  "error: non-void function 'mad_getSamples' should return a value [-Wreturn-type]": {
+    "name": "non-void function 'mad_getSamples' should return a value [-Wreturn-type]",
+    "projects": [
+      "sdl-mixer1.2",
+      "loqui"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-void\\ function\\ \\'mad_getSamples\\'\\ should\\ return\\ a\\ value\\ \\[\\-Wreturn\\-type\\]",
+    "amount": 2
+  },
+  "ERROR - [148/0] /bin/sh: 1: [[: not found": {
+    "name": "ERROR - [148/0] /bin/sh: 1: [[: not found",
+    "projects": [
+      "efivar",
+      "tensorflow/tensorflow"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[148\\/0\\]\\ \\/bin\\/sh\\:\\ 1\\:\\ \\[\\[\\:\\ not\\ found",
+    "amount": 2
+  },
+  "error: 'gelf.h' file not found": {
+    "name": "'gelf.h' file not found",
+    "projects": [
+      "netdata/netdata"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'gelf\\.h\\'\\ file\\ not\\ found",
+    "amount": 2
+  },
+  "SyntaxParserLib and SourceKit require libdispatch on non-Darwin hosts. Please specify SWIFT_PATH_TO_LIBDISPATCH_SOURCE ": {
+    "name": "SyntaxParserLib and SourceKit require libdispatch on non-Darwin hosts. Please specify SWIFT_PATH_TO_LIBDISPATCH_SOURCE ",
+    "projects": [
+      "apple/swift"
+    ],
+    "origin": "CMake",
+    "regex": "SyntaxParserLib\\ and\\ SourceKit\\ require\\ libdispatch\\ on\\ non\\-Darwin\\ hosts\\.",
+    "amount": 2
+  },
+  "Could not find a package configuration file provided by \"LLVM\" with any of the following names: ": {
+    "name": "Could not find a package configuration file provided by \"LLVM\" with any of the following names: ",
+    "projects": [
+      "apple/swift"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"LLVM\\\"\\ with\\ any\\ of",
+    "amount": 2
+  },
+  "Could NOT find PkgConfig (missing: PKG_CONFIG_EXECUTABLE) ": {
+    "name": "Could NOT find PkgConfig (missing: PKG_CONFIG_EXECUTABLE) ",
+    "projects": [
+      "netdata/netdata"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ NOT\\ find\\ PkgConfig\\ \\(missing\\:\\ PKG_CONFIG_EXECUTABLE\\)",
+    "amount": 2
+  },
+  "mkdir: cannot create directory \u2018\u2019: No such file or directory": {
+    "name": "mkdir: cannot create directory \u2018\u2019: No such file or directory",
+    "projects": [
+      "bitcoin/bitcoin"
+    ],
+    "origin": "dependency",
+    "regex": "mkdir\\:\\ cannot\\ create\\ directory\\ \\\u2018\\\u2019\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 2
+  },
+  "error: Libtool library used but 'LIBTOOL' is undefined": {
+    "name": "error: Libtool library used but 'LIBTOOL' is undefined",
+    "projects": [
+      "bitcoin/bitcoin"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ Libtool\\ library\\ used\\ but\\ \\'LIBTOOL\\'\\ is\\ undefined",
+    "amount": 2
+  },
+  "error: am__fastdepCXX does not appear in AM_CONDITIONAL": {
+    "name": "error: am__fastdepCXX does not appear in AM_CONDITIONAL",
+    "projects": [
+      "bitcoin/bitcoin"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ am__fastdepCXX\\ does\\ not\\ appear\\ in\\ AM_CONDITIONAL",
+    "amount": 2
+  },
+  "error: AMDEP does not appear in AM_CONDITIONAL": {
+    "name": "error: AMDEP does not appear in AM_CONDITIONAL",
+    "projects": [
+      "bitcoin/bitcoin"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ AMDEP\\ does\\ not\\ appear\\ in\\ AM_CONDITIONAL",
+    "amount": 2
+  },
+  "error: C++ source seen but 'CXX' is undefined": {
+    "name": "error: C++ source seen but 'CXX' is undefined",
+    "projects": [
+      "bitcoin/bitcoin"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ C\\+\\+\\ source\\ seen\\ but\\ \\'CXX\\'\\ is\\ undefined",
+    "amount": 2
+  },
+  "if given arguments: ": {
+    "name": "if given arguments: ",
+    "projects": [
+      "pytorch/pytorch"
+    ],
+    "origin": "CMake",
+    "regex": "if\\ given\\ arguments\\:",
+    "amount": 2
+  },
+  "A required package was not found ": {
+    "name": "A required package was not found ",
+    "projects": [
+      "tesseract-ocr/tesseract"
+    ],
+    "origin": "CMake",
+    "regex": "A\\ required\\ package\\ was\\ not\\ found",
+    "amount": 2
+  },
+  "Could NOT find Boost (missing: Boost_INCLUDE_DIR system thread filesystem) (Required is at least version \"1.54\") ": {
+    "name": "Could NOT find Boost (missing: Boost_INCLUDE_DIR system thread filesystem) (Required is at least version \"1.54\") ",
+    "projects": [
+      "BVLC/caffe"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ NOT\\ find\\ Boost\\ \\(missing\\:\\ Boost_INCLUDE_DIR\\ system\\ thread\\ filesystem\\)",
+    "amount": 2
+  },
+  "By not providing \"FindQt5.cmake\" in CMAKE_MODULE_PATH this project has asked CMake to find a package configuration file provided by \"Qt5\", but CMake did not find one. ": {
+    "name": "By not providing \"FindQt5.cmake\" in CMAKE_MODULE_PATH this project has asked CMake to find a package configuration file provided by \"Qt5\", but CMake did not find one. ",
+    "projects": [
+      "ariya/phantomjs"
+    ],
+    "origin": "CMake",
+    "regex": "By\\ not\\ providing\\ \\\"FindQt5\\.cmake\\\"\\ in\\ CMAKE_MODULE_PATH\\ this\\ project\\ has",
+    "amount": 2
   },
   "[Error] Package glib2-devel is not installed": {
     "name": "[Error] Package glib2-devel is not installed",
@@ -246,15 +537,6 @@
     "regex": "\\.\\/configure\\:\\ line\\ 11900\\:\\ syntax\\ error\\ near\\ unexpected\\ token\\ \\`LIBGNUTLS\\,\\'",
     "amount": 1
   },
-  "Error:  Can't load 'PATH/FILE.EXT for module indirect: PATH/FILE.EXT undefined symbol: perl_tsa_mutex_lock at PATH/FILE.EXT.": {
-    "name": "Error:  Can't load 'PATH/FILE.EXT for module indirect: PATH/FILE.EXT undefined symbol: perl_tsa_mutex_lock at PATH/FILE.EXT.",
-    "projects": [
-      "libindirect-perl"
-    ],
-    "origin": "general_error",
-    "regex": "Error\\:\\ \\ Can\\'t\\ load\\ \\'(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ for\\ module\\ indirect\\:\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ undefined\\ symbol\\:\\ perl_tsa_mutex_lock\\ at\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\.",
-    "amount": 1
-  },
   "error: invalid value: boost_major_version='167boost-lib-version=1'": {
     "name": "error: invalid value: boost_major_version='167boost-lib-version=1'",
     "projects": [
@@ -262,33 +544,6 @@
     ],
     "origin": "general_error",
     "regex": "error\\:\\ invalid\\ value\\:\\ boost_major_version\\=\\'167boost\\-lib\\-version\\=1\\'",
-    "amount": 1
-  },
-  "ERROR: sh(c++ c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT -Wl,-z,relro -Wl,-z,now  -flto -lstdc++ -shared  -L\"PATH/FILE.EXT -lerl_interface -lei -o privPATH/FILE.EXT": {
-    "name": "ERROR: sh(c++ c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT c_srcPATH/FILE.EXT -Wl,-z,relro -Wl,-z,now  -flto -lstdc++ -shared  -L\"PATH/FILE.EXT -lerl_interface -lei -o privPATH/FILE.EXT",
-    "projects": [
-      "erlang-jiffy"
-    ],
-    "origin": "general_error",
-    "regex": "ERROR\\:\\ sh\\(c\\+\\+\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ c_src(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\-Wl\\,\\-z\\,relro\\ \\-Wl\\,\\-z\\,now\\ \\ \\-flto\\ \\-lstdc\\+\\+\\ \\-shared\\ \\ \\-L\\\"(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\-lerl_interface\\ \\-lei\\ \\-o\\ priv(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
-    "amount": 1
-  },
-  "ERROR: compile failed while processing /home/fba_code/build: rebar_abort": {
-    "name": "ERROR: compile failed while processing /home/fba_code/build: rebar_abort",
-    "projects": [
-      "erlang-jiffy"
-    ],
-    "origin": "general_error",
-    "regex": "ERROR\\:\\ compile\\ failed\\ while\\ processing\\ \\/home\\/fba_code\\/build\\:\\ rebar_abort",
-    "amount": 1
-  },
-  "error: non-constant-expression cannot be narrowed from type 'int' to 'ext2_ino_t' (aka 'unsigned int') in initializer list [-Wc++11-narrowing]": {
-    "name": "non-constant-expression cannot be narrowed from type 'int' to 'ext2_ino_t' (aka 'unsigned int') in initializer list [-Wc++11-narrowing]",
-    "projects": [
-      "extundelete"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'int\\'\\ to\\ \\'ext2_ino_t\\'\\ \\(aka\\ \\'unsigned\\ int\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
     "amount": 1
   },
   "error: use of undeclared identifier 'conn_find_outstream'": {
@@ -354,15 +609,6 @@
     "regex": "error\\:\\ exception\\ specification\\ in\\ declaration\\ does\\ not\\ match\\ previous\\ declaration",
     "amount": 1
   },
-  "error: ld returned 1 exit status": {
-    "name": "error: ld returned 1 exit status",
-    "projects": [
-      "exodusii"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ ld\\ returned\\ 1\\ exit\\ status",
-    "amount": 1
-  },
   "error: redefinition of 'log' as different kind of symbol": {
     "name": "redefinition of 'log' as different kind of symbol",
     "projects": [
@@ -379,15 +625,6 @@
     ],
     "origin": "clang",
     "regex": "error\\:\\ non\\-object\\ type\\ \\'double\\ \\(double\\)\\'\\ is\\ not\\ assignable",
-    "amount": 1
-  },
-  "ERROR - [148/0] /bin/sh: 1: [[: not found": {
-    "name": "ERROR - [148/0] /bin/sh: 1: [[: not found",
-    "projects": [
-      "efivar"
-    ],
-    "origin": "dependency",
-    "regex": "ERROR\\ \\-\\ \\[148\\/0\\]\\ \\/bin\\/sh\\:\\ 1\\:\\ \\[\\[\\:\\ not\\ found",
     "amount": 1
   },
   "clang: error: unknown argument: '-fno-toplevel-reorder'": {
@@ -433,15 +670,6 @@
     ],
     "origin": "clang",
     "regex": "error\\:\\ case\\ value\\ evaluates\\ to\\ 2147483680\\,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ \\'int\\'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
-    "amount": 1
-  },
-  "error: non-void function 'process_attachments' should return a value [-Wreturn-type]": {
-    "name": "non-void function 'process_attachments' should return a value [-Wreturn-type]",
-    "projects": [
-      "evolution-rss"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ non\\-void\\ function\\ \\'process_attachments\\'\\ should\\ return\\ a\\ value\\ \\[\\-Wreturn\\-type\\]",
     "amount": 1
   },
   "Errors while running CTest": {
@@ -498,15 +726,6 @@
     "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'int\\'\\ to\\ \\'Sint16\\'\\ \\(aka\\ \\'short\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
     "amount": 1
   },
-  "error: non-void function 'mad_getSamples' should return a value [-Wreturn-type]": {
-    "name": "non-void function 'mad_getSamples' should return a value [-Wreturn-type]",
-    "projects": [
-      "sdl-mixer1.2"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ non\\-void\\ function\\ \\'mad_getSamples\\'\\ should\\ return\\ a\\ value\\ \\[\\-Wreturn\\-type\\]",
-    "amount": 1
-  },
   "error: type 'double' cannot be narrowed to 'guint16' (aka 'unsigned short') in initializer list [-Wc++11-narrowing]": {
     "name": "type 'double' cannot be narrowed to 'guint16' (aka 'unsigned short') in initializer list [-Wc++11-narrowing]",
     "projects": [
@@ -514,15 +733,6 @@
     ],
     "origin": "clang",
     "regex": "error\\:\\ type\\ \\'double\\'\\ cannot\\ be\\ narrowed\\ to\\ \\'guint16\\'\\ \\(aka\\ \\'unsigned\\ short\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
-    "amount": 1
-  },
-  "error: No suitable database library (PDL or BerkeleyDB version 3 or higher) found.": {
-    "name": "error: No suitable database library (PDL or BerkeleyDB version 3 or higher) found.",
-    "projects": [
-      "spamprobe"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ No\\ suitable\\ database\\ library\\ \\(PDL\\ or\\ BerkeleyDB\\ version\\ 3\\ or\\ higher\\)\\ found\\.",
     "amount": 1
   },
   "error: typedef 'btree_impl' cannot be referenced with a class specifier": {
@@ -705,6 +915,60 @@
     "regex": "error\\:\\ unknown\\ warning\\ option\\ \\'\\-Werror\\=clobbered\\'\\ \\[\\-Werror\\,\\-Wunknown\\-warning\\-option\\]",
     "amount": 1
   },
+  "error: empty search path given via `-L`": {
+    "name": "empty search path given via `-L`",
+    "projects": [
+      "lilypond"
+    ],
+    "origin": "hardcoded",
+    "regex": "error\\:\\ empty\\ search\\ path\\ given\\ via\\ \\`\\-L\\`",
+    "amount": 1
+  },
+  "error: debian/rules binary subprocess returned exit status 2": {
+    "name": "error: debian/rules binary subprocess returned exit status 2",
+    "projects": [
+      "ruby-curses"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ debian\\/rules\\ binary\\ subprocess\\ returned\\ exit\\ status\\ 2",
+    "amount": 1
+  },
+  "ERROR - [8/0] CompletedProcess(args=['bash', '-c', 'set -o errexit; source PATH/FILE.EXT returncode=1, stderr=b'mkdir: cannot create directory \\xe2\\x80\\x98\\xe2\\x80\\x99: No such file or directory": {
+    "name": "ERROR - [8/0] CompletedProcess(args=['bash', '-c', 'set -o errexit; source PATH/FILE.EXT returncode=1, stderr=b'mkdir: cannot create directory \\xe2\\x80\\x98\\xe2\\x80\\x99: No such file or directory",
+    "projects": [
+      "bitcoin/bitcoin"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[8\\/0\\]\\ CompletedProcess\\(args\\=\\[\\'bash\\'\\,\\ \\'\\-c\\'\\,\\ \\'set\\ \\-o\\ errexit\\;\\ source\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ returncode\\=1\\,\\ stderr\\=b\\'mkdir\\:\\ cannot\\ create\\ directory\\ \\\\xe2\\\\x80\\\\x98\\\\xe2\\\\x80\\\\x99\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 1
+  },
+  "ERROR - [14/0] CompletedProcess(args=['bash', '-c', 'sudo -E PATH/FILE.EXT returncode=127, stderr=b'bash: sudo: command not found": {
+    "name": "ERROR - [14/0] CompletedProcess(args=['bash', '-c', 'sudo -E PATH/FILE.EXT returncode=127, stderr=b'bash: sudo: command not found",
+    "projects": [
+      "BVLC/caffe"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[14\\/0\\]\\ CompletedProcess\\(args\\=\\[\\'bash\\'\\,\\ \\'\\-c\\'\\,\\ \\'sudo\\ \\-E\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ returncode\\=127\\,\\ stderr\\=b\\'bash\\:\\ sudo\\:\\ command\\ not\\ found",
+    "amount": 1
+  },
+  "error: 'gelf.h' file not found\\n#include <gelf.h>\\n         ^~~~~~~~\\n1 error generated.\\nbtf.c:17:10: fatal error: 'gelf.h' file not found\\n#include <gelf.h>\\n         ^~~~~~~~\\n1 error generated.\\nbtf.c:17:10: fatal error: 'gelf.h' file not found\\n#include <gelf.h>\\n         ^~~~~~~~\\n1 error generated.\\nmake: *** [Makefile:102: buildPATH/FILE.EXT Error 1\\n FAILED   \\n\\n[/home/fba_code/build]# mkdir -p /home/fba_code/build/externaldeps/libbpf \\n OK   \\n\\n[/home/fba_code/build]# cp PATH/FILE.EXT PATH/FILE.EXT \\ncp: cannot stat 'PATH/FILE.EXT No such file or directory\\n FAILED   \\n\\n FAILED  Failed to build libbpf. \\n\\n\\n --- Run autotools to configure the build environment --- \\n[/home/fba_code/build]# autoreconf -ivf \\nautoreconf: Entering directory `.'\\nautoreconf: configure.ac: not using Gettext\\nautoreconf: running: aclocal --force -I build/m4\\nautoreconf: configure.ac: tracing\\nautoreconf: configure.ac: not using Libtool\\nautoreconf: running: /usr/bin/autoconf --force\\nconfigure.ac:16: error: possibly undefined macro: AC_MSG_NOTICE\\n      If this token and others are legitimate, please use m4_pattern_allow.\\n      See the Autoconf documentation.\\nconfigure.ac:187: error: possibly undefined macro: AC_MSG_ERROR\\nconfigure.ac:286: error: possibly undefined macro: AC_CHECK_LIB\\nconfigure.ac:607: error: possibly undefined macro: AC_CHECK_HEADER\\nautoreconf: /usr/bin/autoconf failed with exit status: 1\\n FAILED   \\n\\n\\n  ^\\n  |.-.   .-.   .-.   .-.   .-.   .  netdata                          .-.   .-\\n  |   '-'   '-'   '-'   '-'   '-'   sorry, it failed to build...  '-'   '-'  \\n  +----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+--->\\n\\n\")": {
+    "name": "'gelf.h' file not found\\n#include <gelf.h>\\n         ^~~~~~~~\\n1 error generated.\\nbtf.c:17:10: fatal 'gelf.h' file not found\\n#include <gelf.h>\\n         ^~~~~~~~\\n1 error generated.\\nbtf.c:17:10: fatal 'gelf.h' file not found\\n#include <gelf.h>\\n         ^~~~~~~~\\n1 error generated.\\nmake: *** [Makefile:102: buildPATH/FILE.EXT Error 1\\n FAILED   \\n\\n[/home/fba_code/build]# mkdir -p /home/fba_code/build/externaldeps/libbpf \\n OK   \\n\\n[/home/fba_code/build]# cp PATH/FILE.EXT PATH/FILE.EXT \\ncp: cannot stat 'PATH/FILE.EXT No such file or directory\\n FAILED   \\n\\n FAILED  Failed to build libbpf. \\n\\n\\n --- Run autotools to configure the build environment --- \\n[/home/fba_code/build]# autoreconf -ivf \\nautoreconf: Entering directory `.'\\nautoreconf: configure.ac: not using Gettext\\nautoreconf: running: aclocal --force -I build/m4\\nautoreconf: configure.ac: tracing\\nautoreconf: configure.ac: not using Libtool\\nautoreconf: running: /usr/bin/autoconf --force\\nconfigure.ac:16: possibly undefined macro: AC_MSG_NOTICE\\n      If this token and others are legitimate, please use m4_pattern_allow.\\n      See the Autoconf documentation.\\nconfigure.ac:187: possibly undefined macro: AC_MSG_ERROR\\nconfigure.ac:286: possibly undefined macro: AC_CHECK_LIB\\nconfigure.ac:607: possibly undefined macro: AC_CHECK_HEADER\\nautoreconf: /usr/bin/autoconf failed with exit status: 1\\n FAILED   \\n\\n\\n  ^\\n  |.-.   .-.   .-.   .-.   .-.   .  netdata                          .-.   .-\\n  |   '-'   '-'   '-'   '-'   '-'   sorry, it failed to build...  '-'   '-'  \\n  +----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+--->\\n\\n\")",
+    "projects": [
+      "netdata/netdata"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'gelf\\.h\\'\\ file\\ not\\ found\\\\n\\#include\\ \\<gelf\\.h\\>\\\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ \\^\\~\\~\\~\\~\\~\\~\\~\\\\n1\\ error\\ generated\\.\\\\nbtf\\.c\\:17\\:10\\:\\ fatal\\ error\\:\\ \\'gelf\\.h\\'\\ file\\ not\\ found\\\\n\\#include\\ \\<gelf\\.h\\>\\\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ \\^\\~\\~\\~\\~\\~\\~\\~\\\\n1\\ error\\ generated\\.\\\\nbtf\\.c\\:17\\:10\\:\\ fatal\\ error\\:\\ \\'gelf\\.h\\'\\ file\\ not\\ found\\\\n\\#include\\ \\<gelf\\.h\\>\\\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ \\^\\~\\~\\~\\~\\~\\~\\~\\\\n1\\ error\\ generated\\.\\\\nmake\\:\\ \\*\\*\\*\\ \\[Makefile\\:102\\:\\ build(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ Error\\ 1\\\\n\\ FAILED\\ \\ \\ \\\\n\\\\n\\[\\/home\\/fba_code\\/build\\]\\#\\ mkdir\\ \\-p\\ \\/home\\/fba_code\\/build\\/externaldeps\\/libbpf\\ \\\\n\\ OK\\ \\ \\ \\\\n\\\\n\\[\\/home\\/fba_code\\/build\\]\\#\\ cp\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\\\ncp\\:\\ cannot\\ stat\\ \\'(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ No\\ such\\ file\\ or\\ directory\\\\n\\ FAILED\\ \\ \\ \\\\n\\\\n\\ FAILED\\ \\ Failed\\ to\\ build\\ libbpf\\.\\ \\\\n\\\\n\\\\n\\ \\-\\-\\-\\ Run\\ autotools\\ to\\ configure\\ the\\ build\\ environment\\ \\-\\-\\-\\ \\\\n\\[\\/home\\/fba_code\\/build\\]\\#\\ autoreconf\\ \\-ivf\\ \\\\nautoreconf\\:\\ Entering\\ directory\\ \\`\\.\\'\\\\nautoreconf\\:\\ configure\\.ac\\:\\ not\\ using\\ Gettext\\\\nautoreconf\\:\\ running\\:\\ aclocal\\ \\-\\-force\\ \\-I\\ build\\/m4\\\\nautoreconf\\:\\ configure\\.ac\\:\\ tracing\\\\nautoreconf\\:\\ configure\\.ac\\:\\ not\\ using\\ Libtool\\\\nautoreconf\\:\\ running\\:\\ \\/usr\\/bin\\/autoconf\\ \\-\\-force\\\\nconfigure\\.ac\\:16\\:\\ error\\:\\ possibly\\ undefined\\ macro\\:\\ AC_MSG_NOTICE\\\\n\\ \\ \\ \\ \\ \\ If\\ this\\ token\\ and\\ others\\ are\\ legitimate\\,\\ please\\ use\\ m4_pattern_allow\\.\\\\n\\ \\ \\ \\ \\ \\ See\\ the\\ Autoconf\\ documentation\\.\\\\nconfigure\\.ac\\:187\\:\\ error\\:\\ possibly\\ undefined\\ macro\\:\\ AC_MSG_ERROR\\\\nconfigure\\.ac\\:286\\:\\ error\\:\\ possibly\\ undefined\\ macro\\:\\ AC_CHECK_LIB\\\\nconfigure\\.ac\\:607\\:\\ error\\:\\ possibly\\ undefined\\ macro\\:\\ AC_CHECK_HEADER\\\\nautoreconf\\:\\ \\/usr\\/bin\\/autoconf\\ failed\\ with\\ exit\\ status\\:\\ 1\\\\n\\ FAILED\\ \\ \\ \\\\n\\\\n\\\\n\\ \\ \\^\\\\n\\ \\ \\|\\.\\-\\.\\ \\ \\ \\.\\-\\.\\ \\ \\ \\.\\-\\.\\ \\ \\ \\.\\-\\.\\ \\ \\ \\.\\-\\.\\ \\ \\ \\.\\ \\ netdata\\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\.\\-\\.\\ \\ \\ \\.\\-\\\\n\\ \\ \\|\\ \\ \\ \\'\\-\\'\\ \\ \\ \\'\\-\\'\\ \\ \\ \\'\\-\\'\\ \\ \\ \\'\\-\\'\\ \\ \\ \\'\\-\\'\\ \\ \\ sorry\\,\\ it\\ failed\\ to\\ build\\.\\.\\.\\ \\ \\'\\-\\'\\ \\ \\ \\'\\-\\'\\ \\ \\\\n\\ \\ \\+\\-\\-\\-\\-\\+\\-\\-\\-\\-\\-\\+\\-\\-\\-\\-\\-\\+\\-\\-\\-\\-\\-\\+\\-\\-\\-\\-\\-\\+\\-\\-\\-\\-\\-\\+\\-\\-\\-\\-\\-\\+\\-\\-\\-\\-\\-\\+\\-\\-\\-\\-\\-\\+\\-\\-\\-\\-\\-\\+\\-\\-\\-\\-\\-\\+\\-\\-\\-\\-\\-\\+\\-\\-\\-\\>\\\\n\\\\n\\\"\\)",
+    "amount": 1
+  },
+  "ERROR - [8/0] CompletedProcess(args=['bash', '-c', 'set -o errexit; source PATH/FILE.EXT returncode=2, stderr=b\"PATH/FILE.EXT travis_retry: command not found": {
+    "name": "ERROR - [8/0] CompletedProcess(args=['bash', '-c', 'set -o errexit; source PATH/FILE.EXT returncode=2, stderr=b\"PATH/FILE.EXT travis_retry: command not found",
+    "projects": [
+      "bitcoin/bitcoin"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[8\\/0\\]\\ CompletedProcess\\(args\\=\\[\\'bash\\'\\,\\ \\'\\-c\\'\\,\\ \\'set\\ \\-o\\ errexit\\;\\ source\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ returncode\\=2\\,\\ stderr\\=b\\\"(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ travis_retry\\:\\ command\\ not\\ found",
+    "amount": 1
+  },
   "make target not found": {
     "name": "make target not found",
     "projects": [],
@@ -745,13 +1009,6 @@
     "projects": [],
     "origin": "hardcoded",
     "regex": "configure\\:\\ error\\:\\ could\\ not\\ find\\ gnutls",
-    "amount": 0
-  },
-  "error: empty search path given via `-L`": {
-    "name": "empty search path given via `-L`",
-    "projects": [],
-    "origin": "hardcoded",
-    "regex": "error\\:\\ empty\\ search\\ path\\ given\\ via\\ \\`\\-L\\`",
     "amount": 0
   },
   "error: 'iostream' file not found": {
