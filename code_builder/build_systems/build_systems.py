@@ -138,6 +138,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 with open(join(abspath(build_dir), docker_log_file), "w") as f:
                     f.write(docker_log.decode())
                 project["status"] = "crash"
+                project["crash_reason"] = "docker container crashed"
                 return (idx, name, project)
             docker_log = container.logs()
             timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
@@ -145,11 +146,20 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             with open(join(abspath(build_dir), docker_log_file), "w") as f:
                 f.write(docker_log.decode())
             # Get output JSON
-            binary_data, _ = container.get_archive(
-                "/home/fba_code/output.json")
-            tar_file = tarfile.open(fileobj=io.BytesIO(next(binary_data)))
-            data = tar_file.extractfile(tar_file.getmember("output.json"))
-            project = {**project, **json.loads(data.read())["project"]}
+            try:
+                binary_data, _ = container.get_archive(
+                    "/home/fba_code/output.json")
+                tar_file = tarfile.open(fileobj=io.BytesIO(next(binary_data)))
+                data = tar_file.extractfile(tar_file.getmember("output.json"))
+                project = {**project, **json.loads(data.read())["project"]}
+            except Exception as e:
+                ctx.err_log.print_error(
+                    idx,
+                    "Failure retrieving the Project File from docker:\n{}".format(str(e))
+                )
+                project["status"] = "crash"
+                project["crash_reason"] = "docker output.json not found or invalid archive"
+                return (idx, name, project)
             end = time()
             project["build"]["time"] = end - start
 
