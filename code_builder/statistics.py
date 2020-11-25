@@ -71,8 +71,10 @@ class Statistics:
     def update(self, project, name):
         # update build_systems statistic
         build_system = project.get("build_system", "unrecognized")
-        ci_systems = project.get("ci_systems", ["None"])
         self.build_systems[build_system] = self.build_systems.get(build_system, 0) + 1
+        ci_systems = project.get("ci_systems", [])
+        if ci_systems == []:
+            ci_systems = ["None"]
         for i in ci_systems:
             self.ci_systems[i] = self.ci_systems.get(i, 0) + 1
         self.clone_time += project["source"]["time"]
