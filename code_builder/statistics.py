@@ -46,7 +46,7 @@ class Statistics:
         print("Build systems:", file=out)
         for name, count in self.build_systems.items():
             print("  {}: {}".format(name, count), file=out)
-            print("Continuous integration systems:", file=out)
+        print("Continuous integration systems:", file=out)
         for name, count in self.ci_systems.items():
             print("  {}: {}".format(name, count), file=out)
         print("Unrecognized build systems: %d" % len(self.unrecognized_projects), file=out)
@@ -71,9 +71,10 @@ class Statistics:
     def update(self, project, name):
         # update build_systems statistic
         build_system = project.get("build_system", "unrecognized")
-        ci_system = project.get("ci_system", "None")
+        ci_systems = project.get("ci_systems", ["None"])
         self.build_systems[build_system] = self.build_systems.get(build_system, 0) + 1
-        self.ci_systems[ci_system] = self.ci_systems.get(ci_system, 0) + 1
+        for i in ci_systems:
+            self.ci_systems[i] = self.ci_systems.get(i, 0) + 1
         self.clone_time += project["source"]["time"]
         if "build" in project:
             self.build_time += project["build"]["time"]

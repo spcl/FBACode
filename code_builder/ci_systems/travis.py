@@ -3,8 +3,8 @@ import os
 import urllib
 from subprocess import PIPE
 import json
-from os import listdir
-from os.path import isdir, isfile, join, remove
+from os import listdir, remove
+from os.path import isdir, isfile, join
 from yaml.loader import FullLoader
 
 from ..build_systems.environment import get_c_compiler, get_cxx_compiler
