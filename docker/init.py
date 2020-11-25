@@ -40,16 +40,16 @@ source_dir = '/home/fba_code/source'
 build_dir = '/home/fba_code/build'
 bitcodes_dir = '/home/fba_code/bitcodes'
 build_system = os.environ['BUILD_SYSTEM']
+ci_system = os.environ["CI_SYSTEM"]
 external_build_dir = os.environ['BUILD_DIR']
 external_bitcodes_dir = os.environ['BITCODES_DIR']
 
 json_input = json.load(open(sys.argv[1], 'r'))
-print("listdir:")
-print(os.listdir("/home/fba_code"))
 idx = json_input['idx']
 name = json_input['name']
 verbose = json_input['verbose']
 builder_mod = importlib.import_module('build_systems.{}'.format(build_system))
+ci_mod = importlib.import_module('ci_systems.{}'.format(ci_system))
 # builder_mod = imp.load_source(build_system, os.path.join('build_systems', build_system + '.py'))
 builder_class = getattr(builder_mod, 'Project')
 
@@ -84,6 +84,9 @@ if build_system == "debian":
 else:
     builder = builder_class(source_dir, build_dir, idx, ctx, project)
 configured_version = builder.configure(build_dir)
+end = time()
+project['build']['configure_time'] = end - start
+start = time()
 if not configured_version:
     project['build']['configure'] = 'fail'
     failure = True

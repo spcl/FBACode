@@ -61,6 +61,7 @@ ADD docker/init.py init.py
 ADD code_builder/utils/ utils
 ADD code_builder/build_systems/ build_systems
 ADD code_builder/wrappers/ wrappers
+ADD code_builder/ci_systems/ ci_systems
 
 
 

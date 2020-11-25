@@ -22,7 +22,7 @@ class CiSystem:
 
     def install(self):
         pass
-    
+
     @staticmethod
     def recognize(repo_dir):
         return isdir(join(repo_dir, ".github/workflows"))

@@ -36,6 +36,7 @@ class Statistics:
         self.dep_finder = dep_finder.DepFinder()
         self.dependencies = {}
         self.build_systems = {}
+        self.ci_systems = {}
 
     def print_stats(self, out):
         print("Repository clone time: %f seconds" % self.clone_time, file=out)
@@ -44,6 +45,9 @@ class Statistics:
         print("Failed builds: %d" % self.incorrect_projects, file=out)
         print("Build systems:", file=out)
         for name, count in self.build_systems.items():
+            print("  {}: {}".format(name, count), file=out)
+            print("Continuous integration systems:", file=out)
+        for name, count in self.ci_systems.items():
             print("  {}: {}".format(name, count), file=out)
         print("Unrecognized build systems: %d" % len(self.unrecognized_projects), file=out)
         for p in self.unrecognized_projects:
@@ -67,7 +71,9 @@ class Statistics:
     def update(self, project, name):
         # update build_systems statistic
         build_system = project.get("build_system", "unrecognized")
+        ci_system = project.get("ci_system", "None")
         self.build_systems[build_system] = self.build_systems.get(build_system, 0) + 1
+        self.ci_systems[ci_system] = self.ci_systems.get(ci_system, 0) + 1
         self.clone_time += project["source"]["time"]
         if "build" in project:
             self.build_time += project["build"]["time"]
@@ -347,8 +353,8 @@ class Statistics:
             "status": project["status"],
             "codebase_data": project.get("codebase_data"),
             "build_system": project.get("build_system", "unrecognized"),
-            "previous_errors": project["build"]["errortypes"]
-              if ("build" in project and "errortypes" in project["build"]) else None
+            "previous_errors": project["build"]["errortypes"] if
+                "build" in project and "errortypes" in project["build"] else None
         }
         if project["type"] not in self.rebuild_projects:
             self.rebuild_projects[project["type"]] = {}

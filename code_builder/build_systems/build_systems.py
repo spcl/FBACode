@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from requests.exceptions import Timeout
 
 from . import cmake, debian, autotools, make  #, travis, github_actions, circleci
-from ..ci_stystems import travis, circle_ci, gh_actions
+from ..ci_systems import travis, circle_ci, gh_actions
 
 
 def run(command, cwd=None, stdout=None, stderr=None):
@@ -62,11 +62,11 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
     failure = False
     start = time()
     # find out the used ci system
-    ci_system = False
+    ci_system = "None"
     project.setdefault("ci_systems", [])
     for ci_name, system in ci_systems.items():
         if system.recognize(source_dir):
-            if not ci_system:
+            if ci_system == "None":
                 ci_system = ci_name
             if ci_name not in project["ci_systems"]:
                 project["ci_systems"].append(ci_name)
@@ -84,7 +84,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             json.dump({
                 "idx": idx,
                 "name": name,
-                "verbose": ctx.cfg["output"]["verbose"]
+                "verbose": ctx.cfg["output"]["verbose"],
+                "project": project
             },
                 tmp_file.file,
             )

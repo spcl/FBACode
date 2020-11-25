@@ -18,7 +18,7 @@ images = {
     #     'dockerfile': 'Dockerfile_debian-sid.base'
     # },
     'debian-buster': {
-        'dockerfile': 'Dockerfile_debian-buster.base'
+        'dockerfile': 'debian-buster.dockerfile'
     },
     # 'debian-bullseye': {
     #     'dockerfile': 'Dockerfile_debian-bullseye.base'
