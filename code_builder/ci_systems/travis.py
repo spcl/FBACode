@@ -7,7 +7,7 @@ from os import listdir, remove
 from os.path import isdir, isfile, join
 from yaml.loader import FullLoader
 
-from ..build_systems.environment import get_c_compiler, get_cxx_compiler
+# from ..build_systems.environment import get_c_compiler, get_cxx_compiler
 
 from .ci_helper import run, run_scripts, set_env_vars
 
@@ -116,12 +116,12 @@ class CiSystem:
         # cache components
         # i dont think there is anything to do
         # run the before_install script, if any
-        c_compiler = get_c_compiler()
-        cxx_compiler = get_cxx_compiler()
-        os.environ["CXX"] = cxx_compiler
-        os.environ["CXX_FOR_BUILD"] = cxx_compiler
-        os.environ["CC"] = c_compiler
-        os.environ["CC_FOR_BUILD"] = c_compiler
+        # c_compiler = get_c_compiler()
+        # cxx_compiler = get_cxx_compiler()
+        # os.environ["CXX"] = cxx_compiler
+        # os.environ["CXX_FOR_BUILD"] = cxx_compiler
+        # os.environ["CC"] = c_compiler
+        # os.environ["CC_FOR_BUILD"] = c_compiler
         
         if yml.get("before_install") is not None:
             print("TRAVIS: running before_install")
