@@ -280,25 +280,29 @@ class Statistics:
             # remove file in beginning of line e.g. makefile 96:420:
             err = re.sub(r"^\S*\.\S*(?:\:|\ )?\d+(?:\:\d+)?\:\ ", "", err)
             if match_next:
-                if err[0:2] == "  ":
+                if err[0:2] == "  " and err.strip() != "":
                     # this error is part of the CMake multiline error
                     if multiline_err == "":
                         first_line_err = err.strip()
                     multiline_err += err.strip() + " "
                     continue
+                elif err.strip() == "":
+                    # this is just a newline, sometimes this fucks it up
+                    continue
                 else:
                     # this is no longer part of same err
-                    if multiline_err not in self.errors_stdout:
-                        self.errors_stdout[multiline_err] = {
-                            "name": multiline_err,
-                            "projects": [name],
-                            "origin": "CMake",
-                            "regex": re.escape(first_line_err).replace(
-                                re.escape("PATH/FILE.EXT"), self.path_regex)
-                        }
-                        self.new_errs += 1
-                    self.add_errors(project, name, [multiline_err])
-                    found_match = True
+                    if multiline_err.strip() != "":
+                        if multiline_err not in self.errors_stdout:
+                            self.errors_stdout[multiline_err] = {
+                                "name": multiline_err,
+                                "projects": [name],
+                                "origin": "CMake",
+                                "regex": re.escape(first_line_err).replace(
+                                    re.escape("PATH/FILE.EXT"), self.path_regex)
+                            }
+                            self.new_errs += 1
+                        self.add_errors(project, name, [multiline_err])
+                        found_match = True
                     match_next = False
                     multiline_err = ""
                     

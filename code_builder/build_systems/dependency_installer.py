@@ -92,7 +92,11 @@ def travis_addons(project, addons):
     if apt and (isinstance(apt, str) or
                 isinstance(apt, list) and all(isinstance(i, str) for i in apt)):
         cmd = ["apt-get", "install", "-y", "--force-yes",
-               "--no-install-recommends", apt]
+               "--no-install-recommends"]
+        if isinstance(apt, str):
+            cmd.append(apt)
+        elif isinstance(apt, list):
+            cmd.extend(apt)
         out = run(cmd, stderr=PIPE)
         if out.returncode != 0:
             project.error_log.print_error(
@@ -119,8 +123,12 @@ def travis_addons(project, addons):
                     safelist_entry = [
                         i for i in safelist if i["alias"] == source]
                     if not safelist_entry:
-                        # found nothing in safelist, try to use this string as url
-                        source_url = source
+                        if "ppa:" in source:
+                            # found nothing in safelist, try to use this string as url
+                            source_url = source
+                        else: 
+                            # understandable, have a nice day
+                            continue
                     else:
                         key_url = safelist_entry[0].get(
                             "canonical_key_url", None)
@@ -179,10 +187,15 @@ def travis_addons(project, addons):
                     out.args, out.stderr.decode("utf-8")))
                 return False
 
-    apt_packages = addons.get("apt_packages")
-    if apt_packages:
+    apt_packages = addons.get("apt_packages", None)
+    if apt_packages is not None:
         cmd = ["apt-get", "install", "-y", "--force-yes",
-               "--no-install-recommends", apt]
+               "--no-install-recommends"]
+        if isinstance(apt_packages, str):
+            cmd.append(apt_packages)
+        elif isinstance(apt_packages, list):
+            cmd.extend(apt_packages)
+        print(cmd)
         out = run(cmd, stderr=PIPE)
         if out.returncode != 0:
             project.error_log.print_error(

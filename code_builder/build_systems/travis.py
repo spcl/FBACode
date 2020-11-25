@@ -108,6 +108,8 @@ class Project:
                 if isinstance(var, str):
                     self.set_env_vars(var)
                     break
+        elif isinstance(self.yml.get("env"), str):
+            self.set_env_vars(self.yml.get("env"))
         else:
             for var in self.yml.get("env", {}).get("global", []):
                 self.set_env_vars(var)

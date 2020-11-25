@@ -7,6 +7,7 @@ from os import listdir, remove
 from os.path import isdir, isfile, join
 from yaml.loader import FullLoader
 
+# figure out how to import this.. maybe, not sure if needed
 # from ..build_systems.environment import get_c_compiler, get_cxx_compiler
 
 from .ci_helper import run, run_scripts, set_env_vars
@@ -33,15 +34,21 @@ class CiSystem:
 
     def install(self):
         # open the .travis.yml file
-        with open(join(self.build_dir, ".travis.yml"), 'r') as f:
-            yml = yaml.load(f, Loader=FullLoader)
-            self.yml = yml
+        try:
+            with open(join(self.build_dir, ".travis.yml"), 'r') as f:
+                yml = yaml.load(f, Loader=FullLoader)
+                self.yml = yml
+        except yaml.composer.ComposerError as e:
+            self.error_log.print_error("Error parsing .travis.yml:\n  {}".format(e))
+            return False
         # set global env vars specified in the yaml
         if isinstance(self.yml.get("env"), list):
             for var in self.yml.get("env"):
                 if isinstance(var, str):
                     set_env_vars(var)
                     break
+        elif isinstance(self.yml.get("env"), str):
+            self.set_env_vars(self.yml.get("env"))
         else:
             for var in self.yml.get("env", {}).get("global", []):
                 set_env_vars(var)
@@ -139,18 +146,22 @@ class CiSystem:
                 return False
         return True
 
-    def travis_addons(project, addons):
+    def travis_addons(self, addons):
         apt = addons.get("apt")
         # in case it's just a string or list of strings
         if apt and (isinstance(apt, str) or
                     isinstance(apt, list) and all(isinstance(i, str) for i in apt)):
             cmd = ["apt-get", "install", "-y", "--force-yes",
-                   "--no-install-recommends", apt]
+                   "--no-install-recommends"]
+            if isinstance(apt, str):
+                cmd.append(apt)
+            elif isinstance(apt, list):
+                cmd.extend(apt)
             out = run(cmd, stderr=PIPE)
             if out.returncode != 0:
-                project.error_log.print_error(
-                    project.idx, "apt_packages install from .travis.yml failed")
-                project.error_log.print_error(project.idx, "{}:\n{}".format(
+                self.error_log.print_error(
+                    self.idx, "apt_packages install from .travis.yml failed")
+                self.error_log.print_error(self.idx, "{}:\n{}".format(
                     out.args, out.stderr.decode("utf-8")))
                 return False
         # in case it is more complicated
@@ -184,32 +195,32 @@ class CiSystem:
                     if key_url:
                         cmd = ["sh", "-c",
                                "wget -q0 - {} | apt-key add -".format(key_url)]
-                        out = run(cmd, cwd=project.build_dir, stderr=PIPE)
+                        out = run(cmd, cwd=self.build_dir, stderr=PIPE)
                         if out.returncode != 0:
-                            project.error_log.print_error(
-                                project.idx, "adding key to repo failed")
-                            project.error_log.print_error(project.idx, "{}:\n{}".format(
+                            self.error_log.print_error(
+                                self.idx, "adding key to repo failed")
+                            self.error_log.print_error(self.idx, "{}:\n{}".format(
                                 out.args, out.stderr.decode("utf-8")))
                             return False
                     if source_url is None:
-                        project.error_log.print_error(
-                            project.idx, "wrong format of sourceline in travis")
+                        self.error_log.print_error(
+                            self.idx, "wrong format of sourceline in travis")
                         return False
                     cmd = ["add-apt-repository", source_url]
-                    out = run(cmd, cwd=project.build_dir, stderr=PIPE)
+                    out = run(cmd, cwd=self.build_dir, stderr=PIPE)
                     if out.returncode != 0:
-                        project.error_log.print_error(
-                            project.idx, "adding repo failed")
-                        project.error_log.print_error(project.idx, "{}:\n{}".format(
+                        self.error_log.print_error(
+                            self.idx, "adding repo failed")
+                        self.error_log.print_error(self.idx, "{}:\n{}".format(
                             out.args, out.stderr.decode("utf-8")))
                         return False
             if apt.get("update") or do_update:
                 cmd = ["apt-get", "update"]
                 out = run(cmd, stderr=PIPE)
                 if out.returncode != 0:
-                    project.error_log.print_error(
-                        project.idx, "apt update from .travis.yml failed")
-                    project.error_log.print_error(project.idx, "{}:\n{}".format(
+                    self.error_log.print_error(
+                        self.idx, "apt update from .travis.yml failed")
+                    self.error_log.print_error(self.idx, "{}:\n{}".format(
                         out.args, out.stderr.decode("utf-8")))
                     return False
             if apt.get("packages") is not None:
@@ -226,21 +237,26 @@ class CiSystem:
                 print(cmd)
                 out = run(cmd, stderr=PIPE)
                 if out.returncode != 0:
-                    project.error_log.print_error(
-                        project.idx, "apt install from .travis.yml failed")
-                    project.error_log.print_error(project.idx, "{}:\n{}".format(
+                    self.error_log.print_error(
+                        self.idx, "apt install from .travis.yml failed")
+                    self.error_log.print_error(self.idx, "{}:\n{}".format(
                         out.args, out.stderr.decode("utf-8")))
                     return False
 
         apt_packages = addons.get("apt_packages")
         if apt_packages:
             cmd = ["apt-get", "install", "-y", "--force-yes",
-                   "--no-install-recommends", apt]
+                   "--no-install-recommends"]
+            if isinstance(apt_packages, str):
+                cmd.append(apt_packages)
+            elif isinstance(apt_packages, list):
+                cmd.extend(apt_packages)
+            print(cmd)
             out = run(cmd, stderr=PIPE)
             if out.returncode != 0:
-                project.error_log.print_error(
-                    project.idx, "apt_packages install from .travis.yml failed")
-                project.error_log.print_error(project.idx, "{}:\n{}".format(
+                self.error_log.print_error(
+                    self.idx, "apt_packages install from .travis.yml failed")
+                self.error_log.print_error(self.idx, "{}:\n{}".format(
                     out.args, out.stderr.decode("utf-8")))
                 return False
         # run the snap module
@@ -251,9 +267,9 @@ class CiSystem:
                 cmd = ["snap", "install", snaps]
                 out = run(cmd, stderr=PIPE)
                 if out.returncode != 0:
-                    project.error_log.print_error(
-                        project.idx, "snap install from .travis.yml failed")
-                    project.error_log.print_error(project.idx, "{}:\n{}".format(
+                    self.error_log.print_error(
+                        self.idx, "snap install from .travis.yml failed")
+                    self.error_log.print_error(self.idx, "{}:\n{}".format(
                         out.args, out.stderr.decode("utf-8")))
                     return False
             else:
@@ -262,19 +278,19 @@ class CiSystem:
                         cmd = ["snap", "install", snap]
                     else:
                         if "name" not in snap:
-                            project.error_log.print_error(
-                                project.idx, "invalid yaml file, snap name missing")
+                            self.error_log.print_error(
+                                self.idx, "invalid yaml file, snap name missing")
                             return False
                         cmd = ["snap", "install", snap["name"]]
                         if snap.get("confinement") is not None:
                             cmd.append("--{}".format(snap["confinement"]))
                         if snap.get("channel") is not None:
                             cmd.append("--channel={}".format(snap["channel"]))
-                    out = run(cmd, cwd=project.build_dir, stderr=PIPE)
+                    out = run(cmd, cwd=self.build_dir, stderr=PIPE)
                     if out.returncode != 0:
-                        project.error_log.print_error(
-                            project.idx, "snap install from .travis.yml failed")
-                        project.error_log.print_error(project.idx, "{}:\n{}".format(
+                        self.error_log.print_error(
+                            self.idx, "snap install from .travis.yml failed")
+                        self.error_log.print_error(self.idx, "{}:\n{}".format(
                             out.args, out.stderr.decode("utf-8")))
                         return False
         return True
