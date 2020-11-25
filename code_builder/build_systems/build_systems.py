@@ -17,7 +17,8 @@ from time import sleep, time
 from datetime import datetime, timedelta
 from requests.exceptions import Timeout
 
-from . import cmake, debian, autotools, make, travis, github_actions, circleci
+from . import cmake, debian, autotools, make  #, travis, github_actions, circleci
+from ..ci_stystems import travis, circle_ci, gh_actions
 
 
 def run(command, cwd=None, stdout=None, stderr=None):
@@ -36,10 +37,17 @@ build_systems = {
     "CMake": cmake.Project,
     "make": make.Project,
     "Autotools": autotools.Project,
-    "travis": travis.Project,
-    "circleci": circleci.Project,
-    "github_actions": github_actions.Project
+    # "travis": travis.Project,
+    # "circleci": circleci.Project,
+    # "github_actions": github_actions.Project
     }
+
+# continuous integration systems, decreasing priority
+ci_systems = {
+    "travis": travis.CiSystem,
+    "circle_ci": circle_ci.CiSystem,
+    "gh_actions": gh_actions.CiSystem
+}
 
 
 def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
@@ -53,10 +61,20 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
     source_name = basename(source_dir)
     failure = False
     start = time()
+    # find out the used ci system
+    ci_system = False
+    project.setdefault("ci_systems", [])
+    for ci_name, system in ci_systems.items():
+        if system.recognize(source_dir):
+            if not ci_system:
+                ci_system = ci_name
+            if ci_name not in project["ci_systems"]:
+                project["ci_systems"].append(ci_name)
     for build_name, build_system in build_systems.items():
         if build_system.recognize(source_dir):
             project["build_system"] = build_name.lower()
             # print("{} recognized as {}".format(name, build_name))
+            
             build_dir = join(build_dir, source_name)
             target_dir = join(target_dir, source_name)
             if not exists(build_dir):
@@ -93,7 +111,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             environment = [
                 "BUILD_SYSTEM={}".format(build_name.lower()),
                 "BUILD_DIR={}".format(abspath(build_dir)),
-                "BITCODES_DIR={}".format(abspath(target_dir))
+                "BITCODES_DIR={}".format(abspath(target_dir)),
+                "CI_SYSTEM={}".format(ci_system)
             ]
             container = docker_client.containers.run(
                 build_system.CONTAINER_NAME,
@@ -191,6 +210,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             idx, "Unrecognized project %s in %s" % (name, source_dir)
         )
         project["status"] = "unrecognized"
+        # 
     else:
         project["build"]["time"] = end - start
     return (idx, name, project)
