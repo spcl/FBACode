@@ -41,13 +41,14 @@ class Context:
 class Project:
     CONTAINER_NAME = "mcopik/fbacode:ubuntu-1804-clang-9"
 
-    def __init__(self, repo_dir, build_dir, idx, ctx, project):
+    def __init__(self, repo_dir, build_dir, idx, ctx, name, project):
         self.repository_path = repo_dir
         self.build_dir = build_dir
         self.idx = idx
         self.ctx = ctx
         self.output_log = ctx.out_log
         self.error_log = ctx.err_log
+        self.name = name
         self.project = project
 
     def configure(self, force_update=True):

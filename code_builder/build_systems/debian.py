@@ -77,7 +77,7 @@ class Project:
             self.name = replace_name[0]
             print(replace_name[0])
         version = search(r"(?<= {0} ).*(?= \(dsc\) )".format(escape(self.name)), out)[0]
-
+        self.project["build"]["built_version"] = version
         sourcedir = search(r"(?<=extracting {0} in ).*(?=\n)".format(escape(self.name)), out)[0]
 
         sourcedir = join(temp, sourcedir)
