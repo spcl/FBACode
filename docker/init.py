@@ -43,6 +43,7 @@ build_system = os.environ['BUILD_SYSTEM']
 ci_system = os.environ["CI_SYSTEM"]
 external_build_dir = os.environ['BUILD_DIR']
 external_bitcodes_dir = os.environ['BITCODES_DIR']
+install_deps = not os.environ["DEPENDENCY_INSTALL"] == "False"
 
 json_input = json.load(open(sys.argv[1], 'r'))
 idx = json_input['idx']
@@ -52,8 +53,9 @@ builder_mod = importlib.import_module('build_systems.{}'.format(build_system))
 ci_mod = importlib.import_module('ci_systems.{}'.format(ci_system))
 # builder_mod = imp.load_source(build_system, os.path.join('build_systems', build_system + '.py'))
 builder_class = getattr(builder_mod, 'Project')
+ci_class = getattr(ci_mod, "CiSystem")
 
-print("Building {} in here using {}".format(name, build_system))
+print("Building {} in here using {} and {}".format(name, build_system, ci_system))
 
 cfg = {'output': {'verbose': verbose, 'file': '/home/fba_code/'}}
 ctx = Context(cfg)
@@ -78,6 +80,21 @@ project = {
         'installed': []
     }
 }
+if install_deps:
+    # by default, get dependencies
+    ci = ci_class(source_dir, build_dir, idx, ctx, project)
+    start = time()
+    success = ci.install()
+    if not success:
+        print("failed installation using {}".format(ci_system))
+        project["build"]["install"] = "fail"
+    else:
+        project["build"]["install"] = ci_system
+    end = time()
+    project["build"]["install_time"] = end-start
+    
+    # if not success:
+    # handle failed install
 start = time()
 builder = builder_class(source_dir, build_dir, idx, ctx, name, project)
 configured = builder.configure(build_dir)

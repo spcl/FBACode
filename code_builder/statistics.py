@@ -37,6 +37,7 @@ class Statistics:
         self.dependencies = {}
         self.build_systems = {}
         self.ci_systems = {}
+        self.dep_mapping = {}
 
     def print_stats(self, out):
         print("Repository clone time: %f seconds" % self.clone_time, file=out)
@@ -67,6 +68,8 @@ class Statistics:
                                                key=lambda i: i[1].get("count", 0),
                                                reverse=True))
         print(json.dumps(self.dependencies, indent=2), file=out)
+        print("\nDependency mapping:", file=out)
+        print(json.dumps(self.dep_mapping, indent=2), file=out)
 
     def update(self, project, name):
         # update build_systems statistic
@@ -80,6 +83,11 @@ class Statistics:
         self.clone_time += project["source"]["time"]
         if "build" in project:
             self.build_time += project["build"]["time"]
+        if project.get("double_build") and "build" in project:
+            self.map_dependencies(
+                project["first_build"]["missing"],
+                project["build"].get("installed", [])
+            )
         if project["status"] == "unrecognized":
             self.add_unrecognized_project(name)
             self.add_rebuild_data(project, name)
@@ -350,6 +358,14 @@ class Statistics:
                 self.dependencies[dep] = {}
                 self.dependencies[dep]["count"] = 1
                 self.dependencies[dep]["projects"] = [name]
+    
+    def map_dependencies(self, missing, installed):
+        for m in missing:
+            if m in self.dep_mapping:
+                self.dep_mapping[m].extend(installed)
+                self.dep_mapping[m] = list(set(self.dep_mapping[m]))
+            else:
+                self.dep_mapping[m] = installed
 
     def add_rebuild_data(self, project, name):
         # generate info for rebuild
@@ -397,14 +413,19 @@ class Statistics:
         with open(path, 'w') as o:
             o.write(json.dumps(self.errors_stdout, indent=2))
     
-    def save_dependencies_json(self, path=None):
+    def save_dependencies_json(self, path=None, map_path=None):
         if path is None:
             timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
             path = join(
                 "buildlogs",
                 "dependencies_{}_{}.json".format(self.project_count, timestamp))
+            map_path = join(
+                "buildlogs",
+                "dep_maping_{}_{}.json".format(self.project_count, timestamp))
         self.dependencies = OrderedDict(sorted(self.dependencies.items(),
                                                key=lambda i: i[1].get("count", 0),
                                                reverse=True))
         with open(path, 'w') as o:
             o.write(json.dumps(self.dependencies, indent=2))
+        with open(map_path, 'w') as o:
+            o.write(json.dumps(self.dep_mapping, indent=2))

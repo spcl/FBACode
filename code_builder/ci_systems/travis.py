@@ -34,6 +34,7 @@ class CiSystem:
 
     def install(self):
         # open the .travis.yml file
+        print("installing dependencies using travis")
         try:
             with open(join(self.build_dir, ".travis.yml"), 'r') as f:
                 yml = yaml.load(f, Loader=FullLoader)
@@ -68,6 +69,37 @@ class CiSystem:
         os.environ["TRAVIS_OS"] = "linux"
         
         # look for a good configuration of env or jobs or matrix:
+        
+        # package addons
+        if yml.get("addons") is not None:
+            if not self.travis_addons(yml["addons"]):
+                return False
+        #  TODO: pick a configuration from the env and rest of matrix
+        # cache components
+        # i dont think there is anything to do
+        # run the before_install script, if any
+        # c_compiler = get_c_compiler()
+        # cxx_compiler = get_cxx_compiler()
+        # os.environ["CXX"] = cxx_compiler
+        # os.environ["CXX_FOR_BUILD"] = cxx_compiler
+        # os.environ["CC"] = c_compiler
+        # os.environ["CC_FOR_BUILD"] = c_compiler
+        
+        if yml.get("before_install") is not None:
+            print("TRAVIS: running before_install")
+            if not run_scripts(self, yml["before_install"]):
+                return False
+        # run the install
+        if yml.get("install") is not None:
+            print("TRAVIS: running install")
+            if not run_scripts(self, yml["install"]):
+                return False
+        # run the before_script part
+        if yml.get("before_script") is not None:
+            print("TRAVIS: running before_script")
+            if not run_scripts(self, yml["before_script"]):
+                return False
+
         jobs = yml.get("jobs", yml.get("matrix", {})).get("include", None)
         if jobs and isinstance(jobs, list):
             # split this list into stages, since each stage need to be run afaik
@@ -114,36 +146,6 @@ class CiSystem:
                 if stage[0].get("script") is not None:
                     if not run_scripts(self, stage[0]["script"]):
                         return False
-
-        # package addons
-        if yml.get("addons") is not None:
-            if not self.travis_addons(yml["addons"]):
-                return False
-        #  TODO: pick a configuration from the env and rest of matrix
-        # cache components
-        # i dont think there is anything to do
-        # run the before_install script, if any
-        # c_compiler = get_c_compiler()
-        # cxx_compiler = get_cxx_compiler()
-        # os.environ["CXX"] = cxx_compiler
-        # os.environ["CXX_FOR_BUILD"] = cxx_compiler
-        # os.environ["CC"] = c_compiler
-        # os.environ["CC_FOR_BUILD"] = c_compiler
-        
-        if yml.get("before_install") is not None:
-            print("TRAVIS: running before_install")
-            if not run_scripts(self, yml["before_install"]):
-                return False
-        # run the install
-        if yml.get("install") is not None:
-            print("TRAVIS: running install")
-            if not run_scripts(self, yml["install"]):
-                return False
-        # run the before_script part
-        if yml.get("before_script") is not None:
-            print("TRAVIS: running before_script")
-            if not run_scripts(self, yml["before_script"]):
-                return False
         return True
 
     def travis_addons(self, addons):

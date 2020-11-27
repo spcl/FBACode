@@ -57,13 +57,13 @@ class Project:
         cxx_compiler = get_cxx_compiler()
         os.environ["CC"] = c_compiler
         os.environ["CXX"] = cxx_compiler
-        if isfile(join(self.repository_path, ".travis.yml")):
-            if not parse_travis(self, self.repository_path):
-                self.error_log.print_error(
-                    self.idx,
-                    "error trying to install dependencies using travis!")
-            else:
-                self.project["build"]["travis_installer"] = True
+        # if isfile(join(self.repository_path, ".travis.yml")):
+        #     if not parse_travis(self, self.repository_path):
+        #         self.error_log.print_error(
+        #             self.idx,
+        #             "error trying to install dependencies using travis!")
+        #     else:
+        #         self.project["build"]["travis_installer"] = True
         if len(listdir(self.build_dir)) == 0 or force_update:
             # clean build dir and copy source over
             # we cant always build in separate directory from build

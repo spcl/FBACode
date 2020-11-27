@@ -56,13 +56,13 @@ class Project:
         cxx_compiler = get_cxx_compiler()
         if len(listdir(self.build_dir)) == 0 or force_update:
             # check if we have a travis file and use it to install dependencies
-            if isfile(join(self.repository_path, ".travis.yml")):
-                if not parse_travis(self, self.repository_path):
-                    self.error_log.print_error(
-                        self.idx,
-                        "error trying to install dependencies using travis!")
-                else:
-                    self.project["build"]["travis_installer"] = True
+            # if isfile(join(self.repository_path, ".travis.yml")):
+            #     if not parse_travis(self, self.repository_path):
+            #         self.error_log.print_error(
+            #             self.idx,
+            #             "error trying to install dependencies using travis!")
+            #     else:
+            #         self.project["build"]["travis_installer"] = True
             c_compiler_opt = "-DCMAKE_C_COMPILER=" + c_compiler
             cpp_compiler_opt = "-DCMAKE_CXX_COMPILER=" + cxx_compiler
             cmd = [

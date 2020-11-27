@@ -1,6 +1,7 @@
 import sys
 import subprocess
 import os
+from sys import stderr
 
 
 def run(command, cwd=None, stdout=None, stderr=None):
@@ -34,12 +35,13 @@ def run_scripts(logger, script_list):
             logger.idx, "travis script not string or list: {}".format(script_list))
         return True
     for cmd in script_list:
-        print("TRAVIS: {}".format(cmd))
+        substitution = run(["bash", "-c", 'echo "{}"'.format(cmd)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print("TRAVIS: {}".format(substitution.stdout.decode("utf-8")))
         out = run(["bash", "-c", cmd], cwd=logger.build_dir,
                   stderr=subprocess.PIPE)
         if out.returncode != 0:
             logger.error_log.print_error(
-                logger.idx, "running command \n{}\nfailed".format(cmd))
+                logger.idx, "running command \n{}\nfailed".format(substitution.stdout.decode("utf-8")))
             logger.error_log.print_error(logger.idx, "{}:\n{}".format(
                 out.args, out.stderr.decode("utf-8")))
             return False
