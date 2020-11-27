@@ -86,6 +86,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             # do not install dpendencies the first time around
             if ci_system == "travis":
                 project["install_deps"] = False
+            else:
+                project["install_deps"] = True
             json.dump({
                 "idx": idx,
                 "name": name,
