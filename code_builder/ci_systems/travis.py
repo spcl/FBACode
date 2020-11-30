@@ -31,17 +31,24 @@ class CiSystem:
         self.output_log = ctx.out_log
         self.error_log = ctx.err_log
         self.project = project
+        self.travis_dir = repo_dir
 
     def install(self):
         # open the .travis.yml file
         print("installing dependencies using travis")
         try:
-            with open(join(self.build_dir, ".travis.yml"), 'r') as f:
+            with open(join(self.travis_dir, ".travis.yml"), 'r') as f:
                 yml = yaml.load(f, Loader=FullLoader)
                 self.yml = yml
         except yaml.composer.ComposerError as e:
-            self.error_log.print_error("Error parsing .travis.yml:\n  {}".format(e))
+            self.error_log.print_error(
+                self.idx, "Error parsing .travis.yml:\n  {}".format(e))
             return False
+        except FileNotFoundError:
+            self.error_log.print_error(
+                self.idx, "Could not find {}/.travis.yml".format(self.travis_dir))
+            return False
+
         # set global env vars specified in the yaml
         if isinstance(self.yml.get("env"), list):
             for var in self.yml.get("env"):
@@ -63,13 +70,13 @@ class CiSystem:
                     set_env_vars(var)
                     break
         # https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
-        os.environ["TRAVIS_BUILD_DIR"] = self.build_dir
+        os.environ["TRAVIS_BUILD_DIR"] = self.travis_dir
         os.environ["CI"] = "true"
         os.environ["TRAVIS"] = "true"
         os.environ["TRAVIS_OS"] = "linux"
-        
+
         # look for a good configuration of env or jobs or matrix:
-        
+
         # package addons
         if yml.get("addons") is not None:
             if not self.travis_addons(yml["addons"]):
@@ -84,20 +91,20 @@ class CiSystem:
         # os.environ["CXX_FOR_BUILD"] = cxx_compiler
         # os.environ["CC"] = c_compiler
         # os.environ["CC_FOR_BUILD"] = c_compiler
-        
+
         if yml.get("before_install") is not None:
             print("TRAVIS: running before_install")
-            if not run_scripts(self, yml["before_install"]):
+            if not run_scripts(self, yml["before_install"], cwd=self.travis_dir):
                 return False
         # run the install
         if yml.get("install") is not None:
             print("TRAVIS: running install")
-            if not run_scripts(self, yml["install"]):
+            if not run_scripts(self, yml["install"], cwd=self.travis_dir):
                 return False
         # run the before_script part
         if yml.get("before_script") is not None:
             print("TRAVIS: running before_script")
-            if not run_scripts(self, yml["before_script"]):
+            if not run_scripts(self, yml["before_script"], cwd=self.travis_dir):
                 return False
 
         jobs = yml.get("jobs", yml.get("matrix", {})).get("include", None)
@@ -133,18 +140,18 @@ class CiSystem:
                     if not self.travis_addons(stage[0]["addons"]):
                         return False
                 if stage[0].get("before_install") is not None:
-                    if not run_scripts(self, stage[0]["before_install"]):
+                    if not run_scripts(self, stage[0]["before_install"], cwd=self.travis_dir):
                         return False
                 # run the install
                 if stage[0].get("install") is not None:
-                    if not run_scripts(self, stage[0]["install"]):
+                    if not run_scripts(self, stage[0]["install"], cwd=self.travis_dir):
                         return False
                 # run the before_script part
                 if stage[0].get("before_script") is not None:
-                    if not run_scripts(self, stage[0]["before_script"]):
+                    if not run_scripts(self, stage[0]["before_script"], cwd=self.travis_dir):
                         return False
                 if stage[0].get("script") is not None:
-                    if not run_scripts(self, stage[0]["script"]):
+                    if not run_scripts(self, stage[0]["script"], cwd=self.travis_dir):
                         return False
         return True
 
@@ -197,7 +204,7 @@ class CiSystem:
                     if key_url:
                         cmd = ["sh", "-c",
                                "wget -q0 - {} | apt-key add -".format(key_url)]
-                        out = run(cmd, cwd=self.build_dir, stderr=PIPE)
+                        out = run(cmd, cwd=self.travis_dir, stderr=PIPE)
                         if out.returncode != 0:
                             self.error_log.print_error(
                                 self.idx, "adding key to repo failed")
@@ -209,7 +216,7 @@ class CiSystem:
                             self.idx, "wrong format of sourceline in travis")
                         return False
                     cmd = ["add-apt-repository", source_url]
-                    out = run(cmd, cwd=self.build_dir, stderr=PIPE)
+                    out = run(cmd, cwd=self.travis_dir, stderr=PIPE)
                     if out.returncode != 0:
                         self.error_log.print_error(
                             self.idx, "adding repo failed")
@@ -288,7 +295,7 @@ class CiSystem:
                             cmd.append("--{}".format(snap["confinement"]))
                         if snap.get("channel") is not None:
                             cmd.append("--channel={}".format(snap["channel"]))
-                    out = run(cmd, cwd=self.build_dir, stderr=PIPE)
+                    out = run(cmd, cwd=self.travis_dir, stderr=PIPE)
                     if out.returncode != 0:
                         self.error_log.print_error(
                             self.idx, "snap install from .travis.yml failed")

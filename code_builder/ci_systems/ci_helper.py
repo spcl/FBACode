@@ -27,7 +27,7 @@ def set_env_vars(var):
     return True
 
 
-def run_scripts(logger, script_list):
+def run_scripts(logger, script_list, cwd=None):
     if isinstance(script_list, str):
         script_list = [script_list]
     elif not isinstance(script_list, list):
@@ -37,7 +37,7 @@ def run_scripts(logger, script_list):
     for cmd in script_list:
         substitution = run(["bash", "-c", 'echo "{}"'.format(cmd)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print("TRAVIS: {}".format(substitution.stdout.decode("utf-8")))
-        out = run(["bash", "-c", cmd], cwd=logger.build_dir,
+        out = run(["bash", "-c", cmd], cwd,
                   stderr=subprocess.PIPE)
         if out.returncode != 0:
             logger.error_log.print_error(
