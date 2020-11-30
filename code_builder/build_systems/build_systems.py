@@ -121,7 +121,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 "BUILD_DIR={}".format(abspath(build_dir)),
                 "BITCODES_DIR={}".format(abspath(target_dir)),
                 "CI_SYSTEM={}".format(ci_system),
-                "DEPENDENCY_INSTALL={}".format(str(project["install_deps"]))
+                "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
+                "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"]))
             ]
             container = docker_client.containers.run(
                 build_system.CONTAINER_NAME,
@@ -225,7 +226,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                     "BUILD_DIR={}".format(abspath(build_dir)),
                     "BITCODES_DIR={}".format(abspath(target_dir)),
                     "CI_SYSTEM={}".format(ci_system),
-                    "DEPENDENCY_INSTALL={}".format(str(project["install_deps"]))
+                    "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
+                    "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"]))
                 ]
                 container = docker_client.containers.run(
                     build_system.CONTAINER_NAME,

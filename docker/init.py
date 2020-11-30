@@ -44,6 +44,7 @@ ci_system = os.environ["CI_SYSTEM"]
 external_build_dir = os.environ['BUILD_DIR']
 external_bitcodes_dir = os.environ['BITCODES_DIR']
 install_deps = not os.environ["DEPENDENCY_INSTALL"] == "False"
+skip_build = os.environ["SKIP_BUILD"] == "True"
 
 json_input = json.load(open(sys.argv[1], 'r'))
 idx = json_input['idx']
@@ -108,12 +109,14 @@ else:
     project['build']['configure'] = 'success'
     # Configure -> Build
     project['status'] = 'build'
-    # project["status"] = "success"
-    # project['build']['build'] = 'success'
-    if not builder.build():
+    if not skip_build and builder.build():
         project['build']['build'] = 'fail'
         project['status'] = 'fail'
         failure = True
+    elif skip_build:
+        project['status'] = 'success'
+        project['build']['build'] = 'skipped'
+        print("skipped build")
     else:
         project['status'] = 'success'
         project['build']['build'] = 'success'
@@ -134,7 +137,7 @@ installed_pkgs = [i.replace("install", "").strip()
                   for i in installed_pkgs
                   if "deinstall" not in i]
 new_pkgs = list(set(installed_pkgs) - set(preinstalled_pkgs))
-project['build']['installed'].append(new_pkgs)
+project['build']['installed'].extend(new_pkgs)
 out = {'idx': idx, 'name': name, 'project': project}
 # save output JSON
 with open("output.json", "w") as f:

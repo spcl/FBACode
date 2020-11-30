@@ -358,14 +358,13 @@ class Statistics:
                 self.dependencies[dep] = {}
                 self.dependencies[dep]["count"] = 1
                 self.dependencies[dep]["projects"] = [name]
-    
-    def map_dependencies(self, missing, installed):
+
+    def map_dependencies(self, missing: list, installed: list) -> None:
         for m in missing:
-            if m in self.dep_mapping:
-                self.dep_mapping[m].extend(installed)
-                self.dep_mapping[m] = list(set(self.dep_mapping[m]))
-            else:
-                self.dep_mapping[m] = installed
+            if m not in self.dep_mapping:
+                self.dep_mapping[m] = {}
+            for i in installed:
+                self.dep_mapping[m][i] = self.dep_mapping[m].get(i, 0) + 1
 
     def add_rebuild_data(self, project, name):
         # generate info for rebuild
