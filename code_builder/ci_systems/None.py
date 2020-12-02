@@ -20,4 +20,4 @@ class CiSystem:
         self.project = project
 
     def install(self):
-        pass
+        return True

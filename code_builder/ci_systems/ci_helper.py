@@ -1,7 +1,8 @@
 import sys
 import subprocess
 import os
-from sys import stderr
+import re
+from subprocess import PIPE
 
 
 def run(command, cwd=None, stdout=None, stderr=None):
@@ -35,7 +36,7 @@ def run_scripts(logger, script_list, cwd=None):
             logger.idx, "travis script not string or list: {}".format(script_list))
         return True
     for cmd in script_list:
-        substitution = run(["bash", "-c", 'echo "{}"'.format(cmd)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        substitution = run(["bash", "-c", 'echo "{}"'.format(cmd)], stdout=PIPE, stderr=PIPE)
         print("TRAVIS: {}".format(substitution.stdout.decode("utf-8")))
         out = run(["bash", "-c", cmd], cwd,
                   stderr=subprocess.PIPE)
@@ -45,4 +46,46 @@ def run_scripts(logger, script_list, cwd=None):
             logger.error_log.print_error(logger.idx, "{}:\n{}".format(
                 out.args, out.stderr.decode("utf-8")))
             return False
+    return True
+
+
+def apt_install(logger, pkgs):
+    cmd = ["apt-get", "install", "-y", "--force-yes",
+           "--no-install-recommends"]
+    if isinstance(pkgs, str):
+        cmd.append(pkgs)
+    elif isinstance(pkgs, list) and all(isinstance(i, str) for i in pkgs):
+        cmd.append(" ".join(pkgs))
+    else:
+        logger.error_log.print_error(
+            logger.idx, "apt installer was not str or list[str]")
+        return False
+    out = run(cmd, stderr=PIPE)
+    if out.returncode != 0:
+        if "Unable to locate package " in out.stderr.decode("utf-8"):
+            # some packages could not be found, let's remove them
+            for l in out.stderr.decode("utf-8").splitlines():
+                index = l.find("Unable to locate package ")
+                if index >= 0:
+                    pkg = l[index + len("Unable to locate package "):].strip()
+                    cmd[-1] = cmd[-1].replace(pkg, "")
+                    print("retrying without {}".format(pkg))
+            out = run(cmd, stderr=PIPE)
+            if out.returncode == 0:
+                return True
+        if "has no installation candidate" in out.stderr.decode("utf-8"):
+            for l in out.stderr.decode("utf-8").splitlines():
+                pattern = re.escape("E: Package '") + r"(.*)" + re.escape("' has no installation candidate")
+                r = re.search(pattern, l)
+                if r:
+                    cmd[-1] = cmd[-1].replace(r[1], "")
+                    print("retrying without {}".format(r[1]))
+            out = run(cmd, stderr=PIPE)
+            if out.returncode == 0:
+                return True
+        logger.error_log.print_error(
+            logger.idx, "apt_packages install from .travis.yml failed")
+        logger.error_log.print_error(logger.idx, "{}:\n{}".format(
+            out.args, out.stderr.decode("utf-8")))
+        return False
     return True

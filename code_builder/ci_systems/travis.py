@@ -10,7 +10,7 @@ from yaml.loader import FullLoader
 # figure out how to import this.. maybe, not sure if needed
 # from ..build_systems.environment import get_c_compiler, get_cxx_compiler
 
-from .ci_helper import run, run_scripts, set_env_vars
+from .ci_helper import apt_install, run, run_scripts, set_env_vars
 
 
 class Context:
@@ -154,24 +154,13 @@ class CiSystem:
                     if not run_scripts(self, stage[0]["script"], cwd=self.travis_dir):
                         return False
         return True
-
+        
     def travis_addons(self, addons):
         apt = addons.get("apt")
         # in case it's just a string or list of strings
         if apt and (isinstance(apt, str) or
                     isinstance(apt, list) and all(isinstance(i, str) for i in apt)):
-            cmd = ["apt-get", "install", "-y", "--force-yes",
-                   "--no-install-recommends"]
-            if isinstance(apt, str):
-                cmd.append(apt)
-            elif isinstance(apt, list):
-                cmd.extend(apt)
-            out = run(cmd, stderr=PIPE)
-            if out.returncode != 0:
-                self.error_log.print_error(
-                    self.idx, "apt_packages install from .travis.yml failed")
-                self.error_log.print_error(self.idx, "{}:\n{}".format(
-                    out.args, out.stderr.decode("utf-8")))
+            if not apt_install(self, apt):
                 return False
         # in case it is more complicated
         elif apt:
@@ -232,42 +221,13 @@ class CiSystem:
                     self.error_log.print_error(self.idx, "{}:\n{}".format(
                         out.args, out.stderr.decode("utf-8")))
                     return False
+            # lol, apt.get
             if apt.get("packages") is not None:
-                if isinstance(apt["packages"], str):
-                    print("am string")
-                    cmd = ["apt-get", "install", "-y", "--force-yes",
-                           "--no-install-recommends", apt["packages"]]
-                else:
-                    # we have a list of packages
-                    print("am not string, am {}".format(type(apt["packages"])))
-                    cmd = ["apt-get", "install", "-yq", "--force-yes",
-                           "--no-install-recommends"]
-                    cmd.extend(apt["packages"])
-                print(cmd)
-                out = run(cmd, stderr=PIPE)
-                if out.returncode != 0:
-                    self.error_log.print_error(
-                        self.idx, "apt install from .travis.yml failed")
-                    self.error_log.print_error(self.idx, "{}:\n{}".format(
-                        out.args, out.stderr.decode("utf-8")))
-                    return False
+                apt_install(self, apt.get("packages"))
 
         apt_packages = addons.get("apt_packages")
         if apt_packages:
-            cmd = ["apt-get", "install", "-y", "--force-yes",
-                   "--no-install-recommends"]
-            if isinstance(apt_packages, str):
-                cmd.append(apt_packages)
-            elif isinstance(apt_packages, list):
-                cmd.extend(apt_packages)
-            print(cmd)
-            out = run(cmd, stderr=PIPE)
-            if out.returncode != 0:
-                self.error_log.print_error(
-                    self.idx, "apt_packages install from .travis.yml failed")
-                self.error_log.print_error(self.idx, "{}:\n{}".format(
-                    out.args, out.stderr.decode("utf-8")))
-                return False
+            apt_install(self, apt_packages)
         # run the snap module
         snaps = addons.get("snaps")
         if snaps is not None:
