@@ -11,8 +11,8 @@ DOCKER_DIR = os.path.join(PROJECT_DIR, 'docker')
 REPOSITORY_NAME = 'mcopik/fbacode'
 
 images = {
-    'ubuntu-1804-clang-9': {
-        'dockerfile': 'ubuntu-1804-clang-9.dockerfile'
+    'ubuntu-2004-clang-9': {
+        'dockerfile': 'ubuntu-2004-clang-9.dockerfile'
     },
     # 'debian-sid': {
     #     'dockerfile': 'Dockerfile_debian-sid.base'
@@ -23,9 +23,18 @@ images = {
     # 'debian-bullseye': {
     #     'dockerfile': 'Dockerfile_debian-bullseye.base'
     # }
-    'ubuntu-2004-travis': {
-        'dockerfile': 'ubuntu-2004-travis.dockerfile'
-    }
+    'ubuntu-bionic-clang-9': {
+        'dockerfile': 'ubuntu-bionic-clang-9.dockerfile'
+    },
+    # 'ubuntu-trusty-clang-9': {
+    #     'dockerfile': 'ubuntu-trusty-clang-9.dockerfile'
+    # },
+    'ubuntu-xenial-clang-9': {
+        'dockerfile': 'ubuntu-xenial-clang-9.dockerfile'
+    },
+    'ubuntu-focal-clang-9': {
+        'dockerfile': 'ubuntu-focal-clang-9.dockerfile'
+    },
 }
 
 no_cache = False
@@ -38,8 +47,8 @@ if len(sys.argv) > 1 and "-v" in sys.argv:
 client = docker.from_env()
 errors = 0
 for i, (img, definitions) in enumerate(images.items()):
-    print("[{}/{}] building {}:{}".format(i +
-                                          1, len(images), REPOSITORY_NAME, img))
+    print("\n\n[{}/{}] building {}:{}".format(i +
+                                              1, len(images), REPOSITORY_NAME, img))
     dockerfile = definitions['dockerfile']
     cli = docker.APIClient()
     response = cli.build(
@@ -52,12 +61,12 @@ for i, (img, definitions) in enumerate(images.items()):
     for i in response:
         resp = json.loads(i.decode())
         if verbose and "stream" in resp:
-            print(resp["stream"], end='')
+            print("  " + resp["stream"], end='')
         elif "error" in resp:
             if "stream" in resp:
-                print(resp["stream"], end='')
-            print("ERROR: {}".format(resp["error"]), end='')
-            print(resp["errorDetail"], end='')
+                print("  " + resp["stream"], end='')
+            print("  " + "ERROR: {}".format(resp["error"]), end='')
+            print("  " + str(resp["errorDetail"]), end='')
             errors += 1
 print("\n {} errors in {} docker builds".format(errors, len(images)))
 sys.exit(bool(errors))
