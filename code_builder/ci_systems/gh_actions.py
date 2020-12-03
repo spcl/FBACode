@@ -26,3 +26,7 @@ class CiSystem:
     @staticmethod
     def recognize(repo_dir):
         return isdir(join(repo_dir, ".github/workflows"))
+    
+    @staticmethod
+    def get_docker_image(repo_dir, clang_version=9):
+        return False

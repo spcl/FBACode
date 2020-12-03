@@ -21,3 +21,7 @@ class CiSystem:
 
     def install(self):
         return True
+    
+    @staticmethod
+    def get_docker_image(repo_dir, clang_version=9):
+        return False

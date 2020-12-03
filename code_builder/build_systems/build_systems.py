@@ -65,18 +65,23 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
     start = time()
     # find out the used ci system
     ci_system = "None"
+    ci_dockerfile = False
     project.setdefault("ci_systems", [])
     for ci_name, system in ci_systems.items():
         if system.recognize(source_dir):
             if ci_system == "None":
                 ci_system = ci_name
+                ci_dockerfile = system.get_docker_image(source_dir)
             if ci_name not in project["ci_systems"]:
                 project["ci_systems"].append(ci_name)
     for build_name, build_system in build_systems.items():
         if build_system.recognize(source_dir):
             project["build_system"] = build_name.lower()
             # print("{} recognized as {}".format(name, build_name))
-            
+            if ci_dockerfile:
+                dockerfile = ci_dockerfile
+            else:
+                dockerfile = build_system.CONTAINER_NAME
             build_dir = join(build_dir, source_name)
             target_dir = join(target_dir, source_name)
             if not exists(build_dir):
@@ -125,7 +130,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"]))
             ]
             container = docker_client.containers.run(
-                build_system.CONTAINER_NAME,
+                dockerfile,
                 detach=True,
                 # name="{}_{}".format(name, build_name),
                 environment=environment,
@@ -135,7 +140,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 # mem_limit="3g"  # limit memory to 3GB to protect the host
             )
             ctx.out_log.print_info(
-                idx, "building {} in container {} as {}".format(name, container.name, build_name))
+                idx, "building {} in container {} as {}\n    dockerfile:{}".format(name, container.name, build_name, dockerfile))
             sleep(10)
             container.reload()
             while(container.status == "running"):
@@ -230,7 +235,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                     "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"]))
                 ]
                 container = docker_client.containers.run(
-                    build_system.CONTAINER_NAME,
+                    dockerfile,
                     detach=True,
                     # name="{}_{}".format(name, build_name),
                     environment=environment,

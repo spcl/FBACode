@@ -21,9 +21,9 @@ def run(command, cwd=None, stdout=None, stderr=None):
     # older - subprocess.call
     # TODO: capture_output added in 3.7 - verify it works
     if version_info.major >= 3 and version_info.minor >= 5:
-        return subprocess.run(command, cwd=cwd, stdout=stdout, stderr=stderr, text=True)
+        return subprocess.run(command, cwd=cwd, stdout=stdout, stderr=stderr)
     else:
-        return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr, text=True)
+        return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
 
 
 class Context:
@@ -66,7 +66,7 @@ ctx.set_loggers(loggers.stdout, loggers.stderr)
 # save all installed packages, to get the difference later (newly installed deps)
 # assusmes we run debian or ubuntu, maybe put into library in the future
 out = run(["dpkg", "--get-selections"], stderr=PIPE, stdout=PIPE)
-preinstalled_pkgs = out.stdout.splitlines()
+preinstalled_pkgs = out.stdout.decode("utf-8").splitlines()
 preinstalled_pkgs = [i.replace("install", "").strip()
                      for i in preinstalled_pkgs
                      if "deinstall" not in i]
@@ -132,7 +132,7 @@ ctx.out_log.print_info(
 
 # get installed packages after build
 out = run(["dpkg", "--get-selections"], stderr=PIPE, stdout=PIPE)
-installed_pkgs = out.stdout.splitlines()
+installed_pkgs = out.stdout.decode("utf-8").splitlines()
 installed_pkgs = [i.replace("install", "").strip()
                   for i in installed_pkgs
                   if "deinstall" not in i]

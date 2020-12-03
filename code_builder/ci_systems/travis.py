@@ -267,3 +267,22 @@ class CiSystem:
     @staticmethod
     def recognize(repo_dir):
         return isfile(join(repo_dir, ".travis.yml"))
+
+    @staticmethod
+    def get_docker_image(repo_dir, clang_version=9):
+        supported_dists = ["focal", "bionic", "xenial", "trusty"]
+        yml = None
+        try:
+            with open(join(repo_dir, ".travis.yml"), "r") as f:
+                yml = yaml.load(f, Loader=FullLoader)
+        except yaml.composer.ComposerError as e:
+            print("Error parsing .travis.yml:\n  {}".format(e))
+            return False
+        except FileNotFoundError:
+            print("Could not find {}/.travis.yml".format(repo_dir))
+            return False
+        if "dist" in yml and yml.get("dist") in supported_dists:
+            return "mcopik/fbacode:ubuntu-{}-clang-{}".format(yml.get("dist"), clang_version)
+        else:
+            # default is xenial
+            return "mcopik/fbacode:ubuntu-xenial-clang-{}".format(clang_version)
