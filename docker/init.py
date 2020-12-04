@@ -109,22 +109,23 @@ else:
     project['build']['configure'] = 'success'
     # Configure -> Build
     project['status'] = 'build'
-    if not skip_build and builder.build():
-        project['build']['build'] = 'fail'
-        project['status'] = 'fail'
-        failure = True
-    elif skip_build:
+    if skip_build:
         project['status'] = 'success'
         project['build']['build'] = 'skipped'
         print("skipped build")
     else:
-        project['status'] = 'success'
-        project['build']['build'] = 'success'
-        project['bitcodes'] = {'dir': external_bitcodes_dir}
-        project['ast_files'] = {
-            'dir': os.path.join(external_bitcodes_dir, "AST")}
-        builder.generate_bitcodes(bitcodes_dir)
-        builder.generate_ast(os.path.join(bitcodes_dir, "AST"))
+        if not builder.build():
+            project['build']['build'] = 'fail'
+            project['status'] = 'fail'
+            failure = True
+        else:
+            project['status'] = 'success'
+            project['build']['build'] = 'success'
+            project['bitcodes'] = {'dir': external_bitcodes_dir}
+            project['ast_files'] = {
+                'dir': os.path.join(external_bitcodes_dir, "AST")}
+            builder.generate_bitcodes(bitcodes_dir)
+            builder.generate_ast(os.path.join(bitcodes_dir, "AST"))
 end = time()
 project['build']['time'] = end - start
 ctx.out_log.print_info(

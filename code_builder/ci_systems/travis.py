@@ -7,8 +7,11 @@ from os import listdir, remove
 from os.path import isdir, isfile, join
 from yaml.loader import FullLoader
 
-# figure out how to import this.. maybe, not sure if needed
-# from ..build_systems.environment import get_c_compiler, get_cxx_compiler
+# module path is different inside docker
+try:
+    from build_systems.environment import get_c_compiler, get_cxx_compiler
+except ModuleNotFoundError:
+    from code_builder.build_systems.environment import get_c_compiler, get_cxx_compiler
 
 from .ci_helper import apt_install, run, run_scripts, set_env_vars
 
@@ -35,6 +38,7 @@ class CiSystem:
 
     def install(self):
         # open the .travis.yml file
+        # TODO: collect all scripts and then run them in a single instance
         print("installing dependencies using travis")
         try:
             with open(join(self.travis_dir, ".travis.yml"), 'r') as f:
@@ -74,7 +78,7 @@ class CiSystem:
         os.environ["CI"] = "true"
         os.environ["TRAVIS"] = "true"
         os.environ["TRAVIS_OS"] = "linux"
-
+        os.environ
         # look for a good configuration of env or jobs or matrix:
 
         # package addons
@@ -85,12 +89,12 @@ class CiSystem:
         # cache components
         # i dont think there is anything to do
         # run the before_install script, if any
-        # c_compiler = get_c_compiler()
-        # cxx_compiler = get_cxx_compiler()
-        # os.environ["CXX"] = cxx_compiler
-        # os.environ["CXX_FOR_BUILD"] = cxx_compiler
-        # os.environ["CC"] = c_compiler
-        # os.environ["CC_FOR_BUILD"] = c_compiler
+        c_compiler = get_c_compiler()
+        cxx_compiler = get_cxx_compiler()
+        os.environ["CXX"] = cxx_compiler
+        os.environ["CXX_FOR_BUILD"] = cxx_compiler
+        os.environ["CC"] = c_compiler
+        os.environ["CC_FOR_BUILD"] = c_compiler
 
         if yml.get("before_install") is not None:
             print("TRAVIS: running before_install")

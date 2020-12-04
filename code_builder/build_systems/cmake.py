@@ -95,6 +95,7 @@ class Project:
         cmd = ["cmake", "--build", "."]
         ret = run(cmd, cwd=self.build_dir, stderr=PIPE)
         if ret.returncode:
+            self.error_log.print_error(self.idx, "failed cmake build --build command")
             self.error_log.print_error(self.idx, ret.stderr.decode("utf-8"))
             return False
         else:
