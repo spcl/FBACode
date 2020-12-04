@@ -7,7 +7,7 @@ ARG CLANG_VERSION=9
 ARG deps='software-properties-common gnupg-agent gnupg curl apt-transport-https' 
 ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} \
   libomp-${CLANG_VERSION}-dev clang++-${CLANG_VERSION} texinfo build-essential fakeroot \
-  devscripts automake autotools-dev wget curl git sudo python python-pip python3-setuptools"
+  devscripts automake autotools-dev wget curl git sudo python python-pip python3-setuptools python-setuptools"
 RUN echo ${CLANG_VERSION}
 RUN apt-get update 
 RUN apt-get install -y ${deps} --no-install-recommends --force-yes

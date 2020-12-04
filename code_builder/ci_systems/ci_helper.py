@@ -3,6 +3,7 @@ import subprocess
 import os
 import re
 from subprocess import PIPE
+from itertools import chain
 
 
 def run(command, cwd=None, stdout=None, stderr=None):
@@ -26,6 +27,15 @@ def set_env_vars(var):
         if len(env_var) >= 2:
             os.environ[env_var[0]] = env_var[1]
     return True
+
+
+def append_script(script_list: list, snippet):
+    if isinstance(snippet, str):
+        script_list.append(snippet)
+    elif isinstance(snippet, list):
+        script_list.extend(snippet)
+    else:
+        print("travis script not string or list: {}".format(script_list))
 
 
 def run_scripts(logger, script_list, cwd=None):
@@ -54,8 +64,13 @@ def apt_install(logger, pkgs):
            "--no-install-recommends"]
     if isinstance(pkgs, str):
         cmd.append(pkgs)
-    elif isinstance(pkgs, list) and all(isinstance(i, str) for i in pkgs):
-        cmd.append(" ".join(pkgs))
+    elif isinstance(pkgs, list):
+        pkgs = list(chain(pkgs))
+        if all(isinstance(i, str) for i in pkgs):
+            cmd.append(" ".join(pkgs))
+        else:
+            logger.error_log.print_error(
+                logger.idx, "apt installer was not str or list[str]")
     else:
         logger.error_log.print_error(
             logger.idx, "apt installer was not str or list[str]")

@@ -57,6 +57,7 @@ RUN apt search '^gcc-[0-9]*[.]*[0-9]*$' | grep -o '\bgcc[a-zA-Z0-9:_.-]*' |\
 
 RUN mkdir -p ${HOME_DIR}
 WORKDIR ${HOME_DIR}
+ADD code_builder/__init__.py code_builder/__init__.py
 ADD docker/init.py init.py
 ADD code_builder/utils/ utils
 ADD code_builder/build_systems/ build_systems

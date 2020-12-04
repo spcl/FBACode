@@ -13,7 +13,7 @@ try:
 except ModuleNotFoundError:
     from code_builder.build_systems.environment import get_c_compiler, get_cxx_compiler
 
-from .ci_helper import apt_install, run, run_scripts, set_env_vars
+from .ci_helper import append_script, apt_install, run, run_scripts, set_env_vars
 
 
 class Context:
@@ -39,6 +39,7 @@ class CiSystem:
     def install(self):
         # open the .travis.yml file
         # TODO: collect all scripts and then run them in a single instance
+        self.big_script = []
         print("installing dependencies using travis")
         try:
             with open(join(self.travis_dir, ".travis.yml"), 'r') as f:
@@ -78,7 +79,6 @@ class CiSystem:
         os.environ["CI"] = "true"
         os.environ["TRAVIS"] = "true"
         os.environ["TRAVIS_OS"] = "linux"
-        os.environ
         # look for a good configuration of env or jobs or matrix:
 
         # package addons
@@ -98,18 +98,22 @@ class CiSystem:
 
         if yml.get("before_install") is not None:
             print("TRAVIS: running before_install")
-            if not run_scripts(self, yml["before_install"], cwd=self.travis_dir):
-                return False
+            append_script(self.big_script, yml["before_install"])
+            
+            # if not run_scripts(self, yml["before_install"], cwd=self.travis_dir):
+            #     return False
         # run the install
         if yml.get("install") is not None:
             print("TRAVIS: running install")
-            if not run_scripts(self, yml["install"], cwd=self.travis_dir):
-                return False
+            append_script(self.big_script, yml["install"])
+            # if not run_scripts(self, yml["install"], cwd=self.travis_dir):
+            #     return False
         # run the before_script part
         if yml.get("before_script") is not None:
             print("TRAVIS: running before_script")
-            if not run_scripts(self, yml["before_script"], cwd=self.travis_dir):
-                return False
+            append_script(self.big_script, yml["before_script"])
+            # if not run_scripts(self, yml["before_script"], cwd=self.travis_dir):
+            #     return False
 
         jobs = yml.get("jobs", yml.get("matrix", {})).get("include", None)
         if jobs and isinstance(jobs, list):
@@ -144,21 +148,29 @@ class CiSystem:
                     if not self.travis_addons(stage[0]["addons"]):
                         return False
                 if stage[0].get("before_install") is not None:
-                    if not run_scripts(self, stage[0]["before_install"], cwd=self.travis_dir):
-                        return False
+                    append_script(self.big_script, stage[0]["before_install"])
+                    # if not run_scripts(self, stage[0]["before_install"], cwd=self.travis_dir):
+                    #     return False
                 # run the install
                 if stage[0].get("install") is not None:
-                    if not run_scripts(self, stage[0]["install"], cwd=self.travis_dir):
-                        return False
+                    append_script(self.big_script, stage[0]["install"])
+                    # if not run_scripts(self, stage[0]["install"], cwd=self.travis_dir):
+                    #     return False
                 # run the before_script part
                 if stage[0].get("before_script") is not None:
-                    if not run_scripts(self, stage[0]["before_script"], cwd=self.travis_dir):
-                        return False
+                    append_script(self.big_script, stage[0]["before_script"])
+                    # if not run_scripts(self, stage[0]["before_script"], cwd=self.travis_dir):
+                    #     return False
                 if stage[0].get("script") is not None:
-                    if not run_scripts(self, stage[0]["script"], cwd=self.travis_dir):
-                        return False
-        return True
-        
+                    append_script(self.big_script, stage[0]["script"])
+                    # if not run_scripts(self, stage[0]["script"], cwd=self.travis_dir):
+                    #     return False
+        # run the accumulated script
+        print("bigass script:")
+        print("; ".join(self.big_script))
+        return run_scripts(self, "; ".join(self.big_script), cwd=self.travis_dir)
+        # return True
+
     def travis_addons(self, addons):
         apt = addons.get("apt")
         # in case it's just a string or list of strings
