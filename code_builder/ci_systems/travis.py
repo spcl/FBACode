@@ -270,7 +270,8 @@ class CiSystem:
 
     @staticmethod
     def get_docker_image(repo_dir, clang_version=9):
-        supported_dists = ["focal", "bionic", "xenial", "trusty"]
+        # no trusty since it does not support clang 9
+        supported_dists = ["focal", "bionic", "xenial"]
         yml = None
         try:
             with open(join(repo_dir, ".travis.yml"), "r") as f:
