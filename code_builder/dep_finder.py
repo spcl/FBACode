@@ -4,6 +4,7 @@ import re
 
 class DepFinder:
     def __init__(self):
+        # todo: differentiate between definitive and maybe dependencies
         self.patterns = [
             r".*\s(.+?)" + re.escape(": command not found"),
             r".*\s(.+?)" + re.escape("not found"),
@@ -40,7 +41,7 @@ class DepFinder:
                 re.escape('package configuration file provided by "') + r"(.+?(?=\"))",
                 re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))"
                 ]
-            for err in project["build"]["errortypes"]:
+            for err in project["build"].get("errortypes", []):
                 for s in cmake_dep_strings:
                     name = re.search(s, err)
                     if name:
