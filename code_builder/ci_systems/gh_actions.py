@@ -1,4 +1,8 @@
 from os.path import isdir, join
+import os
+import yaml
+from yaml.loader import FullLoader
+
 
 
 class Context:
@@ -18,10 +22,15 @@ class CiSystem:
         self.ctx = ctx
         self.output_log = ctx.out_log
         self.error_log = ctx.err_log
+        self.gh_dir = repo_dir
         self.project = project
 
     def install(self):
-        pass
+        yml_files = [f for f in os.listdir(join(self.gh_dir, ".github/workflows"))
+                     if ".yml" in f]
+        for file in yml_files:
+            with open(os.listdir(join(self.gh_dir, ".github/workflows/") + file, "r")) as f:
+                pass
 
     @staticmethod
     def recognize(repo_dir):

@@ -124,8 +124,8 @@ class Project:
             # os.rename does not work for target and destinations being
             # on different filesystems
             # we might operate on different volumes in Docker
-            shutil.move(file, join(target_dir, local_path))
-    
+            shutil.move(str(file), join(target_dir, local_path))
+  
     def generate_ast(self, target_dir):
         for file in pathlib.Path(self.build_dir).glob("**/*.ast"):
             # CMake file format: {build_dir}/../CMakeFiles/{dir}.dir/relative_bc_location
@@ -141,7 +141,7 @@ class Project:
                 continue
             local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
-            shutil.move(file, join(target_dir, local_path))
+            shutil.move(str(file), join(target_dir, local_path))
         return True
 
     def clean(self):

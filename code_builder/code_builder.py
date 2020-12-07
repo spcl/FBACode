@@ -163,7 +163,7 @@ def build_projects(
         stats.print_stats(stdout)
         # close f again?
         f = stdout if output == "" else open(output, "w")
-        print(json.dumps(repositories, indent=2), file=f)
+        # print(json.dumps(repositories, indent=2), file=f)
         stats.save_rebuild_json()
         stats.save_errors_json()
         stats.save_errorstat_json()

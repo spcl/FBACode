@@ -6,6 +6,7 @@ from datetime import datetime
 from collections import OrderedDict
 from fuzzywuzzy import process, fuzz
 import fuzzywuzzy
+from time import time
 from . import dep_finder
 
 
@@ -38,10 +39,12 @@ class Statistics:
         self.build_systems = {}
         self.ci_systems = {}
         self.dep_mapping = {}
+        self.stat_time = 0
 
     def print_stats(self, out):
         print("Repository clone time: %f seconds" % self.clone_time, file=out)
         print("Repository build time: %f seconds" % self.build_time, file=out)
+        print("time spent analyzing: {} seconds".format(self.stat_time), file=out)
         print("Succesfull builds: %d" % self.correct_projects, file=out)
         print("Failed builds: %d" % self.incorrect_projects, file=out)
         print("Build systems:", file=out)
@@ -73,6 +76,8 @@ class Statistics:
 
     def update(self, project, name):
         # update build_systems statistic
+        start = time()
+        project["statistics"] = {}
         build_system = project.get("build_system", "unrecognized")
         self.build_systems[build_system] = self.build_systems.get(build_system, 0) + 1
         ci_systems = project.get("ci_systems", [])
@@ -164,7 +169,14 @@ class Statistics:
                         project["build"]["errortypes"] = ["unrecognized"]
             self.add_incorrect_project()
             self.add_rebuild_data(project, name)
+            end = time()
+            project["statistics"]["error_analysis"] = end - start
+            self.stat_time += end - start
+            start = time()
             self.find_deps(project, name)
+            end = time()
+            project["statistics"]["dep_finder"] = end - start
+            self.stat_time += end - start
 
     def add_unrecognized_project(self, name):
         self.unrecognized_projects.append(name)

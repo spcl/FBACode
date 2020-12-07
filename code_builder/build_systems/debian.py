@@ -181,7 +181,7 @@ class Project:
                 continue
             local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
-            shutil.move(file, join(target_dir, local_path))
+            shutil.move(str(file), join(target_dir, local_path))
         return True
     
     def generate_ast(self, target_dir):
@@ -192,7 +192,7 @@ class Project:
                 continue
             local_path = str(file)[res.end(0) + 1:]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
-            shutil.move(file, join(target_dir, local_path))
+            shutil.move(str(file), join(target_dir, local_path))
         return True
 
     def clean(self):
