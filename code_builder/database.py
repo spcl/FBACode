@@ -56,6 +56,9 @@ class debian:
         if "source" not in project:
             project["source"] = {"dir": os.path.abspath(join(self.build_dir, name))}
         project["source"]["time"] = 0
+        self.ctx.out_log.print_info(
+            idx, "initinalized debian package {}".format(name)
+        )
         makedirs(join(self.build_dir, name), exist_ok=True)
         open(join(self.build_dir, name, ".debianbuild"), 'a').close()
         return (idx, name, project)

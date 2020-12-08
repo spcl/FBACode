@@ -119,7 +119,7 @@ def build_projects(
         projects = []
         database_processers = []
         for database, repositories in repositories_db.items():
-
+            # print(database, repositories)
             repo_count = len(repositories)
             processer = get_database(database)(source_dir, ctx)
             indices = list(range(repositories_idx + 1, repo_count + 1))
@@ -169,37 +169,7 @@ def build_projects(
         stats.save_errorstat_json()
         stats.save_dependencies_json()
         timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-        with open(join("buildlogs", "summary_{}_{}.txt".format(projects_count, timestamp)), 'w') as o:
+        with open(join("buildlogs", "summary_{}_{}.txt".format(timestamp, projects_count)), 'w') as o:
             stats.print_stats(o)
-        with open(join("buildlogs", "build_details_{}_{}.json".format(projects_count, timestamp)), 'w') as o:
+        with open(join("buildlogs", "build_details_{}_{}.json".format(timestamp, projects_count)), 'w') as o:
             o.write(json.dumps(repositories, indent=2))
-
-    # env.reset_environment()
-
-    # for project in projects:
-    #    out_log.next()
-    #    error_log.next()
-    #    # classify repository
-    #    source_dir = project.source_dir()
-    #    if isCmakeProject(source_dir):
-    #        cmake_repo = CMakeProject(source_dir, out_log, error_log)
-    #        returnval = cmake_repo.configure(
-    #                c_compiler = get_c_compiler(),
-    #                cxx_compiler = get_cxx_compiler(),
-    #                force_update = True
-    #                )
-    #        if not returnval:
-    #            returnval = cmake_repo.build()
-    #        if not returnval:
-    #            cmake_repo.generate_bitcodes( join(target_dir, project.name()) )
-    #        if returnval:
-    #            incorrect_projects += 1
-    #            spec['status'] = 'fails'
-    #        else:
-    #            correct_projects += 1
-    #            spec['status'] = 'works'
-    #    else:
-    #        out_log.info('Unrecognized project %s' % source_dir)
-    #        unrecognized_projects += 1
-    #        spec['status'] = 'unrecognized'
-    # end = time()

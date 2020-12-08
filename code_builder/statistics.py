@@ -355,7 +355,8 @@ class Statistics:
         return found_match
 
     def find_deps(self, project, name):
-        dependencies = self.dep_finder.analyze_logs(project, name)
+        confident_deps, dependencies = self.dep_finder.analyze_logs(project, name)
+        dependencies = confident_deps + dependencies
         self.add_depencenies(dependencies, name)
         project["build"]["missing_dependencies"] = dependencies
         self.rebuild_projects[project["type"]][name]["missing_deps"] = dependencies
@@ -399,7 +400,7 @@ class Statistics:
             timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
             path = join(
                 "buildlogs",
-                "errorstats_{}_{}.json".format(self.project_count, timestamp))
+                "errorstats_{}_{}.json".format(timestamp, self.project_count))
         self.errortypes = OrderedDict(sorted(self.errortypes.items(),
                                              key=lambda i: i[1].get("amount", 0),
                                              reverse=True))
@@ -411,7 +412,7 @@ class Statistics:
             timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
             path = join(
                 "buildlogs",
-                "rebuild_{}_{}.json".format(self.project_count, timestamp))
+                "rebuild_{}_{}.json".format(timestamp, self.project_count))
         with open(path, 'w') as o:
             o.write(json.dumps(self.rebuild_projects, indent=2))
 
@@ -429,10 +430,10 @@ class Statistics:
             timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
             path = join(
                 "buildlogs",
-                "dependencies_{}_{}.json".format(self.project_count, timestamp))
+                "dependencies_{}_{}.json".format(timestamp, self.project_count))
             map_path = join(
                 "buildlogs",
-                "dep_maping_{}_{}.json".format(self.project_count, timestamp))
+                "dep_maping_{}_{}.json".format(timestamp, self.project_count))
         self.dependencies = OrderedDict(sorted(self.dependencies.items(),
                                                key=lambda i: i[1].get("count", 0),
                                                reverse=True))

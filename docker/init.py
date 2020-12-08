@@ -81,7 +81,12 @@ project = {
         'installed': []
     }
 }
+builder = builder_class(source_dir, build_dir, idx, ctx, name, project)
 if install_deps:
+    install_method = getattr(builder, "install", None)
+    if callable(install_method):
+        # our builder can install deps by themselves:
+        install_method()
     # by default, get dependencies
     ci = ci_class(source_dir, build_dir, idx, ctx, project)
     start = time()
@@ -97,7 +102,6 @@ if install_deps:
     # if not success:
     # handle failed install
 start = time()
-builder = builder_class(source_dir, build_dir, idx, ctx, name, project)
 configured = builder.configure(build_dir)
 end = time()
 project['build']['configure_time'] = end - start

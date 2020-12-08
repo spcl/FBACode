@@ -51,6 +51,10 @@ ci_systems = {
     "gh_actions": gh_actions.CiSystem
 }
 
+# if any of these, do a build without installing first, then install in second build
+double_build_ci = {"travis"}
+double_build_system = {"debian"}
+
 
 def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
 
@@ -89,7 +93,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             docker_client = docker.from_env()
             tmp_file = tempfile.NamedTemporaryFile(mode="w")
             # do not install dpendencies the first time around
-            if ci_system == "travis":
+            if ci_system in double_build_ci or build_name in double_build_system:
                 project["install_deps"] = False
             else:
                 project["install_deps"] = True
@@ -162,7 +166,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                 ctx.err_log.print_error(
                     idx,
                     "The build process failed! Return code {}, output: {}\n".format(
-                        return_code, container.logs(tail=10))
+                        return_code, container.logs(tail=10).decode("utf-8"))
                 )
                 docker_log = container.logs()
                 timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
@@ -198,12 +202,13 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             container.remove()
             project["build"]["docker_log"] = docker_log_file
             # if we have a build system that can install packages, rerun with packages
-            # at the moment only travis
-            if ci_system == "travis":
+            # at the moment only travis, can be expended..
+            if ci_system in double_build_ci or build_name in double_build_system:
                 stat = statistics.Statistics(0)
                 stat.update(project, name)
                 finder = dep_finder.DepFinder()
                 missing = finder.analyze_logs(project, name)
+                missing = missing[0] + missing[1]
                 project["first_build"] = copy.deepcopy(project["build"])
                 project["first_build"]["missing"] = missing
                 project["install_deps"] = True
@@ -267,7 +272,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
                     ctx.err_log.print_error(
                         idx,
                         "The build process failed! Return code {}, output: {}\n".format(
-                            return_code, container.logs(tail=10))
+                            return_code, container.logs(tail=10).decode())
                     )
                     docker_log = container.logs()
                     timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')

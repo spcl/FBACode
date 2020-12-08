@@ -22,7 +22,6 @@ def run(command, cwd=None, stdout=None, stderr=None):
             command, cwd=cwd,
             stdout=stdout,
             stderr=stderr,
-            text=True
         )
     else:
         return subprocess.call(
@@ -30,7 +29,6 @@ def run(command, cwd=None, stdout=None, stderr=None):
             cwd=cwd,
             stdout=stdout,
             stderr=stderr,
-            text=True
         )
 
 
@@ -65,11 +63,11 @@ class Project:
         out = run(["apt-get", "source", "-y", self.name],
                   cwd=temp, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out.stderr))
+            self.error_log.print_error(self.idx, out.stderr.decode())
             return False
-        self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr))
+        self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr.decode()))
         # find out the name of the source code folder
-        out = out.stdout
+        out = out.stdout.decode()
         replace_name = search(r"(?<=Picking ').*(?=' as source package instead of \'{0}\')"
                               .format(escape(self.name)), out)
         if replace_name:
@@ -103,7 +101,7 @@ class Project:
         out = run(["bash", "-c", "shopt -s dotglob; cp -a {}/* {}".format(sourcedir, self.repository_path)],
                   cwd=temp, stderr=subprocess.PIPE)
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr))
+            self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode()))
             return False
         # out = run(["mv", sourcedir, self.build_dir], cwd=temp, stderr=subprocess.PIPE)
         # if out.returncode != 0:
@@ -111,13 +109,13 @@ class Project:
         #     return False
         # fetch dependencies
         
-        out = run(["apt-get", "build-dep", "-y", self.name],
-                  cwd=self.repository_path,
-                  stderr=subprocess.PIPE)
-        if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out.stderr))
-            return False
-        self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr))
+        # out = run(["apt-get", "build-dep", "-y", self.name],
+        #           cwd=self.repository_path,
+        #           stderr=subprocess.PIPE)
+        # if out.returncode != 0:
+        #     self.error_log.print_error(self.idx, str(out.stderr))
+        #     return False
+        # self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr))
         # https://stackoverflow.com/questions/33278928/how-to-overcome-aclocal-1-15-is-missing-on-your-system-warning
         # this sometimes fails, but no big deal
         # try:
@@ -138,6 +136,15 @@ class Project:
         # self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
         return version
 
+    def install(self):
+        out = run(["apt-get", "build-dep", "-y", self.name],
+                  cwd=self.repository_path,
+                  stderr=subprocess.PIPE)
+        if out.returncode != 0:
+            self.error_log.print_error(self.idx, str(out.stderr.decode()))
+            return False
+        self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr.decode()))
+
     def build(self):
         # basically run debian/rules
         # dpgk-source -b
@@ -145,17 +152,18 @@ class Project:
         #           cwd=self.build_dir, 
         #           stderr=subprocess.PIPE)
         print("starting actual build...")
+        # we skip build dependencies so we can detect the diff from missing -> installed
         # -i to ignore changes
-        out = run(["dpkg-buildpackage", "--no-sign", '-i="*"'],
+        out = run(["dpkg-buildpackage", "--no-sign", '--no-check-builddeps', '-i="*"'],
                   cwd=self.temp_build_dir,
                   stderr=subprocess.PIPE)
         print("done building")
-        print(out.stderr)
+        print(out.stderr.decode())
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out.stderr))
+            self.error_log.print_error(self.idx, str(out.stderr.decode()))
             return False
-        self.error_log.print_info(self.idx, str(out.stderr))
-        self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr))
+        self.error_log.print_info(self.idx, str(out.stderr.decode()))
+        self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr.decode()))
         # move build files to attached volume
         for f in listdir(self.build_dir):
             if ".log" in f:
@@ -169,7 +177,7 @@ class Project:
         out = run(["bash", "-c", "shopt -s dotglob; mv -f {}/* {}".format(self.temp_build_dir, self.build_dir)],
                   cwd=temp, stderr=subprocess.PIPE)
         if out.returncode != 0:
-            self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr))
+            self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode()))
             return False
         return True
 

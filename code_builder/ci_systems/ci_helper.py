@@ -35,26 +35,30 @@ def append_script(script_list: list, snippet):
     elif isinstance(snippet, list):
         script_list.extend(snippet)
     else:
-        print("travis script not string or list: {}".format(script_list))
+        print("travis script not string or list: {}".format(snippet))
 
 
 def run_scripts(logger, script_list, cwd=None):
     if isinstance(script_list, str):
         script_list = [script_list]
     elif not isinstance(script_list, list):
-        logger.error_log.print_error(
+        logger.err_log.print_error(
+            logger.idx, "travis script not string or list")
+        logger.output_log.print_error(
             logger.idx, "travis script not string or list: {}".format(script_list))
         return True
     for cmd in script_list:
-        substitution = run(["bash", "-c", 'echo "{}"'.format(cmd)], stdout=PIPE, stderr=PIPE)
+        substitution = run(
+            ["bash", "-c", 'echo "{}"'.format(cmd)], stdout=PIPE, stderr=PIPE)
         print("TRAVIS: {}".format(substitution.stdout.decode("utf-8")))
         out = run(["bash", "-c", cmd], cwd,
                   stderr=subprocess.PIPE)
         if out.returncode != 0:
+            logger.output_log.print_error(
+                logger.idx, "running command \n{}   failed: {}".format(
+                    substitution.stdout.decode("utf-8"), out.stderr.decode("utf-8")))
             logger.error_log.print_error(
-                logger.idx, "running command \n{}\nfailed".format(substitution.stdout.decode("utf-8")))
-            logger.error_log.print_error(logger.idx, "{}:\n{}".format(
-                out.args, out.stderr.decode("utf-8")))
+                logger.idx, "bash command execution failed: {}".format(out.stderr.decode("utf-8")))
             return False
     return True
 
@@ -90,7 +94,8 @@ def apt_install(logger, pkgs):
                 return True
         if "has no installation candidate" in out.stderr.decode("utf-8"):
             for l in out.stderr.decode("utf-8").splitlines():
-                pattern = re.escape("E: Package '") + r"(.*)" + re.escape("' has no installation candidate")
+                pattern = re.escape("E: Package '") + r"(.*)" + \
+                    re.escape("' has no installation candidate")
                 r = re.search(pattern, l)
                 if r:
                     cmd[-1] = cmd[-1].replace(r[1], "")

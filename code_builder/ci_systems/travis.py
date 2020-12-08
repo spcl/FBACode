@@ -167,8 +167,8 @@ class CiSystem:
                     #     return False
         # run the accumulated script
         print("bigass script:")
-        print("; ".join(self.big_script))
-        return run_scripts(self, "; ".join(self.big_script), cwd=self.travis_dir)
+        runnable_script = "; ".join(self.big_script).replace(";;", ";")
+        return run_scripts(self, runnable_script, cwd=self.travis_dir)
         # return True
 
     def travis_addons(self, addons):
