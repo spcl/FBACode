@@ -26,10 +26,11 @@ class CiSystem:
         self.project = project
 
     def install(self):
+        return True
         yml_files = [f for f in os.listdir(join(self.gh_dir, ".github/workflows"))
                      if ".yml" in f]
         for file in yml_files:
-            with open(os.listdir(join(self.gh_dir, ".github/workflows/") + file, "r")) as f:
+            with open(join(self.gh_dir, ".github/workflows/") + file, "r") as f:
                 pass
 
     @staticmethod

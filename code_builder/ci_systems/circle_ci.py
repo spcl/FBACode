@@ -21,7 +21,7 @@ class CiSystem:
         self.project = project
 
     def install(self):
-        pass
+        return True
 
     @staticmethod
     def recognize(repo_dir):
