@@ -17,6 +17,7 @@ class DepFinder:
             # r".*\s(.+?)" + re.escape(": No such file or directory"),
         ]
         self.confident_patterns = [
+            re.escape("] ") + r"(.*)" + re.escape(" not found or too old")
         ]
 
     def analyze_logs(self, project, name):
@@ -58,12 +59,18 @@ class DepFinder:
                 text = log.read()
                 # find lines about missing deps
             for line in text.splitlines():
+                for pattern in self.confident_patterns:
+                    regex_result = re.search(pattern, line)
+                    if regex_result:
+                        safe_deps.append(regex_result[1].strip())
+                        project["dep_lines"].append(line)
+                        continue
                 for pattern in self.patterns:
                     regex_result = re.search(pattern, line)
                     if regex_result:
                         deps.append(regex_result[1].strip())
                         project["dep_lines"].append(line)
-                        break
+                
         
         # remove duplicates
         return list(set(safe_deps)), list(set(deps))
