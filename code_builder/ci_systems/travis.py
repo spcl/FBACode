@@ -1,3 +1,4 @@
+import subprocess
 import yaml
 import os
 import urllib
@@ -182,8 +183,16 @@ class CiSystem:
         os.chmod(script_file, st.st_mode | stat.S_IEXEC)
 
         # run the script:
-        return run_scripts(self, script_file)
-
+        out = run([script_file], cwd=self.travis_dir, stdout=PIPE, stderr=PIPE)
+        if out.returncode != 0:
+            self.error_log.print_error(
+                self.idx, "TRAVIS combined_script.sh failed (error {}):\n{}".format(
+                    out.returncode, out.stderr.decode("utf-8")))
+            self.error_log.print_info(self.idx, out.stdout.decode("utf-8"))
+            return False
+        else:
+            print("TRAVIS combined_script.sh:\n{}\nstderr{}".format(out.stdout.decode("utf-8")))
+        return True
         # replacements = [
         #     (";;", ";"),
         #     ("&;", "&")
