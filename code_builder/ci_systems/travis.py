@@ -144,7 +144,7 @@ class CiSystem:
                 if len(clang_jobs) > 0:
                     stage = clang_jobs
                 # pick the first one of the matrix, idk how to handle it
-                print("TRAVIS: running stage\n{}\n".format(stage[0]))
+                print("TRAVIS: running stage\n{}".format(stage[0]))
                 if stage[0].get("env", None) is not None:
                     for var in stage[0]["env"]:
                         set_env_vars(var)

@@ -82,10 +82,12 @@ def apt_install(logger, pkgs):
         else:
             logger.error_log.print_error(
                 logger.idx, "apt installer was not str or list[str]: {}".format(pkgs))
+            return False
     else:
         logger.error_log.print_error(
             logger.idx, "apt installer was not str or list[str]: {}".format(pkgs))
         return False
+    print("APT INSTALL: {}".format(pkgs))
     out = run(["bash", "-c", cmd], stderr=PIPE)
     if out.returncode != 0:
         print(out)
