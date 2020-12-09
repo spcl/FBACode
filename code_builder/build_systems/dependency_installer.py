@@ -138,7 +138,7 @@ def travis_addons(project, addons):
                     source_url = source.get("sourceline")
                 if key_url:
                     cmd = ["sh", "-c",
-                           "wget -q0 - {} | apt-key add -".format(key_url)]
+                           "wget -qO - {} | apt-key add -".format(key_url)]
                     out = run(cmd, cwd=project.build_dir, stderr=PIPE)
                     if out.returncode != 0:
                         project.error_log.print_error(

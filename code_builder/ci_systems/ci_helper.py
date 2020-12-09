@@ -31,9 +31,10 @@ def set_env_vars(var):
 
 def append_script(script_list: list, snippet):
     if isinstance(snippet, str):
-        script_list.append(snippet)
+        script_list.append(snippet.strip())
     elif isinstance(snippet, list):
-        script_list.extend(snippet)
+        stripped = [i.strip() for i in snippet]
+        script_list.extend(stripped)
     else:
         print("travis script not string or list: {}".format(snippet))
 

@@ -1,13 +1,14 @@
 import yaml
 import os
 import urllib
+import stat
 from subprocess import PIPE
 import json
 from os import listdir, remove
 from os.path import isdir, isfile, join
 from yaml.loader import FullLoader
 
-# module path is different inside docker
+# module path is different inside docker image
 try:
     from build_systems.environment import get_c_compiler, get_cxx_compiler
 except ModuleNotFoundError:
@@ -79,7 +80,14 @@ class CiSystem:
         os.environ["CI"] = "true"
         os.environ["TRAVIS"] = "true"
         os.environ["TRAVIS_OS"] = "linux"
+        os.environ["TRAVIS_OS"] = "linux"
         # look for a good configuration of env or jobs or matrix:
+        c_compiler = get_c_compiler()
+        cxx_compiler = get_cxx_compiler()
+        os.environ["CXX"] = cxx_compiler
+        os.environ["CXX_FOR_BUILD"] = cxx_compiler
+        os.environ["CC"] = c_compiler
+        os.environ["CC_FOR_BUILD"] = c_compiler
 
         # package addons
         if yml.get("addons") is not None:
@@ -89,13 +97,7 @@ class CiSystem:
         # cache components
         # i dont think there is anything to do
         # run the before_install script, if any
-        c_compiler = get_c_compiler()
-        cxx_compiler = get_cxx_compiler()
-        os.environ["CXX"] = cxx_compiler
-        os.environ["CXX_FOR_BUILD"] = cxx_compiler
-        os.environ["CC"] = c_compiler
-        os.environ["CC_FOR_BUILD"] = c_compiler
-
+        
         if yml.get("before_install") is not None:
             print("TRAVIS: running before_install")
             append_script(self.big_script, yml["before_install"])
@@ -166,9 +168,31 @@ class CiSystem:
                     # if not run_scripts(self, stage[0]["script"], cwd=self.travis_dir):
                     #     return False
         # run the accumulated script
-        print("bigass script:")
-        runnable_script = "; ".join(self.big_script).replace(";;", ";")
-        return run_scripts(self, runnable_script, cwd=self.travis_dir)
+        # print("bigass script:")
+        script_file = join(self.travis_dir, "combined_script.sh")
+        with open(script_file, 'w') as f:
+            f.write("#!/bin/bash\n")
+            for s in self.big_script:
+                f.write(s)
+                f.write("\n")
+        # make it executable
+        st = os.stat(script_file)
+        os.chmod(script_file, st.st_mode | stat.S_IEXEC)
+
+        # run the script:
+        return run_scripts(self, script_file)
+
+        # replacements = [
+        #     (";;", ";"),
+        #     ("&;", "&")
+        # ]
+        # runnable_script = ""
+        # for s in self.big_script:
+        #     runnable_script += s
+        #     if runnable_script[-1] not in {";", "&"}:
+
+        # runnable_script = "; ".join(self.big_script).replace(";;", ";")
+        # return run_scripts(self, runnable_script, cwd=self.travis_dir)
         # return True
 
     def travis_addons(self, addons):
@@ -207,8 +231,8 @@ class CiSystem:
                         key_url = source.get("key_url", None)
                         source_url = source.get("sourceline")
                     if key_url:
-                        cmd = ["sh", "-c",
-                               "wget -q0 - {} | apt-key add -".format(key_url)]
+                        cmd = ["bash", "-c",
+                               "wget -qO - {} | apt-key add -".format(key_url)]
                         out = run(cmd, cwd=self.travis_dir, stderr=PIPE)
                         if out.returncode != 0:
                             self.error_log.print_error(
