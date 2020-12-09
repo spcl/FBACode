@@ -364,8 +364,8 @@ class Statistics:
     def add_depencenies(self, deps, name):
         for dep in deps:
             if dep in self.dependencies:
-                self.dependencies[dep]["count"] += 1
                 if name not in self.dependencies[dep]["projects"]:
+                    self.dependencies[dep]["count"] += 1
                     self.dependencies[dep]["projects"].append(name)
             else:
                 self.dependencies[dep] = {}

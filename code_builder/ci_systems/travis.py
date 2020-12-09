@@ -117,7 +117,9 @@ class CiSystem:
             # if not run_scripts(self, yml["before_script"], cwd=self.travis_dir):
             #     return False
 
-        jobs = yml.get("jobs", yml.get("matrix", {})).get("include", None)
+        jobs = yml.get("jobs", yml.get("matrix"))
+        if isinstance(jobs, dict):
+            jobs = jobs.get("include", None)
         if jobs and isinstance(jobs, list):
             # split this list into stages, since each stage need to be run afaik
             travis_stages = [[]]
