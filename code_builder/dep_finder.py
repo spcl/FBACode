@@ -13,7 +13,7 @@ class DepFinder:
             re.escape("Error: No module named '") + r"(.*)\'",
             # match everyting until a (space) or .(space)
             re.escape("Error: missing ") + r"(.+?(?=\s|\.\s))",
-            re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))",
+            # re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))",
             # r".*\s(.+?)" + re.escape(": No such file or directory"),
         ]
         self.confident_patterns = [
