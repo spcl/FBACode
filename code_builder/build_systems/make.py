@@ -75,20 +75,21 @@ class Project:
                     shutil.rmtree(p)
                 else:
                     remove(p)
-            cmd = ["sh", "-c",
-                   "cp -a {}/* {}".format(self.repository_path, self.build_dir)]
+            cmd = ["bash", "-c", "shopt -s dotglob; cp -a {}/* {}".format(
+                   self.repository_path, self.build_dir)]
             out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
             if out.returncode != 0:
                 self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
                 return False
             if isfile(join(self.build_dir, "configure")):
                 ret = run(
-                    ["./configure"], cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
+                    ["./configure"], cwd=self.build_dir, stderr=PIPE, stdout=PIPE)
                 if ret.returncode:
                     self.error_log.print_info(
                         self.idx, "Failed make configure command"
                     )
-                    self.error_log.print_error(self.idx, decode(ret.stderr))
+                    self.error_log.print_error(self.idx, ret.stderr.decode())
+                    self.error_log.print_info(self.idx, ret.stdout.decode())
                     return False
                 else:
                     self.output_log.print_info(
@@ -99,7 +100,7 @@ class Project:
                     self.output_log.print_debug(
                         self.idx, "make configure command"
                     )
-                    self.output_log.print_debug(self.idx, decode(ret.stdout))
+                    self.output_log.print_debug(self.idx, ret.stdout.decode())
             else:
                 self.output_log.print_info(
                     self.idx,
