@@ -65,14 +65,13 @@ def run_scripts(logger, script_list, cwd=None):
 
 
 def apt_install(logger, pkgs):
-    cmd = ["apt-get", "install", "-y", "--force-yes",
-           "--no-install-recommends"]
+    cmd = "apt-get install -y --force-yes --no-install-recommends "
     if isinstance(pkgs, str):
-        cmd.append(pkgs)
+        cmd += pkgs
     elif isinstance(pkgs, list):
         pkgs = list(chain(pkgs))
         if all(isinstance(i, str) for i in pkgs):
-            cmd.append(" ".join(pkgs))
+            cmd += " ".join(pkgs)
         else:
             logger.error_log.print_error(
                 logger.idx, "apt installer was not str or list[str]")
@@ -80,7 +79,7 @@ def apt_install(logger, pkgs):
         logger.error_log.print_error(
             logger.idx, "apt installer was not str or list[str]")
         return False
-    out = run(cmd, stderr=PIPE)
+    out = run(["bash", "-c", cmd], stderr=PIPE)
     if out.returncode != 0:
         print(out)
         logger.error_log.print_error(
@@ -93,9 +92,9 @@ def apt_install(logger, pkgs):
                 index = l.find("Unable to locate package ")
                 if index >= 0:
                     pkg = l[index + len("Unable to locate package "):].strip()
-                    cmd[-1] = cmd[-1].replace(pkg, "")
+                    cmd = cmd.replace(pkg, "")
                     print("retrying without {}".format(pkg))
-            out = run(cmd, stderr=PIPE)
+            out = run(["bash", "-c", cmd], stderr=PIPE)
             if out.returncode == 0:
                 return True
         if "has no installation candidate" in out.stderr.decode("utf-8"):
@@ -104,9 +103,9 @@ def apt_install(logger, pkgs):
                     re.escape("' has no installation candidate")
                 r = re.search(pattern, l)
                 if r:
-                    cmd[-1] = cmd[-1].replace(r[1], "")
+                    cmd = cmd.replace(r[1], "")
                     print("retrying without {}".format(r[1]))
-            out = run(cmd, stderr=PIPE)
+            out = run(["bash", "-c", cmd], stderr=PIPE)
             if out.returncode == 0:
                 return True
         return False

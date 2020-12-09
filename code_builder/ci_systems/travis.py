@@ -273,7 +273,7 @@ class CiSystem:
         if snaps is not None:
 
             if isinstance(snaps, str):
-                cmd = ["snap", "install", snaps]
+                cmd = ["bash", "-c", "snap install " + snaps]
                 out = run(cmd, stderr=PIPE)
                 if out.returncode != 0:
                     self.error_log.print_error(
@@ -284,18 +284,18 @@ class CiSystem:
             else:
                 for snap in snaps:
                     if isinstance(snap, str):
-                        cmd = ["snap", "install", snap]
+                        cmd = "snap install " + snap
                     else:
                         if "name" not in snap:
                             self.error_log.print_error(
                                 self.idx, "invalid yaml file, snap name missing")
                             return False
-                        cmd = ["snap", "install", snap["name"]]
+                        cmd = "snap install " + snap["name"]
                         if snap.get("confinement") is not None:
-                            cmd.append("--{}".format(snap["confinement"]))
+                            cmd += " --{}".format(snap["confinement"])
                         if snap.get("channel") is not None:
-                            cmd.append("--channel={}".format(snap["channel"]))
-                    out = run(cmd, cwd=self.travis_dir, stderr=PIPE)
+                            cmd += " --channel={}".format(snap["channel"])
+                    out = run(["bash", "-c", cmd], cwd=self.travis_dir, stderr=PIPE)
                     if out.returncode != 0:
                         self.error_log.print_error(
                             self.idx, "snap install from .travis.yml failed")
