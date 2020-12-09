@@ -60,14 +60,16 @@ def run_scripts(logger, script_list, cwd=None):
             ["bash", "-c", 'echo "{}"'.format(cmd)], stdout=PIPE, stderr=PIPE)
         print("TRAVIS: {}".format(substitution.stdout.decode("utf-8")))
         out = run(["bash", "-c", cmd], cwd,
-                  stderr=subprocess.PIPE)
+                  stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         if out.returncode != 0:
             logger.output_log.print_error(
                 logger.idx, "running command \n{}   failed: {}".format(
                     substitution.stdout.decode("utf-8"), out.stderr.decode("utf-8")))
             logger.error_log.print_error(
                 logger.idx, "bash command execution failed: {}".format(out.stderr.decode("utf-8")))
+            logger.error_log.print_info(logger.idx, out.stdout.decode("utf-8"))
             return False
+        print(out.stdout.decode("utf-8"))
     return True
 
 
