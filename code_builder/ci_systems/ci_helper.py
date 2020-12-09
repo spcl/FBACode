@@ -82,6 +82,11 @@ def apt_install(logger, pkgs):
         return False
     out = run(cmd, stderr=PIPE)
     if out.returncode != 0:
+        print(out)
+        logger.error_log.print_error(
+            logger.idx, "apt_packages install from .travis.yml failed")
+        logger.error_log.print_error(logger.idx, "{}:\n{}".format(
+            out.args, out.stderr.decode("utf-8")))
         if "Unable to locate package " in out.stderr.decode("utf-8"):
             # some packages could not be found, let's remove them
             for l in out.stderr.decode("utf-8").splitlines():
@@ -104,9 +109,5 @@ def apt_install(logger, pkgs):
             out = run(cmd, stderr=PIPE)
             if out.returncode == 0:
                 return True
-        logger.error_log.print_error(
-            logger.idx, "apt_packages install from .travis.yml failed")
-        logger.error_log.print_error(logger.idx, "{}:\n{}".format(
-            out.args, out.stderr.decode("utf-8")))
         return False
     return True
