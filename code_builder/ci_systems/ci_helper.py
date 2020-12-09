@@ -3,7 +3,6 @@ import subprocess
 import os
 import re
 from subprocess import PIPE
-from itertools import chain
 
 
 def run(command, cwd=None, stdout=None, stderr=None):
@@ -16,6 +15,14 @@ def run(command, cwd=None, stdout=None, stderr=None):
         return subprocess.run(command, cwd=cwd, stdout=stdout, stderr=stderr)
     else:
         return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
+
+
+def flatten(l) -> list:
+    for el in l:
+        if isinstance(el, list) and not isinstance(el, (str, bytes)):
+            yield from flatten(el)
+        else:
+            yield el
 
 
 def set_env_vars(var):
@@ -69,7 +76,7 @@ def apt_install(logger, pkgs):
     if isinstance(pkgs, str):
         cmd += pkgs
     elif isinstance(pkgs, list):
-        pkgs = list(chain(pkgs))
+        pkgs = list(flatten(pkgs))
         if all(isinstance(i, str) for i in pkgs):
             cmd += " ".join(pkgs)
         else:
