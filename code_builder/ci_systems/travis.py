@@ -191,7 +191,8 @@ class CiSystem:
             self.error_log.print_info(self.idx, out.stdout.decode("utf-8"))
             return False
         else:
-            print("TRAVIS combined_script.sh:\n{}\nstderr{}".format(out.stdout.decode("utf-8")))
+            print("TRAVIS combined_script.sh:\n{}\nstderr:\n{}".format(
+                out.stdout.decode("utf-8"), out.stderr.decode("utf-8")))
         return True
         # replacements = [
         #     (";;", ";"),
