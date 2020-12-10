@@ -362,7 +362,7 @@ class Statistics:
         self.rebuild_projects[project["type"]][name]["missing_deps"] = dependencies
 
     def add_depencenies(self, deps, name):
-        for dep in deps:
+        for dep, src in deps:
             if dep in self.dependencies:
                 if name not in self.dependencies[dep]["projects"]:
                     self.dependencies[dep]["count"] += 1
@@ -373,7 +373,7 @@ class Statistics:
                 self.dependencies[dep]["projects"] = [name]
 
     def map_dependencies(self, missing: list, installed: list) -> None:
-        for m in missing:
+        for m, scr in missing:
             if m not in self.dep_mapping:
                 self.dep_mapping[m] = {}
             for i in installed:

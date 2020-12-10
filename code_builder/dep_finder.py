@@ -6,18 +6,18 @@ class DepFinder:
     def __init__(self):
         # todo: differentiate between definitive and maybe dependencies
         self.patterns = [
-            r".*\s(.+?)" + re.escape(": command not found"),
+            (r".*\s(.+?)" + re.escape(": command not found"), "bash"),
             # r".*\s(.+?)" + re.escape("not found"),
             # r".*\s(.+?)" + re.escape(": No such file or directory"),
-            re.escape("[Error] Package ") + r"(.*)" + re.escape(" is not installed"),
-            re.escape("Error: No module named '") + r"(.*)\'",
+            (re.escape("[Error] Package ") + r"(.*)" + re.escape(" is not installed"), None),
             # match everyting until a (space) or .(space)
-            re.escape("Error: missing ") + r"(.+?(?=\s|\.\s))",
+            (re.escape("Error: missing ") + r"(.+?(?=\s|\.\s))", None),
             # re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))",
             # r".*\s(.+?)" + re.escape(": No such file or directory"),
         ]
         self.confident_patterns = [
-            re.escape("] ") + r"(.*)" + re.escape(" not found or too old")
+            (re.escape("] ") + r"(.*)" + re.escape(" not found or too old"), None),
+            (re.escape("ImportError: No module named '") + r"(.*)\'", "python")
         ]
 
     def analyze_logs(self, project, name):
@@ -32,7 +32,8 @@ class DepFinder:
             # also we can be pretty confident in cmake errors
             cmake_dep_strings = [
                 re.escape('package configuration file provided by "') + r"(.+?(?=\"))",
-                re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))"
+                re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))",
+                re.escape("Unable to find the ") + r"(.*)" + re.escape("header files.")
             ]
             for err in project["build"].get("errortypes", []):
                 for s in cmake_dep_strings:
@@ -44,9 +45,9 @@ class DepFinder:
                             err
                         )
                         if version:
-                            safe_deps.append(name[1] + "_" + version[1])
+                            safe_deps.append((name[1] + "_" + version[1], "cmake"))
                         else:
-                            safe_deps.append(name[1])
+                            safe_deps.append((name[1], "cmake"))
                         break
         # print("\nstarting dependency analysis for {}".format(name))
         # lognames = ["stderr", "docker_log", "stdout"]
@@ -58,19 +59,23 @@ class DepFinder:
             with open(err_log, "r") as log:
                 text = log.read()
                 # find lines about missing deps
+            found = False
             for line in text.splitlines():
-                for pattern in self.confident_patterns:
+                for pattern, source in self.confident_patterns:
                     regex_result = re.search(pattern, line)
                     if regex_result:
-                        safe_deps.append(regex_result[1].strip())
+                        safe_deps.append((regex_result[1].strip(), source))
                         project["dep_lines"].append(line)
-                        continue
-                for pattern in self.patterns:
+                        found = True
+                        break
+                if found:
+                    continue
+                for pattern, source in self.patterns:
                     regex_result = re.search(pattern, line)
                     if regex_result:
-                        deps.append(regex_result[1].strip())
+                        deps.append((regex_result[1].strip(), source))
                         project["dep_lines"].append(line)
-                
-        
+                        break
+
         # remove duplicates
-        return list(set(safe_deps)), list(set(deps))
+        return safe_deps, deps

@@ -5,10 +5,10 @@ ENV SNAPCRAFT_SETUP_CORE=1
 
 ARG CLANG_VERSION=9
 
-ARG deps='software-properties-common curl gpg-agent gnupg' 
+ARG deps='apt-transport-https ca-certificates software-properties-common curl gpg-agent gnupg' 
 ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} libomp-${CLANG_VERSION}-dev \
   clang++-${CLANG_VERSION} texinfo build-essential fakeroot devscripts automake autotools-dev \
-  wget snapd git ruby-full sudo python2 python3-setuptools"
+  wget snapd git ruby-full sudo python2 python3-setuptools unzip"
 RUN echo ${CLANG_VERSION}
 RUN apt-get clean
 RUN apt-get update 
@@ -16,6 +16,9 @@ RUN apt-get install -y ${deps} --no-install-recommends --force-yes
 RUN curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal main"
 RUN add-apt-repository universe
+# add the cmake repo
+RUN curl https://apt.kitware.com/keys/kitware-archive-latest.asc | apt-key add -
+RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main'
 RUN apt-get update
 RUN apt-get install -y ${soft} --no-install-recommends --force-yes
 RUN apt-get purge -y --auto-remove ${DEPS}
@@ -23,10 +26,12 @@ RUN ln -s /usr/bin/clang-${CLANG_VERSION} /usr/bin/clang
 RUN ln -s /usr/bin/clang++-${CLANG_VERSION} /usr/bin/clang++
 # install needed python modules
 RUN python3 -m pip install pyyaml
+
 # install pyenv (needed for travis...)
 RUN curl https://pyenv.run | bash
 RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
 RUN python2 get-pip.py
+RUN python2 -m pip install --upgrade pip
 # so travis can use sudo
 RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 
