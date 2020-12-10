@@ -20,8 +20,11 @@ class Statistics:
         self.unrecognized_projects = []
         self.clone_time = 0
         self.build_time = 0
-        with open("code_builder/errortypes.json", "r") as f:
-            self.errors_stdout = json.load(f)
+        try:
+            with open("code_builder/errortypes.json", "r") as f:
+                self.errors_stdout = json.load(f)
+        except FileNotFoundError:
+            self.errors_stdout = {}
         for err in self.errors_stdout:
             if "regex" not in self.errors_stdout[err]:
                 self.errors_stdout[err]["regex"] = re.escape(err)
@@ -90,7 +93,7 @@ class Statistics:
             self.build_time += project["build"]["time"]
         if project.get("double_build") and "build" in project:
             self.map_dependencies(
-                project["first_build"]["missing"],
+                project["first_build"].get("missing_dependencies", []),
                 project["build"].get("installed", [])
             )
         if project["status"] == "unrecognized":
@@ -172,6 +175,7 @@ class Statistics:
             end = time()
             project["statistics"]["error_analysis"] = end - start
             self.stat_time += end - start
+        if "build" in project:
             start = time()
             self.find_deps(project, name)
             end = time()
@@ -359,7 +363,12 @@ class Statistics:
         dependencies = confident_deps + dependencies
         self.add_depencenies(dependencies, name)
         project["build"]["missing_dependencies"] = dependencies
-        self.rebuild_projects[project["type"]][name]["missing_deps"] = dependencies
+        if not project.get("first_build"):
+            try:
+                self.rebuild_projects[project["type"]][name]["missing_deps"] = dependencies
+            except KeyError:
+                self.add_rebuild_data(project, name)
+                self.rebuild_projects[project["type"]][name]["missing_deps"] = dependencies
 
     def add_depencenies(self, deps, name):
         for dep, src in deps:
@@ -380,6 +389,9 @@ class Statistics:
                 self.dep_mapping[m][i] = self.dep_mapping[m].get(i, 0) + 1
 
     def add_rebuild_data(self, project, name):
+        # we don't want the projects first build if we build twice
+        if project.get("first_build"):
+            return
         # generate info for rebuild
         rebuild_data = {
             "type": project["type"],

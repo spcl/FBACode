@@ -56,7 +56,7 @@ double_build_ci = {"travis"}
 double_build_system = {"debian"}
 
 
-def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
+def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=None):
 
     if project["status"] == "unrecognized":
         ctx.stats.unrecognized()
@@ -95,6 +95,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             # do not install dpendencies the first time around
             if ci_system in double_build_ci or build_name in double_build_system:
                 project["install_deps"] = False
+                project["first_build"] = True
             else:
                 project["install_deps"] = True
             json.dump({
@@ -204,16 +205,11 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx):
             # if we have a build system that can install packages, rerun with packages
             # at the moment only travis, can be expended..
             if ci_system in double_build_ci or build_name in double_build_system:
-                stat = statistics.Statistics(0)
-                stat.update(project, name)
-                finder = dep_finder.DepFinder()
-                missing = finder.analyze_logs(project, name)
-                missing = missing[0] + missing[1]
+                stats.update(project, name)
                 project["first_build"] = copy.deepcopy(project["build"])
-                project["first_build"]["missing"] = missing
                 project["install_deps"] = True
-                project["double_build"] = True
                 project["build"] = {}
+                project["double_build"] = True
                 volumes.pop(abspath(tmp_file.name))
                 tmp_file.close()
                 tmp_file = tempfile.NamedTemporaryFile(mode="w")

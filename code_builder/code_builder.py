@@ -118,6 +118,7 @@ def build_projects(
     with concurrent.futures.ProcessPoolExecutor(threads_count) as pool:
         projects = []
         database_processers = []
+        stats = Statistics(projects_count)
         for database, repositories in repositories_db.items():
             # print(database, repositories)
             repo_count = len(repositories)
@@ -144,13 +145,13 @@ def build_projects(
                             build_dir=build_dir,
                             target_dir=target_dir,
                             ctx=ctx,
+                            stats=stats,
                         ),
                     )
                 )
             repositories_idx += repo_count
             database_processers.append(processer)
 
-        stats = Statistics(projects_count)
         for project in projects:
             idx, key, val = project.result()
             repositories[key] = val

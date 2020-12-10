@@ -25,8 +25,8 @@ class DepFinder:
         safe_deps = []
         project["dep_lines"] = []
         if "build" not in project:
-            print("no logfiles found for {}".format(name))
-            return []
+            print("no logfiles found for {}\n{}".format(name, project))
+            return ([], [])
         if project["build_system"] == "cmake":
             # cmake has multiline errors, so we check for that
             # also we can be pretty confident in cmake errors
@@ -55,10 +55,14 @@ class DepFinder:
         # errors get redirected to sterr anyway
         lognames = ["stderr"]
         for logfiles in lognames:
-            err_log = join(project["build"]["dir"], project["build"][logfiles])
-            with open(err_log, "r") as log:
-                text = log.read()
-                # find lines about missing deps
+            try:
+                err_log = join(project["build"]["dir"], project["build"][logfiles])
+                with open(err_log, "r") as log:
+                    text = log.read()
+                    # find lines about missing deps
+            except:
+                print("error opening log files")
+                return [], []
             found = False
             for line in text.splitlines():
                 for pattern, source in self.confident_patterns:
