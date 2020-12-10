@@ -238,6 +238,10 @@ class DebianFetcher:
                 response.status_code))
             return False
         # first version should be correct because we specify suite in url
+        if not isinstance(response.json()["versions"], list) or len(response.json()["versions"]) == 0:
+            print("weird json response:")
+            print(response.json())
+            return False
         version = response.json()["versions"][0]["version"]
         # get more info for package and version
         response = get(
