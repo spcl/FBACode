@@ -117,8 +117,11 @@ def build_projects(
     start = time()
     with concurrent.futures.ProcessPoolExecutor(threads_count) as pool:
         projects = []
-        database_processers = []
         stats = Statistics(projects_count)
+        database_processers = []
+        # we need an instance of the statistics class for the dependency analysis
+        # when we build twice
+        temporary_stats = Statistics(projects_count)
         for database, repositories in repositories_db.items():
             # print(database, repositories)
             repo_count = len(repositories)
@@ -145,25 +148,24 @@ def build_projects(
                             build_dir=build_dir,
                             target_dir=target_dir,
                             ctx=ctx,
-                            stats=stats,
+                            stats=temporary_stats,
                         ),
                     )
                 )
             repositories_idx += repo_count
             database_processers.append(processer)
 
-        for project in projects:
-            idx, key, val = project.result()
-            repositories[key] = val
-            # builds_left -= 1
-            # print("{} builds left".format(builds_left))
-            stats.update(val, key)
-
+            for project in projects:
+                idx, key, val = project.result()
+                repositories[key] = val
+                # builds_left -= 1
+                # print("{} builds left".format(builds_left))
+                stats.update(val, key)
         end = time()
         print("Process repositorites in %f [s]" % (end - start))
         stats.print_stats(stdout)
         # close f again?
-        f = stdout if output == "" else open(output, "w")
+        # f = stdout if output == "" else open(output, "w")
         # print(json.dumps(repositories, indent=2), file=f)
         stats.save_rebuild_json()
         stats.save_errors_json()

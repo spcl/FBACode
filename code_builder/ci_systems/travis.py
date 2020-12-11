@@ -1,7 +1,7 @@
 import subprocess
 import yaml
 import os
-import urllib
+import urllib.request
 import stat
 from subprocess import PIPE
 import json

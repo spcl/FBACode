@@ -83,6 +83,7 @@ project = {
 }
 builder = builder_class(source_dir, build_dir, idx, ctx, name, project)
 if install_deps:
+    print("installing dependencies")
     install_method = getattr(builder, "install", None)
     if callable(install_method):
         # our builder can install deps by themselves:
