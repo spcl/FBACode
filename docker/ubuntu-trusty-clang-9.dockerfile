@@ -1,6 +1,8 @@
 FROM ubuntu:trusty  
 # set as env, we are noninteractive in the container too
 ENV DEBIAN_FRONTEND=noninteractive
+# for tzdata, otherwise there will be a prompt
+RUN echo "Europe/Zurich" > /etc/timezone
 
 ARG CLANG_VERSION=8
 

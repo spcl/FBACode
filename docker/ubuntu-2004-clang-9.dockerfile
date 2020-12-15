@@ -1,8 +1,11 @@
 FROM ubuntu:20.04
 # set as env, we are noninteractive in the container too
 ENV DEBIAN_FRONTEND=noninteractive
+# for tzdata, otherwise there will be a prompt
+RUN echo "Europe/Zurich" > /etc/timezone
 
 ARG CLANG_VERSION=9
+
 
 ARG deps='apt-transport-https ca-certificates software-properties-common gpg-agent gnupg curl' 
 ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} \

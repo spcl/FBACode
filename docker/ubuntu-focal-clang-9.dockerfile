@@ -1,6 +1,9 @@
 FROM ubuntu:focal
 # set as env, we are noninteractive in the container too
 ENV DEBIAN_FRONTEND=noninteractive
+# for tzdata, otherwise there will be a prompt
+RUN echo "Europe/Zurich" > /etc/timezone
+
 ENV SNAPCRAFT_SETUP_CORE=1
 
 ARG CLANG_VERSION=9

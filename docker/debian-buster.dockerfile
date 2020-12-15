@@ -3,6 +3,8 @@ FROM debian:buster
 ENV DEBIAN_FRONTEND=noninteractive
 # do not run tests on builds (does not work for all pkgs)
 ENV DEB_BUILD_OPTIONS=nocheck
+# for tzdata, otherwise there will be a prompt
+RUN echo "Europe/Zurich" > /etc/timezone
 
 ARG CLANG_VERSION=9
 
