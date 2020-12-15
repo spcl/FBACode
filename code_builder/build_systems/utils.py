@@ -15,9 +15,7 @@ def run(command, cwd=None, stdout=None, stderr=None) -> CompletedProcess:
     # older - subprocess.call
     # TODO: capture_output added in 3.7 - verify it works
     if version_info.major >= 3 and version_info.minor >= 5:
-        out = subprocess.run(
-            command, cwd=cwd, stdout=stdout, stderr=stderr, encoding="utf-8"
-        )
+        out = subprocess.run(command, cwd=cwd, stdout=stdout, stderr=stderr)
         return CompletedProcess(
             out.args, out.returncode, decode(out.stdout), decode(out.stderr)
         )
