@@ -6,27 +6,11 @@ from os.path import join, isfile, dirname, isdir
 from os import listdir, makedirs, mkdir, remove
 from subprocess import PIPE
 from shutil import rmtree
-from sys import version_info
 from re import search
 import pathlib
 
-from .dependency_installer import parse_travis
 from .environment import get_c_compiler, get_cxx_compiler
-
-
-def decode(stream):
-    return stream.decode("utf-8")
-
-
-def run(command, cwd=None, stdout=None, stderr=None):
-
-    # Python 3.5+ - subprocess.run
-    # older - subprocess.call
-    # TODO: capture_output added in 3.7 - verify it works
-    if version_info.major >= 3 and version_info.minor >= 5:
-        return subprocess.run(command, cwd=cwd, stdout=stdout, stderr=stderr)
-    else:
-        return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
+from .utils import run
 
 
 class Context:
@@ -76,41 +60,44 @@ class Project:
                     shutil.rmtree(p)
                 else:
                     remove(p)
-            cmd = ["bash", "-c", "shopt -s dotglob; cp -a {}/* {}".format(
-                   self.repository_path, self.build_dir)]
+            cmd = [
+                "bash",
+                "-c",
+                "shopt -s dotglob; cp -a {}/* {}".format(
+                    self.repository_path, self.build_dir
+                ),
+            ]
             out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
             if out.returncode != 0:
-                self.error_log.print_error(self.idx, "{}:\n{}".format(
-                    out.args, out.stderr.decode("utf-8")))
+                self.error_log.print_error(
+                    self.idx, "{}:\n{}".format(out.args, out.stderr)
+                )
                 return False
             cmd = ["autoreconf", "-i", "--force"]
             out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
             if out.returncode != 0:
-                self.error_log.print_error(self.idx, "{}:\n{}".format(
-                    out.args, out.stderr.decode("utf-8")))
+                self.error_log.print_error(
+                    self.idx, "{}:\n{}".format(out.args, out.stderr)
+                )
             if isfile(join(self.build_dir, "configure")):
-                ret = run(
-                    ["./configure"], cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
+                ret = run(["./configure"], cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
                 if ret.returncode:
                     self.error_log.print_error(
                         self.idx, "Failed make configure command"
                     )
-                    self.error_log.print_error(self.idx, decode(ret.stderr))
+                    self.error_log.print_error(self.idx, ret.stderr)
                     return False
                 else:
                     self.output_log.print_info(
                         self.idx,
-                        "Configure {} to build in {}"
-                        .format(self.repository_path, self.build_dir),
+                        "Configure {} to build in {}".format(
+                            self.repository_path, self.build_dir
+                        ),
                     )
-                    self.output_log.print_debug(
-                        self.idx, "make configure command"
-                    )
-                    self.output_log.print_debug(self.idx, decode(ret.stdout))
+                    self.output_log.print_debug(self.idx, "make configure command")
+                    self.output_log.print_debug(self.idx, ret.stdout)
             else:
-                self.error_log.print_error(
-                    self.idx,
-                    "No ./configure, this is not good")
+                self.error_log.print_error(self.idx, "No ./configure, this is not good")
                 return False
         return True
 
@@ -118,15 +105,14 @@ class Project:
         cmd = ["make"]
         ret = run(cmd, cwd=self.build_dir, stderr=PIPE)
         if ret.returncode:
-            self.error_log.print_error(self.idx, ret.stderr.decode("utf-8"))
+            self.error_log.print_error(self.idx, ret.stderr)
             return False
         else:
-            self.output_log.print_info(
-                self.idx, "Build in {}".format(self.build_dir))
+            self.output_log.print_info(self.idx, "Build in {}".format(self.build_dir))
             self.output_log.print_debug(
                 self.idx, "CMake build command: {}".format(" ".join(cmd))
             )
-            # self.output_log.print_debug(self.idx, decode(ret.stdout))
+            # self.output_log.print_debug(self.idx, ret.stdout)
             return True
 
     def generate_bitcodes(self, target_dir):
@@ -135,9 +121,10 @@ class Project:
             res = search(r"{}".format(self.build_dir), str(file))
             if res is None:
                 self.error_log.print_error(
-                    self.idx, "error while globbing for .bc files: {}".format(file))
+                    self.idx, "error while globbing for .bc files: {}".format(file)
+                )
                 continue
-            local_path = str(file)[res.end(0) + 1:]
+            local_path = str(file)[res.end(0) + 1 :]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
             # os.rename does not work for target and destinations being
             # on different filesystems
@@ -149,9 +136,10 @@ class Project:
             res = search(r"{}".format(self.build_dir), str(file))
             if res is None:
                 self.error_log.print_error(
-                    self.idx, "error while globbing for .bc files: {}".format(file))
+                    self.idx, "error while globbing for .bc files: {}".format(file)
+                )
                 continue
-            local_path = str(file)[res.end(0) + 1:]
+            local_path = str(file)[res.end(0) + 1 :]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
             shutil.move(str(file), join(target_dir, local_path))
         return True
@@ -163,4 +151,6 @@ class Project:
 
     @staticmethod
     def recognize(repo_dir):
-        return isfile(join(repo_dir, "Makefile.am")) or isfile(join(repo_dir, "configure.in"))
+        return isfile(join(repo_dir, "Makefile.am")) or isfile(
+            join(repo_dir, "configure.in")
+        )

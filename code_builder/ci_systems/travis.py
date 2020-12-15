@@ -7,6 +7,7 @@ from subprocess import PIPE
 import json
 from os import listdir, remove
 from os.path import isdir, isfile, join
+from yaml.composer import ComposerError
 from yaml.loader import FullLoader
 
 # module path is different inside docker image
@@ -47,7 +48,7 @@ class CiSystem:
             with open(join(self.travis_dir, ".travis.yml"), 'r') as f:
                 yml = yaml.load(f, Loader=FullLoader)
                 self.yml = yml
-        except yaml.composer.ComposerError as e:
+        except ComposerError as e:
             self.error_log.print_error(
                 self.idx, "Error parsing .travis.yml:\n  {}".format(e))
             return False
@@ -63,7 +64,7 @@ class CiSystem:
                     set_env_vars(var)
                     break
         elif isinstance(self.yml.get("env"), str):
-            self.set_env_vars(self.yml.get("env"))
+            set_env_vars(self.yml.get("env"))
         else:
             for var in self.yml.get("env", {}).get("global", []):
                 set_env_vars(var)
@@ -174,7 +175,7 @@ class CiSystem:
         # print("bigass script:")
         script_file = join(self.travis_dir, "combined_script.sh")
         with open(script_file, 'w') as f:
-            f.write("#!/bin/bash\nset +e\n")
+            f.write("#!/bin/bash\n")
             for s in self.big_script:
                 f.write(s)
                 f.write("\n")
@@ -187,12 +188,12 @@ class CiSystem:
         if out.returncode != 0:
             self.error_log.print_error(
                 self.idx, "TRAVIS combined_script.sh failed (error {}):\n{}".format(
-                    out.returncode, out.stderr.decode("utf-8")))
-            self.error_log.print_info(self.idx, out.stdout.decode("utf-8"))
+                    out.returncode, out.stderr))
+            self.error_log.print_info(self.idx, out.stdout)
             return False
         else:
             print("TRAVIS combined_script.sh:\n{}\nstderr:\n{}".format(
-                out.stdout.decode("utf-8"), out.stderr.decode("utf-8")))
+                out.stdout, out.stderr))
         return True
         # replacements = [
         #     (";;", ";"),
@@ -250,7 +251,7 @@ class CiSystem:
                             self.error_log.print_error(
                                 self.idx, "adding key to repo failed")
                             self.error_log.print_error(self.idx, "{}:\n{}".format(
-                                out.args, out.stderr.decode("utf-8")))
+                                out.args, out.stderr))
                             return False
                     if source_url is None:
                         self.error_log.print_error(
@@ -262,7 +263,7 @@ class CiSystem:
                         self.error_log.print_error(
                             self.idx, "adding repo failed")
                         self.error_log.print_error(self.idx, "{}:\n{}".format(
-                            out.args, out.stderr.decode("utf-8")))
+                            out.args, out.stderr))
                         return False
             if apt.get("update") or do_update:
                 cmd = ["apt-get", "update"]
@@ -271,7 +272,7 @@ class CiSystem:
                     self.error_log.print_error(
                         self.idx, "apt update from .travis.yml failed")
                     self.error_log.print_error(self.idx, "{}:\n{}".format(
-                        out.args, out.stderr.decode("utf-8")))
+                        out.args, out.stderr))
                     return False
             # lol, apt.get
             if apt.get("packages") is not None:
@@ -291,7 +292,7 @@ class CiSystem:
                     self.error_log.print_error(
                         self.idx, "snap install from .travis.yml failed")
                     self.error_log.print_error(self.idx, "{}:\n{}".format(
-                        out.args, out.stderr.decode("utf-8")))
+                        out.args, out.stderr))
                     return False
             else:
                 for snap in snaps:
@@ -312,7 +313,7 @@ class CiSystem:
                         self.error_log.print_error(
                             self.idx, "snap install from .travis.yml failed")
                         self.error_log.print_error(self.idx, "{}:\n{}".format(
-                            out.args, out.stderr.decode("utf-8")))
+                            out.args, out.stderr))
                         return False
         return True
 
@@ -330,7 +331,7 @@ class CiSystem:
         try:
             with open(join(repo_dir, ".travis.yml"), "r") as f:
                 yml = yaml.load(f, Loader=FullLoader)
-        except yaml.composer.ComposerError as e:
+        except ComposerError as e:
             print("Error parsing .travis.yml:\n  {}".format(e))
             return False
         except FileNotFoundError:

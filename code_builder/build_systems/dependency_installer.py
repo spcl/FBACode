@@ -2,13 +2,14 @@ from subprocess import run, PIPE
 import urllib.request
 import json
 import yaml
+from yaml import FullLoader
 from os.path import join
 import os
 
 
 def parse_travis(project, path):
     with open(join(path, ".travis.yml"), "r") as f:
-        yml = yaml.load(f, Loader=yaml.loader.FullLoader)
+        yml = yaml.load(f, Loader=FullLoader)
     # set env vars
     if isinstance(yml.get("env"), list):
         for var in yml.get("env"):

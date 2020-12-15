@@ -4,29 +4,13 @@ import pathlib
 
 from os.path import abspath, join, isfile, dirname
 from os import listdir, makedirs, mkdir
-from subprocess import PIPE
+from subprocess import CalledProcessError, CompletedProcess, PIPE
 from shutil import rmtree
 from sys import version_info
-from glob import iglob
 from re import search
 
 from .environment import get_c_compiler, get_cxx_compiler
-from .dependency_installer import parse_travis
-
-
-def decode(stream):
-    return stream.decode("utf-8")
-
-
-def run(command, cwd=None, stdout=None, stderr=None):
-
-    # Python 3.5+ - subprocess.run
-    # older - subprocess.call
-    # TODO: capture_output added in 3.7 - verify it works
-    if version_info.major >= 3 and version_info.minor >= 5:
-        return subprocess.run(command, cwd=cwd, stdout=stdout, stderr=stderr)
-    else:
-        return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
+from .utils import run       
 
 
 class Context:
@@ -76,7 +60,7 @@ class Project:
                 self.error_log.print_info(
                     self.idx, "Failed CMake configure command: %s" % " ".join(cmd)
                 )
-                self.error_log.print_error(self.idx, decode(ret.stderr))
+                self.error_log.print_error(self.idx, ret.stderr)
                 return False
             else:
                 self.output_log.print_info(
@@ -87,7 +71,7 @@ class Project:
                 self.output_log.print_debug(
                     self.idx, "CMake configure command: %s" % " ".join(cmd)
                 )
-                self.output_log.print_debug(self.idx, decode(ret.stdout))
+                self.output_log.print_debug(self.idx, ret.stdout)
             return True
         return True
 
@@ -96,14 +80,14 @@ class Project:
         ret = run(cmd, cwd=self.build_dir, stderr=PIPE)
         if ret.returncode:
             self.error_log.print_error(self.idx, "failed cmake build --build command")
-            self.error_log.print_error(self.idx, ret.stderr.decode("utf-8"))
+            self.error_log.print_error(self.idx, ret.stderr)
             return False
         else:
             self.output_log.print_info(self.idx, "Build in %s" % self.build_dir)
             self.output_log.print_debug(
                 self.idx, "CMake build command: %s" % " ".join(cmd)
             )
-            # self.output_log.print_debug(self.idx, decode(ret.stdout))
+            # self.output_log.print_debug(self.idx, ret.stdout)
             return True
 
     def generate_bitcodes(self, target_dir):
@@ -117,15 +101,17 @@ class Project:
                 # sometimes they are not in the CMakeFiles folder...
                 res = search(r"{}".format(self.build_dir), str(file))
             if res is None:
-                self.error_log.print_error(self.idx, "error while globbing for .bc files: {}".format(file))
+                self.error_log.print_error(
+                    self.idx, "error while globbing for .bc files: {}".format(file)
+                )
                 continue
-            local_path = str(file)[res.end(0) + 1:]
+            local_path = str(file)[res.end(0) + 1 :]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
             # os.rename does not work for target and destinations being
             # on different filesystems
             # we might operate on different volumes in Docker
             shutil.move(str(file), join(target_dir, local_path))
-  
+
     def generate_ast(self, target_dir):
         for file in pathlib.Path(self.build_dir).glob("**/*.ast"):
             # CMake file format: {build_dir}/../CMakeFiles/{dir}.dir/relative_bc_location
@@ -137,9 +123,11 @@ class Project:
                 # sometimes they are not in the CMakeFiles folder...
                 res = search(r"{}".format(self.build_dir), str(file))
             if res is None:
-                self.error_log.print_error(self.idx, "error while globbing for .bc files: {}".format(file))
+                self.error_log.print_error(
+                    self.idx, "error while globbing for .bc files: {}".format(file)
+                )
                 continue
-            local_path = str(file)[res.end(0) + 1:]
+            local_path = str(file)[res.end(0) + 1 :]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
             shutil.move(str(file), join(target_dir, local_path))
         return True

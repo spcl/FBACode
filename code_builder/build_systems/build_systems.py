@@ -46,13 +46,14 @@ build_systems = {
 
 # continuous integration systems, decreasing priority
 ci_systems = {
+    "gh_actions": gh_actions.CiSystem,
     "travis": travis.CiSystem,
     "circle_ci": circle_ci.CiSystem,
-    "gh_actions": gh_actions.CiSystem
+
 }
 
 # if any of these, do a build without installing first, then install in second build
-double_build_ci = {"travis"}
+double_build_ci = {"travis", "gh_actions"}
 double_build_system = {"debian"}
 
 
@@ -104,7 +105,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 "verbose": ctx.cfg["output"]["verbose"],
                 "project": project
             },
-                tmp_file.file,
+                tmp_file,
             )
             tmp_file.flush()
             volumes = {}
@@ -144,8 +145,14 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 remove=False,
                 # mem_limit="3g"  # limit memory to 3GB to protect the host
             )
-            ctx.out_log.print_info(
-                idx, "building {} in container {} as {}\n    dockerfile:{}".format(name, container.name, build_name, dockerfile))
+            if project.get("first_build", False):
+                ctx.out_log.print_info(
+                    idx, "1/2 building {} in container {} as {} and {}\n    dockerfile:{}".format(
+                        name, container.name, build_name, ci_system, dockerfile))
+            else:
+                ctx.out_log.print_info(
+                    idx, "building {} in container {} as {} and {}\n    dockerfile:{}".format(
+                        name, container.name, build_name, ci_system, dockerfile))
             sleep(10)
             container.reload()
             while(container.status == "running"):
@@ -220,7 +227,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     "verbose": ctx.cfg["output"]["verbose"],
                     "project": project
                 },
-                    tmp_file.file,
+                    tmp_file,
                 )
                 tmp_file.flush()
                 volumes[abspath(tmp_file.name)] = {
@@ -246,7 +253,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     # mem_limit="3g"  # limit memory to 3GB to protect the host
                 )
                 ctx.out_log.print_info(
-                    idx, "2nd time building {} in container {} as {}".format(name, container.name, build_name))
+                    idx, "2/2 building {} in container {} as {}".format(
+                        name, container.name, build_name))
                 sleep(10)
                 container.reload()
                 while(container.status == "running"):

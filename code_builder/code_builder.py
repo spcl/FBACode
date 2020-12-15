@@ -121,12 +121,13 @@ def build_projects(
         database_processers = []
         # we need an instance of the statistics class for the dependency analysis
         # when we build twice
+        all_repositories = {}
         temporary_stats = Statistics(projects_count)
         for database, repositories in repositories_db.items():
-            # print(database, repositories)
+            all_repositories.update(repositories)
             repo_count = len(repositories)
             processer = get_database(database)(source_dir, ctx)
-            indices = list(range(repositories_idx + 1, repo_count + 1))
+            indices = list(range(repositories_idx + 1, repo_count + 2))
             keys, values = zip(*repositories.items())
             # idx, repo, spec -> downloaded project
             futures = map(pool, processer.clone, [indices, keys, values], ctx)
@@ -155,12 +156,12 @@ def build_projects(
             repositories_idx += repo_count
             database_processers.append(processer)
 
-            for project in projects:
-                idx, key, val = project.result()
-                repositories[key] = val
-                # builds_left -= 1
-                # print("{} builds left".format(builds_left))
-                stats.update(val, key)
+        for project in projects:
+            idx, key, val = project.result()
+            all_repositories[key] = val
+            # builds_left -= 1
+            # print("{} builds left".format(builds_left))
+            stats.update(val, key)
         end = time()
         print("Process repositorites in %f [s]" % (end - start))
         stats.print_stats(stdout)
@@ -175,4 +176,4 @@ def build_projects(
         with open(join("buildlogs", "summary_{}_{}.txt".format(timestamp, projects_count)), 'w') as o:
             stats.print_stats(o)
         with open(join("buildlogs", "build_details_{}_{}.json".format(timestamp, projects_count)), 'w') as o:
-            o.write(json.dumps(repositories, indent=2))
+            o.write(json.dumps(all_repositories, indent=2))

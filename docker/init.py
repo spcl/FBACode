@@ -57,6 +57,7 @@ builder_class = getattr(builder_mod, 'Project')
 ci_class = getattr(ci_mod, "CiSystem")
 
 print("Building {} in here using {} and {}".format(name, build_system, ci_system))
+print("python version: {}".format(sys.version))
 
 cfg = {'output': {'verbose': verbose, 'file': '/home/fba_code/'}}
 ctx = Context(cfg)

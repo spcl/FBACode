@@ -10,24 +10,8 @@ from sys import version_info
 from re import search
 import pathlib
 
-from .dependency_installer import parse_travis
 from .environment import get_c_compiler, get_cxx_compiler
-
-
-def decode(stream):
-    return stream.decode("utf-8")
-
-
-def run(command, cwd=None, stdout=None, stderr=None):
-
-    # Python 3.5+ - subprocess.run
-    # older - subprocess.call
-    # TODO: capture_output added in 3.7 - verify it works
-    if version_info.major >= 3 and version_info.minor >= 5:
-        return subprocess.run(command, cwd=cwd, stdout=stdout, stderr=stderr)
-    else:
-        return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
-
+from .utils import run
 
 class Context:
     def __init__(self, cfg):
@@ -79,7 +63,7 @@ class Project:
                    self.repository_path, self.build_dir)]
             out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
             if out.returncode != 0:
-                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8")))
+                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr))
                 return False
             if isfile(join(self.build_dir, "configure")):
                 ret = run(
@@ -88,8 +72,8 @@ class Project:
                     self.error_log.print_info(
                         self.idx, "Failed make configure command"
                     )
-                    self.error_log.print_error(self.idx, ret.stderr.decode())
-                    self.error_log.print_info(self.idx, ret.stdout.decode())
+                    self.error_log.print_error(self.idx, ret.stderr)
+                    self.error_log.print_info(self.idx, ret.stdout)
                     return False
                 else:
                     self.output_log.print_info(
@@ -100,7 +84,7 @@ class Project:
                     self.output_log.print_debug(
                         self.idx, "make configure command"
                     )
-                    self.output_log.print_debug(self.idx, ret.stdout.decode())
+                    self.output_log.print_debug(self.idx, ret.stdout)
             else:
                 self.output_log.print_info(
                     self.idx,
@@ -112,14 +96,14 @@ class Project:
         cmd = ["make"]
         ret = run(cmd, cwd=self.build_dir, stderr=PIPE)
         if ret.returncode:
-            self.error_log.print_error(self.idx, ret.stderr.decode("utf-8"))
+            self.error_log.print_error(self.idx, ret.stderr)
             return False
         else:
             self.output_log.print_info(self.idx, "Build in {}".format(self.build_dir))
             self.output_log.print_debug(
                 self.idx, "CMake build command: %s" % " ".join(cmd)
             )
-            # self.output_log.print_debug(self.idx, decode(ret.stdout))
+            # self.output_log.print_debug(self.idx, ret.stdout)
             return True
 
     def generate_bitcodes(self, target_dir):

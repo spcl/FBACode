@@ -2,22 +2,40 @@ import sys
 import subprocess
 import os
 import re
-from subprocess import PIPE
+from subprocess import CalledProcessError, CompletedProcess, PIPE
 
 
-def run(command, cwd=None, stdout=None, stderr=None):
+def decode(stream):
+    if isinstance(stream, bytearray):
+        return stream.decode("utf-8")
+    else:
+        return stream
 
+
+def run(command, cwd=None, stdout=None, stderr=None) -> CompletedProcess:
     # Python 3.5+ - subprocess.run
     # older - subprocess.call
     # TODO: capture_output added in 3.7 - verify it works
-    print(" ".join(command))
     if sys.version_info.major >= 3 and sys.version_info.minor >= 5:
-        return subprocess.run(command, cwd=cwd, stdout=stdout, stderr=stderr)
+        out = subprocess.run(
+            command, cwd=cwd, stdout=stdout, stderr=stderr, encoding="utf-8"
+        )
+        return CompletedProcess(
+            out.args, out.returncode, decode(out.stdout), decode(out.stderr)
+        )
     else:
-        return subprocess.call(command, cwd=cwd, stdout=stdout, stderr=stderr)
+        print("using legacy runner (python < 3.4)")
+        code = 0
+        try:
+            out = subprocess.check_output(command, cwd=cwd, stderr=subprocess.STDOUT)
+        except CalledProcessError as e:
+            code = e.returncode
+            out = e.output
+            return CompletedProcess(command, code, stderr=decode(out))
+        return CompletedProcess(command, code, stdout=decode(out))
 
 
-def flatten(l) -> list:
+def flatten(l):
     for el in l:
         if isinstance(el, list) and not isinstance(el, (str, bytes)):
             yield from flatten(el)
@@ -50,23 +68,30 @@ def run_scripts(logger, script_list, cwd=None):
     if isinstance(script_list, str):
         script_list = [script_list]
     elif not isinstance(script_list, list):
-        logger.err_log.print_error(
-            logger.idx, "travis script not string or list")
+        logger.err_log.print_error(logger.idx, "travis script not string or list")
         logger.output_log.print_error(
-            logger.idx, "travis script not string or list: {}".format(script_list))
+            logger.idx, "travis script not string or list: {}".format(script_list)
+        )
         return True
     for cmd in script_list:
         substitution = run(
-            ["bash", "-c", 'echo "{}"'.format(cmd)], stdout=PIPE, stderr=PIPE)
+            ["bash", "-c", 'echo "{}"'.format(cmd)], stdout=PIPE, stderr=PIPE
+        )
         print("TRAVIS: {}".format(substitution.stdout.decode("utf-8")))
-        out = run(["bash", "-c", cmd], cwd,
-                  stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        out = run(
+            ["bash", "-c", cmd], cwd, stderr=subprocess.PIPE, stdout=subprocess.PIPE
+        )
         if out.returncode != 0:
             logger.output_log.print_error(
-                logger.idx, "running command \n{}   failed: {}".format(
-                    substitution.stdout.decode("utf-8"), out.stderr.decode("utf-8")))
+                logger.idx,
+                "running command \n{}   failed: {}".format(
+                    substitution.stdout.decode("utf-8"), out.stderr.decode("utf-8")
+                ),
+            )
             logger.error_log.print_error(
-                logger.idx, "bash command execution failed: {}".format(out.stderr.decode("utf-8")))
+                logger.idx,
+                "bash command execution failed: {}".format(out.stderr.decode("utf-8")),
+            )
             logger.error_log.print_info(logger.idx, out.stdout.decode("utf-8"))
             return False
         print(out.stdout.decode("utf-8"))
@@ -83,26 +108,30 @@ def apt_install(logger, pkgs):
             cmd += " ".join(pkgs)
         else:
             logger.error_log.print_error(
-                logger.idx, "apt installer was not str or list[str]: {}".format(pkgs))
+                logger.idx, "apt installer was not str or list[str]: {}".format(pkgs)
+            )
             return False
     else:
         logger.error_log.print_error(
-            logger.idx, "apt installer was not str or list[str]: {}".format(pkgs))
+            logger.idx, "apt installer was not str or list[str]: {}".format(pkgs)
+        )
         return False
     print("APT INSTALL: {}".format(pkgs))
     out = run(["bash", "-c", cmd], stderr=PIPE)
     if out.returncode != 0:
         print(out)
         logger.error_log.print_error(
-            logger.idx, "apt_packages install from .travis.yml failed")
-        logger.error_log.print_error(logger.idx, "{}:\n{}".format(
-            out.args, out.stderr.decode("utf-8")))
+            logger.idx, "apt_packages install from .travis.yml failed"
+        )
+        logger.error_log.print_error(
+            logger.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8"))
+        )
         if "Unable to locate package " in out.stderr.decode("utf-8"):
             # some packages could not be found, let's remove them
             for l in out.stderr.decode("utf-8").splitlines():
                 index = l.find("Unable to locate package ")
                 if index >= 0:
-                    pkg = l[index + len("Unable to locate package "):].strip()
+                    pkg = l[index + len("Unable to locate package ") :].strip()
                     cmd = cmd.replace(pkg, "")
                     print("retrying without {}".format(pkg))
             out = run(["bash", "-c", cmd], stderr=PIPE)
@@ -110,8 +139,11 @@ def apt_install(logger, pkgs):
                 return True
         if "has no installation candidate" in out.stderr.decode("utf-8"):
             for l in out.stderr.decode("utf-8").splitlines():
-                pattern = re.escape("E: Package '") + r"(.*)" + \
-                    re.escape("' has no installation candidate")
+                pattern = (
+                    re.escape("E: Package '")
+                    + r"(.*)"
+                    + re.escape("' has no installation candidate")
+                )
                 r = re.search(pattern, l)
                 if r:
                     cmd = cmd.replace(r[1], "")
