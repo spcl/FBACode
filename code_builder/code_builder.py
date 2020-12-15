@@ -127,7 +127,7 @@ def build_projects(
             all_repositories.update(repositories)
             repo_count = len(repositories)
             processer = get_database(database)(source_dir, ctx)
-            indices = list(range(repositories_idx + 1, repo_count + 2))
+            indices = list(range(repositories_idx + 1, repositories_idx + repo_count + 1))
             keys, values = zip(*repositories.items())
             # idx, repo, spec -> downloaded project
             futures = map(pool, processer.clone, [indices, keys, values], ctx)
