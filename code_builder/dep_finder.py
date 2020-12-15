@@ -36,29 +36,29 @@ class DepFinder:
         if "build" not in project:
             print("no logfiles found for {}\n{}".format(name, project))
             return ([], [])
-        if project["build_system"] == "cmake":
+        # if project["build_system"] == "cmake":
             # cmake has multiline errors, so we check for that
             # also we can be pretty confident in cmake errors
-            cmake_dep_strings = [
-                re.escape('package configuration file provided by "') + r"(.+?(?=\"))",
-                re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))",
-                re.escape("Unable to find the ") + r"(.*)" + re.escape("header files."),
-            ]
-            for err in project["build"].get("errortypes", []):
-                for s in cmake_dep_strings:
-                    name = re.search(s, err)
-                    if name:
-                        project["dep_lines"].append(err)
-                        version = re.search(
-                            re.escape('Required is at least version "')
-                            + r"(.+?(?=\"))",
-                            err,
-                        )
-                        if version:
-                            safe_deps.append((name[1] + "_" + version[1], "cmake"))
-                        else:
-                            safe_deps.append((name[1], "cmake"))
-                        break
+        cmake_dep_strings = [
+            re.escape('package configuration file provided by "') + r"(.+?(?=\"))",
+            re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))",
+            re.escape("Unable to find the ") + r"(.*)" + re.escape("header files."),
+        ]
+        for err in project["build"].get("errortypes", []):
+            for s in cmake_dep_strings:
+                name = re.search(s, err)
+                if name:
+                    project["dep_lines"].append(err)
+                    version = re.search(
+                        re.escape('Required is at least version "')
+                        + r"(.+?(?=\"))",
+                        err,
+                    )
+                    if version:
+                        safe_deps.append((name[1] + "_" + version[1], "cmake"))
+                    else:
+                        safe_deps.append((name[1], "cmake"))
+                    break
         # print("\nstarting dependency analysis for {}".format(name))
         # lognames = ["stderr", "docker_log", "stdout"]
         # docker_log can be huge, skip it for now

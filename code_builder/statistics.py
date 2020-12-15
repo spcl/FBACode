@@ -138,6 +138,7 @@ class Statistics:
                 err_log = join(project["build"]["dir"], project["build"]["stderr"])
                 with open(err_log, "r") as log:
                     text = log.read()
+                    self.find_confident_errors(project, name, text)
                     if self.match_error_with_regex(project, name, text):
                         pass
                         # print("found err by regex!")
@@ -155,6 +156,7 @@ class Statistics:
                     docker_log = join(project["build"]["dir"], project["build"]["docker_log"])
                     with open(docker_log, "r") as log:
                         text = log.read()
+                    self.find_confident_errors(project, name, text)
                     if self.match_error_with_regex(project, name, text):
                         pass
                         # print("found err by regex!")
@@ -239,7 +241,9 @@ class Statistics:
         self.add_errors(project, name, list(set(errors)))
         return bool(errors)
 
-    def find_new_errors(self, project, name, log):
+    # we search for these errors anyway, since they are pretty safely "good"
+    def find_confident_errors(self, project, name, log):
+        found_match = False
         # try to find the normal clang error line (match to filename.xx:line:col: error: )
         errlines = re.findall(
             r"^.*\..*\:\d+\:\d+\:.*error\:.*$", log, flags=re.MULTILINE)
@@ -259,7 +263,71 @@ class Statistics:
                     }
                     self.new_errs += 1
                 self.add_errors(project, name, [err])
-            return True
+            found_match = True
+        # now we look for cmake errors
+        errlines = log.splitlines()
+        match_next = False
+        multiline_err = ""
+        first_line_err = ""   # used for the regex
+        for err in errlines:
+            # remove paths
+            err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
+            # remove file in beginning of line e.g. makefile 96:420:
+            err = re.sub(r"^\S*\.\S*(?:\:|\ )?\d+(?:\:\d+)?\:\ ", "", err)
+            if match_next:
+                if err[0:2] == "  " and err.strip() != "":
+                    # this error is part of the CMake multiline error
+                    if multiline_err == "":
+                        first_line_err = err.strip()
+                    multiline_err += err.strip() + " "
+                    continue
+                elif err.strip() == "":
+                    # this is just a newline, sometimes this fucks it up
+                    continue
+                else:
+                    # this is no longer part of same err
+                    if multiline_err.strip() != "":
+                        if multiline_err not in self.errors_stdout:
+                            self.errors_stdout[multiline_err] = {
+                                "name": multiline_err,
+                                "projects": [name],
+                                "origin": "CMake",
+                                "regex": re.escape(first_line_err).replace(
+                                    re.escape("PATH/FILE.EXT"), self.path_regex)
+                            }
+                            self.new_errs += 1
+                        self.add_errors(project, name, [multiline_err])
+                        found_match = True
+                    match_next = False
+                    multiline_err = ""
+
+            # cmake has a line where it prints CMake ERROR at blabla.txt: and then the error in next line
+            elif "CMake Error at" in err:
+                match_next = True
+                continue
+        return found_match
+
+    def find_new_errors(self, project, name, log):
+        # try to find the normal clang error line (match to filename.xx:line:col: error: )
+        # errlines = re.findall(
+        #     r"^.*\..*\:\d+\:\d+\:.*error\:.*$", log, flags=re.MULTILINE)
+        # # if we have nicely formatted errs from clang, we just add to known errs
+        # if errlines:
+        #     for err in errlines:
+        #         # remove filename and lines etc.
+        #         err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
+        #         err = re.search(r"error\:.*$", err).group(0)
+        #         if err not in self.errors_stdout:
+        #             self.errors_stdout[err] = {
+        #                 "name": err.replace("error: ", ''),
+        #                 "projects": [name],
+        #                 "origin": "clang",
+        #                 "regex": re.escape(err).replace(
+        #                     re.escape("PATH/FILE.EXT"), self.path_regex)
+        #             }
+        #             self.new_errs += 1
+        #         self.add_errors(project, name, [err])
+        #     return True
         # errlines = re.findall(
         #     r"^.*error.*$", log, flags=re.IGNORECASE | re.MULTILINE)
         errlines = log.splitlines()
@@ -295,45 +363,45 @@ class Statistics:
             (re.escape("ERROR: ") + r".*$", "general_error", False)
         ]
         found_match = False
-        match_next = False
-        multiline_err = ""
-        first_line_err = ""   # used for the regex
+        # match_next = False
+        # multiline_err = ""
+        # first_line_err = ""   # used for the regex
         for err in errlines:
             # remove paths
             err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
             # remove file in beginning of line e.g. makefile 96:420:
             err = re.sub(r"^\S*\.\S*(?:\:|\ )?\d+(?:\:\d+)?\:\ ", "", err)
-            if match_next:
-                if err[0:2] == "  " and err.strip() != "":
-                    # this error is part of the CMake multiline error
-                    if multiline_err == "":
-                        first_line_err = err.strip()
-                    multiline_err += err.strip() + " "
-                    continue
-                elif err.strip() == "":
-                    # this is just a newline, sometimes this fucks it up
-                    continue
-                else:
-                    # this is no longer part of same err
-                    if multiline_err.strip() != "":
-                        if multiline_err not in self.errors_stdout:
-                            self.errors_stdout[multiline_err] = {
-                                "name": multiline_err,
-                                "projects": [name],
-                                "origin": "CMake",
-                                "regex": re.escape(first_line_err).replace(
-                                    re.escape("PATH/FILE.EXT"), self.path_regex)
-                            }
-                            self.new_errs += 1
-                        self.add_errors(project, name, [multiline_err])
-                        found_match = True
-                    match_next = False
-                    multiline_err = ""
-                    
-            # cmake has a line where it prints CMake ERROR at blabla.txt: and then the error in next line
-            elif "CMake Error at" in err:
-                match_next = True
-                continue
+            # if match_next:
+            #     if err[0:2] == "  " and err.strip() != "":
+            #         # this error is part of the CMake multiline error
+            #         if multiline_err == "":
+            #             first_line_err = err.strip()
+            #         multiline_err += err.strip() + " "
+            #         continue
+            #     elif err.strip() == "":
+            #         # this is just a newline, sometimes this fucks it up
+            #         continue
+            #     else:
+            #         # this is no longer part of same err
+            #         if multiline_err.strip() != "":
+            #             if multiline_err not in self.errors_stdout:
+            #                 self.errors_stdout[multiline_err] = {
+            #                     "name": multiline_err,
+            #                     "projects": [name],
+            #                     "origin": "CMake",
+            #                     "regex": re.escape(first_line_err).replace(
+            #                         re.escape("PATH/FILE.EXT"), self.path_regex)
+            #                 }
+            #                 self.new_errs += 1
+            #             self.add_errors(project, name, [multiline_err])
+            #             found_match = True
+            #         match_next = False
+            #         multiline_err = ""
+
+            # # cmake has a line where it prints CMake ERROR at blabla.txt: and then the error in next line
+            # elif "CMake Error at" in err:
+            #     match_next = True
+            #     continue
             for match, origin, title in err_patterns:
                 regex_result = re.search(match, err)
                 if regex_result:
