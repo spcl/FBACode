@@ -28,4 +28,3 @@ def run(command, cwd=None, stdout=None, stderr=None) -> CompletedProcess:
             out = e.output
             return CompletedProcess(command, code, stderr=decode(out))
         return CompletedProcess(command, code, stdout=decode(out))
-

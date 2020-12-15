@@ -1,22 +1,20 @@
-import subprocess
 import yaml
 import os
 import urllib.request
 import stat
 from subprocess import PIPE
 import json
-from os import listdir, remove
-from os.path import isdir, isfile, join
+from os.path import isfile, join
 from yaml.composer import ComposerError
 from yaml.loader import FullLoader
 
 # module path is different inside docker image
 try:
-    from build_systems.environment import get_c_compiler, get_cxx_compiler
+    from build_systems.environment import get_c_compiler, get_cxx_compiler  # type: ignore
 except ModuleNotFoundError:
     from code_builder.build_systems.environment import get_c_compiler, get_cxx_compiler
 
-from .ci_helper import append_script, apt_install, run, run_scripts, set_env_vars
+from .ci_helper import append_script, apt_install, run, set_env_vars
 
 
 class Context:
@@ -29,7 +27,7 @@ class Context:
 
 
 class CiSystem:
-    def __init__(self, repo_dir, build_dir, idx, ctx, project):
+    def __init__(self, repo_dir, build_dir, idx, ctx, name, project):
         self.repository_path = repo_dir
         self.build_dir = build_dir
         self.idx = idx

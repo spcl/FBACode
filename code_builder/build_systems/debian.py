@@ -1,9 +1,8 @@
 import shutil
 import subprocess
 
-from os.path import abspath, join, isfile, dirname, isdir, exists
-from os import listdir, makedirs, mkdir, remove
-from sys import version_info
+from os.path import join, isfile, dirname, isdir
+from os import listdir, makedirs, remove
 from re import search, escape
 import pathlib
 
@@ -69,7 +68,7 @@ class Project:
         sourcedir = join(temp, sourcedir)
         self.temp_build_dir = sourcedir
         # delete everything except logs from source directory
-        buildfiles = listdir(self.build_dir)
+        # buildfiles = listdir(self.build_dir)
         sourcefiles = listdir(self.repository_path)
         try:
             for f in sourcefiles:
@@ -101,17 +100,6 @@ class Project:
             self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr))
             return False
         return version
-
-    def install(self):
-        out = run(
-            ["apt-get", "build-dep", "-y", self.name],
-            cwd=self.repository_path,
-            stderr=subprocess.PIPE,
-        )
-        if out.returncode != 0:
-            self.error_log.print_error(self.idx, str(out.stderr))
-            return False
-        self.output_log.print_info(self.idx, "{}:\n{}".format(out.args, out.stderr))
 
     def build(self):
         # basically run debian/rules
