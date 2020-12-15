@@ -4,7 +4,7 @@ from subprocess import CalledProcessError, CompletedProcess
 
 
 def decode(stream):
-    if isinstance(stream, bytearray):
+    if isinstance(stream, bytes) or isinstance(stream, bytearray):
         return stream.decode("utf-8")
     else:
         return stream
