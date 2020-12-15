@@ -5,22 +5,17 @@ import io
 import tarfile
 import json
 import tempfile
-import re
 import copy
 
 from os.path import abspath, join, exists, basename
 from os import mkdir
 from glob import iglob
-# from re import search
-from subprocess import PIPE
 from sys import version_info
 from time import sleep, time
 from datetime import datetime, timedelta
-from requests.exceptions import Timeout
 
-from . import cmake, debian, autotools, make  #, travis, github_actions, circleci
-from ..ci_systems import travis, circle_ci, gh_actions
-from .. import dep_finder, statistics
+from . import cmake, debian, autotools, make
+from ..ci_systems import travis, circle_ci, gh_actions, debian_install
 
 
 def run(command, cwd=None, stdout=None, stderr=None):
@@ -46,15 +41,14 @@ build_systems = {
 
 # continuous integration systems, decreasing priority
 ci_systems = {
+    "debian_install": debian_install.CiSystem,
     "gh_actions": gh_actions.CiSystem,
     "travis": travis.CiSystem,
     "circle_ci": circle_ci.CiSystem,
-
 }
 
 # if any of these, do a build without installing first, then install in second build
-double_build_ci = {"travis", "gh_actions"}
-double_build_system = {"debian"}
+double_build_ci = {"travis", "gh_actions", "debian_install"}
 
 
 def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=None):
@@ -82,7 +76,9 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
     for build_name, build_system in build_systems.items():
         if build_system.recognize(source_dir):
             project["build_system"] = build_name.lower()
-            # print("{} recognized as {}".format(name, build_name))
+            # priority is on CI dockerfile, except for debian. debian needs its special 
+            # container with source URIs in the /etc/sources.list
+            # do workaround for now, don't know what an elegant solution would be
             if ci_dockerfile:
                 dockerfile = ci_dockerfile
             else:
@@ -91,10 +87,10 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             target_dir = join(target_dir, source_name)
             if not exists(build_dir):
                 mkdir(build_dir)
-            docker_client = docker.from_env()
+            docker_client = docker.from_env()  # type: ignore
             tmp_file = tempfile.NamedTemporaryFile(mode="w")
             # do not install dpendencies the first time around
-            if ci_system in double_build_ci or build_name in double_build_system:
+            if ci_system in double_build_ci:
                 project["install_deps"] = False
                 project["first_build"] = True
             else:
@@ -211,7 +207,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             project["build"]["docker_log"] = docker_log_file
             # if we have a build system that can install packages, rerun with packages
             # at the moment only travis, can be expended..
-            if ci_system in double_build_ci or build_name in double_build_system:
+            if ci_system in double_build_ci:
                 stats.update(project, name)
                 project["first_build"] = copy.deepcopy(project["build"])
                 project["install_deps"] = True
@@ -258,7 +254,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 sleep(10)
                 container.reload()
                 while(container.status == "running"):
-                    # get the current time of the container, can differ from host bc timezone
+                    # get the current time of the container, can differ from host
                     # time = container.stats(stream=False)["read"]
                     # try with utc time, should be faster
                     # TODO: make timeout configurable
