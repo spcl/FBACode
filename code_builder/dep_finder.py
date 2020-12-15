@@ -9,15 +9,24 @@ class DepFinder:
             (r".*\s(.+?)" + re.escape(": command not found"), "bash"),
             # r".*\s(.+?)" + re.escape("not found"),
             # r".*\s(.+?)" + re.escape(": No such file or directory"),
-            (re.escape("[Error] Package ") + r"(.*)" + re.escape(" is not installed"), None),
+            (
+                re.escape("[Error] Package ")
+                + r"(.*)"
+                + re.escape(" is not installed"),
+                None,
+            ),
             # match everyting until a (space) or .(space)
             (re.escape("Error: missing ") + r"(.+?(?=\s|\.\s))", None),
             # re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))",
             # r".*\s(.+?)" + re.escape(": No such file or directory"),
+            (re.escape("Cannot find ") + r"(.*)\.", None),
         ]
         self.confident_patterns = [
             (re.escape("] ") + r"(.*)" + re.escape(" not found or too old"), None),
-            (re.escape("ImportError: No module named '") + r"(.*)\'", "python")
+            (re.escape("ImportError: No module named '") + r"(.*)\'", "python"),
+            (re.escape("Please install ") + r"(.*)\.", None),
+            (r"dh: unable to load addon (.*?):", "debian"),
+            (r"you may need to install the (.*?) module", "debian"),
         ]
 
     def analyze_logs(self, project, name):
@@ -33,7 +42,7 @@ class DepFinder:
             cmake_dep_strings = [
                 re.escape('package configuration file provided by "') + r"(.+?(?=\"))",
                 re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))",
-                re.escape("Unable to find the ") + r"(.*)" + re.escape("header files.")
+                re.escape("Unable to find the ") + r"(.*)" + re.escape("header files."),
             ]
             for err in project["build"].get("errortypes", []):
                 for s in cmake_dep_strings:
@@ -41,8 +50,9 @@ class DepFinder:
                     if name:
                         project["dep_lines"].append(err)
                         version = re.search(
-                            re.escape('Required is at least version "') + r"(.+?(?=\"))",
-                            err
+                            re.escape('Required is at least version "')
+                            + r"(.+?(?=\"))",
+                            err,
                         )
                         if version:
                             safe_deps.append((name[1] + "_" + version[1], "cmake"))
@@ -60,7 +70,7 @@ class DepFinder:
                 with open(err_log, "r") as log:
                     text = log.read()
                     # find lines about missing deps
-            except:
+            except (KeyError, FileNotFoundError):
                 print("error opening log files")
                 return [], []
             found = False
@@ -82,4 +92,4 @@ class DepFinder:
                         break
 
         # remove duplicates
-        return safe_deps, deps
+        return list(set(safe_deps)), list(set(deps))
