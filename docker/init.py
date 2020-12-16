@@ -24,6 +24,13 @@ class Context:
         self.err_log = err
 
 
+def print_section(idx, ctx, message):
+    to_print = "\n############################\n{}".format(message)
+    ctx.err_log.print_info(idx, to_print)
+    ctx.out_log.print_info(idx, to_print)
+    print(to_print)
+
+
 source_dir = "/home/fba_code/source"
 build_dir = "/home/fba_code/build"
 bitcodes_dir = "/home/fba_code/bitcodes"
@@ -69,9 +76,10 @@ project = {
         "installed": [],
     },
 }
+
 builder = builder_class(source_dir, build_dir, idx, ctx, name, project)
 if install_deps:
-    print("installing dependencies")
+    print_section(idx, ctx, "insalling dependencies with {}".format(ci_system))
     # install_method = getattr(builder, "install", None)
     # if callable(install_method):
     #     # our builder can install deps by themselves:
@@ -91,8 +99,9 @@ if install_deps:
         project["build"]["install"] = ci_system
     end = time()
     project["build"]["install_time"] = end - start
-
+    print_section(idx, ctx, "done installing dependencies".format(ci_system))
 start = time()
+print_section(idx, ctx, "starting configuration")
 configured = builder.configure(build_dir)
 end = time()
 project["build"]["configure_time"] = end - start
@@ -100,20 +109,24 @@ start = time()
 if not configured:
     project["build"]["configure"] = "fail"
     failure = True
+    print_section(idx, ctx, "configuration failed")
 else:
+    print_section(idx, ctx, "configuration succeeded, starting build")
     project["build"]["configure"] = "success"
     # Configure -> Build
     project["status"] = "build"
     if skip_build:
         project["status"] = "success"
         project["build"]["build"] = "skipped"
-        print("skipped build")
+        print_section(idx, ctx, "skipping build")
     else:
         if not builder.build():
+            print_section(idx, ctx, "build failed")
             project["build"]["build"] = "fail"
             project["status"] = "fail"
             failure = True
         else:
+            print_section(idx, ctx, "build success!")
             project["status"] = "success"
             project["build"]["build"] = "success"
             project["bitcodes"] = {"dir": external_bitcodes_dir}
