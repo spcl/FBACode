@@ -6,20 +6,16 @@ class DepFinder:
     def __init__(self):
         # todo: differentiate between definitive and maybe dependencies
         self.patterns = [
-            (r".*\s(.+?)" + re.escape(": command not found"), "bash"),
-            # r".*\s(.+?)" + re.escape("not found"),
-            # r".*\s(.+?)" + re.escape(": No such file or directory"),
-            (
-                re.escape("[Error] Package ")
-                + r"(.*)"
-                + re.escape(" is not installed"),
-                None,
-            ),
+            (r".*\s(.+?): [C|c]ommand not found", "bash"),
+            (re.escape("[Error] Package ") + r"(.*) is not installed", None,),
+            (r"error: no (.*) found", None),
+            # error: Libtool library used but 'LIBTOOL' is undefined
+            (r"error: (.*) library used but .* is undefined", "autotools"),
             # match everyting until a (space) or .(space)
             (re.escape("Error: missing ") + r"(.+?(?=\s|\.\s))", None),
-            # re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))",
-            # r".*\s(.+?)" + re.escape(": No such file or directory"),
             (re.escape("Cannot find ") + r"(.*)\.", None),
+            # Can't exec "autoreconf-dickey":
+            (re.escape("Can't exec ") + r"\"(.*?)\"", None),
         ]
         self.confident_patterns = [
             (re.escape("] ") + r"(.*)" + re.escape(" not found or too old"), None),
@@ -37,8 +33,8 @@ class DepFinder:
             print("no logfiles found for {}\n{}".format(name, project))
             return ([], [])
         # if project["build_system"] == "cmake":
-            # cmake has multiline errors, so we check for that
-            # also we can be pretty confident in cmake errors
+        # cmake has multiline errors, so we check for that
+        # also we can be pretty confident in cmake errors
         cmake_dep_strings = [
             re.escape('package configuration file provided by "') + r"(.+?(?=\"))",
             re.escape("Could NOT find ") + r"(.+?(?=\s|\.\s))",
@@ -50,15 +46,13 @@ class DepFinder:
                 if name:
                     project["dep_lines"].append(err)
                     version = re.search(
-                        re.escape('Required is at least version "')
-                        + r"(.+?(?=\"))",
+                        re.escape('Required is at least version "') + r"(.+?(?=\"))",
                         err,
                     )
                     if version:
                         safe_deps.append((name[1] + "_" + version[1], "cmake"))
                     else:
                         safe_deps.append((name[1], "cmake"))
-                    break
         # print("\nstarting dependency analysis for {}".format(name))
         # lognames = ["stderr", "docker_log", "stdout"]
         # docker_log can be huge, skip it for now
@@ -71,7 +65,7 @@ class DepFinder:
                     text = log.read()
                     # find lines about missing deps
             except (KeyError, FileNotFoundError):
-                print("error opening log files")
+                print("dep_finder: error opening log files for {}".format(name))
                 return [], []
             found = False
             for line in text.splitlines():
@@ -81,7 +75,6 @@ class DepFinder:
                         safe_deps.append((regex_result[1].strip(), source))
                         project["dep_lines"].append(line)
                         found = True
-                        break
                 if found:
                     continue
                 for pattern, source in self.patterns:
@@ -89,7 +82,6 @@ class DepFinder:
                     if regex_result:
                         deps.append((regex_result[1].strip(), source))
                         project["dep_lines"].append(line)
-                        break
 
         # remove duplicates
         return list(set(safe_deps)), list(set(deps))

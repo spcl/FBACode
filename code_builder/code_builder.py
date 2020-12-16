@@ -115,9 +115,10 @@ def build_projects(
     contexts = []
     ctx = Context(projects_count, cfg)
     start = time()
+    stats = Statistics(projects_count)
     with concurrent.futures.ProcessPoolExecutor(threads_count) as pool:
         projects = []
-        stats = Statistics(projects_count)
+        
         database_processers = []
         # we need an instance of the statistics class for the dependency analysis
         # when we build twice

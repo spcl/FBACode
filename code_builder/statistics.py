@@ -177,7 +177,7 @@ class Statistics:
             end = time()
             project["statistics"]["error_analysis"] = end - start
             self.stat_time += end - start
-        if "build" in project:
+        if "build" in project and project["status"] != "success":
             start = time()
             self.find_deps(project, name)
             end = time()
@@ -308,28 +308,7 @@ class Statistics:
         return found_match
 
     def find_new_errors(self, project, name, log):
-        # try to find the normal clang error line (match to filename.xx:line:col: error: )
-        # errlines = re.findall(
-        #     r"^.*\..*\:\d+\:\d+\:.*error\:.*$", log, flags=re.MULTILINE)
-        # # if we have nicely formatted errs from clang, we just add to known errs
-        # if errlines:
-        #     for err in errlines:
-        #         # remove filename and lines etc.
-        #         err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
-        #         err = re.search(r"error\:.*$", err).group(0)
-        #         if err not in self.errors_stdout:
-        #             self.errors_stdout[err] = {
-        #                 "name": err.replace("error: ", ''),
-        #                 "projects": [name],
-        #                 "origin": "clang",
-        #                 "regex": re.escape(err).replace(
-        #                     re.escape("PATH/FILE.EXT"), self.path_regex)
-        #             }
-        #             self.new_errs += 1
-        #         self.add_errors(project, name, [err])
-        #     return True
-        # errlines = re.findall(
-        #     r"^.*error.*$", log, flags=re.IGNORECASE | re.MULTILINE)
+       
         errlines = log.splitlines()
         # figure out what to do with other error strings
         # this dict contains the error match and then thi origin, at the
@@ -363,45 +342,13 @@ class Statistics:
             (re.escape("ERROR: ") + r".*$", "general_error", False)
         ]
         found_match = False
-        # match_next = False
-        # multiline_err = ""
-        # first_line_err = ""   # used for the regex
+        
         for err in errlines:
             # remove paths
             err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
             # remove file in beginning of line e.g. makefile 96:420:
             err = re.sub(r"^\S*\.\S*(?:\:|\ )?\d+(?:\:\d+)?\:\ ", "", err)
-            # if match_next:
-            #     if err[0:2] == "  " and err.strip() != "":
-            #         # this error is part of the CMake multiline error
-            #         if multiline_err == "":
-            #             first_line_err = err.strip()
-            #         multiline_err += err.strip() + " "
-            #         continue
-            #     elif err.strip() == "":
-            #         # this is just a newline, sometimes this fucks it up
-            #         continue
-            #     else:
-            #         # this is no longer part of same err
-            #         if multiline_err.strip() != "":
-            #             if multiline_err not in self.errors_stdout:
-            #                 self.errors_stdout[multiline_err] = {
-            #                     "name": multiline_err,
-            #                     "projects": [name],
-            #                     "origin": "CMake",
-            #                     "regex": re.escape(first_line_err).replace(
-            #                         re.escape("PATH/FILE.EXT"), self.path_regex)
-            #                 }
-            #                 self.new_errs += 1
-            #             self.add_errors(project, name, [multiline_err])
-            #             found_match = True
-            #         match_next = False
-            #         multiline_err = ""
-
-            # # cmake has a line where it prints CMake ERROR at blabla.txt: and then the error in next line
-            # elif "CMake Error at" in err:
-            #     match_next = True
-            #     continue
+            
             for match, origin, title in err_patterns:
                 regex_result = re.search(match, err)
                 if regex_result:
@@ -431,12 +378,11 @@ class Statistics:
         dependencies = confident_deps + dependencies
         self.add_depencenies(dependencies, name)
         project["build"]["missing_dependencies"] = dependencies
-        if not project.get("first_build"):
+        if not project.get("is_first_build", False):
             try:
                 self.rebuild_projects[project["type"]][name]["missing_deps"] = dependencies
             except KeyError:
-                self.add_rebuild_data(project, name)
-                self.rebuild_projects[project["type"]][name]["missing_deps"] = dependencies
+                pass
 
     def add_depencenies(self, deps, name):
         for dep, src in deps:
@@ -458,7 +404,7 @@ class Statistics:
 
     def add_rebuild_data(self, project, name):
         # we don't want the projects first build if we build twice
-        if project.get("first_build"):
+        if project.get("is_first_build"):
             return
         # generate info for rebuild
         rebuild_data = {
@@ -472,6 +418,7 @@ class Statistics:
                 "build" in project and "errortypes" in project["build"] else None
         }
         if project["type"] not in self.rebuild_projects:
+            print("adding", project["type"], "to rebuild!")
             self.rebuild_projects[project["type"]] = {}
         self.rebuild_projects[project["type"]][name] = rebuild_data
 
