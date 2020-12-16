@@ -92,7 +92,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             # do not install dpendencies the first time around
             if ci_system in double_build_ci:
                 project["install_deps"] = False
-                project["first_build"] = True
+                project["is_first_build"] = True
             else:
                 project["install_deps"] = True
             json.dump({
@@ -141,7 +141,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 remove=False,
                 # mem_limit="3g"  # limit memory to 3GB to protect the host
             )
-            if project.get("first_build", False):
+            if project.get("is_first_build", False):
                 ctx.out_log.print_info(
                     idx, "1/2 building {} in container {} as {} and {}\n    dockerfile:{}".format(
                         name, container.name, build_name, ci_system, dockerfile))
@@ -189,13 +189,15 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             try:
                 binary_data, _ = container.get_archive(
                     "/home/fba_code/output.json")
-                tar_file = tarfile.open(fileobj=io.BytesIO(next(binary_data)))
+                # with next(binary_data) not the whole thing is loaded if file is big
+                bin = b"".join(list(binary_data))
+                tar_file = tarfile.open(fileobj=io.BytesIO(bin))
                 data = tar_file.extractfile(tar_file.getmember("output.json"))
                 project = {**project, **json.loads(data.read())["project"]}
             except Exception as e:
                 ctx.err_log.print_error(
                     idx,
-                    "Failure retrieving the Project File from docker:\n{}".format(str(e))
+                    "Failure retrieving the Project File from docker (1/2):\n{}".format(str(e))
                 )
                 project["status"] = "crash"
                 project["crash_reason"] = "docker output.json not found or invalid archive"
@@ -213,6 +215,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 project["install_deps"] = True
                 project["build"] = {}
                 project["double_build"] = True
+                project["is_first_build"] = False
                 volumes.pop(abspath(tmp_file.name))
                 tmp_file.close()
                 tmp_file = tempfile.NamedTemporaryFile(mode="w")
@@ -293,7 +296,10 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 try:
                     binary_data, _ = container.get_archive(
                         "/home/fba_code/output.json")
-                    tar_file = tarfile.open(fileobj=io.BytesIO(next(binary_data)))
+                    # maybe if bigger than chunk this fails??
+                    # with next(binary_data) not the whole thing is loaded if file is big
+                    bin = b"".join(list(binary_data))
+                    tar_file = tarfile.open(fileobj=io.BytesIO(bin))
                     data = tar_file.extractfile(tar_file.getmember("output.json"))
                     project = {**project, **json.loads(data.read())["project"]}
                 except Exception as e:
