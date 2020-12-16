@@ -73,12 +73,32 @@ class Project:
                     self.idx, "{}:\n{}".format(out.args, out.stderr)
                 )
                 return False
-            cmd = ["autoreconf", "-i", "--force"]
-            out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
-            if out.returncode != 0:
-                self.error_log.print_error(
-                    self.idx, "{}:\n{}".format(out.args, out.stderr)
-                )
+            autogen_failed = False
+            if isfile(join(self.build_dir, "autogen.sh")):
+                ret = run(["./autogen.sh"], cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
+                if ret.returncode:
+                    self.error_log.print_error(
+                        self.idx, "Failed make autogen.sh command"
+                    )
+                    self.error_log.print_error(self.idx, ret.stderr)
+                    autogen_failed = True
+                else:
+                    self.output_log.print_info(
+                        self.idx,
+                        "autogen.sh succeeded".format(
+                            self.repository_path, self.build_dir
+                        ),
+                    )
+                    self.output_log.print_debug(self.idx, "autogen.sh:")
+                    self.output_log.print_debug(self.idx, ret.stdout)
+            if not isfile(join(self.build_dir, "autogen.sh")) or autogen_failed:
+                print("no autogen.sh, running autoreconf -i --force")
+                cmd = ["autoreconf", "-i", "--force", "--verbose"]
+                out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
+                if out.returncode != 0:
+                    self.error_log.print_error(
+                        self.idx, "{}:\n{}".format(out.args, out.stderr)
+                    )
             if isfile(join(self.build_dir, "configure")):
                 ret = run(["./configure"], cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
                 if ret.returncode:
@@ -98,7 +118,7 @@ class Project:
                     self.output_log.print_debug(self.idx, ret.stdout)
             else:
                 self.error_log.print_error(self.idx, "No ./configure, this is not good")
-                return False
+                return True
         return True
 
     def build(self):
