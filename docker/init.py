@@ -25,7 +25,8 @@ class Context:
 
 
 def print_section(idx, ctx, message):
-    to_print = "\n############################\n{}".format(message)
+    hashtags = "#" * (len(message) + 4)
+    to_print = "{0}\n# {1} #\n{0}".format(hashtags, message)
     ctx.err_log.print_info(idx, to_print)
     ctx.out_log.print_info(idx, to_print)
     print(to_print)
