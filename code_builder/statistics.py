@@ -165,7 +165,8 @@ class Statistics:
             if "build" in project:
                 # new plan:
                 # first try to match stderr to existing errors using regex
-                # then try to match to existing errors using levenshtein distance (fuzzywuzzy)
+                # then try to match to existing errors using levenshtein distance 
+                # (fuzzywuzzy)
                 #   - how to handle path substitutions?
                 # then add new error pattern
                 project["build"]["errortypes"] = []
@@ -173,36 +174,39 @@ class Statistics:
                 err_log = join(project["build"]["dir"], project["build"]["stderr"])
                 with open(err_log, "r") as log:
                     text = log.read()
-                    self.find_confident_errors(project, name, text)
+                    text = self.find_confident_errors(project, name, text)
+                    text = self.find_new_errors(project, name, text)
                     if self.match_error_with_regex(project, name, text):
                         pass
                         # print("found err by regex!")
                     elif self.match_error_fuzzy(project, name, text):
                         pass
                         # print("found err by fuzzy search!")
-                    elif self.find_new_errors(project, name, text):
-                        pass
-                        # print("matched new errors!")
+                    # elif self.find_new_errors(project, name, text):
+                    #     pass
+                    # print("matched new errors!")
                     else:
                         pass
                         # print("no error found yet, looking at docker log...")
                 # found no errs yet, check docker log (stdout of build)
+                # this file can be big, so try to avoid
                 if not project["build"]["errortypes"]:
                     docker_log = join(
                         project["build"]["dir"], project["build"]["docker_log"]
                     )
                     with open(docker_log, "r") as log:
                         text = log.read()
-                    self.find_confident_errors(project, name, text)
+                    text = self.find_confident_errors(project, name, text)
+                    text = self.find_new_errors(project, name, text)
                     if self.match_error_with_regex(project, name, text):
                         pass
                         # print("found err by regex!")
                     elif self.match_error_fuzzy(project, name, text):
                         pass
                         # print("found err by fuzzy search!")
-                    elif self.find_new_errors(project, name, text):
-                        pass
-                        # print("matched new errors!")
+                    # elif self.find_new_errors(project, name, text):
+                    #     pass
+                    # print("matched new errors!")
                     else:
                         # print("no errors found for {}... fuck".format(name))
                         self.errortypes["unrecognized"]["amount"] += 1
@@ -293,6 +297,7 @@ class Statistics:
         if errlines:
             for err in errlines:
                 # remove filename and lines etc.
+                log = log.replace(err, "")
                 err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
                 err = re.search(r"error\:.*$", err).group(0)
                 if err not in self.errors_stdout:
@@ -306,6 +311,7 @@ class Statistics:
                     }
                     self.new_errs += 1
                 self.add_errors(project, name, [err])
+                # remove error from log, so it does not get matched again
             found_match = True
         # now we look for cmake errors
         errlines = log.splitlines()
@@ -314,15 +320,16 @@ class Statistics:
         first_line_err = ""  # used for the regex
         for err in errlines:
             # remove paths
-            err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
+            # err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
             # remove file in beginning of line e.g. makefile 96:420:
-            err = re.sub(r"^\S*\.\S*(?:\:|\ )?\d+(?:\:\d+)?\:\ ", "", err)
+            # err = re.sub(r"^\S*\.\S*(?:\:|\ )?\d+(?:\:\d+)?\:\ ", "", err)
             if match_next:
                 if err[0:2] == "  " and err.strip() != "":
                     # this error is part of the CMake multiline error
                     if multiline_err == "":
                         first_line_err = err.strip()
                     multiline_err += err.strip() + " "
+                    log = log.replace(err, "")
                     continue
                 elif err.strip() == "":
                     # this is just a newline, sometimes this fucks it up
@@ -345,12 +352,13 @@ class Statistics:
                     match_next = False
                     multiline_err = ""
 
-            # cmake has a line where it prints CMake ERROR at blabla.txt: 
+            # cmake has a line where it prints CMake ERROR at blabla.txt:
             # and then the error in next line
             elif "CMake Error at" in err:
                 match_next = True
+                log = log.replace(err, "")
                 continue
-        return found_match
+        return log
 
     def find_new_errors(self, project, name, log):
 
@@ -398,13 +406,17 @@ class Statistics:
             ),
             (re.escape("fatal error: ") + r".*$", "fatal_error", False),
             (r".*" + re.escape("command not found"), "bash_command", False),
-            (re.escape("error: ") + r".*$", "general_error", False),
+            # debian/rules in there to avoid matching to the generic
+            # dpkg-buildpackage: error: debian/rules build subprocess returned exit status 2
+            (re.escape("error: ") + r"(?!debian/rules).*$", "general_error", False),
             (re.escape("Error: ") + r".*$", "general_error", False),
             (re.escape("ERROR: ") + r".*$", "general_error", False),
         ]
         found_match = False
 
         for err in errlines:
+            # for the removal of the error from log
+            original_line = err
             # remove paths
             err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
             # remove file in beginning of line e.g. makefile 96:420:
@@ -431,9 +443,10 @@ class Statistics:
                     # elif name not in self.errors_stdout[err]["projects"]:
                     #     self.errors_stdout[err]["projects"].append(name)
                     self.add_errors(project, name, [err])
+                    log = log.replace(original_line, "")
                     found_match = True
                     break
-        return found_match
+        return log
 
     def find_deps(self, project, name):
         confident_deps, dependencies = self.dep_finder.analyze_logs(project, name)
