@@ -22,7 +22,7 @@ class DepFinder:
             (re.escape("ImportError: No module named '") + r"(.*)\'", "python"),
             (re.escape("Please install ") + r"(.*)\.", None),
             (r"dh: unable to load addon (.*?):", "debian"),
-            (r"you may need to install the (.*?) module", "debian"),
+            # (r"you may need to install the (.*?) module", "debian"),
         ]
 
     def analyze_logs(self, project, name):

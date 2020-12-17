@@ -1,4 +1,5 @@
 import json
+from json.decoder import JSONDecodeError
 import re
 import copy
 from os.path import join
@@ -8,6 +9,7 @@ from fuzzywuzzy import process, fuzz
 import fuzzywuzzy
 from time import time
 from . import dep_finder
+import shutil
 
 
 class Statistics:
@@ -25,6 +27,14 @@ class Statistics:
                 self.errors_stdout = json.load(f)
         except FileNotFoundError:
             self.errors_stdout = {}
+        except JSONDecodeError:
+            print("error decoding errortypes.json, maybe corrupted?")
+            self.errors_stdout = {}
+            shutil.copy(
+                "code_builder/errortypes.json",
+                "code_builder/errortypes.json_backup"
+                + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+                )
         for err in self.errors_stdout:
             if "regex" not in self.errors_stdout[err]:
                 self.errors_stdout[err]["regex"] = re.escape(err)
@@ -42,6 +52,20 @@ class Statistics:
         self.build_systems = {}
         self.ci_systems = {}
         self.dep_mapping = {}
+        try:
+            with open("code_builder/dep_mapping.json", "r") as f:
+                self.persistent_dep_mapping = json.load(f)
+        except FileNotFoundError:
+            self.persistent_dep_mapping = {}
+        except JSONDecodeError:
+            print("error decoding dep_mapping.json, maybe corrupted?")
+            self.errors_stdout = {}
+            shutil.copy(
+                "code_builder/errortypes.json",
+                "code_builder/errortypes.json_backup"
+                + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+                )
+
         self.stat_time = 0
 
     def print_stats(self, out):
@@ -94,7 +118,8 @@ class Statistics:
         if project.get("double_build") and "build" in project:
             self.map_dependencies(
                 project["first_build"].get("missing_dependencies", []),
-                project["build"].get("installed", [])
+                project["build"].get("installed", []),
+                name,
             )
         if project["status"] == "unrecognized":
             self.add_unrecognized_project(name)
@@ -395,12 +420,22 @@ class Statistics:
                 self.dependencies[dep]["count"] = 1
                 self.dependencies[dep]["projects"] = [name]
 
-    def map_dependencies(self, missing: list, installed: list) -> None:
-        for m, scr in missing:
+    def map_dependencies(self, missing: list, installed: list, name: str) -> None:
+        for m, src in missing:
             if m not in self.dep_mapping:
                 self.dep_mapping[m] = {}
+            if m not in self.persistent_dep_mapping:
+                self.persistent_dep_mapping[m] = {}
+                self.persistent_dep_mapping[m]["deps"] = {}
+                self.persistent_dep_mapping[m]["source"] = src
+                self.persistent_dep_mapping[m]["projects"] = []
             for i in installed:
                 self.dep_mapping[m][i] = self.dep_mapping[m].get(i, 0) + 1
+                self.persistent_dep_mapping[m]["deps"][i] = (
+                    self.persistent_dep_mapping[m]["deps"].get(i, 0) + 1
+                )
+                if name not in self.persistent_dep_mapping[m]["projects"]:
+                    self.persistent_dep_mapping[m]["projects"].append(name)
 
     def add_rebuild_data(self, project, name):
         # we don't want the projects first build if we build twice
@@ -414,11 +449,11 @@ class Statistics:
             "status": project["status"],
             "codebase_data": project.get("codebase_data"),
             "build_system": project.get("build_system", "unrecognized"),
-            "previous_errors": project["build"]["errortypes"] if
-                "build" in project and "errortypes" in project["build"] else None
+            "previous_errors": project["build"]["errortypes"] 
+            if "build" in project and "errortypes" in project["build"]
+            else None
         }
         if project["type"] not in self.rebuild_projects:
-            print("adding", project["type"], "to rebuild!")
             self.rebuild_projects[project["type"]] = {}
         self.rebuild_projects[project["type"]][name] = rebuild_data
 
@@ -468,3 +503,5 @@ class Statistics:
             o.write(json.dumps(self.dependencies, indent=2))
         with open(map_path, 'w') as o:
             o.write(json.dumps(self.dep_mapping, indent=2))
+        with open("code_builder/dep_mapping.json", 'w') as o:
+            o.write(json.dumps(self.persistent_dep_mapping, indent=2))
