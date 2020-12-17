@@ -165,7 +165,7 @@ class Statistics:
             if "build" in project:
                 # new plan:
                 # first try to match stderr to existing errors using regex
-                # then try to match to existing errors using levenshtein distance 
+                # then try to match to existing errors using levenshtein distance
                 # (fuzzywuzzy)
                 #   - how to handle path substitutions?
                 # then add new error pattern
@@ -270,7 +270,7 @@ class Statistics:
         errors = []
         for l in lines:
             # check if string has any processable character, otherwise continue
-            processed = fuzzywuzzy.utils.full_process(l)
+            processed = fuzzywuzzy.utils.full_process(l)  # type: ignore
             if not processed:
                 continue
             matches = process.extract(
@@ -288,7 +288,6 @@ class Statistics:
 
     # we search for these errors anyway, since they are pretty safely "good"
     def find_confident_errors(self, project, name, log):
-        found_match = False
         # try to find the normal clang error line (match to filename.xx:line:col: error: )
         errlines = re.findall(
             r"^.*\..*\:\d+\:\d+\:.*error\:.*$", log, flags=re.MULTILINE
@@ -312,7 +311,6 @@ class Statistics:
                     self.new_errs += 1
                 self.add_errors(project, name, [err])
                 # remove error from log, so it does not get matched again
-            found_match = True
         # now we look for cmake errors
         errlines = log.splitlines()
         match_next = False
@@ -348,7 +346,6 @@ class Statistics:
                             }
                             self.new_errs += 1
                         self.add_errors(project, name, [multiline_err])
-                        found_match = True
                     match_next = False
                     multiline_err = ""
 
@@ -407,12 +404,11 @@ class Statistics:
             (re.escape("fatal error: ") + r".*$", "fatal_error", False),
             (r".*" + re.escape("command not found"), "bash_command", False),
             # debian/rules in there to avoid matching to the generic
-            # dpkg-buildpackage: error: debian/rules build subprocess returned exit status 2
+            # dpkg: error: debian/rules build subprocess returned exit status 2
             (re.escape("error: ") + r"(?!debian/rules).*$", "general_error", False),
             (re.escape("Error: ") + r".*$", "general_error", False),
             (re.escape("ERROR: ") + r".*$", "general_error", False),
         ]
-        found_match = False
 
         for err in errlines:
             # for the removal of the error from log
@@ -444,7 +440,6 @@ class Statistics:
                     #     self.errors_stdout[err]["projects"].append(name)
                     self.add_errors(project, name, [err])
                     log = log.replace(original_line, "")
-                    found_match = True
                     break
         return log
 
@@ -473,6 +468,9 @@ class Statistics:
                 self.dependencies[dep]["projects"] = [name]
 
     def map_dependencies(self, missing: list, installed: list, name: str) -> None:
+        if installed == []:
+            # nothing valuable to add here
+            return
         for m, src in missing:
             if m not in self.dep_mapping:
                 self.dep_mapping[m] = {}

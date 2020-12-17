@@ -13,7 +13,7 @@ class DepFinder:
             (r"error: (.*) library used but .* is undefined", "autotools"),
             # match everyting until a (space) or .(space)
             (re.escape("Error: missing ") + r"(.+?(?=\s|\.\s))", None),
-            (re.escape("Cannot find ") + r"(.*)\.", None),
+            (r"Cannot find (\S*)\.", None),
             # Can't exec "autoreconf-dickey":
             (re.escape("Can't exec ") + r"\"(.*?)\"", None),
             # /bin/sh: 1: rake: not found
@@ -88,7 +88,7 @@ class DepFinder:
                     if regex_result:
                         safe_deps.append((regex_result[1].strip(), source))
                         project["build"]["dep_lines"].append(line)
-                        found = True
+                        # found = True
                 # if found:
                 #     continue
                 for pattern, source in self.patterns:

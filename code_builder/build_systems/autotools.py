@@ -75,7 +75,9 @@ class Project:
                 return False
             autogen_failed = False
             if isfile(join(self.build_dir, "autogen.sh")):
-                ret = run(["./autogen.sh"], cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
+                ret = run(
+                    ["./autogen.sh"], cwd=self.build_dir, stdout=PIPE, stderr=PIPE
+                )
                 if ret.returncode:
                     self.error_log.print_error(
                         self.idx, "Failed make autogen.sh command"
