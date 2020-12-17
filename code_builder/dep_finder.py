@@ -17,7 +17,10 @@ class DepFinder:
             # Can't exec "autoreconf-dickey":
             (re.escape("Can't exec ") + r"\"(.*?)\"", None),
             # /bin/sh: 1: rake: not found
-            (r": .*: (.*?): not found", "bash")
+            (r": .*: (.*?): not found", "bash"),
+            (r"configure: error: The (.*?) script could not be found", "debian"),
+            # debian/rules:8: /usr/share/cdbs/1/rules/utils.mk: No such file or directory
+            (r"^.*:\d+: /usr/share/.*/(.*?)\.mk: No such file or directory", "debian"),
         ]
         self.confident_patterns = [
             (re.escape("] ") + r"(.*)" + re.escape(" not found or too old"), None),
@@ -38,7 +41,8 @@ class DepFinder:
     def analyze_logs(self, project, name):
         deps = []
         safe_deps = []
-        project["dep_lines"] = []
+        # keep track of lines matched, makes it easier to debug
+        project["build"]["dep_lines"] = []
         if "build" not in project:
             print("no logfiles found for {}\n{}".format(name, project))
             return ([], [])
@@ -54,7 +58,7 @@ class DepFinder:
             for s in cmake_dep_strings:
                 name = re.search(s, err)
                 if name:
-                    project["dep_lines"].append(err)
+                    project["build"]["dep_lines"].append(err)
                     version = re.search(
                         re.escape('Required is at least version "') + r"(.+?(?=\"))",
                         err,
@@ -77,21 +81,21 @@ class DepFinder:
             except (KeyError, FileNotFoundError):
                 print("dep_finder: error opening log files for {}".format(name))
                 return [], []
-            found = False
+            # found = False
             for line in text.splitlines():
                 for pattern, source in self.confident_patterns:
                     regex_result = re.search(pattern, line)
                     if regex_result:
                         safe_deps.append((regex_result[1].strip(), source))
-                        project["dep_lines"].append(line)
+                        project["build"]["dep_lines"].append(line)
                         found = True
-                if found:
-                    continue
+                # if found:
+                #     continue
                 for pattern, source in self.patterns:
                     regex_result = re.search(pattern, line)
                     if regex_result:
                         deps.append((regex_result[1].strip(), source))
-                        project["dep_lines"].append(line)
+                        project["build"]["dep_lines"].append(line)
 
         # remove duplicates
         return list(set(safe_deps)), list(set(deps))
