@@ -19,7 +19,8 @@ class CiSystem:
         self.project = project
 
     def install(self):
-        return True
+        # let's try to install using previous dependencies (if there are any)
+        pass
 
     @staticmethod
     def get_docker_image(repo_dir, clang_version=9):
