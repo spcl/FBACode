@@ -33,8 +33,8 @@ class Statistics:
             shutil.copy(
                 "code_builder/errortypes.json",
                 "code_builder/errortypes.json_backup"
-                + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-                )
+                + datetime.now().strftime("%Y_%m_%d_%H_%M_%S"),
+            )
         for err in self.errors_stdout:
             if "regex" not in self.errors_stdout[err]:
                 self.errors_stdout[err]["regex"] = re.escape(err)
@@ -63,8 +63,8 @@ class Statistics:
             shutil.copy(
                 "code_builder/errortypes.json",
                 "code_builder/errortypes.json_backup"
-                + datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-                )
+                + datetime.now().strftime("%Y_%m_%d_%H_%M_%S"),
+            )
 
         self.stat_time = 0
 
@@ -80,23 +80,33 @@ class Statistics:
         print("Continuous integration systems:", file=out)
         for name, count in self.ci_systems.items():
             print("  {}: {}".format(name, count), file=out)
-        print("Unrecognized build systems: %d" % len(self.unrecognized_projects), file=out)
+        print(
+            "Unrecognized build systems: %d" % len(self.unrecognized_projects), file=out
+        )
         for p in self.unrecognized_projects:
             print("  {}".format(p), file=out)
         print("newly discovered errors: {}".format(self.new_errs), file=out)
         print("Types of build errors:", file=out)
-        self.errortypes = OrderedDict(sorted(self.errortypes.items(),
-                                             key=lambda i: i[1].get("amount", 0),
-                                             reverse=True))
+        self.errortypes = OrderedDict(
+            sorted(
+                self.errortypes.items(),
+                key=lambda i: i[1].get("amount", 0),
+                reverse=True,
+            )
+        )
         for err, data in self.errortypes.items():
             print("{}: {}".format(err, data["amount"]), file=out)
         print("unrecognized errors:")
         for err in self.unrecognized_errs:
             print(err, file=out)
         print("\ndetected missing dependencies:", file=out)
-        self.dependencies = OrderedDict(sorted(self.dependencies.items(),
-                                               key=lambda i: i[1].get("count", 0),
-                                               reverse=True))
+        self.dependencies = OrderedDict(
+            sorted(
+                self.dependencies.items(),
+                key=lambda i: i[1].get("count", 0),
+                reverse=True,
+            )
+        )
         print(json.dumps(self.dependencies, indent=2), file=out)
         print("\nDependency mapping:", file=out)
         print(json.dumps(self.dep_mapping, indent=2), file=out)
@@ -137,7 +147,7 @@ class Statistics:
                     "origin": "docker",
                     # match to nothing, since crashes are not visible in logs
                     "regex": None,
-                    "amount": 1
+                    "amount": 1,
                 }
             elif name not in self.errors_stdout[err]["projects"]:
                 self.errors_stdout[err]["projects"].append(name)
@@ -178,7 +188,9 @@ class Statistics:
                         # print("no error found yet, looking at docker log...")
                 # found no errs yet, check docker log (stdout of build)
                 if not project["build"]["errortypes"]:
-                    docker_log = join(project["build"]["dir"], project["build"]["docker_log"])
+                    docker_log = join(
+                        project["build"]["dir"], project["build"]["docker_log"]
+                    )
                     with open(docker_log, "r") as log:
                         text = log.read()
                     self.find_confident_errors(project, name, text)
@@ -219,7 +231,7 @@ class Statistics:
         self.incorrect_projects += 1
 
     def add_errors(self, project, name, errors):
-        new_errors = [e for e in errors if e not in project['build']['errortypes']]
+        new_errors = [e for e in errors if e not in project["build"]["errortypes"]]
         for err in new_errors:
             if err in self.errortypes:
                 self.errortypes[err]["amount"] += 1
@@ -239,9 +251,12 @@ class Statistics:
         project["build"]["errortypes"].extend(new_errors)
 
     def match_error_with_regex(self, project, name, log):
-        errors = [err for err in self.errors_stdout
-                  if self.errors_stdout[err]["regex"] is not None
-                  and re.search(self.errors_stdout[err]["regex"], log) is not None]
+        errors = [
+            err
+            for err in self.errors_stdout
+            if self.errors_stdout[err]["regex"] is not None
+            and re.search(self.errors_stdout[err]["regex"], log) is not None
+        ]
         # we found the following errors
         self.add_errors(project, name, errors)
         return bool(errors)
@@ -254,8 +269,9 @@ class Statistics:
             processed = fuzzywuzzy.utils.full_process(l)
             if not processed:
                 continue
-            matches = process.extract(processed, self.errors_stdout.keys(),
-                                      limit=5, scorer=fuzz.ratio)
+            matches = process.extract(
+                processed, self.errors_stdout.keys(), limit=5, scorer=fuzz.ratio
+            )
             # what threshold??
             new_errs = [m[0] for m in matches if m[1] >= 90]
             if new_errs:
@@ -271,7 +287,8 @@ class Statistics:
         found_match = False
         # try to find the normal clang error line (match to filename.xx:line:col: error: )
         errlines = re.findall(
-            r"^.*\..*\:\d+\:\d+\:.*error\:.*$", log, flags=re.MULTILINE)
+            r"^.*\..*\:\d+\:\d+\:.*error\:.*$", log, flags=re.MULTILINE
+        )
         # if we have nicely formatted errs from clang, we just add to known errs
         if errlines:
             for err in errlines:
@@ -280,11 +297,12 @@ class Statistics:
                 err = re.search(r"error\:.*$", err).group(0)
                 if err not in self.errors_stdout:
                     self.errors_stdout[err] = {
-                        "name": err.replace("error: ", ''),
+                        "name": err.replace("error: ", ""),
                         "projects": [name],
                         "origin": "clang",
                         "regex": re.escape(err).replace(
-                            re.escape("PATH/FILE.EXT"), self.path_regex)
+                            re.escape("PATH/FILE.EXT"), self.path_regex
+                        ),
                     }
                     self.new_errs += 1
                 self.add_errors(project, name, [err])
@@ -293,7 +311,7 @@ class Statistics:
         errlines = log.splitlines()
         match_next = False
         multiline_err = ""
-        first_line_err = ""   # used for the regex
+        first_line_err = ""  # used for the regex
         for err in errlines:
             # remove paths
             err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
@@ -318,7 +336,8 @@ class Statistics:
                                 "projects": [name],
                                 "origin": "CMake",
                                 "regex": re.escape(first_line_err).replace(
-                                    re.escape("PATH/FILE.EXT"), self.path_regex)
+                                    re.escape("PATH/FILE.EXT"), self.path_regex
+                                ),
                             }
                             self.new_errs += 1
                         self.add_errors(project, name, [multiline_err])
@@ -333,53 +352,70 @@ class Statistics:
         return found_match
 
     def find_new_errors(self, project, name, log):
-       
+
         errlines = log.splitlines()
         # figure out what to do with other error strings
         # this dict contains the error match and then thi origin, at the
         # end is the most generic one.
         err_patterns = [
-            (r".*\.o\:" + re.escape(" 'linker' input unused") + r".*$",
-                "clang_other", re.escape(".o: 'linker' input unused")),
-            (re.escape("[Error] Package ") + r".*" +
-                re.escape(" is not installed"), "cmake - dependency", False),
-            (re.escape("clang: error: ") +
-                r".*$", "clang_other", False),
-            (re.escape("ERROR - ") + r".*" + re.escape("not found"),
-                "dependency", False),
-            (r".*\s(.+?)" + re.escape(": No such file or directory"),
-                "dependency", False),
-            (re.escape("configure: error :") +
-                r".*$", "configure", False),
+            (
+                r".*\.o\:" + re.escape(" 'linker' input unused") + r".*$",
+                "clang_other",
+                re.escape(".o: 'linker' input unused"),
+            ),
+            (
+                re.escape("[Error] Package ") + r".*" + re.escape(" is not installed"),
+                "cmake - dependency",
+                False,
+            ),
+            (re.escape("clang: error: ") + r".*$", "clang_other", False),
+            (
+                re.escape("ERROR - ") + r".*" + re.escape("not found"),
+                "dependency",
+                False,
+            ),
+            (
+                r".*\s(.+?)" + re.escape(": No such file or directory"),
+                "dependency",
+                False,
+            ),
+            (re.escape("configure: error :") + r".*$", "configure", False),
             (re.escape("Errors while running CTest"), "testing", False),
-            (re.escape("E: Unable to find a source package") +
-                r".*$", "debian", re.escape("E: Unable to find a source package")),
+            (
+                re.escape("E: Unable to find a source package") + r".*$",
+                "debian",
+                re.escape("E: Unable to find a source package"),
+            ),
             (r"\.\/configure.*syntax\ error.*$", "configure", False),
-            (re.escape("ERROR - ") + r".*syntax\ error.*",
-                "syntax error", False),
-            (re.escape("ERROR - ") + r".*" + re.escape("Compatibility levels before "),
-                "compatibility error", False),
-            (re.escape("fatal error: ") +
-                r".*$", "fatal_error", False),
+            (re.escape("ERROR - ") + r".*syntax\ error.*", "syntax error", False),
+            (
+                re.escape("ERROR - ")
+                + r".*"
+                + re.escape("Compatibility levels before "),
+                "compatibility error",
+                False,
+            ),
+            (re.escape("fatal error: ") + r".*$", "fatal_error", False),
             (r".*" + re.escape("command not found"), "bash_command", False),
             (re.escape("error: ") + r".*$", "general_error", False),
             (re.escape("Error: ") + r".*$", "general_error", False),
-            (re.escape("ERROR: ") + r".*$", "general_error", False)
+            (re.escape("ERROR: ") + r".*$", "general_error", False),
         ]
         found_match = False
-        
+
         for err in errlines:
             # remove paths
             err = re.sub(self.path_regex, "PATH/FILE.EXT", err)
             # remove file in beginning of line e.g. makefile 96:420:
             err = re.sub(r"^\S*\.\S*(?:\:|\ )?\d+(?:\:\d+)?\:\ ", "", err)
-            
+
             for match, origin, title in err_patterns:
                 regex_result = re.search(match, err)
                 if regex_result:
                     # regex to extract paths and filenames
-                    err = re.search(title, err).group(
-                        ) if title else regex_result.group()
+                    err = (
+                        re.search(title, err).group() if title else regex_result.group()
+                    )
                     # print("matched err {}".format(err))
                     if err not in self.errors_stdout:
                         self.errors_stdout[err] = {
@@ -387,7 +423,8 @@ class Statistics:
                             "projects": [name],
                             "origin": origin,
                             "regex": re.escape(err).replace(
-                                re.escape("PATH/FILE.EXT"), self.path_regex)
+                                re.escape("PATH/FILE.EXT"), self.path_regex
+                            ),
                         }
                         self.new_errs += 1
                     # elif name not in self.errors_stdout[err]["projects"]:
@@ -405,7 +442,9 @@ class Statistics:
         project["build"]["missing_dependencies"] = dependencies
         if not project.get("is_first_build", False):
             try:
-                self.rebuild_projects[project["type"]][name]["missing_deps"] = dependencies
+                self.rebuild_projects[project["type"]][name][
+                    "missing_deps"
+                ] = dependencies
             except KeyError:
                 pass
 
@@ -449,9 +488,9 @@ class Statistics:
             "status": project["status"],
             "codebase_data": project.get("codebase_data"),
             "build_system": project.get("build_system", "unrecognized"),
-            "previous_errors": project["build"]["errortypes"] 
+            "previous_errors": project["build"]["errortypes"]
             if "build" in project and "errortypes" in project["build"]
-            else None
+            else None,
         }
         if project["type"] not in self.rebuild_projects:
             self.rebuild_projects[project["type"]] = {}
@@ -459,49 +498,64 @@ class Statistics:
 
     def save_errorstat_json(self, path=None):
         if path is None:
-            timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             path = join(
                 "buildlogs",
-                "errorstats_{}_{}.json".format(timestamp, self.project_count))
-        self.errortypes = OrderedDict(sorted(self.errortypes.items(),
-                                             key=lambda i: i[1].get("amount", 0),
-                                             reverse=True))
-        with open(path, 'w') as o:
+                "errorstats_{}_{}.json".format(timestamp, self.project_count),
+            )
+        self.errortypes = OrderedDict(
+            sorted(
+                self.errortypes.items(),
+                key=lambda i: i[1].get("amount", 0),
+                reverse=True,
+            )
+        )
+        with open(path, "w") as o:
             o.write(json.dumps(self.errortypes, indent=2))
 
     def save_rebuild_json(self, path=None):
         if path is None:
-            timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             path = join(
-                "buildlogs",
-                "rebuild_{}_{}.json".format(timestamp, self.project_count))
-        with open(path, 'w') as o:
+                "buildlogs", "rebuild_{}_{}.json".format(timestamp, self.project_count)
+            )
+        with open(path, "w") as o:
             o.write(json.dumps(self.rebuild_projects, indent=2))
 
     def save_errors_json(self, path=None):
         if path is None:
             path = join("code_builder", "errortypes.json")
-        self.errors_stdout = OrderedDict(sorted(self.errors_stdout.items(),
-                                                key=lambda i: i[1].get("amount", 0),
-                                                reverse=True))
-        with open(path, 'w') as o:
+        self.errors_stdout = OrderedDict(
+            sorted(
+                self.errors_stdout.items(),
+                key=lambda i: i[1].get("amount", 0),
+                reverse=True,
+            )
+        )
+        with open(path, "w") as o:
             o.write(json.dumps(self.errors_stdout, indent=2))
-    
+
     def save_dependencies_json(self, path=None, map_path=None):
         if path is None:
-            timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             path = join(
                 "buildlogs",
-                "dependencies_{}_{}.json".format(timestamp, self.project_count))
+                "dependencies_{}_{}.json".format(timestamp, self.project_count),
+            )
             map_path = join(
                 "buildlogs",
-                "dep_maping_{}_{}.json".format(timestamp, self.project_count))
-        self.dependencies = OrderedDict(sorted(self.dependencies.items(),
-                                               key=lambda i: i[1].get("count", 0),
-                                               reverse=True))
-        with open(path, 'w') as o:
+                "dep_maping_{}_{}.json".format(timestamp, self.project_count),
+            )
+        self.dependencies = OrderedDict(
+            sorted(
+                self.dependencies.items(),
+                key=lambda i: i[1].get("count", 0),
+                reverse=True,
+            )
+        )
+        with open(path, "w") as o:
             o.write(json.dumps(self.dependencies, indent=2))
-        with open(map_path, 'w') as o:
+        with open(map_path, "w") as o:
             o.write(json.dumps(self.dep_mapping, indent=2))
-        with open("code_builder/dep_mapping.json", 'w') as o:
+        with open("code_builder/dep_mapping.json", "w") as o:
             o.write(json.dumps(self.persistent_dep_mapping, indent=2))
