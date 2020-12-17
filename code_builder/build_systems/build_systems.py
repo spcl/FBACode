@@ -68,7 +68,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
     project.setdefault("ci_systems", [])
     for ci_name, system in ci_systems.items():
         if system.recognize(source_dir):
-            if ci_system == "None":
+            if ci_system == "unrecognized":
                 ci_system = ci_name
                 ci_dockerfile = system.get_docker_image(source_dir)
             if ci_name not in project["ci_systems"]:
