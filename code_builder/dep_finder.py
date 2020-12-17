@@ -16,6 +16,8 @@ class DepFinder:
             (re.escape("Cannot find ") + r"(.*)\.", None),
             # Can't exec "autoreconf-dickey":
             (re.escape("Can't exec ") + r"\"(.*?)\"", None),
+            # /bin/sh: 1: rake: not found
+            (r": .*: (.*?): not found", "bash")
         ]
         self.confident_patterns = [
             (re.escape("] ") + r"(.*)" + re.escape(" not found or too old"), None),
@@ -23,6 +25,14 @@ class DepFinder:
             (re.escape("Please install ") + r"(.*)\.", None),
             (r"dh: unable to load addon (.*?):", "debian"),
             # (r"you may need to install the (.*?) module", "debian"),
+            # clang header not found
+            # ./styles.h:26:10: fatal error: 'clxclient.h' file not found
+            (r"^.*\..*\:\d+\:\d+\:.*error\: '(.*?)'.*$", "clang"),
+            # find a better way to handle the following, but for now, see if is worth it
+            # Project ERROR: Unknown module(s) in QT: core gui printsupport svg
+            (r"Project ERROR: Unknown module\(s\) in (.*)", "debian"),
+            # debian/rules:8: /usr/share/cdbs/1/rules/utils.mk: No such file or directory
+            (r"^.*:\d+: /usr/share/(.*?)/.*: No such file or directory", "debian"),
         ]
 
     def analyze_logs(self, project, name):
