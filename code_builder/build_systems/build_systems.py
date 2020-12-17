@@ -63,7 +63,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
     failure = False
     start = time()
     # find out the used ci system
-    ci_system = "None"
+    ci_system = "unrecognized"
     ci_dockerfile = False
     project.setdefault("ci_systems", [])
     for ci_name, system in ci_systems.items():
