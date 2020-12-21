@@ -5,6 +5,7 @@ from os.path import join, isfile, dirname, isdir
 from os import listdir, makedirs, remove
 from re import search, escape
 import pathlib
+import os
 
 from .utils import run
 
@@ -110,8 +111,15 @@ class Project:
         print("starting actual build...")
         # we skip build dependencies so we can detect the diff from missing -> installed
         # -i to ignore changes
+        j = os.environ.get("JOBS", 1)
         out = run(
-            ["dpkg-buildpackage", "--no-sign", "--no-check-builddeps", '-i="*"'],
+            [
+                "dpkg-buildpackage",
+                "--no-sign",
+                "--no-check-builddeps",
+                '-i="*"',
+                "-j{}".format(j),
+            ],
             cwd=self.temp_build_dir,
             stderr=subprocess.PIPE,
         )

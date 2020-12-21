@@ -124,7 +124,8 @@ class Project:
         return True
 
     def build(self):
-        cmd = ["make"]
+        j = os.environ.get("JOBS", 1)
+        cmd = ["make", "-j{}".format(j)]
         ret = run(cmd, cwd=self.build_dir, stderr=PIPE)
         if ret.returncode:
             self.error_log.print_error(self.idx, ret.stderr)

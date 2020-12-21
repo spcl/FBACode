@@ -1,16 +1,15 @@
 import shutil
-import subprocess
 import pathlib
+import os
 
 from os.path import abspath, join, isfile, dirname
 from os import listdir, makedirs, mkdir
-from subprocess import CalledProcessError, CompletedProcess, PIPE
+from subprocess import PIPE
 from shutil import rmtree
-from sys import version_info
 from re import search
 
 from .environment import get_c_compiler, get_cxx_compiler
-from .utils import run       
+from .utils import run
 
 
 class Context:
@@ -76,7 +75,8 @@ class Project:
         return True
 
     def build(self):
-        cmd = ["cmake", "--build", "."]
+        j = os.environ.get("JOBS", 1)
+        cmd = ["cmake", "--build", ".", "-j", str(j)]
         ret = run(cmd, cwd=self.build_dir, stderr=PIPE)
         if ret.returncode:
             self.error_log.print_error(self.idx, "failed cmake build --build command")

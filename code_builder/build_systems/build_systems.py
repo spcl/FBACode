@@ -7,7 +7,7 @@ import json
 import tempfile
 import copy
 
-from os.path import abspath, join, exists, basename
+from os.path import abspath, join, exists, basename, dirname
 from os import mkdir
 from glob import iglob
 from sys import version_info
@@ -99,7 +99,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 "idx": idx,
                 "name": name,
                 "verbose": ctx.cfg["output"]["verbose"],
-                "project": project
+                "project": project,
             },
                 tmp_file,
             )
@@ -110,6 +110,10 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             volumes[abspath(source_dir)] = {
                 "mode": "rw",
                 "bind": "/home/fba_code/source",
+            }
+            volumes[dirname(__file__) + '/../dep_mapping.json'] = {
+                "mode": "ro",
+                "bind": "/home/fba_code/dep_mapping.json",
             }
             volumes[abspath(build_dir)] = {
                 "mode": "rw",
@@ -129,7 +133,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 "BITCODES_DIR={}".format(abspath(target_dir)),
                 "CI_SYSTEM={}".format(ci_system),
                 "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
-                "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"]))
+                "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),
+                "JOBS={}".format(str(ctx.cfg["build"]["jobs"]))
             ]
             container = docker_client.containers.run(
                 dockerfile,
@@ -239,7 +244,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     "BITCODES_DIR={}".format(abspath(target_dir)),
                     "CI_SYSTEM={}".format(ci_system),
                     "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
-                    "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"]))
+                    "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),
+                    "JOBS={}".format(str(ctx.cfg["build"]["jobs"]))
                 ]
                 container = docker_client.containers.run(
                     dockerfile,
@@ -257,10 +263,6 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 sleep(10)
                 container.reload()
                 while(container.status == "running"):
-                    # get the current time of the container, can differ from host
-                    # time = container.stats(stream=False)["read"]
-                    # try with utc time, should be faster
-                    # TODO: make timeout configurable
                     timeout = datetime.utcnow() - timedelta(minutes=30)
                     logs = container.logs(since=timeout, tail=1)
                     # ctx.out_log.print_info(idx, logs)
