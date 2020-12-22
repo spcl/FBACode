@@ -37,7 +37,7 @@ build_systems = {
     # "travis": travis.Project,
     # "circleci": circleci.Project,
     # "github_actions": github_actions.Project
-    }
+}
 
 # continuous integration systems, decreasing priority
 ci_systems = {
@@ -70,19 +70,23 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
         if system.recognize(source_dir):
             if ci_system == "unrecognized":
                 ci_system = ci_name
-                ci_dockerfile = system.get_docker_image(source_dir)
+                ci_dockerfile = system.get_docker_image(
+                    source_dir, ctx.cfg["build"]["clang_version"]
+                )
             if ci_name not in project["ci_systems"]:
                 project["ci_systems"].append(ci_name)
     for build_name, build_system in build_systems.items():
         if build_system.recognize(source_dir):
             project["build_system"] = build_name.lower()
-            # priority is on CI dockerfile, except for debian. debian needs its special 
+            # priority is on CI dockerfile, except for debian. debian needs its special
             # container with source URIs in the /etc/sources.list
             # do workaround for now, don't know what an elegant solution would be
             if ci_dockerfile:
                 dockerfile = ci_dockerfile
             else:
-                dockerfile = build_system.CONTAINER_NAME
+                dockerfile = build_system.get_docker_image(
+                    source_dir, ctx.cfg["build"]["clang_version"]
+                )
             build_dir = join(build_dir, source_name)
             target_dir = join(target_dir, source_name)
             if not exists(build_dir):
@@ -95,12 +99,13 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 project["is_first_build"] = True
             else:
                 project["install_deps"] = True
-            json.dump({
-                "idx": idx,
-                "name": name,
-                "verbose": ctx.cfg["output"]["verbose"],
-                "project": project,
-            },
+            json.dump(
+                {
+                    "idx": idx,
+                    "name": name,
+                    "verbose": ctx.cfg["output"]["verbose"],
+                    "project": project,
+                },
                 tmp_file,
             )
             tmp_file.flush()
@@ -111,17 +116,14 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 "mode": "rw",
                 "bind": "/home/fba_code/source",
             }
-            volumes[dirname(__file__) + '/../dep_mapping.json'] = {
+            volumes[dirname(__file__) + "/../dep_mapping.json"] = {
                 "mode": "ro",
                 "bind": "/home/fba_code/dep_mapping.json",
             }
-            volumes[abspath(build_dir)] = {
-                "mode": "rw",
-                "bind": "/home/fba_code/build"
-            }
+            volumes[abspath(build_dir)] = {"mode": "rw", "bind": "/home/fba_code/build"}
             volumes[abspath(target_dir)] = {
                 "mode": "rw",
-                "bind": "/home/fba_code/bitcodes"
+                "bind": "/home/fba_code/bitcodes",
             }
             volumes[abspath(tmp_file.name)] = {
                 "mode": "ro",
@@ -134,7 +136,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 "CI_SYSTEM={}".format(ci_system),
                 "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
                 "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),
-                "JOBS={}".format(str(ctx.cfg["build"]["jobs"]))
+                "JOBS={}".format(str(ctx.cfg["build"]["jobs"])),
             ]
             container = docker_client.containers.run(
                 dockerfile,
@@ -148,15 +150,21 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             )
             if project.get("is_first_build", False):
                 ctx.out_log.print_info(
-                    idx, "1/2 building {} in container {} as {} and {}\n    dockerfile:{}".format(
-                        name, container.name, build_name, ci_system, dockerfile))
+                    idx,
+                    "1/2 building {} in container {} as {} and {}\n    dockerfile:{}".format(
+                        name, container.name, build_name, ci_system, dockerfile
+                    ),
+                )
             else:
                 ctx.out_log.print_info(
-                    idx, "building {} in container {} as {} and {}\n    dockerfile:{}".format(
-                        name, container.name, build_name, ci_system, dockerfile))
+                    idx,
+                    "building {} in container {} as {} and {}\n    dockerfile:{}".format(
+                        name, container.name, build_name, ci_system, dockerfile
+                    ),
+                )
             sleep(10)
             container.reload()
-            while(container.status == "running"):
+            while container.status == "running":
                 # get the current time of the container, can differ from host bc timezone
                 # time = container.stats(stream=False)["read"]
                 # try with utc time, should be faster
@@ -175,25 +183,29 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 ctx.err_log.print_error(
                     idx,
                     "The build process failed! Return code {}, output: {}\n".format(
-                        return_code, container.logs(tail=10).decode("utf-8"))
+                        return_code, container.logs(tail=10).decode("utf-8")
+                    ),
                 )
                 docker_log = container.logs()
-                timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-                docker_log_file = "container_{}_{}.log".format(name.replace("/", "_"), timestamp)
+                timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+                docker_log_file = "container_{}_{}.log".format(
+                    name.replace("/", "_"), timestamp
+                )
                 with open(join(abspath(build_dir), docker_log_file), "w") as f:
                     f.write(docker_log.decode())
                 project["status"] = "crash"
                 project["crash_reason"] = "docker container crashed"
                 return (idx, name, project)
             docker_log = container.logs()
-            timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-            docker_log_file = "container_{}_{}.log".format(name.replace("/", "_"), timestamp)
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            docker_log_file = "container_{}_{}.log".format(
+                name.replace("/", "_"), timestamp
+            )
             with open(join(abspath(build_dir), docker_log_file), "w") as f:
                 f.write(docker_log.decode())
             # Get output JSON
             try:
-                binary_data, _ = container.get_archive(
-                    "/home/fba_code/output.json")
+                binary_data, _ = container.get_archive("/home/fba_code/output.json")
                 # with next(binary_data) not the whole thing is loaded if file is big
                 bin = b"".join(list(binary_data))
                 tar_file = tarfile.open(fileobj=io.BytesIO(bin))
@@ -202,10 +214,14 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             except Exception as e:
                 ctx.err_log.print_error(
                     idx,
-                    "Failure retrieving the Project File from docker (1/2):\n{}".format(str(e))
+                    "Failure retrieving the Project File from docker (1/2):\n{}".format(
+                        str(e)
+                    ),
                 )
                 project["status"] = "crash"
-                project["crash_reason"] = "docker output.json not found or invalid archive"
+                project[
+                    "crash_reason"
+                ] = "docker output.json not found or invalid archive"
                 return (idx, name, project)
             end = time()
             project["build"]["time"] = end - start
@@ -225,12 +241,13 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 tmp_file.close()
                 tmp_file = tempfile.NamedTemporaryFile(mode="w")
                 # rerun the same container but with installing deps
-                json.dump({
-                    "idx": idx,
-                    "name": name,
-                    "verbose": ctx.cfg["output"]["verbose"],
-                    "project": project
-                },
+                json.dump(
+                    {
+                        "idx": idx,
+                        "name": name,
+                        "verbose": ctx.cfg["output"]["verbose"],
+                        "project": project,
+                    },
                     tmp_file,
                 )
                 tmp_file.flush()
@@ -245,7 +262,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     "CI_SYSTEM={}".format(ci_system),
                     "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
                     "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),
-                    "JOBS={}".format(str(ctx.cfg["build"]["jobs"]))
+                    "JOBS={}".format(str(ctx.cfg["build"]["jobs"])),
                 ]
                 container = docker_client.containers.run(
                     dockerfile,
@@ -258,11 +275,14 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     # mem_limit="3g"  # limit memory to 3GB to protect the host
                 )
                 ctx.out_log.print_info(
-                    idx, "2/2 building {} in container {} as {}".format(
-                        name, container.name, build_name))
+                    idx,
+                    "2/2 building {} in container {} as {}".format(
+                        name, container.name, build_name
+                    ),
+                )
                 sleep(10)
                 container.reload()
-                while(container.status == "running"):
+                while container.status == "running":
                     timeout = datetime.utcnow() - timedelta(minutes=30)
                     logs = container.logs(since=timeout, tail=1)
                     # ctx.out_log.print_info(idx, logs)
@@ -277,11 +297,14 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     ctx.err_log.print_error(
                         idx,
                         "The build process failed! Return code {}, output: {}\n".format(
-                            return_code, container.logs(tail=10).decode())
+                            return_code, container.logs(tail=10).decode()
+                        ),
                     )
                     docker_log = container.logs()
-                    timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-                    docker_log_file = "container_{}_{}.log".format(name.replace("/", "_"), timestamp)
+                    timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+                    docker_log_file = "container_{}_{}.log".format(
+                        name.replace("/", "_"), timestamp
+                    )
                     with open(join(abspath(build_dir), docker_log_file), "w") as f:
                         f.write(docker_log.decode())
                     project["status"] = "crash"
@@ -290,14 +313,15 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     project["build"]["time"] = end - start
                     return (idx, name, project)
                 docker_log = container.logs()
-                timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-                docker_log_file = "container_{}_{}.log".format(name.replace("/", "_"), timestamp)
+                timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+                docker_log_file = "container_{}_{}.log".format(
+                    name.replace("/", "_"), timestamp
+                )
                 with open(join(abspath(build_dir), docker_log_file), "w") as f:
                     f.write(docker_log.decode())
                 # Get output JSON
                 try:
-                    binary_data, _ = container.get_archive(
-                        "/home/fba_code/output.json")
+                    binary_data, _ = container.get_archive("/home/fba_code/output.json")
                     # maybe if bigger than chunk this fails??
                     # with next(binary_data) not the whole thing is loaded if file is big
                     bin = b"".join(list(binary_data))
@@ -307,10 +331,14 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 except Exception as e:
                     ctx.err_log.print_error(
                         idx,
-                        "Failure retrieving the Project File from docker:\n{}".format(str(e))
+                        "Failure retrieving the Project File from docker:\n{}".format(
+                            str(e)
+                        ),
                     )
                     project["status"] = "crash"
-                    project["crash_reason"] = "docker output.json not found or invalid archive"
+                    project[
+                        "crash_reason"
+                    ] = "docker output.json not found or invalid archive"
                     end = time()
                     project["build"]["time"] = end - start
                     return (idx, name, project)
@@ -318,7 +346,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 project["build"]["time"] = end - start
 
                 container.remove()
-                
+
                 # do the comparison of missing deps and installed packages in statistics
 
                 project["build"]["docker_log"] = docker_log_file
@@ -327,8 +355,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 bitcodes = [
                     x
                     for x in iglob(
-                        "{0}/**/*.bc".format(project["bitcodes"]["dir"]),
-                        recursive=True
+                        "{0}/**/*.bc".format(project["bitcodes"]["dir"]), recursive=True
                     )
                 ]
                 size = sum(os.path.getsize(x) for x in bitcodes)
@@ -346,7 +373,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             idx, "Unrecognized project %s in %s" % (name, source_dir)
         )
         project["status"] = "unrecognized"
-        # 
+        #
     else:
         project["build"]["time"] = end - start
     return (idx, name, project)

@@ -20,7 +20,6 @@ class Context:
 
 
 class Project:
-    CONTAINER_NAME = "mcopik/fbacode:debian-buster"
 
     def __init__(self, repo_dir, build_dir, idx, ctx, name, project):
         self.repository_path = repo_dir
@@ -191,3 +190,7 @@ class Project:
         # if this file exists, we can build it using debian tools
         # we created this file in database.py so we can recognize it now
         return isfile(join(repo_dir, ".debianbuild"))
+
+    @staticmethod
+    def get_docker_image(repo_dir, clang_version=9):
+        return "mcopik/fbacode:debian-buster-clang-{}".format(clang_version)

@@ -1,33 +1,41 @@
-FROM ubuntu:trusty  
+FROM ubuntu:bionic
 # set as env, we are noninteractive in the container too
 ENV DEBIAN_FRONTEND=noninteractive
 # for tzdata, otherwise there will be a prompt
 RUN echo "Europe/Zurich" > /etc/timezone
 
-ARG CLANG_VERSION=8
+ARG CLANG_VERSION
+RUN echo "building image for clange version ${CLANG_VERSION}"
 
-ARG deps='software-properties-common gnupg-agent gnupg curl' 
+
+ARG deps='apt-transport-https ca-certificates software-properties-common gpg-agent gnupg curl' 
 ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} \
   libomp-${CLANG_VERSION}-dev clang++-${CLANG_VERSION} texinfo build-essential fakeroot \
-  devscripts automake autotools-dev wget curl git sudo python python-pip unzip"
+  devscripts automake autotools-dev wget curl git sudo python python-pip python3-setuptools python-setuptools unzip"
 RUN echo ${CLANG_VERSION}
-RUN apt-get clean
-
 RUN apt-get update 
 RUN apt-get install -y ${deps} --no-install-recommends --force-yes
 RUN curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-RUN add-apt-repository "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-8 main"
+RUN add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main"
+RUN add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main"
+RUN add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
+RUN add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-11 main"
 RUN add-apt-repository universe
+# add the cmake repo
+RUN curl https://apt.kitware.com/keys/kitware-archive-latest.asc | apt-key add -
+RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'  
 RUN apt-get update
 RUN apt-get install -y ${soft} --no-install-recommends --force-yes
-
 RUN apt-get purge -y --auto-remove ${DEPS}
 RUN ln -s /usr/bin/clang-${CLANG_VERSION} /usr/bin/clang
 RUN ln -s /usr/bin/clang++-${CLANG_VERSION} /usr/bin/clang++
 # install needed python modules
 RUN python3 -m pip install pyyaml
 RUN python -m pip install --upgrade pip
-# install pyenv (needed for travis...)
+# # install python2 pip for travis
+# RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
+# RUN python2 get-pip.py
+# # install pyenv (needed for travis...)
 RUN curl https://pyenv.run | bash
 # so travis can use sudo
 RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
@@ -54,7 +62,6 @@ ENV QMAKESPEC=/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang/
 
 RUN sed -i -e "s|compare_problem(2,|compare_problem(0,|g" /usr/bin/dpkg-gensymbols
 RUN sed -i -e "s|compare_problem(1,|compare_problem(0,|g" /usr/bin/dpkg-gensymbols
-RUN grep "compare_problem(" /usr/bin/dpkg-gensymbols
 
 RUN apt search '^gcc-[0-9]*[.]*[0-9]*$' | grep -o '\bgcc[a-zA-Z0-9:_.-]*' |\
   xargs -I {} echo "{}" hold | dpkg --set-selections
@@ -76,6 +83,8 @@ RUN ln -s "${HOME_DIR}/wrappers/exit0.sh" /usr/bin/travis_time_finish
 RUN ln -s "${HOME_DIR}/wrappers/exit0.sh" /usr/bin/travis_terminate
 RUN ln -s "${HOME_DIR}/wrappers/pass_cmd.sh" /usr/bin/travis_wait
 RUN ln -s "${HOME_DIR}/wrappers/exit0.sh" /usr/bin/travis_assert
+RUN ln -s /bin/echo /usr/bin/post_message
+RUN ln -s /bin/echo /usr/bin/set_tag_for_release
 
 
 # https://clang.debian.net/

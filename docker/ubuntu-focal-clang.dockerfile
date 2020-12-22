@@ -1,21 +1,27 @@
-FROM ubuntu:20.04
+FROM ubuntu:focal
 # set as env, we are noninteractive in the container too
 ENV DEBIAN_FRONTEND=noninteractive
 # for tzdata, otherwise there will be a prompt
 RUN echo "Europe/Zurich" > /etc/timezone
 
-ARG CLANG_VERSION=9
+ENV SNAPCRAFT_SETUP_CORE=1
 
+ARG CLANG_VERSION
+RUN echo "building image for clange version ${CLANG_VERSION}"
 
-ARG deps='apt-transport-https ca-certificates software-properties-common gpg-agent gnupg curl' 
-ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} \
-  libomp-${CLANG_VERSION}-dev clang++-${CLANG_VERSION} texinfo build-essential fakeroot \
-  devscripts automake autotools-dev wget curl git sudo python2 unzip"
+ARG deps='apt-transport-https ca-certificates software-properties-common curl gpg-agent gnupg' 
+ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} libomp-${CLANG_VERSION}-dev \
+  clang++-${CLANG_VERSION} texinfo build-essential fakeroot devscripts automake autotools-dev \
+  wget snapd git ruby-full sudo python2 python3-setuptools unzip"
 RUN echo ${CLANG_VERSION}
+RUN apt-get clean
 RUN apt-get update 
 RUN apt-get install -y ${deps} --no-install-recommends --force-yes
 RUN curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal main"
+RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-9 main"
+RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-10 main"
+RUN add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main"
 RUN add-apt-repository universe
 # add the cmake repo
 RUN curl https://apt.kitware.com/keys/kitware-archive-latest.asc | apt-key add -
@@ -28,12 +34,11 @@ RUN ln -s /usr/bin/clang++-${CLANG_VERSION} /usr/bin/clang++
 # install needed python modules
 RUN python3 -m pip install pyyaml
 
-# install python2 pip for travis
+# install pyenv (needed for travis...)
+RUN curl https://pyenv.run | bash
 RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
 RUN python2 get-pip.py
 RUN python2 -m pip install --upgrade pip
-# install pyenv (needed for travis...)
-RUN curl https://pyenv.run | bash
 # so travis can use sudo
 RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 
@@ -71,7 +76,8 @@ ADD docker/init.py init.py
 ADD code_builder/utils/ utils
 ADD code_builder/build_systems/ build_systems
 ADD code_builder/wrappers/ wrappers
-ADD code_builder/ci_systems ci_systems
+ADD code_builder/ci_systems/ ci_systems
+
 
 # fake travis commands so scripts don't fail
 RUN ln -s "${HOME_DIR}/wrappers/travis_retry.sh" /usr/bin/travis_retry
@@ -81,7 +87,6 @@ RUN ln -s "${HOME_DIR}/wrappers/exit0.sh" /usr/bin/travis_time_finish
 RUN ln -s "${HOME_DIR}/wrappers/exit0.sh" /usr/bin/travis_terminate
 RUN ln -s "${HOME_DIR}/wrappers/pass_cmd.sh" /usr/bin/travis_wait
 RUN ln -s "${HOME_DIR}/wrappers/exit0.sh" /usr/bin/travis_assert
-
 
 # https://clang.debian.net/
 # https://github.com/sylvestre/debian-clang/blob/master/clang-setup.sh
