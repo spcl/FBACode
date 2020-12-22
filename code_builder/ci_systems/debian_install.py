@@ -50,4 +50,4 @@ class CiSystem:
 
     @staticmethod
     def get_docker_image(repo_dir, clang_version=9):
-        return debian.Project.CONTAINER_NAME
+        return debian.Project.get_docker_image(repo_dir, clang_version)
