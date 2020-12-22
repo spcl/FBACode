@@ -60,7 +60,6 @@ for i, (img, definitions) in enumerate(images.items()):
     )
     dockerfile = definitions["dockerfile"]
     cli = docker.APIClient()  # type: ignore
-    print("initialized APICLINET")
     response = cli.build(
         path=PROJECT_DIR,
         dockerfile=os.path.join(DOCKER_DIR, dockerfile),
