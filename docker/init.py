@@ -1,14 +1,17 @@
-import json
+# from code_builder.ci_systems.apt_install import Installer
 import sys
 import os
 import importlib
 import glob
 import subprocess
 from subprocess import PIPE
+import json
 
 from time import time
 from shutil import move, copyfile
 from datetime import datetime
+
+from ci_systems.apt_install import Installer  # type: ignore  we are in docker
 
 # paths are different indide docker
 from utils.driver import open_logfiles  # type: ignore
@@ -35,6 +38,7 @@ def print_section(idx, ctx, message):
 source_dir = "/home/fba_code/source"
 build_dir = "/home/fba_code/build"
 bitcodes_dir = "/home/fba_code/bitcodes"
+dependency_map = "/home/fba_code/dep_mapping.json"
 build_system = os.environ["BUILD_SYSTEM"]
 ci_system = os.environ["CI_SYSTEM"]
 external_build_dir = os.environ["BUILD_DIR"]
@@ -81,13 +85,6 @@ project = {
 builder = builder_class(source_dir, build_dir, idx, ctx, name, project)
 if install_deps:
     print_section(idx, ctx, "insalling dependencies with {}".format(ci_system))
-    # install_method = getattr(builder, "install", None)
-    # if callable(install_method):
-    #     # our builder can install deps by themselves:
-    #     print("installing dependencies using builder class")
-    #     success = install_method()
-    #     if success:
-    #         print("successfully installed dependencies with build system")
 
     # by default, get dependencies with ci system
     ci = ci_class(source_dir, build_dir, idx, ctx, name, project)
@@ -100,7 +97,24 @@ if install_deps:
         project["build"]["install"] = ci_system
     end = time()
     project["build"]["install_time"] = end - start
-    print_section(idx, ctx, "done installing dependencies".format(ci_system))
+    print_section(idx, ctx, "done installing dependencies")
+    # check if there are missing dependencies fields in the project file
+    if "missing_deps" in json_input["project"]:
+        print_section(idx, ctx, "installing missing dependencies from prev. build")
+        installer = Installer(
+            source_dir,
+            build_dir,
+            idx,
+            ctx,
+            name,
+            project,
+            dependency_map,
+            json_input["project"]["missing_deps"],
+        )
+        installer.install()
+        print_section(idx, ctx, "done installing dependencies from prev. build")
+
+
 start = time()
 print_section(idx, ctx, "starting configuration")
 configured = builder.configure(build_dir)
