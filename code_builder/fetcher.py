@@ -182,7 +182,8 @@ class DebianFetcher:
         for i, prefix in enumerate(self.prefixes):
             self.out_log.info("fetching pkgs with prefix {}".format(prefix))
             prefix_response = get(
-                "https://sources.debian.org/copyright/api/prefix/{}/?suite={}".format(prefix, self.suite))
+                # XXX: change from /copyright/api correct?
+                "https://sources.debian.org/api/prefix/{}/?suite={}".format(prefix, self.suite))
             if prefix_response.status_code != 200:
                 # hmmm fuck
                 self.error_log.error("error fetching {}, code {}".format(
@@ -192,6 +193,7 @@ class DebianFetcher:
             # comment for predictable results
             shuffle(data["packages"])
             for pkg in data["packages"]:
+                # parallelize this
                 if self.package_info(pkg):
                     repo_count += 1
                     self.out_log.next()
