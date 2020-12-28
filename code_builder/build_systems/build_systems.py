@@ -53,8 +53,8 @@ double_build_ci = {"travis", "gh_actions", "debian_install"}
 
 def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=None):
 
-    if project["status"] == "unrecognized":
-        ctx.stats.unrecognized()
+    # if project["status"] == "unrecognized":
+    #     ctx.stats.unrecognized()
     if "build" in project:
         # update if needed
         return (idx, name, project)
