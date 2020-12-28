@@ -36,8 +36,8 @@ class Installer:
         for m, source in self.missing:
             if m in self.dependency_map:
                 # we can install the pkgs in here, maybe take those with more than min number of installs
-                installs = [i for _, i in self.dependency_map[m].items()]
-                for pkg, number in self.dependency_map[m].items():
+                installs = [i for _, i in self.dependency_map[m]["deps"].items()]
+                for pkg, number in self.dependency_map[m]["deps"].items():
                     # for now, install only max
                     if number == max(installs):
                         pkgs_to_install.append(pkg)
