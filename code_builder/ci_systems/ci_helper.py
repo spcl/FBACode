@@ -75,7 +75,7 @@ def run_scripts(logger, script_list, cwd=None):
         substitution = run(
             ["bash", "-c", 'echo "{}"'.format(cmd)], stdout=PIPE, stderr=PIPE
         )
-        print("TRAVIS: {}".format(substitution.stdout.decode("utf-8")))
+        print("TRAVIS: {}".format(substitution.stdout))
         out = run(
             ["bash", "-c", cmd], cwd, stderr=subprocess.PIPE, stdout=subprocess.PIPE
         )
@@ -83,16 +83,16 @@ def run_scripts(logger, script_list, cwd=None):
             logger.output_log.print_error(
                 logger.idx,
                 "running command \n{}   failed: {}".format(
-                    substitution.stdout.decode("utf-8"), out.stderr.decode("utf-8")
+                    substitution.stdout, out.stderr
                 ),
             )
             logger.error_log.print_error(
                 logger.idx,
-                "bash command execution failed: {}".format(out.stderr.decode("utf-8")),
+                "bash command execution failed: {}".format(out.stderr),
             )
-            logger.error_log.print_info(logger.idx, out.stdout.decode("utf-8"))
+            logger.error_log.print_info(logger.idx, out.stdout)
             return False
-        print(out.stdout.decode("utf-8"))
+        print(out.stdout)
     return True
 
 
@@ -122,11 +122,11 @@ def apt_install(logger, pkgs):
             logger.idx, "apt_packages install from .travis.yml failed"
         )
         logger.error_log.print_error(
-            logger.idx, "{}:\n{}".format(out.args, out.stderr.decode("utf-8"))
+            logger.idx, "{}:\n{}".format(out.args, out.stderr)
         )
-        if "Unable to locate package " in out.stderr.decode("utf-8"):
+        if "Unable to locate package " in out.stderr:
             # some packages could not be found, let's remove them
-            for l in out.stderr.decode("utf-8").splitlines():
+            for l in out.stderr.splitlines():
                 index = l.find("Unable to locate package ")
                 if index >= 0:
                     pkg = l[index + len("Unable to locate package ") :].strip()
@@ -135,8 +135,8 @@ def apt_install(logger, pkgs):
             out = run(["bash", "-c", cmd], stderr=PIPE)
             if out.returncode == 0:
                 return True
-        if "has no installation candidate" in out.stderr.decode("utf-8"):
-            for l in out.stderr.decode("utf-8").splitlines():
+        if "has no installation candidate" in out.stderr:
+            for l in out.stderr.splitlines():
                 pattern = (
                     re.escape("E: Package '")
                     + r"(.*)"
