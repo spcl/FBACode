@@ -33,7 +33,7 @@ class Installer:
             print("no depencencies to install")
             return
         pkgs_to_install = []
-        for m in self.missing:
+        for m, source in self.missing:
             if m in self.dependency_map:
                 # we can install the pkgs in here, maybe take those with more than min number of installs
                 installs = [i for _, i in self.dependency_map[m].items()]
