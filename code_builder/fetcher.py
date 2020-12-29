@@ -49,7 +49,7 @@ class GithubFetcher:
         while repos_processed < max_repos:
             request_params["page"] = str(page)
             results_page = self.fetch_json(address, request_params, ["C", "Cpp"])
-            items = len(results_page['items'])
+            items = len(results_page["items"])
             if results_page is None:
                 self.error_log.error("Incorrect results, end work!")
                 return
@@ -58,8 +58,7 @@ class GithubFetcher:
             elif results_page["incomplete_results"] and not items == repos_per_page:
                 repos_per_page = int(repos_per_page / 2)
                 if repos_per_page < 1:
-                    self.error_log.error(
-                        "Couldnt fetch a single repository, end work!")
+                    self.error_log.error("Couldnt fetch a single repository, end work!")
                     return
                 request_params["per_page"] = str(repos_per_page)
                 self.error_log.error(
@@ -72,7 +71,7 @@ class GithubFetcher:
                 continue
             # paging restart can let to duplicating some results
             for result in results_page["items"]:
-                if result['full_name'] not in unique_names:
+                if result["full_name"] not in unique_names:
                     results.append(result)
                     repos_processed += 1
             self.out_log.next(repos_per_page)
@@ -84,8 +83,7 @@ class GithubFetcher:
 
         end = time()
         self.out_log.info(
-            "Processed %d repositories in %f seconds" % (
-                repos_processed, end - start)
+            "Processed %d repositories in %f seconds" % (repos_processed, end - start)
         )
         # Mix C and C++ projects and sort them together
         reversed_order = request_params["order"] == "desc"
@@ -140,7 +138,7 @@ class GithubFetcher:
         params_str = "&".join(
             "{0}={1}".format(key, value) for key, value in params_to_parse.items()
         )
-        headers = {'Authorization': token}
+        headers = {"Authorization": token}
 
         r = get(address, params_str, headers=headers)
         if r.status_code != 200:
@@ -153,19 +151,20 @@ class GithubFetcher:
 
 
 class DebianFetcher:
-
     def __init__(self, cfg, out_log, error_log):
         self.cfg = cfg
         self.out_log = out_log
         self.error_log = error_log
         self.name = "debian"
         # https://sources.debian.org/doc/api/
-        prefixes_nums = ['0', '2', '3', '4', '6', '7', '8', '9']
+        prefixes_nums = ["0", "2", "3", "4", "6", "7", "8", "9"]
         prefixes_lib = ["lib-", "lib3"] + ["lib" + x for x in ascii_lowercase]
-        self.prefixes = (prefixes_nums
-                         + list(ascii_lowercase[:12])
-                         + prefixes_lib
-                         + list(ascii_lowercase[12:]))
+        self.prefixes = (
+            prefixes_nums
+            + list(ascii_lowercase[:12])
+            + prefixes_lib
+            + list(ascii_lowercase[12:])
+        )
         self.suite = cfg["debian"]["suite"]
 
     def fetch(self, max_repos=None):
@@ -183,11 +182,17 @@ class DebianFetcher:
             self.out_log.info("fetching pkgs with prefix {}".format(prefix))
             prefix_response = get(
                 # XXX: change from /copyright/api correct?
-                "https://sources.debian.org/api/prefix/{}/?suite={}".format(prefix, self.suite))
+                "https://sources.debian.org/api/prefix/{}/?suite={}".format(
+                    prefix, self.suite
+                )
+            )
             if prefix_response.status_code != 200:
                 # hmmm fuck
-                self.error_log.error("error fetching {}, code {}".format(
-                    prefix_response.url, prefix_response.status_code))
+                self.error_log.error(
+                    "error fetching {}, code {}".format(
+                        prefix_response.url, prefix_response.status_code
+                    )
+                )
                 return False
             data = prefix_response.json()
             # comment for predictable results
@@ -204,7 +209,8 @@ class DebianFetcher:
                 break
         end = time()
         self.out_log.info(
-            "got {} c/c++ packages in {} seconds!".format(repo_count, end - start))
+            "got {} c/c++ packages in {} seconds!".format(repo_count, end - start)
+        )
         return True
 
     def process_results(self, data):
@@ -221,8 +227,8 @@ class DebianFetcher:
                 "codebase_data": {
                     "sloc": pkg["sloc"],
                     "vcs_url": pkg["vcs_browser"],
-                    "vcs_type": pkg["vcs_type"]
-                }
+                    "vcs_type": pkg["vcs_type"],
+                },
             }
         return processed_results
 
@@ -233,44 +239,67 @@ class DebianFetcher:
         # get the version number for this package
         self.out_log.info("fetching info for {}".format(pkg["name"]))
         response = get(
-            "https://sources.debian.org/api/src/{}/?suite={}".format(pkg["name"], self.suite))
+            "https://sources.debian.org/api/src/{}/?suite={}".format(
+                pkg["name"], self.suite
+            )
+        )
         if response.status_code != 200:
-            self.error_log.error("error fetching pkg versions for {}, code {}".format(
-                pkg["name"],
-                response.status_code))
+            self.error_log.error(
+                "error fetching pkg versions for {}, code {}".format(
+                    pkg["name"], response.status_code
+                )
+            )
             return False
         # first version should be correct because we specify suite in url
-        if not isinstance(response.json()["versions"], list) or len(response.json()["versions"]) == 0:
+        if (
+            not isinstance(response.json()["versions"], list)
+            or len(response.json()["versions"]) == 0
+        ):
             print("weird json response:")
             print(response.json())
             return False
         version = response.json()["versions"][0]["version"]
         # get more info for package and version
         response = get(
-            "https://sources.debian.org/api/info/package/{}/{}".format(pkg["name"], version))
+            "https://sources.debian.org/api/info/package/{}/{}".format(
+                pkg["name"], version
+            )
+        )
         if response.status_code != 200:
-            self.error_log.error("error fetching pkg info for {}, code {}".format(
-                pkg["name"],
-                response.status_code))
+            self.error_log.error(
+                "error fetching pkg info for {}, code {}".format(
+                    pkg["name"], response.status_code
+                )
+            )
             return False
         # only keep packages with mostly c or c++
         c_names = ["ansic", "cpp"]
         # uncomment to include packages which contain any amount of c/c++
-        c_sloc = [{lang[0]: lang[1]} for lang in response.json()["pkg_infos"]["sloc"] if lang[0] in c_names]
+        c_sloc = [
+            {lang[0]: lang[1]}
+            for lang in response.json()["pkg_infos"]["sloc"]
+            if lang[0] in c_names
+        ]
         # if response.json()["pkg_infos"]["sloc"][0][0] in c_names:
         # XXX: ignore packages with more than 1mil LOC (just for testing)
         if any(c_sloc) and int(response.json()["pkg_infos"]["sloc"][0][1]) < 100000:
             self.out_log.info("contains c/c++!")
-            self.results.append({
-                # pkg["name"]: {
-                "version": version,
-                "name": pkg["name"],
-                "sloc": response.json()["pkg_infos"]["sloc"],
-                "suite": self.suite,
-                "vcs_browser": response.json()["pkg_infos"]["vcs_browser"] if "vcs_browser" in response.json()["pkg_infos"] else None,
-                "vcs_type": response.json()["pkg_infos"]["vcs_type"] if "vcs_type" in response.json()["pkg_infos"] else None
-                # }
-            })
+            self.results.append(
+                {
+                    # pkg["name"]: {
+                    "version": version,
+                    "name": pkg["name"],
+                    "sloc": response.json()["pkg_infos"]["sloc"],
+                    "suite": self.suite,
+                    "vcs_browser": response.json()["pkg_infos"]["vcs_browser"]
+                    if "vcs_browser" in response.json()["pkg_infos"]
+                    else None,
+                    "vcs_type": response.json()["pkg_infos"]["vcs_type"]
+                    if "vcs_type" in response.json()["pkg_infos"]
+                    else None
+                    # }
+                }
+            )
             return True
         return False
 
