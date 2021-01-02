@@ -153,7 +153,7 @@ class GithubFetcher:
 
 
 class DebianFetcher:
-    def __init__(self, cfg, out_log, error_log, thread_count=10):
+    def __init__(self, cfg, out_log, error_log, thread_count=50):
         self.cfg = cfg
         self.out_log = out_log
         self.error_log = error_log
@@ -175,7 +175,6 @@ class DebianFetcher:
         if not max_repos:
             max_repos = -1
         self.max_repos = max_repos
-        print(max_repos)
         repo_count = 0
         self.results = []
         self.out_log.set_counter(max_repos)
@@ -192,20 +191,25 @@ class DebianFetcher:
             )
             return False
         pkg_list = all_pkgs.json()["packages"]
-        shuffle(pkg_list)
+        # shuffle(pkg_list)
         futures = []
         index = 0
-        print("loaded all debian pkgs, length: {}".format(len(pkg_list)))
+        print("Loaded all {} debian packages".format(len(pkg_list)))
         with ThreadPoolExecutor(max_workers=self.thread_count) as executor:
             # start thread_count workers
             for index in range(0, self.thread_count):
                 print(
-                    "[{}/{}] fetched, trying index {}: {}".format(
-                        repo_count, max_repos, index, pkg_list[index]["name"]
+                    "[{}/{}] fetched, trying {}".format(
+                        repo_count, max_repos, pkg_list[index]["name"]
                     )
                 )
+                # self.out_log.info(
+                #             repo_count,
+                #             "fetch info for {}".format(pkg_list[index]["name"]),
+                #         )
                 future = executor.submit(self.package_info, pkg_list[index]["name"])
                 futures.append(future)
+                # sleep(0.05)
             incomplete_futures = True
             # when one finishes, increment counter and add a new one to the queue
             while incomplete_futures:
@@ -220,10 +224,14 @@ class DebianFetcher:
                             repo_count += 1
                             self.results.append(result)
                         print(
-                            "[{}/{}] fetched, trying index {}: {}".format(
-                                repo_count, max_repos, index, pkg_list[index]["name"]
+                            "[{}/{}] fetched, trying {}".format(
+                                repo_count, max_repos, pkg_list[index]["name"]
                             )
                         )
+                        # self.out_log.info(
+                        #     repo_count,
+                        #     "fetch info for {}".format(pkg_list[index]["name"]),
+                        # )
                         new_future = executor.submit(
                             self.package_info, pkg_list[index]["name"]
                         )
