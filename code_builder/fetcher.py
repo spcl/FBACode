@@ -158,17 +158,9 @@ class DebianFetcher:
         self.out_log = out_log
         self.error_log = error_log
         self.name = "debian"
-        # https://sources.debian.org/doc/api/
-        prefixes_nums = ["0", "2", "3", "4", "6", "7", "8", "9"]
-        prefixes_lib = ["lib-", "lib3"] + ["lib" + x for x in ascii_lowercase]
-        self.prefixes = (
-            prefixes_nums
-            + list(ascii_lowercase[:12])
-            + prefixes_lib
-            + list(ascii_lowercase[12:])
-        )
         self.suite = cfg["debian"]["suite"]
-        self.thread_count = thread_count
+        self.thread_count = int(cfg["debian"]["threads"])
+        self.shuffle = bool(cfg["debian"]["shuffle"])
 
     def fetch(self, max_repos=None):
         # fetch results to self.results
@@ -191,7 +183,8 @@ class DebianFetcher:
             )
             return False
         pkg_list = all_pkgs.json()["packages"]
-        # shuffle(pkg_list)
+        if self.shuffle:
+            shuffle(pkg_list)
         futures = []
         index = 0
         print("Loaded all {} debian packages".format(len(pkg_list)))
