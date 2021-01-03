@@ -96,7 +96,9 @@ def run_scripts(logger, script_list, cwd=None):
     return True
 
 
-def apt_install(logger, pkgs):
+def apt_install(logger, pkgs, project=None):
+    if project is not None and project["build"].get("apt_not_found") is None:
+        project["build"]["apt_not_found"] = []
     cmd = "apt-get install -y --force-yes --no-install-recommends "
     if isinstance(pkgs, str):
         cmd += pkgs
@@ -131,6 +133,8 @@ def apt_install(logger, pkgs):
                 if index >= 0:
                     pkg = l[index + len("Unable to locate package ") :].strip()
                     cmd = cmd.replace(pkg, "")
+                    if project is not None:
+                        project["build"]["apt_not_found"].append(pkg)
                     print("retrying without {}".format(pkg))
             out = run(["bash", "-c", cmd], stderr=PIPE)
             if out.returncode == 0:
@@ -145,6 +149,8 @@ def apt_install(logger, pkgs):
                 r = re.search(pattern, l)
                 if r:
                     cmd = cmd.replace(r[1], "")
+                    if project is not None:
+                        project["build"]["apt_not_found"].append(r[1])
                     print("retrying without {}".format(r[1]))
             out = run(["bash", "-c", cmd], stderr=PIPE)
             if out.returncode == 0:

@@ -211,7 +211,7 @@ class CiSystem:
         # in case it's just a string or list of strings
         if apt and (isinstance(apt, str) or
                     isinstance(apt, list) and all(isinstance(i, str) for i in apt)):
-            if not apt_install(self, apt):
+            if not apt_install(self, apt, self.project):
                 return False
         # in case it is more complicated
         elif apt:
@@ -274,11 +274,11 @@ class CiSystem:
                     return False
             # lol, apt.get
             if apt.get("packages") is not None:
-                apt_install(self, apt.get("packages"))
+                apt_install(self, apt.get("packages"), self.project)
 
         apt_packages = addons.get("apt_packages")
         if apt_packages:
-            apt_install(self, apt_packages)
+            apt_install(self, apt_packages, self.project)
         # run the snap module
         snaps = addons.get("snaps")
         if snaps is not None:

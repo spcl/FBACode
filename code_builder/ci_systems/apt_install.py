@@ -47,5 +47,5 @@ class Installer:
                 # an API to search would be nice.
                 pkgs_to_install.append(m)
 
-        success = apt_install(self, pkgs_to_install)
+        success = apt_install(self, pkgs_to_install, self.project)
         return success
