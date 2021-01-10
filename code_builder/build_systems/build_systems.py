@@ -1,3 +1,4 @@
+from code_builder.statistics import Statistics
 import subprocess
 import os
 import docker
@@ -6,6 +7,7 @@ import tarfile
 import json
 import tempfile
 import copy
+import string
 
 from os.path import abspath, join, exists, basename, dirname
 from os import mkdir
@@ -116,7 +118,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 "mode": "rw",
                 "bind": "/home/fba_code/source",
             }
-            volumes[dirname(__file__) + "/../dep_mapping.json"] = {
+            volumes[join(dirname(__file__), "../dep_mapping.json")] = {
                 "mode": "ro",
                 "bind": "/home/fba_code/dep_mapping.json",
             }
@@ -137,11 +139,23 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
                 "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),
                 "JOBS={}".format(str(ctx.cfg["build"]["jobs"])),
+                "save_ir={}".format(str(ctx.cfg["build"]["save_ir"])),
+                "save_ast={}".format(str(ctx.cfg["build"]["save_ast"])),
+                "keep_build_files={}".format(str(ctx.cfg["build"]["keep_build_files"])),
+                "keep_source_files={}".format(
+                    str(ctx.cfg["build"]["keep_source_files"])
+                ),
             ]
+            # generate a name for docker
+            # container_name = "{}.{}.{}".format(idx, name, build_name)
+            # allowed_chars = string.ascii_letters + string.digits + "_.-"
+            # for c in container_name:
+            #     if c not in allowed_chars:
+            #         container_name = container_name.replace(c, "_")
             container = docker_client.containers.run(
                 dockerfile,
                 detach=True,
-                # name="{}_{}".format(name, build_name),
+                # name=container_name,
                 environment=environment,
                 volumes=volumes,
                 auto_remove=False,
@@ -163,19 +177,35 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     ),
                 )
             sleep(10)
-            container.reload()
-            while container.status == "running":
+            # FIXME: this sometimes fails???
+            # container exits before 10s, then this fails (i think)
+            reload_fail = False
+            try:
+                container.reload()
+            except:
+                print("AAAAAAAAAAAAAA\n{}: container.reload failed".format(name))
+                reload_fail = True
+            while not reload_fail and container.status == "running":
                 # get the current time of the container, can differ from host bc timezone
                 # time = container.stats(stream=False)["read"]
                 # try with utc time, should be faster
                 # TODO: make timeout configurable
                 timeout = datetime.utcnow() - timedelta(minutes=30)
-                logs = container.logs(since=timeout, tail=1)
+                logs = container.logs(since=timeout, tail=10)
                 # ctx.out_log.print_info(idx, logs)
                 if logs == b"":
+                    ctx.out_log.print_info(
+                        idx, "stopping container, no progress in 30min"
+                    )
                     container.stop(timeout=3)
                 sleep(10)
-                container.reload()
+                try:
+                    container.reload()
+                except:
+                    print(
+                        "BBBBBBBBBBBB\ncontainer.reload failed, lets try and handle this"
+                    )
+                reload_fail = True
             # just use this to get exit code
             return_code = container.wait()
             if return_code["StatusCode"]:
@@ -231,6 +261,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             # if we have a build system that can install packages, rerun with packages
             # at the moment only travis, can be expended..
             if ci_system in double_build_ci:
+                if stats is None:
+                    stats = Statistics(1)
                 stats.update(project, name)
                 project["first_build"] = copy.deepcopy(project["build"])
                 project["install_deps"] = True
@@ -263,11 +295,17 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
                     "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),
                     "JOBS={}".format(str(ctx.cfg["build"]["jobs"])),
+                    "save_ir={}".format(str(ctx.cfg["build"]["save_ir"])),
+                    "save_ast={}".format(str(ctx.cfg["build"]["save_ast"])),
+                    "keep_build_files={}".format(str(ctx.cfg["build"]["keep_build_files"])),
+                    "keep_source_files={}".format(
+                        str(ctx.cfg["build"]["keep_source_files"])
+                    ),
                 ]
                 container = docker_client.containers.run(
                     dockerfile,
                     detach=True,
-                    # name="{}_{}".format(name, build_name),
+                    # name=container_name,
                     environment=environment,
                     volumes=volumes,
                     auto_remove=False,
