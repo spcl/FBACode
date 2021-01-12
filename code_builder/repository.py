@@ -1,5 +1,6 @@
 from os.path import join, exists
-from git import Repo, GitCommandError
+from git import Repo, GitCommandError, InvalidGitRepositoryError
+from shutil import rmtree
 
 
 class GitProject:
@@ -8,13 +9,13 @@ class GitProject:
         self.branch = branch
         self.output_log = output_log
         last_slash = repository_path.rfind("/") + 1
-        project_name = repository_path[last_slash: repository_path.rfind(".git")]
+        project_name = repository_path[last_slash : repository_path.rfind(".git")]
         # repository format is: git@server:user/project.git
         # or https://server/user/project.git
         user_start = repository_path.rfind("/", 0, last_slash - 1)
         if user_start == -1:
             user_start = repository_path.rfind(":", 0, last_slash - 1)
-        user_name = repository_path[user_start + 1: last_slash - 1]
+        user_name = repository_path[user_start + 1 : last_slash - 1]
         self.project_name = "{0}_{1}".format(user_name, project_name)
         self.repository_path = repository_path
 
@@ -32,8 +33,19 @@ class GitProject:
             % (self.project_name, self.repository_path, repo_location),
         )
         if exists(repo_location):
-            self.cloned_repo = Repo(repo_location)
-        else:
+            try:
+                self.cloned_repo = Repo(repo_location)
+            except InvalidGitRepositoryError:
+                # the existing directory is not a git repo...
+                # let's delete it and redownload
+                self.info(
+                    idx,
+                    "source directory exists but is not git repo, redownloading {}".format(
+                        self.project_name
+                    ),
+                )
+                rmtree(repo_location)
+        if not exists(repo_location):
             try:
                 self.cloned_repo = Repo.clone_from(
                     self.repository_path, repo_location, recursive=True
