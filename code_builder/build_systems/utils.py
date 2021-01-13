@@ -14,6 +14,7 @@ def run(command, cwd=None, stdout=None, stderr=None) -> CompletedProcess:
     # Python 3.5+ - subprocess.run
     # older - subprocess.call
     # TODO: capture_output added in 3.7 - verify it works
+    print("running '{}'".format(command))
     if version_info.major >= 3 and version_info.minor >= 5:
         out = subprocess.run(command, cwd=cwd, stdout=stdout, stderr=stderr)
         return CompletedProcess(
