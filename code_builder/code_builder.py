@@ -3,7 +3,9 @@ import functools
 # import threading
 import concurrent.futures
 import json
+import multiprocessing
 import sys
+from multiprocessing import Manager
 
 from time import time
 from os import environ, mkdir, getpid
@@ -79,7 +81,6 @@ def copy_futures(dest, src):
         dest.set_result(src.result())
 
 
-
 def callback(pool, ctx, f, callback):
     future = concurrent.futures.Future()
 
@@ -93,17 +94,35 @@ def callback(pool, ctx, f, callback):
     return future
 
 
-def download_and_build(cloner, idx, name, project, target_dir, build_dir, ctx, stats):
+def download_and_build(
+    cloner, idx, name, project, target_dir, build_dir, ctx, stats, running_builds
+):
+    running_builds[multiprocessing.current_process().name] = (idx, name)
+    print("| ", end="")
+    print("\n| ".join("{}\t{}".format(k, v) for k, v in running_builds.items()))
     global loggers
     ctx.set_loggers(loggers.stdout, loggers.stderr)
     cloner.clone(idx, name, project)
     try:
-        idx, name, new_project = recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=stats)
+        idx, name, new_project = recognize_and_build(
+            idx, name, project, build_dir, target_dir, ctx, stats=stats
+        )
     except Exception as e:
         print("aaaaaaaaaaaaaaaaaa failure in {} builder:\n{}".format(name, e))
-        print("Stackoverflow approach:\n{}".format("".join(traceback.format_exception(*sys.exc_info()))))
+        print(
+            "Stackoverflow approach:\n{}".format(
+                "".join(traceback.format_exception(*sys.exc_info()))
+            )
+        )
+        running_builds.pop(multiprocessing.current_process().name)
+        running_builds["builds_left"] -= 1
+        print("\n".join("{}\t{}".format(k, v) for k, v in running_builds.items()))
         return (idx, name, project)
-    print("\ndone building {}\n".format(name))
+    print("| DONE building {}".format(name))
+    running_builds.pop(multiprocessing.current_process().name)
+    running_builds["builds_left"] -= 1
+    # print("\n| ".join("{}\t{}".format(k, v) for k, v in running_builds.items()))
+    # print("|----------------")
     return (idx, name, new_project)
 
 
@@ -123,7 +142,7 @@ def build_projects(
         projects_count += len(repositories)
     # env = Environment()
     # env.overwrite_environment()
-    builds_left = projects_count
+    # builds_left = projects_count
     repositories_idx = 0
     if cfg["clone"]["multithreaded"]:
         threads_count = int(cfg["clone"]["threads"])
@@ -138,9 +157,12 @@ def build_projects(
     # ctx.set_loggers(loggers.stdout, loggers.stderr)
     start = time()
     stats = Statistics(projects_count)
+    manager = Manager()
+    running_builds = manager.dict()
+    running_builds["builds_left"] = projects_count
     with concurrent.futures.ProcessPoolExecutor(threads_count) as pool:
         projects = []
-        
+
         database_processers = []
         # we need an instance of the statistics class for the dependency analysis
         # when we build twice
@@ -156,7 +178,22 @@ def build_projects(
             # indices = list(range(repositories_idx + 1, repositories_idx + repo_count + 1))
             # idx = indices[0]
             for name, proj in repositories.items():
-                future = pool.submit(initializer_func, ctx, download_and_build, (db_processor, idx, name, proj, target_dir, build_dir, ctx, temporary_stats))
+                future = pool.submit(
+                    initializer_func,
+                    ctx,
+                    download_and_build,
+                    (
+                        db_processor,
+                        idx,
+                        name,
+                        proj,
+                        target_dir,
+                        build_dir,
+                        ctx,
+                        temporary_stats,
+                        running_builds,
+                    ),
+                )
                 projects.append(future)
                 idx += 1
             repositories_idx += repo_count
@@ -215,8 +252,13 @@ def build_projects(
     stats.save_errors_json()
     stats.save_errorstat_json()
     stats.save_dependencies_json()
-    timestamp = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-    with open(join("buildlogs", "summary_{}_{}.txt".format(timestamp, projects_count)), 'w') as o:
+    timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+    with open(
+        join("buildlogs", "summary_{}_{}.txt".format(timestamp, projects_count)), "w"
+    ) as o:
         stats.print_stats(o)
-    with open(join("buildlogs", "build_details_{}_{}.json".format(timestamp, projects_count)), 'w') as o:
+    with open(
+        join("buildlogs", "build_details_{}_{}.json".format(timestamp, projects_count)),
+        "w",
+    ) as o:
         o.write(json.dumps(all_repositories, indent=2))
