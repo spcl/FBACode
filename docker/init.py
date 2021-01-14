@@ -135,8 +135,10 @@ else:
     if skip_build:
         project["status"] = "success"
         project["build"]["build"] = "skipped"
+        project["skipped_build"] = True
         print_section(idx, ctx, "skipping build")
     else:
+        project["skipped_build"] = False
         if not builder.build():
             print_section(idx, ctx, "build failed")
             project["build"]["build"] = "fail"
@@ -172,15 +174,15 @@ out = {"idx": idx, "name": name, "project": project}
 with open("output.json", "w") as f:
     json.dump(out, f, indent=2)
 
-if os.environ.get("keep_build_files") == "False":
-    # delete everything
-    run(["rm", "-rf", build_dir])
-    run(["mkdir", build_dir])
-if os.environ.get("keep_source_files") == "False":
-    run(["rm", "-rf", source_dir])
-    # run(["mkdir", source_dir])
-else:
-    chown_dirs.append(source_dir)
+# if os.environ.get("keep_build_files") == "False":
+#     # delete everything
+#     run(["rm", "-rf", build_dir])
+#     run(["mkdir", build_dir])
+# if os.environ.get("keep_source_files") == "False":
+#     run(["rm", "-rf", source_dir])
+#     # run(["mkdir", source_dir])
+# else:
+chown_dirs.append(source_dir)
 
 # move logs to build directory
 for file in glob.glob("*.log"):

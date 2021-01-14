@@ -141,10 +141,10 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 "JOBS={}".format(str(ctx.cfg["build"]["jobs"])),
                 "save_ir={}".format(str(ctx.cfg["build"]["save_ir"])),
                 "save_ast={}".format(str(ctx.cfg["build"]["save_ast"])),
-                "keep_build_files={}".format(str(ctx.cfg["build"]["keep_build_files"])),
-                "keep_source_files={}".format(
-                    str(ctx.cfg["build"]["keep_source_files"])
-                ),
+                # "keep_build_files={}".format(str(ctx.cfg["build"]["keep_build_files"])),
+                # "keep_source_files={}".format(
+                #     str(ctx.cfg["build"]["keep_source_files"])
+                # ),
             ]
             # generate a name for docker
             # container_name = "{}.{}.{}".format(idx, name, build_name)

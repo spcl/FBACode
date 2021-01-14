@@ -8,11 +8,13 @@ import sys
 from multiprocessing import Manager
 
 from time import time
-from os import environ, mkdir, getpid
-from os.path import join, exists
+from os import environ, mkdir, getpid, listdir, remove
+from os.path import isdir, join, exists, basename
 from sys import stdout
 from datetime import datetime
 import traceback
+
+import shutil
 
 from .statistics import Statistics
 from .database import get_database
@@ -114,10 +116,23 @@ def download_and_build(
                 "".join(traceback.format_exception(*sys.exc_info()))
             )
         )
-        running_builds.pop(multiprocessing.current_process().name)
-        running_builds["builds_left"] -= 1
-        print("\n".join("{}\t{}".format(k, v) for k, v in running_builds.items()))
-        return (idx, name, project)
+        new_project = project
+    if ctx.cfg["build"]["keep_build_files"] == "False":
+        # delete everything except log file and project.json
+        proj_build_dir = join(build_dir, basename(project["source"]["dir"]))
+        if exists(proj_build_dir):
+            for f in listdir(proj_build_dir):
+                try:
+                    p = join(proj_build_dir, f)
+                    if isdir(p):
+                        shutil.rmtree(p, ignore_errors=True)
+                    elif not (".log" in f or f == "output.json"):
+                        remove(p)
+                except Exception as e:
+                    print("Error removing build dir: {}".format(e))
+    if ctx.cfg["build"]["keep_source_files"] == "False":
+        # delete source folder
+        shutil.rmtree(project["source"]["dir"], ignore_errors=True)
     print("| DONE building {}".format(name))
     running_builds.pop(multiprocessing.current_process().name)
     running_builds["builds_left"] -= 1
