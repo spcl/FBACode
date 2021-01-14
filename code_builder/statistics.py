@@ -543,9 +543,6 @@ class Statistics:
         rebuild_with_missing = {}
         for source, projects in self.rebuild_projects.items():
             for name, p in projects.items():
-                print(name)
-                print("\n")
-                print(p)
                 if p.get("missing_deps"):
                     if source not in rebuild_with_missing:
                         rebuild_with_missing[source] = {}
