@@ -116,12 +116,15 @@ class Statistics:
         start = time()
         project["statistics"] = {}
         build_system = project.get("build_system", "unrecognized")
-        self.build_systems[build_system] = self.build_systems.get(build_system, 0) + 1
+        if build_system not in self.build_systems:
+            self.build_systems[build_system] = {"success": 0, "fail": 0}
+        # self.build_systems[build_system] = self.build_systems.get(build_system, 0) + 1
         ci_systems = project.get("ci_systems", [])
         if ci_systems == []:
             ci_systems = ["None"]
         for i in ci_systems:
-            self.ci_systems[i] = self.ci_systems.get(i, 0) + 1
+            if i not in self.ci_systems:
+                self.ci_systems[i] = {"success": 0, "fail": 0}
         self.clone_time += project["source"]["time"]
         if "build" in project:
             self.build_time += project["build"]["time"]
@@ -132,11 +135,20 @@ class Statistics:
                 name,
             )
         if project["status"] == "unrecognized":
+            self.build_systems[build_system]["fail"] += 1
+            for i in ci_systems:
+                self.ci_systems[i]["fail"] += 1
             self.add_unrecognized_project(name)
             self.add_rebuild_data(project, name)
         elif project["status"] == "success":
+            self.build_systems[build_system]["success"] += 1
+            for i in ci_systems:
+                self.ci_systems[i]["success"] += 1
             self.add_correct_project()
         elif project["status"] == "crash":
+            self.build_systems[build_system]["fail"] += 1
+            for i in ci_systems:
+                self.ci_systems[i]["fail"] += 1
             self.add_incorrect_project()
             self.add_rebuild_data(project, name)
             err = "docker_crash"
@@ -214,6 +226,9 @@ class Statistics:
                             self.errortypes["unrecognized"]["projects"].append(name)
                         project["build"]["errortypes"] = ["unrecognized"]
             self.add_incorrect_project()
+            self.build_systems[build_system]["fail"] += 1
+            for i in ci_systems:
+                self.ci_systems[i]["fail"] += 1
             self.add_rebuild_data(project, name)
             end = time()
             project["statistics"]["error_analysis"] = end - start
