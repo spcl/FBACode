@@ -539,14 +539,33 @@ class Statistics:
         with open(path, "w") as o:
             o.write(json.dumps(self.errortypes, indent=2))
 
-    def save_rebuild_json(self, path=None):
+    def save_rebuild_json(self, path=None, path_with_missing=None):
+        rebuild_with_missing = {}
+        for source, projects in self.rebuild_projects.items():
+            for name, p in projects.items():
+                print(name)
+                print("\n")
+                print(p)
+                if p.get("missing_deps"):
+                    if source not in rebuild_with_missing:
+                        rebuild_with_missing[source] = {}
+                    rebuild_with_missing[source][name] = p
+
         if path is None:
             timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             path = join(
-                "buildlogs", "rebuild_{}_{}.json".format(timestamp, self.project_count)
+                "buildlogs", "rebuild_{}_{}.json".format(timestamp, self.project_count),
+            )
+        if path_with_missing is None:
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            path_with_missing = join(
+                "buildlogs",
+                "useful_rebuild_{}_{}.json".format(timestamp, self.project_count),
             )
         with open(path, "w") as o:
             o.write(json.dumps(self.rebuild_projects, indent=2))
+        with open(path_with_missing, "w") as o:
+            o.write(json.dumps(rebuild_with_missing, indent=2))
 
     def save_errors_json(self, path=None):
         if path is None:
