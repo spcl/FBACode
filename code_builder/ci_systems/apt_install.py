@@ -24,7 +24,7 @@ class Installer:
         self.project = project
         with open(dep_mapping_path, "r") as f:
             self.dependency_map = json.load(f)
-        
+
         self.missing = missing
 
     def install(self):
@@ -34,18 +34,26 @@ class Installer:
             return
         pkgs_to_install = []
         for m, source in self.missing:
-            if m in self.dependency_map:
+            
+            # do shitty fuzzy search
+            matches = [
+                key
+                for key in self.dependency_map
+                if m.lower() in key.lower() or key.lower() in m.lower()
+            ]
+            # if m in self.dependency_map:
+            for match in matches:
                 # we can install the pkgs in here, maybe take those with more than min number of installs
-                installs = [i for _, i in self.dependency_map[m]["deps"].items()]
-                for pkg, number in self.dependency_map[m]["deps"].items():
+                installs = [i for _, i in self.dependency_map[match]["deps"].items()]
+                for pkg, number in self.dependency_map[match]["deps"].items():
                     # for now, install only max
                     if number == max(installs):
                         pkgs_to_install.append(pkg)
 
-            else:
+            if not matches:
                 # maybe just try, problem is that apt search is garbage
                 # an API to search would be nice.
                 pkgs_to_install.append(m)
 
-        success = apt_install(self, pkgs_to_install, self.project)
+        success = apt_install(self, list(set(pkgs_to_install)), self.project)
         return success

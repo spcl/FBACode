@@ -191,11 +191,11 @@ class DebianFetcher:
         with ThreadPoolExecutor(max_workers=self.thread_count) as executor:
             # start thread_count workers
             for index in range(0, self.thread_count):
-                print(
-                    "[{}/{}] fetched, trying {}".format(
-                        repo_count, max_repos, pkg_list[index]["name"]
-                    )
-                )
+                # print(
+                #     "[{}/{}] fetched, trying {}".format(
+                #         repo_count, max_repos, pkg_list[index]["name"]
+                #     )
+                # )
                 # self.out_log.info(
                 #             repo_count,
                 #             "fetch info for {}".format(pkg_list[index]["name"]),
@@ -216,11 +216,20 @@ class DebianFetcher:
                         if result is not False:
                             repo_count += 1
                             self.results.append(result)
-                        print(
-                            "[{}/{}] fetched, trying {}".format(
-                                repo_count, max_repos, pkg_list[index]["name"]
+                            print(
+                                "[{}/{}] debian c/c++ packages found".format(repo_count, max_repos),
+                                end="\r",
                             )
-                        )
+                            # print(
+                            #     "[{}/{}] {} fetched".format(
+                            #         repo_count, max_repos, result["name"]
+                            #     )
+                            # )
+                        # print(
+                        #     "[{}/{}] fetched, trying {}".format(
+                        #         repo_count, max_repos, pkg_list[index]["name"]
+                        #     )
+                        # )
                         # self.out_log.info(
                         #     repo_count,
                         #     "fetch info for {}".format(pkg_list[index]["name"]),

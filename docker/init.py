@@ -158,6 +158,7 @@ else:
                 }
                 builder.generate_ast(os.path.join(bitcodes_dir, "AST"))
                 chown_dirs.append(bitcodes_dir)
+end = time()                
 project["build"]["time"] = end - start
 ctx.out_log.print_info(idx, "Finish processing %s in %f [s]" % (name, end - start))
 
