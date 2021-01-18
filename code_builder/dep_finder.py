@@ -82,7 +82,9 @@ class DepFinder:
                 print("dep_finder: error opening log files for {}".format(name))
                 return [], []
             # found = False
-            for line in text.splitlines():
+            # avoid lines which are too long, takes forever otherwise
+            lines = [l for l in text.splitlines() if len(l) < 1000]
+            for line in lines:
                 for pattern, source in self.confident_patterns:
                     regex_result = re.search(pattern, line)
                     if regex_result:

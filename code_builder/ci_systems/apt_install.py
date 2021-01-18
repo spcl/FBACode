@@ -34,7 +34,7 @@ class Installer:
             return
         pkgs_to_install = []
         for m, source in self.missing:
-            
+
             # do shitty fuzzy search
             matches = [
                 key
@@ -47,7 +47,7 @@ class Installer:
                 installs = [i for _, i in self.dependency_map[match]["deps"].items()]
                 for pkg, number in self.dependency_map[match]["deps"].items():
                     # for now, install only max
-                    if number == max(installs):
+                    if number != min(installs):
                         pkgs_to_install.append(pkg)
 
             if not matches:
@@ -55,5 +55,7 @@ class Installer:
                 # an API to search would be nice.
                 pkgs_to_install.append(m)
 
-        success = apt_install(self, list(set(pkgs_to_install)), self.project)
+        success = apt_install(
+            self, list(set(pkgs_to_install)), self.project, verbose=False
+        )
         return success

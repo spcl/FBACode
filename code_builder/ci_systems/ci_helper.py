@@ -87,8 +87,7 @@ def run_scripts(logger, script_list, cwd=None):
                 ),
             )
             logger.error_log.print_error(
-                logger.idx,
-                "bash command execution failed: {}".format(out.stderr),
+                logger.idx, "bash command execution failed: {}".format(out.stderr),
             )
             logger.error_log.print_info(logger.idx, out.stdout)
             return False
@@ -96,7 +95,7 @@ def run_scripts(logger, script_list, cwd=None):
     return True
 
 
-def apt_install(logger, pkgs, project=None):
+def apt_install(logger, pkgs, project=None, verbose=True):
     if project is not None and project["build"].get("apt_not_found") is None:
         project["build"]["apt_not_found"] = []
     cmd = "apt-get install -y --force-yes --no-install-recommends "
@@ -116,16 +115,21 @@ def apt_install(logger, pkgs, project=None):
             logger.idx, "apt installer was not str or list[str]: {}".format(pkgs)
         )
         return False
-    print("APT INSTALL: {}".format(pkgs))
+    if verbose:
+        print("APT INSTALL: {}".format(pkgs))
     out = run(["bash", "-c", cmd], stderr=PIPE)
     if out.returncode != 0:
-        print(out)
+        if verbose:
+            print("{}:\n{}".format(out.args, out.stdout))
         logger.error_log.print_error(
-            logger.idx, "apt_packages install from .travis.yml failed"
+            logger.idx,
+            "apt_packages install from apt failed, retrying without some packages",
         )
-        logger.error_log.print_error(
-            logger.idx, "{}:\n{}".format(out.args, out.stderr)
-        )
+        if verbose:
+            logger.error_log.print_error(
+                logger.idx, "{}:\n{}".format(out.args, out.stderr)
+            )
+        fixed = False
         if "Unable to locate package " in out.stderr:
             # some packages could not be found, let's remove them
             for l in out.stderr.splitlines():
@@ -136,9 +140,7 @@ def apt_install(logger, pkgs, project=None):
                     if project is not None:
                         project["build"]["apt_not_found"].append(pkg)
                     print("retrying without {}".format(pkg))
-            out = run(["bash", "-c", cmd], stderr=PIPE)
-            if out.returncode == 0:
-                return True
+                    fixed = True
         if "has no installation candidate" in out.stderr:
             for l in out.stderr.splitlines():
                 pattern = (
@@ -152,8 +154,10 @@ def apt_install(logger, pkgs, project=None):
                     if project is not None:
                         project["build"]["apt_not_found"].append(r[1])
                     print("retrying without {}".format(r[1]))
-            out = run(["bash", "-c", cmd], stderr=PIPE)
-            if out.returncode == 0:
-                return True
-        return False
+                    fixed = True
+        if fixed:
+            cmd = cmd.replace(
+                "apt-get install -y --force-yes --no-install-recommends ", ""
+            )
+            apt_install(logger, cmd, project)
     return True

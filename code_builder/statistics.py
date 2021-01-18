@@ -281,7 +281,8 @@ class Statistics:
         return bool(errors)
 
     def match_error_fuzzy(self, project, name, log):
-        lines = [re.sub(self.path_regex, "PATH/FILE.TXT", l) for l in log.splitlines()]
+        lines = [l for l in log.splitlines() if len(l) < 1000]
+        lines = [re.sub(self.path_regex, "PATH/FILE.TXT", l) for l in lines]
         errors = []
         for l in lines:
             # check if string has any processable character, otherwise continue
@@ -327,7 +328,7 @@ class Statistics:
                 self.add_errors(project, name, [err])
                 # remove error from log, so it does not get matched again
         # now we look for cmake errors
-        errlines = log.splitlines()
+        errlines = [l for l in log.splitlines() if len(l) < 1000]
         match_next = False
         multiline_err = ""
         first_line_err = ""  # used for the regex
@@ -374,7 +375,7 @@ class Statistics:
 
     def find_new_errors(self, project, name, log):
 
-        errlines = log.splitlines()
+        errlines = [l for l in log.splitlines() if len(l) < 1000]
         # figure out what to do with other error strings
         # this dict contains the error match and then thi origin, at the
         # end is the most generic one.
