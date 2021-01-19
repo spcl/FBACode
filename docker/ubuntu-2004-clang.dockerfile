@@ -9,9 +9,9 @@ RUN echo "building image for clange version ${CLANG_VERSION}"
 
 
 ARG deps='apt-transport-https ca-certificates software-properties-common gpg-agent gnupg curl' 
-ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} llvm-${CLANG_VERSION} llvm-${CLANG_VERSION}-dev\
-  libomp-${CLANG_VERSION}-dev clang++-${CLANG_VERSION} texinfo build-essential fakeroot \
-  devscripts automake autotools-dev wget curl git sudo python2 unzip"
+ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} llvm-${CLANG_VERSION} \
+llvm-${CLANG_VERSION}-dev libomp-${CLANG_VERSION}-dev clang++-${CLANG_VERSION} texinfo \
+build-essential fakeroot devscripts automake autotools-dev wget curl git sudo python2 unzip"
 RUN echo ${CLANG_VERSION}
 RUN apt-get update 
 RUN apt-get install -y ${deps} --no-install-recommends --force-yes
