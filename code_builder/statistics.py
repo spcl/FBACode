@@ -72,18 +72,18 @@ class Statistics:
     def print_stats(self, out):
         print("Repository clone time: %f seconds" % self.clone_time, file=out)
         print("Repository build time: %f seconds" % self.build_time, file=out)
-        print("time spent analyzing: {} seconds".format(self.stat_time), file=out)
+        print("Analyzing time: {} seconds".format(self.stat_time), file=out)
         print("Succesfull builds: %d" % self.correct_projects, file=out)
         print("Failed builds: %d" % self.incorrect_projects, file=out)
+        print(
+            "Unrecognized builds: {}".format(len(self.unrecognized_projects)), file=out
+        )
         print("Build systems:", file=out)
         for name, count in self.build_systems.items():
             print("  {}: {}".format(name, count), file=out)
         print("Continuous integration systems:", file=out)
         for name, count in self.ci_systems.items():
             print("  {}: {}".format(name, count), file=out)
-        print(
-            "Unrecognized build systems: %d" % len(self.unrecognized_projects), file=out
-        )
         for p in self.unrecognized_projects:
             print("  {}".format(p), file=out)
         print("newly discovered errors: {}".format(self.new_errs), file=out)
@@ -105,7 +105,6 @@ class Statistics:
                 print("\n- {}:".format(name), file=out)
                 for e in p.get("build", {}).get("errortypes", []):
                     print("    {}".format(e), file=out)
-                
 
         # print("unrecognized errors:")
         # for err in self.unrecognized_errs:

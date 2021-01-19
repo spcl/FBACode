@@ -48,8 +48,8 @@ class Installer:
                 installs = [i for _, i in self.dependency_map[match]["deps"].items()]
                 for pkg, number in self.dependency_map[match]["deps"].items():
                     # for now, install only max
-                    if number != min(installs):
-                        pkgs_to_install.append(pkg)
+                    # if number != min(installs):
+                    pkgs_to_install.append(pkg)
 
             if not matches:
                 # maybe just try, problem is that apt search is garbage
