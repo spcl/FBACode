@@ -86,11 +86,27 @@
       "cura-engine",
       "dnaclust",
       "stx-btree",
-      "linpsk"
+      "linpsk",
+      "mupen64plus-video-arachnoid",
+      "xvier",
+      "stormbaancoureur",
+      "knews",
+      "growl-for-linux",
+      "talksoup.app",
+      "libcgns",
+      "dewalls",
+      "openjade",
+      "jellyfish",
+      "universalindentgui",
+      "pktools",
+      "minisapserver",
+      "rcs-blame",
+      "sdrangelove",
+      "slapi-nis"
     ],
     "origin": "general_error",
     "regex": "error\\:\\ debian\\/rules\\ build\\ subprocess\\ returned\\ exit\\ status\\ 2",
-    "amount": 175
+    "amount": 207
   },
   "clang: error: linker command failed with exit code 1 (use -v to see invocation)": {
     "name": "clang: error: linker command failed with exit code 1 (use -v to see invocation)",
@@ -132,11 +148,86 @@
       "fasta3",
       "uhub",
       "llvmlite",
-      "octave-instrument-control"
+      "octave-instrument-control",
+      "mupen64plus-video-arachnoid",
+      "slapi-nis"
     ],
     "origin": "clang_other",
     "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
-    "amount": 100
+    "amount": 107
+  },
+  "error: ": {
+    "name": "error: ",
+    "projects": [
+      "OpenRCT2/OpenRCT2",
+      "qmk/qmk_firmware",
+      "gkrellmitime",
+      "uniutils",
+      "eztrace-contrib",
+      "adplug",
+      "crimson",
+      "mgp",
+      "zypper",
+      "tgt",
+      "liblxi",
+      "cxref",
+      "dsniff",
+      "autodocksuite",
+      "fasta3",
+      "pgpgpg",
+      "aranym",
+      "libyami-utils",
+      "coz-profiler",
+      "gdis",
+      "libomxmad",
+      "raster3d",
+      "kylin-video",
+      "thc-ipv6",
+      "libgpiv",
+      "coinor-ipopt",
+      "dxvk",
+      "uhub",
+      "kyotocabinet",
+      "smalt",
+      "rnetclient",
+      "llvmlite",
+      "vdr",
+      "octave-instrument-control",
+      "comedilib",
+      "v4l-utils",
+      "tclcl",
+      "pforth",
+      "amideco",
+      "cura-engine",
+      "xsettingsd",
+      "dnaclust",
+      "stx-btree",
+      "linpsk",
+      "facebookresearch/faiss",
+      "pg-cron",
+      "boats",
+      "memkind",
+      "mupen64plus-video-arachnoid",
+      "xvier",
+      "console-cyrillic",
+      "stormbaancoureur",
+      "knews",
+      "growl-for-linux",
+      "talksoup.app",
+      "libcgns",
+      "dewalls",
+      "openjade",
+      "jellyfish",
+      "universalindentgui",
+      "pktools",
+      "minisapserver",
+      "rcs-blame",
+      "sdrangelove",
+      "slapi-nis"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ ",
+    "amount": 94
   },
   "docker_crash": {
     "name": "docker_crash",
@@ -213,64 +304,42 @@
       "reactos/reactos",
       "libvigraimpex",
       "arangodb/arangodb",
-      "Studio3T/robomongo"
+      "Studio3T/robomongo",
+      "tmux/tmux",
+      "sqlitebrowser/sqlitebrowser"
     ],
     "origin": "docker",
     "regex": null,
-    "amount": 73
+    "amount": 75
   },
-  "error: ": {
-    "name": "error: ",
+  "PATH/FILE.EXT docker: command not found": {
+    "name": "PATH/FILE.EXT docker: command not found",
     "projects": [
-      "OpenRCT2/OpenRCT2",
-      "qmk/qmk_firmware",
-      "gkrellmitime",
-      "uniutils",
-      "eztrace-contrib",
-      "adplug",
-      "crimson",
-      "mgp",
-      "zypper",
-      "tgt",
-      "liblxi",
-      "cxref",
-      "dsniff",
-      "autodocksuite",
-      "fasta3",
-      "pgpgpg",
-      "aranym",
-      "libyami-utils",
-      "coz-profiler",
-      "gdis",
-      "libomxmad",
-      "raster3d",
-      "kylin-video",
-      "thc-ipv6",
-      "libgpiv",
-      "coinor-ipopt",
-      "dxvk",
-      "uhub",
-      "kyotocabinet",
-      "smalt",
-      "rnetclient",
-      "llvmlite",
-      "vdr",
-      "octave-instrument-control",
-      "comedilib",
-      "v4l-utils",
-      "tclcl",
-      "pforth",
-      "amideco",
-      "cura-engine",
-      "xsettingsd",
-      "dnaclust",
-      "stx-btree",
-      "linpsk",
-      "facebookresearch/faiss"
+      "ClickHouse/ClickHouse",
+      "coolsnowwolf/lede",
+      "telegramdesktop/tdesktop",
+      "yuzu-emu/yuzu",
+      "allinurl/goaccess",
+      "CoatiSoftware/Sourcetrail",
+      "ethereum/solidity"
     ],
-    "origin": "general_error",
-    "regex": "error\\:\\ ",
-    "amount": 55
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ docker\\:\\ command\\ not\\ found",
+    "amount": 74
+  },
+  "PATH/FILE.EXT brew: command not found": {
+    "name": "PATH/FILE.EXT brew: command not found",
+    "projects": [
+      "obsproject/obs-studio",
+      "stedolan/jq",
+      "aria2/aria2",
+      "jarun/nnn",
+      "rizinorg/cutter",
+      "osquery/osquery"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ brew\\:\\ command\\ not\\ found",
+    "amount": 59
   },
   "CMake 3.17 or higher is required.  You are running version 3.16.3 ": {
     "name": "CMake 3.17 or higher is required.  You are running version 3.16.3 ",
@@ -289,20 +358,31 @@
     "regex": "CMake\\ 3\\.17\\ or\\ higher\\ is\\ required\\.\\ \\ You\\ are\\ running\\ version\\ 3\\.16\\.3",
     "amount": 54
   },
-  "PATH/FILE.EXT docker: command not found": {
-    "name": "PATH/FILE.EXT docker: command not found",
+  "error: Libtool library used but 'LIBTOOL' is undefined": {
+    "name": "error: Libtool library used but 'LIBTOOL' is undefined",
     "projects": [
-      "ClickHouse/ClickHouse",
-      "coolsnowwolf/lede",
-      "telegramdesktop/tdesktop",
-      "yuzu-emu/yuzu",
-      "allinurl/goaccess",
-      "CoatiSoftware/Sourcetrail",
-      "ethereum/solidity"
+      "bitcoin/bitcoin",
+      "zcash/zcash",
+      "VirusTotal/yara",
+      "aria2/aria2"
     ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ docker\\:\\ command\\ not\\ found",
-    "amount": 52
+    "origin": "general_error",
+    "regex": "error\\:\\ Libtool\\ library\\ used\\ but\\ \\'LIBTOOL\\'\\ is\\ undefined",
+    "amount": 53
+  },
+  "PATH/FILE.EXT ./configure: No such file or directory": {
+    "name": "PATH/FILE.EXT ./configure: No such file or directory",
+    "projects": [
+      "stedolan/jq",
+      "swoole/swoole-src",
+      "aria2/aria2",
+      "Tencent/ncnn",
+      "jedisct1/libsodium",
+      "tesseract-ocr/tesseract"
+    ],
+    "origin": "dependency",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\.\\/configure\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 49
   },
   "By not providing \"FindQt5.cmake\" in CMAKE_MODULE_PATH this project has asked CMake to find a package configuration file provided by \"Qt5\", but CMake did not find one. ": {
     "name": "By not providing \"FindQt5.cmake\" in CMAKE_MODULE_PATH this project has asked CMake to find a package configuration file provided by \"Qt5\", but CMake did not find one. ",
@@ -321,45 +401,7 @@
     ],
     "origin": "CMake",
     "regex": "By\\ not\\ providing\\ \\\"FindQt5\\.cmake\\\"\\ in\\ CMAKE_MODULE_PATH\\ this\\ project\\ has",
-    "amount": 47
-  },
-  "error: Libtool library used but 'LIBTOOL' is undefined": {
-    "name": "error: Libtool library used but 'LIBTOOL' is undefined",
-    "projects": [
-      "bitcoin/bitcoin",
-      "zcash/zcash",
-      "VirusTotal/yara",
-      "aria2/aria2"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ Libtool\\ library\\ used\\ but\\ \\'LIBTOOL\\'\\ is\\ undefined",
-    "amount": 44
-  },
-  "PATH/FILE.EXT brew: command not found": {
-    "name": "PATH/FILE.EXT brew: command not found",
-    "projects": [
-      "obsproject/obs-studio",
-      "stedolan/jq",
-      "aria2/aria2",
-      "jarun/nnn",
-      "rizinorg/cutter"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ brew\\:\\ command\\ not\\ found",
-    "amount": 44
-  },
-  "Could not find a package configuration file provided by \"LLVM\" with any of the following names: ": {
-    "name": "Could not find a package configuration file provided by \"LLVM\" with any of the following names: ",
-    "projects": [
-      "apple/swift",
-      "EOSIO/eos",
-      "iovisor/bcc",
-      "ponylang/ponyc",
-      "halide/Halide"
-    ],
-    "origin": "CMake",
-    "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"LLVM\\\"\\ with\\ any\\ of",
-    "amount": 39
+    "amount": 48
   },
   "Could NOT find OpenSSL, try to set the path to OpenSSL root folder in the system variable OPENSSL_ROOT_DIR (missing: OPENSSL_CRYPTO_LIBRARY OPENSSL_INCLUDE_DIR) ": {
     "name": "Could NOT find OpenSSL, try to set the path to OpenSSL root folder in the system variable OPENSSL_ROOT_DIR (missing: OPENSSL_CRYPTO_LIBRARY OPENSSL_INCLUDE_DIR) ",
@@ -375,7 +417,40 @@
     ],
     "origin": "CMake",
     "regex": "Could\\ NOT\\ find\\ OpenSSL\\,\\ try\\ to\\ set\\ the\\ path\\ to\\ OpenSSL\\ root\\ folder\\ in\\ the",
-    "amount": 38
+    "amount": 43
+  },
+  "Could not find a package configuration file provided by \"LLVM\" with any of the following names: ": {
+    "name": "Could not find a package configuration file provided by \"LLVM\" with any of the following names: ",
+    "projects": [
+      "apple/swift",
+      "EOSIO/eos",
+      "iovisor/bcc",
+      "ponylang/ponyc",
+      "halide/Halide"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"LLVM\\\"\\ with\\ any\\ of",
+    "amount": 43
+  },
+  "error: am__fastdepCXX does not appear in AM_CONDITIONAL": {
+    "name": "error: am__fastdepCXX does not appear in AM_CONDITIONAL",
+    "projects": [
+      "bitcoin/bitcoin",
+      "aria2/aria2"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ am__fastdepCXX\\ does\\ not\\ appear\\ in\\ AM_CONDITIONAL",
+    "amount": 42
+  },
+  "error: AMDEP does not appear in AM_CONDITIONAL": {
+    "name": "error: AMDEP does not appear in AM_CONDITIONAL",
+    "projects": [
+      "bitcoin/bitcoin",
+      "aria2/aria2"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ AMDEP\\ does\\ not\\ appear\\ in\\ AM_CONDITIONAL",
+    "amount": 42
   },
   "aclocal: warning: couldn't open directory 'm4': No such file or directory": {
     "name": "aclocal: warning: couldn't open directory 'm4': No such file or directory",
@@ -387,7 +462,7 @@
     ],
     "origin": "dependency",
     "regex": "aclocal\\:\\ warning\\:\\ couldn\\'t\\ open\\ directory\\ \\'m4\\'\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 38
+    "amount": 39
   },
   "error: possibly undefined macro: AC_PROG_LIBTOOL": {
     "name": "error: possibly undefined macro: AC_PROG_LIBTOOL",
@@ -403,40 +478,7 @@
     ],
     "origin": "general_error",
     "regex": "error\\:\\ possibly\\ undefined\\ macro\\:\\ AC_PROG_LIBTOOL",
-    "amount": 37
-  },
-  "error: am__fastdepCXX does not appear in AM_CONDITIONAL": {
-    "name": "error: am__fastdepCXX does not appear in AM_CONDITIONAL",
-    "projects": [
-      "bitcoin/bitcoin",
-      "aria2/aria2"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ am__fastdepCXX\\ does\\ not\\ appear\\ in\\ AM_CONDITIONAL",
-    "amount": 37
-  },
-  "error: AMDEP does not appear in AM_CONDITIONAL": {
-    "name": "error: AMDEP does not appear in AM_CONDITIONAL",
-    "projects": [
-      "bitcoin/bitcoin",
-      "aria2/aria2"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ AMDEP\\ does\\ not\\ appear\\ in\\ AM_CONDITIONAL",
-    "amount": 37
-  },
-  "PATH/FILE.EXT ./configure: No such file or directory": {
-    "name": "PATH/FILE.EXT ./configure: No such file or directory",
-    "projects": [
-      "stedolan/jq",
-      "swoole/swoole-src",
-      "aria2/aria2",
-      "Tencent/ncnn",
-      "jedisct1/libsodium"
-    ],
-    "origin": "dependency",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\.\\/configure\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 37
+    "amount": 38
   },
   "error: C++ source seen but 'CXX' is undefined": {
     "name": "error: C++ source seen but 'CXX' is undefined",
@@ -445,7 +487,7 @@
     ],
     "origin": "general_error",
     "regex": "error\\:\\ C\\+\\+\\ source\\ seen\\ but\\ \\'CXX\\'\\ is\\ undefined",
-    "amount": 33
+    "amount": 38
   },
   "By not providing \"FindQt5.cmake\" in CMAKE_MODULE_PATH this project has asked CMake to find a package configuration file provided by \"Qt5\", but CMake did not find one. Could not find a package configuration file provided by \"Qt5\" with any of the following names: Qt5Config.cmake qt5-config.cmake Add the installation prefix of \"Qt5\" to CMAKE_PREFIX_PATH or set \"Qt5_DIR\" to a directory containing one of the above files.  If \"Qt5\" provides a separate development package or SDK, be sure it has been installed. ": {
     "name": "By not providing \"FindQt5.cmake\" in CMAKE_MODULE_PATH this project has asked CMake to find a package configuration file provided by \"Qt5\", but CMake did not find one. Could not find a package configuration file provided by \"Qt5\" with any of the following names: Qt5Config.cmake qt5-config.cmake Add the installation prefix of \"Qt5\" to CMAKE_PREFIX_PATH or set \"Qt5_DIR\" to a directory containing one of the above files.  If \"Qt5\" provides a separate development package or SDK, be sure it has been installed. ",
@@ -457,7 +499,19 @@
     ],
     "origin": "CMake",
     "regex": "By\\ not\\ providing\\ \\\"FindQt5\\.cmake\\\"\\ in\\ CMAKE_MODULE_PATH\\ this\\ project\\ has",
-    "amount": 33
+    "amount": 37
+  },
+  "sysctl: cannot stat /proc/sys/hw/ncpu: No such file or directory": {
+    "name": "sysctl: cannot stat /proc/sys/hw/ncpu: No such file or directory",
+    "projects": [
+      "taichi-dev/taichi",
+      "apple/darwin-xnu",
+      "swoole/swoole-src",
+      "obsproject/obs-studio"
+    ],
+    "origin": "dependency",
+    "regex": "sysctl\\:\\ cannot\\ stat\\ \\/proc\\/sys\\/hw\\/ncpu\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 36
   },
   "Error: missing PROTOC. Install it, specify the full path with PROTOC= or run ./configure with --allow-fetch": {
     "name": "Error: missing PROTOC. Install it, specify the full path with PROTOC= or run ./configure with --allow-fetch",
@@ -466,16 +520,7 @@
     ],
     "origin": "general_error",
     "regex": "Error\\:\\ missing\\ PROTOC\\.\\ Install\\ it\\,\\ specify\\ the\\ full\\ path\\ with\\ PROTOC\\=\\ or\\ run\\ \\.\\/configure\\ with\\ \\-\\-allow\\-fetch",
-    "amount": 29
-  },
-  "error: possibly undefined macro: AM_PROG_LIBTOOL": {
-    "name": "error: possibly undefined macro: AM_PROG_LIBTOOL",
-    "projects": [
-      "stedolan/jq"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ possibly\\ undefined\\ macro\\:\\ AM_PROG_LIBTOOL",
-    "amount": 28
+    "amount": 34
   },
   "autoreconf: failed to run autopoint: No such file or directory": {
     "name": "autoreconf: failed to run autopoint: No such file or directory",
@@ -487,16 +532,38 @@
     ],
     "origin": "dependency",
     "regex": "autoreconf\\:\\ failed\\ to\\ run\\ autopoint\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 28
+    "amount": 34
   },
-  "error: cannot find install-sh, install.sh, or shtool in etc \".\"/etc": {
-    "name": "error: cannot find install-sh, install.sh, or shtool in etc \".\"/etc",
+  "Can't exec \"autopoint\": No such file or directory": {
+    "name": "Can't exec \"autopoint\": No such file or directory",
     "projects": [
-      "tmux/tmux"
+      "videolan/vlc",
+      "aria2/aria2",
+      "allinurl/goaccess"
+    ],
+    "origin": "dependency",
+    "regex": "Can\\'t\\ exec\\ \\\"autopoint\\\"\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 32
+  },
+  "Could not find a package configuration file provided by \"LLVM\" with any of the following names: LLVMConfig.cmake llvm-config.cmake Add the installation prefix of \"LLVM\" to CMAKE_PREFIX_PATH or set \"LLVM_DIR\" to a directory containing one of the above files.  If \"LLVM\" provides a separate development package or SDK, be sure it has been installed. ": {
+    "name": "Could not find a package configuration file provided by \"LLVM\" with any of the following names: LLVMConfig.cmake llvm-config.cmake Add the installation prefix of \"LLVM\" to CMAKE_PREFIX_PATH or set \"LLVM_DIR\" to a directory containing one of the above files.  If \"LLVM\" provides a separate development package or SDK, be sure it has been installed. ",
+    "projects": [
+      "EOSIO/eos",
+      "iovisor/bcc",
+      "apple/swift"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"LLVM\\\"\\ with\\ any\\ of",
+    "amount": 31
+  },
+  "error: possibly undefined macro: AM_PROG_LIBTOOL": {
+    "name": "error: possibly undefined macro: AM_PROG_LIBTOOL",
+    "projects": [
+      "stedolan/jq"
     ],
     "origin": "general_error",
-    "regex": "error\\:\\ cannot\\ find\\ install\\-sh\\,\\ install\\.sh\\,\\ or\\ shtool\\ in\\ etc\\ \\\"\\.\\\"\\/etc",
-    "amount": 27
+    "regex": "error\\:\\ possibly\\ undefined\\ macro\\:\\ AM_PROG_LIBTOOL",
+    "amount": 28
   },
   "error: invalid suffix on literal; C++11 requires a space between literal and identifier [-Wreserved-user-defined-literal]": {
     "name": "invalid suffix on literal; C++11 requires a space between literal and identifier [-Wreserved-user-defined-literal]",
@@ -513,10 +580,29 @@
       "nam",
       "crimson",
       "aranym",
-      "coinor-ipopt"
+      "coinor-ipopt",
+      "minisapserver"
     ],
     "origin": "clang",
     "regex": "error\\:\\ invalid\\ suffix\\ on\\ literal\\;\\ C\\+\\+11\\ requires\\ a\\ space\\ between\\ literal\\ and\\ identifier\\ \\[\\-Wreserved\\-user\\-defined\\-literal\\]",
+    "amount": 28
+  },
+  "error: cannot find install-sh, install.sh, or shtool in etc \".\"/etc": {
+    "name": "error: cannot find install-sh, install.sh, or shtool in etc \".\"/etc",
+    "projects": [
+      "tmux/tmux"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ cannot\\ find\\ install\\-sh\\,\\ install\\.sh\\,\\ or\\ shtool\\ in\\ etc\\ \\\"\\.\\\"\\/etc",
+    "amount": 27
+  },
+  "add_subdirectory given source \"bindings/csharp/swig\" which is not an existing directory. ": {
+    "name": "add_subdirectory given source \"bindings/csharp/swig\" which is not an existing directory. ",
+    "projects": [
+      "microsoft/CNTK"
+    ],
+    "origin": "CMake",
+    "regex": "add_subdirectory\\ given\\ source\\ \\\"bindings\\/csharp\\/swig\\\"\\ which\\ is\\ not\\ an",
     "amount": 27
   },
   "Error: The following variables are used in this project, but they are set to NOTFOUND.": {
@@ -546,47 +632,6 @@
     "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"Qt5\\\"\\ with\\ any\\ of",
     "amount": 26
   },
-  "add_subdirectory given source \"bindings/csharp/swig\" which is not an existing directory. ": {
-    "name": "add_subdirectory given source \"bindings/csharp/swig\" which is not an existing directory. ",
-    "projects": [
-      "microsoft/CNTK"
-    ],
-    "origin": "CMake",
-    "regex": "add_subdirectory\\ given\\ source\\ \\\"bindings\\/csharp\\/swig\\\"\\ which\\ is\\ not\\ an",
-    "amount": 26
-  },
-  "Can't exec \"autopoint\": No such file or directory": {
-    "name": "Can't exec \"autopoint\": No such file or directory",
-    "projects": [
-      "videolan/vlc",
-      "aria2/aria2",
-      "allinurl/goaccess"
-    ],
-    "origin": "dependency",
-    "regex": "Can\\'t\\ exec\\ \\\"autopoint\\\"\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 26
-  },
-  "sysctl: cannot stat /proc/sys/hw/ncpu: No such file or directory": {
-    "name": "sysctl: cannot stat /proc/sys/hw/ncpu: No such file or directory",
-    "projects": [
-      "taichi-dev/taichi",
-      "apple/darwin-xnu",
-      "swoole/swoole-src",
-      "obsproject/obs-studio"
-    ],
-    "origin": "dependency",
-    "regex": "sysctl\\:\\ cannot\\ stat\\ \\/proc\\/sys\\/hw\\/ncpu\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 26
-  },
-  "Could NOT find Boost (missing: Boost_INCLUDE_DIR system program_options) (Required is at least version \"1.66.0\") ": {
-    "name": "Could NOT find Boost (missing: Boost_INCLUDE_DIR system program_options) (Required is at least version \"1.66.0\") ",
-    "projects": [
-      "trojan-gfw/trojan"
-    ],
-    "origin": "CMake",
-    "regex": "Could\\ NOT\\ find\\ Boost\\ \\(missing\\:\\ Boost_INCLUDE_DIR\\ system\\ program_options\\)",
-    "amount": 24
-  },
   "error: 'opensslPATH/FILE.EXT file not found": {
     "name": "'opensslPATH/FILE.EXT file not found",
     "projects": [
@@ -595,34 +640,7 @@
     ],
     "origin": "clang",
     "regex": "error\\:\\ \\'openssl(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
-    "amount": 21
-  },
-  "Error: No module named 'numpy'": {
-    "name": "Error: No module named 'numpy'",
-    "projects": [
-      "taichi-dev/taichi"
-    ],
-    "origin": "general_error",
-    "regex": "Error\\:\\ No\\ module\\ named\\ \\'numpy\\'",
-    "amount": 21
-  },
-  "Error: No module named 'pybind11'": {
-    "name": "Error: No module named 'pybind11'",
-    "projects": [
-      "taichi-dev/taichi"
-    ],
-    "origin": "general_error",
-    "regex": "Error\\:\\ No\\ module\\ named\\ \\'pybind11\\'",
-    "amount": 21
-  },
-  "Cannot import pybind11.  Please install.  ([sudo] pip3 install --user pybind11) ": {
-    "name": "Cannot import pybind11.  Please install.  ([sudo] pip3 install --user pybind11) ",
-    "projects": [
-      "taichi-dev/taichi"
-    ],
-    "origin": "CMake",
-    "regex": "Cannot\\ import\\ pybind11\\.\\ \\ Please\\ install\\.\\ \\ \\(\\[sudo\\]\\ pip3\\ install\\ \\-\\-user",
-    "amount": 21
+    "amount": 26
   },
   "Could NOT find DoubleConversion (missing: DOUBLE_CONVERSION_LIBRARY DOUBLE_CONVERSION_INCLUDE_DIR) ": {
     "name": "Could NOT find DoubleConversion (missing: DOUBLE_CONVERSION_LIBRARY DOUBLE_CONVERSION_INCLUDE_DIR) ",
@@ -631,112 +649,7 @@
     ],
     "origin": "CMake",
     "regex": "Could\\ NOT\\ find\\ DoubleConversion\\ \\(missing\\:\\ DOUBLE_CONVERSION_LIBRARY",
-    "amount": 21
-  },
-  "Could not find a package configuration file provided by \"LLVM\" with any of the following names: LLVMConfig.cmake llvm-config.cmake Add the installation prefix of \"LLVM\" to CMAKE_PREFIX_PATH or set \"LLVM_DIR\" to a directory containing one of the above files.  If \"LLVM\" provides a separate development package or SDK, be sure it has been installed. ": {
-    "name": "Could not find a package configuration file provided by \"LLVM\" with any of the following names: LLVMConfig.cmake llvm-config.cmake Add the installation prefix of \"LLVM\" to CMAKE_PREFIX_PATH or set \"LLVM_DIR\" to a directory containing one of the above files.  If \"LLVM\" provides a separate development package or SDK, be sure it has been installed. ",
-    "projects": [
-      "EOSIO/eos",
-      "iovisor/bcc",
-      "apple/swift"
-    ],
-    "origin": "CMake",
-    "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"LLVM\\\"\\ with\\ any\\ of",
-    "amount": 20
-  },
-  "Error: Unable to shut down server with process id 1810": {
-    "name": "Error: Unable to shut down server with process id 1810",
-    "projects": [
-      "php/php-src"
-    ],
-    "origin": "general_error",
-    "regex": "Error\\:\\ Unable\\ to\\ shut\\ down\\ server\\ with\\ process\\ id\\ 1810",
-    "amount": 19
-  },
-  "SyntaxParserLib, SourceKit, and concurrency require libdispatch on non-Darwin hosts.  Please specify SWIFT_PATH_TO_LIBDISPATCH_SOURCE ": {
-    "name": "SyntaxParserLib, SourceKit, and concurrency require libdispatch on non-Darwin hosts.  Please specify SWIFT_PATH_TO_LIBDISPATCH_SOURCE ",
-    "projects": [
-      "apple/swift"
-    ],
-    "origin": "CMake",
-    "regex": "SyntaxParserLib\\,\\ SourceKit\\,\\ and\\ concurrency\\ require\\ libdispatch\\ on",
-    "amount": 19
-  },
-  "You need to decide whether you want to use GL- or GLES-based rendering. Please set APP_RENDER_SYSTEM to either \"gl\" or \"gles\".  For normal desktop systems, you will usually want to use \"gl\". ": {
-    "name": "You need to decide whether you want to use GL- or GLES-based rendering. Please set APP_RENDER_SYSTEM to either \"gl\" or \"gles\".  For normal desktop systems, you will usually want to use \"gl\". ",
-    "projects": [
-      "xbmc/xbmc"
-    ],
-    "origin": "CMake",
-    "regex": "You\\ need\\ to\\ decide\\ whether\\ you\\ want\\ to\\ use\\ GL\\-\\ or\\ GLES\\-based\\ rendering\\.",
-    "amount": 18
-  },
-  "Could NOT find PythonLibs (missing: PYTHON_LIBRARIES PYTHON_INCLUDE_DIRS) (Required is at least version \"3.5\") ": {
-    "name": "Could NOT find PythonLibs (missing: PYTHON_LIBRARIES PYTHON_INCLUDE_DIRS) (Required is at least version \"3.5\") ",
-    "projects": [
-      "xbmc/xbmc"
-    ],
-    "origin": "CMake",
-    "regex": "Could\\ NOT\\ find\\ PythonLibs\\ \\(missing\\:\\ PYTHON_LIBRARIES\\ PYTHON_INCLUDE_DIRS\\)",
-    "amount": 18
-  },
-  "if given arguments: ": {
-    "name": "if given arguments: ",
-    "projects": [
-      "pytorch/pytorch"
-    ],
-    "origin": "CMake",
-    "regex": "if\\ given\\ arguments\\:",
-    "amount": 17
-  },
-  "Could not find gflags library. ": {
-    "name": "Could not find gflags library. ",
-    "projects": [
-      "apache/incubator-brpc"
-    ],
-    "origin": "CMake",
-    "regex": "Could\\ not\\ find\\ gflags\\ library\\.",
-    "amount": 17
-  },
-  "error: 'png.h' file not found": {
-    "name": "'png.h' file not found",
-    "projects": [
-      "google/guetzli"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ \\'png\\.h\\'\\ file\\ not\\ found",
-    "amount": 17
-  },
-  "PATH/FILE.EXT cd: build: No such file or directory": {
-    "name": "PATH/FILE.EXT cd: build: No such file or directory",
-    "projects": [
-      "opencv/opencv",
-      "ClickHouse/ClickHouse"
-    ],
-    "origin": "dependency",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ cd\\:\\ build\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 17
-  },
-  "Could not find nvcc, please set CUDAToolkit_ROOT. ": {
-    "name": "Could not find nvcc, please set CUDAToolkit_ROOT. ",
-    "projects": [
-      "apache/incubator-mxnet",
-      "pybind/pybind11"
-    ],
-    "origin": "CMake",
-    "regex": "Could\\ not\\ find\\ nvcc\\,\\ please\\ set\\ CUDAToolkit_ROOT\\.",
-    "amount": 17
-  },
-  "PATH/FILE.EXT yum: command not found": {
-    "name": "PATH/FILE.EXT yum: command not found",
-    "projects": [
-      "redis/redis",
-      "telegramdesktop/tdesktop",
-      "pybind/pybind11"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ yum\\:\\ command\\ not\\ found",
-    "amount": 17
+    "amount": 26
   },
   "PATH/FILE.EXT python: command not found": {
     "name": "PATH/FILE.EXT python: command not found",
@@ -749,6 +662,334 @@
     ],
     "origin": "bash_command",
     "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ python\\:\\ command\\ not\\ found",
+    "amount": 26
+  },
+  "Error: No module named 'pybind11'": {
+    "name": "Error: No module named 'pybind11'",
+    "projects": [
+      "taichi-dev/taichi"
+    ],
+    "origin": "general_error",
+    "regex": "Error\\:\\ No\\ module\\ named\\ \\'pybind11\\'",
+    "amount": 25
+  },
+  "Cannot import pybind11.  Please install.  ([sudo] pip3 install --user pybind11) ": {
+    "name": "Cannot import pybind11.  Please install.  ([sudo] pip3 install --user pybind11) ",
+    "projects": [
+      "taichi-dev/taichi"
+    ],
+    "origin": "CMake",
+    "regex": "Cannot\\ import\\ pybind11\\.\\ \\ Please\\ install\\.\\ \\ \\(\\[sudo\\]\\ pip3\\ install\\ \\-\\-user",
+    "amount": 25
+  },
+  "Could NOT find Boost (missing: Boost_INCLUDE_DIR system program_options) (Required is at least version \"1.66.0\") ": {
+    "name": "Could NOT find Boost (missing: Boost_INCLUDE_DIR system program_options) (Required is at least version \"1.66.0\") ",
+    "projects": [
+      "trojan-gfw/trojan"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ NOT\\ find\\ Boost\\ \\(missing\\:\\ Boost_INCLUDE_DIR\\ system\\ program_options\\)",
+    "amount": 24
+  },
+  "Error: No module named 'numpy'": {
+    "name": "Error: No module named 'numpy'",
+    "projects": [
+      "taichi-dev/taichi"
+    ],
+    "origin": "general_error",
+    "regex": "Error\\:\\ No\\ module\\ named\\ \\'numpy\\'",
+    "amount": 23
+  },
+  "You need to decide whether you want to use GL- or GLES-based rendering. Please set APP_RENDER_SYSTEM to either \"gl\" or \"gles\".  For normal desktop systems, you will usually want to use \"gl\". ": {
+    "name": "You need to decide whether you want to use GL- or GLES-based rendering. Please set APP_RENDER_SYSTEM to either \"gl\" or \"gles\".  For normal desktop systems, you will usually want to use \"gl\". ",
+    "projects": [
+      "xbmc/xbmc"
+    ],
+    "origin": "CMake",
+    "regex": "You\\ need\\ to\\ decide\\ whether\\ you\\ want\\ to\\ use\\ GL\\-\\ or\\ GLES\\-based\\ rendering\\.",
+    "amount": 23
+  },
+  "SyntaxParserLib, SourceKit, and concurrency require libdispatch on non-Darwin hosts.  Please specify SWIFT_PATH_TO_LIBDISPATCH_SOURCE ": {
+    "name": "SyntaxParserLib, SourceKit, and concurrency require libdispatch on non-Darwin hosts.  Please specify SWIFT_PATH_TO_LIBDISPATCH_SOURCE ",
+    "projects": [
+      "apple/swift"
+    ],
+    "origin": "CMake",
+    "regex": "SyntaxParserLib\\,\\ SourceKit\\,\\ and\\ concurrency\\ require\\ libdispatch\\ on",
+    "amount": 23
+  },
+  "PATH/FILE.EXT cd: build: No such file or directory": {
+    "name": "PATH/FILE.EXT cd: build: No such file or directory",
+    "projects": [
+      "opencv/opencv",
+      "ClickHouse/ClickHouse"
+    ],
+    "origin": "dependency",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ cd\\:\\ build\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 22
+  },
+  "PATH/FILE.EXT yum: command not found": {
+    "name": "PATH/FILE.EXT yum: command not found",
+    "projects": [
+      "redis/redis",
+      "telegramdesktop/tdesktop",
+      "pybind/pybind11"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ yum\\:\\ command\\ not\\ found",
+    "amount": 22
+  },
+  "PATH/FILE.EXT ./sw: No such file or directory": {
+    "name": "PATH/FILE.EXT ./sw: No such file or directory",
+    "projects": [
+      "tesseract-ocr/tesseract"
+    ],
+    "origin": "dependency",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\.\\/sw\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 21
+  },
+  "error: 'bitsPATH/FILE.EXT file not found": {
+    "name": "'bitsPATH/FILE.EXT file not found",
+    "projects": [
+      "redis/redis"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'bits(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
+    "amount": 21
+  },
+  "Could NOT find gflags (missing: GFLAGS_LIBRARIES GFLAGS_INCLUDE_DIR) ": {
+    "name": "Could NOT find gflags (missing: GFLAGS_LIBRARIES GFLAGS_INCLUDE_DIR) ",
+    "projects": [
+      "facebook/rocksdb"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ NOT\\ find\\ gflags\\ \\(missing\\:\\ GFLAGS_LIBRARIES\\ GFLAGS_INCLUDE_DIR\\)",
+    "amount": 20
+  },
+  "Could NOT find X11_XCB (missing: X11_XCB_LIBRARIES X11_XCB_INCLUDE_DIR) ": {
+    "name": "Could NOT find X11_XCB (missing: X11_XCB_LIBRARIES X11_XCB_INCLUDE_DIR) ",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ NOT\\ find\\ X11_XCB\\ \\(missing\\:\\ X11_XCB_LIBRARIES\\ X11_XCB_INCLUDE_DIR\\)",
+    "amount": 20
+  },
+  "Error: Unable to shut down server with process id 1810": {
+    "name": "Error: Unable to shut down server with process id 1810",
+    "projects": [
+      "php/php-src"
+    ],
+    "origin": "general_error",
+    "regex": "Error\\:\\ Unable\\ to\\ shut\\ down\\ server\\ with\\ process\\ id\\ 1810",
+    "amount": 19
+  },
+  "Could NOT find PythonLibs (missing: PYTHON_LIBRARIES PYTHON_INCLUDE_DIRS) (Required is at least version \"3.5\") ": {
+    "name": "Could NOT find PythonLibs (missing: PYTHON_LIBRARIES PYTHON_INCLUDE_DIRS) (Required is at least version \"3.5\") ",
+    "projects": [
+      "xbmc/xbmc"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ NOT\\ find\\ PythonLibs\\ \\(missing\\:\\ PYTHON_LIBRARIES\\ PYTHON_INCLUDE_DIRS\\)",
+    "amount": 19
+  },
+  "Could NOT find libevent and libevent_pthread. ": {
+    "name": "Could NOT find libevent and libevent_pthread. ",
+    "projects": [
+      "facebook/hhvm"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ NOT\\ find\\ libevent\\ and\\ libevent_pthread\\.",
+    "amount": 19
+  },
+  "PATH/FILE.EXT xattr: command not found": {
+    "name": "PATH/FILE.EXT xattr: command not found",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ xattr\\:\\ command\\ not\\ found",
+    "amount": 19
+  },
+  "cp: cannot stat 'rundir/RelWithDebInfo/bin/obs': No such file or directory": {
+    "name": "cp: cannot stat 'rundir/RelWithDebInfo/bin/obs': No such file or directory",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "dependency",
+    "regex": "cp\\:\\ cannot\\ stat\\ \\'rundir\\/RelWithDebInfo\\/bin\\/obs\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 19
+  },
+  "cp: cannot stat 'rundir/RelWithDebInfo/bin/obs-ffmpeg-mux': No such file or directory": {
+    "name": "cp: cannot stat 'rundir/RelWithDebInfo/bin/obs-ffmpeg-mux': No such file or directory",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "dependency",
+    "regex": "cp\\:\\ cannot\\ stat\\ \\'rundir\\/RelWithDebInfo\\/bin\\/obs\\-ffmpeg\\-mux\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 19
+  },
+  "cp: cannot stat 'rundir/RelWithDebInfo/data': No such file or directory": {
+    "name": "cp: cannot stat 'rundir/RelWithDebInfo/data': No such file or directory",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "dependency",
+    "regex": "cp\\:\\ cannot\\ stat\\ \\'rundir\\/RelWithDebInfo\\/data\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 19
+  },
+  "cp: cannot stat 'rundir/RelWithDebInfo/obs-plugins/': No such file or directory": {
+    "name": "cp: cannot stat 'rundir/RelWithDebInfo/obs-plugins/': No such file or directory",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "dependency",
+    "regex": "cp\\:\\ cannot\\ stat\\ \\'rundir\\/RelWithDebInfo\\/obs\\-plugins\\/\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 19
+  },
+  "PATH/FILE.EXT install_name_tool: command not found": {
+    "name": "PATH/FILE.EXT install_name_tool: command not found",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ install_name_tool\\:\\ command\\ not\\ found",
+    "amount": 19
+  },
+  "PATH/FILE.EXT plutil: command not found": {
+    "name": "PATH/FILE.EXT plutil: command not found",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ plutil\\:\\ command\\ not\\ found",
+    "amount": 19
+  },
+  "PATH/FILE.EXT codesign: command not found": {
+    "name": "PATH/FILE.EXT codesign: command not found",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ codesign\\:\\ command\\ not\\ found",
+    "amount": 19
+  },
+  "PATH/FILE.EXT xcnotary: command not found": {
+    "name": "PATH/FILE.EXT xcnotary: command not found",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ xcnotary\\:\\ command\\ not\\ found",
+    "amount": 19
+  },
+  "PATH/FILE.EXT msbuild: command not found": {
+    "name": "PATH/FILE.EXT msbuild: command not found",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ msbuild\\:\\ command\\ not\\ found",
+    "amount": 19
+  },
+  "Could not find gflags library. ": {
+    "name": "Could not find gflags library. ",
+    "projects": [
+      "apache/incubator-brpc"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ not\\ find\\ gflags\\ library\\.",
+    "amount": 18
+  },
+  "Could not find nvcc, please set CUDAToolkit_ROOT. ": {
+    "name": "Could not find nvcc, please set CUDAToolkit_ROOT. ",
+    "projects": [
+      "apache/incubator-mxnet",
+      "pybind/pybind11"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ not\\ find\\ nvcc\\,\\ please\\ set\\ CUDAToolkit_ROOT\\.",
+    "amount": 18
+  },
+  "error: 'config.h' file not found": {
+    "name": "'config.h' file not found",
+    "projects": [
+      "swoole/swoole-src"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'config\\.h\\'\\ file\\ not\\ found",
+    "amount": 18
+  },
+  "error: cannot run ssh: No such file or directory": {
+    "name": "error: cannot run ssh: No such file or directory",
+    "projects": [
+      "swoole/swoole-src",
+      "OpenRCT2/OpenRCT2"
+    ],
+    "origin": "dependency",
+    "regex": "error\\:\\ cannot\\ run\\ ssh\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 18
+  },
+  "error: ' X11 .rules' file not found": {
+    "name": "' X11 .rules' file not found",
+    "projects": [
+      "spim",
+      "pacman",
+      "xvkbd",
+      "xfaces",
+      "9menu",
+      "acfax",
+      "mgp",
+      "xvier",
+      "knews"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'\\ X11\\ \\.rules\\'\\ file\\ not\\ found",
+    "amount": 18
+  },
+  "if given arguments: ": {
+    "name": "if given arguments: ",
+    "projects": [
+      "pytorch/pytorch"
+    ],
+    "origin": "CMake",
+    "regex": "if\\ given\\ arguments\\:",
+    "amount": 17
+  },
+  "error: 'png.h' file not found": {
+    "name": "'png.h' file not found",
+    "projects": [
+      "google/guetzli"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'png\\.h\\'\\ file\\ not\\ found",
+    "amount": 17
+  },
+  "xargs: clang-format: No such file or directory": {
+    "name": "xargs: clang-format: No such file or directory",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "dependency",
+    "regex": "xargs\\:\\ clang\\-format\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 17
+  },
+  "PATH/FILE.EXT phpize: command not found": {
+    "name": "PATH/FILE.EXT phpize: command not found",
+    "projects": [
+      "swoole/swoole-src"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ phpize\\:\\ command\\ not\\ found",
+    "amount": 17
+  },
+  "PATH/FILE.EXT cd: core-tests: No such file or directory": {
+    "name": "PATH/FILE.EXT cd: core-tests: No such file or directory",
+    "projects": [
+      "swoole/swoole-src"
+    ],
+    "origin": "dependency",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ cd\\:\\ core\\-tests\\:\\ No\\ such\\ file\\ or\\ directory",
     "amount": 17
   },
   "./configure: line 4029: syntax error near unexpected token `PCRE,'": {
@@ -758,15 +999,6 @@
     ],
     "origin": "configure",
     "regex": "\\.\\/configure\\:\\ line\\ 4029\\:\\ syntax\\ error\\ near\\ unexpected\\ token\\ \\`PCRE\\,\\'",
-    "amount": 16
-  },
-  "PATH/FILE.EXT ./sw: No such file or directory": {
-    "name": "PATH/FILE.EXT ./sw: No such file or directory",
-    "projects": [
-      "tesseract-ocr/tesseract"
-    ],
-    "origin": "dependency",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\.\\/sw\\:\\ No\\ such\\ file\\ or\\ directory",
     "amount": 16
   },
   "Could NOT find Boost (missing: Boost_INCLUDE_DIR system program_options filesystem date_time) (Required is at least version \"1.67\") ": {
@@ -779,13 +1011,33 @@
     "regex": "Could\\ NOT\\ find\\ Boost\\ \\(missing\\:\\ Boost_INCLUDE_DIR\\ system\\ program_options",
     "amount": 16
   },
-  "error: 'bitsPATH/FILE.EXT file not found": {
-    "name": "'bitsPATH/FILE.EXT file not found",
+  "if given arguments: \"VERSION_LESS\" \"3\" Unknown arguments specified ": {
+    "name": "if given arguments: \"VERSION_LESS\" \"3\" Unknown arguments specified ",
     "projects": [
-      "redis/redis"
+      "pytorch/pytorch"
     ],
-    "origin": "clang",
-    "regex": "error\\:\\ \\'bits(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
+    "origin": "CMake",
+    "regex": "if\\ given\\ arguments\\:",
+    "amount": 16
+  },
+  "Could NOT find Atlas (missing: Atlas_CLAPACK_INCLUDE_DIR Atlas_CBLAS_LIBRARY Atlas_BLAS_LIBRARY) ": {
+    "name": "Could NOT find Atlas (missing: Atlas_CLAPACK_INCLUDE_DIR Atlas_CBLAS_LIBRARY Atlas_BLAS_LIBRARY) ",
+    "projects": [
+      "BVLC/caffe"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ NOT\\ find\\ Atlas\\ \\(missing\\:\\ Atlas_CLAPACK_INCLUDE_DIR",
+    "amount": 16
+  },
+  "error: in `PATH/FILE.EXT": {
+    "name": "error: in `PATH/FILE.EXT",
+    "projects": [
+      "coolsnowwolf/lede",
+      "autodocksuite",
+      "openjade"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ in\\ \\`(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
     "amount": 16
   },
   "error: Libtool library used but 'LIBTOOL' is undefined\\nMakefile.am:8:   The usual way to define 'LIBTOOL' is to add 'LT_INIT'\\nMakefile.am:8:   to 'configure.ac' and run 'aclocal' and 'autoconf' again.\\nMakefile.am:8:   If 'LT_INIT' is in 'configure.ac', make sure\\nMakefile.am:8:   its definition is in aclocal's search path.\\nMakefile.am: installing 'build-auxPATH/FILE.EXT error: am__fastdepCXX does not appear in AM_CONDITIONAL\\nPATH/FILE.EXT   The usual way to define 'am__fastdepCXX' is to add 'AC_PROG_CXX'\\nPATH/FILE.EXT   to 'configure.ac' and run 'aclocal' and 'autoconf' again\\nPATH/FILE.EXT error: AMDEP does not appear in AM_CONDITIONAL\\nPATH/FILE.EXT   The usual way to define 'AMDEP' is to add one of the compiler tests\\nPATH/FILE.EXT     AC_PROG_CC, AC_PROG_CXX, AC_PROG_OBJC, AC_PROG_OBJCXX,\\nPATH/FILE.EXT     AM_PROG_AS, AM_PROG_GCJ, AM_PROG_UPC\\nPATH/FILE.EXT   to 'configure.ac' and run 'aclocal' and 'autoconf' again\\nMakefile.am: error: C++ source seen but 'CXX' is undefined\\nMakefile.am:   The usual way to define 'CXX' is to add 'AC_PROG_CXX'\\nMakefile.am:   to 'configure.ac' and run 'autoconf' again.\\nparallel-tests: installing 'build-aux/test-driver'\\nautoreconf: automake failed with exit status: 1\\n\")": {
@@ -798,15 +1050,6 @@
     "regex": "error\\:\\ Libtool\\ library\\ used\\ but\\ \\'LIBTOOL\\'\\ is\\ undefined\\\\nMakefile\\.am\\:8\\:\\ \\ \\ The\\ usual\\ way\\ to\\ define\\ \\'LIBTOOL\\'\\ is\\ to\\ add\\ \\'LT_INIT\\'\\\\nMakefile\\.am\\:8\\:\\ \\ \\ to\\ \\'configure\\.ac\\'\\ and\\ run\\ \\'aclocal\\'\\ and\\ \\'autoconf\\'\\ again\\.\\\\nMakefile\\.am\\:8\\:\\ \\ \\ If\\ \\'LT_INIT\\'\\ is\\ in\\ \\'configure\\.ac\\'\\,\\ make\\ sure\\\\nMakefile\\.am\\:8\\:\\ \\ \\ its\\ definition\\ is\\ in\\ aclocal\\'s\\ search\\ path\\.\\\\nMakefile\\.am\\:\\ installing\\ \\'build\\-aux(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ error\\:\\ am__fastdepCXX\\ does\\ not\\ appear\\ in\\ AM_CONDITIONAL\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ The\\ usual\\ way\\ to\\ define\\ \\'am__fastdepCXX\\'\\ is\\ to\\ add\\ \\'AC_PROG_CXX\\'\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ to\\ \\'configure\\.ac\\'\\ and\\ run\\ \\'aclocal\\'\\ and\\ \\'autoconf\\'\\ again\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ error\\:\\ AMDEP\\ does\\ not\\ appear\\ in\\ AM_CONDITIONAL\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ The\\ usual\\ way\\ to\\ define\\ \\'AMDEP\\'\\ is\\ to\\ add\\ one\\ of\\ the\\ compiler\\ tests\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ \\ \\ AC_PROG_CC\\,\\ AC_PROG_CXX\\,\\ AC_PROG_OBJC\\,\\ AC_PROG_OBJCXX\\,\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ \\ \\ AM_PROG_AS\\,\\ AM_PROG_GCJ\\,\\ AM_PROG_UPC\\\\n(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\ \\ to\\ \\'configure\\.ac\\'\\ and\\ run\\ \\'aclocal\\'\\ and\\ \\'autoconf\\'\\ again\\\\nMakefile\\.am\\:\\ error\\:\\ C\\+\\+\\ source\\ seen\\ but\\ \\'CXX\\'\\ is\\ undefined\\\\nMakefile\\.am\\:\\ \\ \\ The\\ usual\\ way\\ to\\ define\\ \\'CXX\\'\\ is\\ to\\ add\\ \\'AC_PROG_CXX\\'\\\\nMakefile\\.am\\:\\ \\ \\ to\\ \\'configure\\.ac\\'\\ and\\ run\\ \\'autoconf\\'\\ again\\.\\\\nparallel\\-tests\\:\\ installing\\ \\'build\\-aux\\/test\\-driver\\'\\\\nautoreconf\\:\\ automake\\ failed\\ with\\ exit\\ status\\:\\ 1\\\\n\\\"\\)",
     "amount": 15
   },
-  "if given arguments: \"VERSION_LESS\" \"3\" Unknown arguments specified ": {
-    "name": "if given arguments: \"VERSION_LESS\" \"3\" Unknown arguments specified ",
-    "projects": [
-      "pytorch/pytorch"
-    ],
-    "origin": "CMake",
-    "regex": "if\\ given\\ arguments\\:",
-    "amount": 15
-  },
   "Could not find a package configuration file provided by \"Leptonica\" (requested version 1.74) with any of the following names: LeptonicaConfig.cmake leptonica-config.cmake Add the installation prefix of \"Leptonica\" to CMAKE_PREFIX_PATH or set \"Leptonica_DIR\" to a directory containing one of the above files.  If \"Leptonica\" provides a separate development package or SDK, be sure it has been installed. ": {
     "name": "Could not find a package configuration file provided by \"Leptonica\" (requested version 1.74) with any of the following names: LeptonicaConfig.cmake leptonica-config.cmake Add the installation prefix of \"Leptonica\" to CMAKE_PREFIX_PATH or set \"Leptonica_DIR\" to a directory containing one of the above files.  If \"Leptonica\" provides a separate development package or SDK, be sure it has been installed. ",
     "projects": [
@@ -814,15 +1057,6 @@
     ],
     "origin": "CMake",
     "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"Leptonica\\\"",
-    "amount": 15
-  },
-  "Could NOT find gflags (missing: GFLAGS_LIBRARIES GFLAGS_INCLUDE_DIR) ": {
-    "name": "Could NOT find gflags (missing: GFLAGS_LIBRARIES GFLAGS_INCLUDE_DIR) ",
-    "projects": [
-      "facebook/rocksdb"
-    ],
-    "origin": "CMake",
-    "regex": "Could\\ NOT\\ find\\ gflags\\ \\(missing\\:\\ GFLAGS_LIBRARIES\\ GFLAGS_INCLUDE_DIR\\)",
     "amount": 15
   },
   "Could NOT find Fontconfig (missing: FONTCONFIG_FOUND) (found version \"\") ": {
@@ -834,13 +1068,49 @@
     "regex": "Could\\ NOT\\ find\\ Fontconfig\\ \\(missing\\:\\ FONTCONFIG_FOUND\\)\\ \\(found\\ version\\ \\\"\\\"\\)",
     "amount": 15
   },
-  "Could NOT find X11_XCB (missing: X11_XCB_LIBRARIES X11_XCB_INCLUDE_DIR) ": {
-    "name": "Could NOT find X11_XCB (missing: X11_XCB_LIBRARIES X11_XCB_INCLUDE_DIR) ",
+  "PATH/FILE.EXT virtualenv: command not found": {
+    "name": "PATH/FILE.EXT virtualenv: command not found",
     "projects": [
-      "obsproject/obs-studio"
+      "BVLC/caffe"
     ],
-    "origin": "CMake",
-    "regex": "Could\\ NOT\\ find\\ X11_XCB\\ \\(missing\\:\\ X11_XCB_LIBRARIES\\ X11_XCB_INCLUDE_DIR\\)",
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ virtualenv\\:\\ command\\ not\\ found",
+    "amount": 15
+  },
+  "PATH/FILE.EXT cd: /Telegram: No such file or directory": {
+    "name": "PATH/FILE.EXT cd: /Telegram: No such file or directory",
+    "projects": [
+      "telegramdesktop/tdesktop"
+    ],
+    "origin": "dependency",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ cd\\:\\ \\/Telegram\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 15
+  },
+  "PATH/FILE.EXT cd: ../out/Debug: No such file or directory": {
+    "name": "PATH/FILE.EXT cd: ../out/Debug: No such file or directory",
+    "projects": [
+      "telegramdesktop/tdesktop"
+    ],
+    "origin": "dependency",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ cd\\:\\ \\.\\.\\/out\\/Debug\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 15
+  },
+  "sudo: snap: command not found": {
+    "name": "sudo: snap: command not found",
+    "projects": [
+      "telegramdesktop/tdesktop"
+    ],
+    "origin": "bash_command",
+    "regex": "sudo\\:\\ snap\\:\\ command\\ not\\ found",
+    "amount": 15
+  },
+  "mv: cannot stat 'telegram-desktop_*.snap': No such file or directory": {
+    "name": "mv: cannot stat 'telegram-desktop_*.snap': No such file or directory",
+    "projects": [
+      "telegramdesktop/tdesktop"
+    ],
+    "origin": "dependency",
+    "regex": "mv\\:\\ cannot\\ stat\\ \\'telegram\\-desktop_\\*\\.snap\\'\\:\\ No\\ such\\ file\\ or\\ directory",
     "amount": 15
   },
   "Could NOT find Protobuf (missing: Protobuf_LIBRARIES Protobuf_INCLUDE_DIR) ": {
@@ -852,103 +1122,76 @@
     "regex": "Could\\ NOT\\ find\\ Protobuf\\ \\(missing\\:\\ Protobuf_LIBRARIES\\ Protobuf_INCLUDE_DIR\\)",
     "amount": 14
   },
-  "Could NOT find libevent and libevent_pthread. ": {
-    "name": "Could NOT find libevent and libevent_pthread. ",
+  "error: you should not run configure as root (set FORCE_UNSAFE_CONFIGURE=1 in environment to bypass this check)": {
+    "name": "error: you should not run configure as root (set FORCE_UNSAFE_CONFIGURE=1 in environment to bypass this check)",
     "projects": [
-      "facebook/hhvm"
+      "coolsnowwolf/lede"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ you\\ should\\ not\\ run\\ configure\\ as\\ root\\ \\(set\\ FORCE_UNSAFE_CONFIGURE\\=1\\ in\\ environment\\ to\\ bypass\\ this\\ check\\)",
+    "amount": 14
+  },
+  "du: cannot access './bin': No such file or directory": {
+    "name": "du: cannot access './bin': No such file or directory",
+    "projects": [
+      "coolsnowwolf/lede"
+    ],
+    "origin": "dependency",
+    "regex": "du\\:\\ cannot\\ access\\ \\'\\.\\/bin\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 14
+  },
+  "find: \u2018./bin/targets/\u2019: No such file or directory": {
+    "name": "find: \u2018./bin/targets/\u2019: No such file or directory",
+    "projects": [
+      "coolsnowwolf/lede"
+    ],
+    "origin": "dependency",
+    "regex": "find\\:\\ \\\u2018\\.\\/bin\\/targets\\/\\\u2019\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 14
+  },
+  "find: \u2018./bin/packages/\u2019: No such file or directory": {
+    "name": "find: \u2018./bin/packages/\u2019: No such file or directory",
+    "projects": [
+      "coolsnowwolf/lede"
+    ],
+    "origin": "dependency",
+    "regex": "find\\:\\ \\\u2018\\.\\/bin\\/packages\\/\\\u2019\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 14
+  },
+  "/usr/bin/sed: can't read s#\\$\\$VERSION\\$\\$#${{ env.OBS_GIT_TAG }}#g: No such file or directory": {
+    "name": "/usr/bin/sed: can't read s#\\$\\$VERSION\\$\\$#${{ env.OBS_GIT_TAG }}#g: No such file or directory",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "dependency",
+    "regex": "\\/usr\\/bin\\/sed\\:\\ can\\'t\\ read\\ s\\#\\\\\\$\\\\\\$VERSION\\\\\\$\\\\\\$\\#\\$\\{\\{\\ env\\.OBS_GIT_TAG\\ \\}\\}\\#g\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 14
+  },
+  "/usr/bin/sed: can't read s#\\$\\$CI_PATH\\$\\$#../CI/scripts/macos#g: No such file or directory": {
+    "name": "/usr/bin/sed: can't read s#\\$\\$CI_PATH\\$\\$#../CI/scripts/macos#g: No such file or directory",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "dependency",
+    "regex": "\\/usr\\/bin\\/sed\\:\\ can\\'t\\ read\\ s\\#\\\\\\$\\\\\\$CI_PATH\\\\\\$\\\\\\$\\#\\.\\.\\/CI\\/scripts\\/macos\\#g\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 14
+  },
+  "/usr/bin/sed: can't read s#\\$\\$BUNDLE_PATH\\$\\$#${{ github.workspace }}/build#g: No such file or directory": {
+    "name": "/usr/bin/sed: can't read s#\\$\\$BUNDLE_PATH\\$\\$#${{ github.workspace }}/build#g: No such file or directory",
+    "projects": [
+      "obsproject/obs-studio"
+    ],
+    "origin": "dependency",
+    "regex": "\\/usr\\/bin\\/sed\\:\\ can\\'t\\ read\\ s\\#\\\\\\$\\\\\\$BUNDLE_PATH\\\\\\$\\\\\\$\\#\\$\\{\\{\\ github\\.workspace\\ \\}\\}\\/build\\#g\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 14
+  },
+  "Failed to generate test project build system. ": {
+    "name": "Failed to generate test project build system. ",
+    "projects": [
+      "ClickHouse/ClickHouse"
     ],
     "origin": "CMake",
-    "regex": "Could\\ NOT\\ find\\ libevent\\ and\\ libevent_pthread\\.",
-    "amount": 14
-  },
-  "PATH/FILE.EXT xattr: command not found": {
-    "name": "PATH/FILE.EXT xattr: command not found",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ xattr\\:\\ command\\ not\\ found",
-    "amount": 14
-  },
-  "cp: cannot stat 'rundir/RelWithDebInfo/bin/obs': No such file or directory": {
-    "name": "cp: cannot stat 'rundir/RelWithDebInfo/bin/obs': No such file or directory",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "dependency",
-    "regex": "cp\\:\\ cannot\\ stat\\ \\'rundir\\/RelWithDebInfo\\/bin\\/obs\\'\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 14
-  },
-  "cp: cannot stat 'rundir/RelWithDebInfo/bin/obs-ffmpeg-mux': No such file or directory": {
-    "name": "cp: cannot stat 'rundir/RelWithDebInfo/bin/obs-ffmpeg-mux': No such file or directory",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "dependency",
-    "regex": "cp\\:\\ cannot\\ stat\\ \\'rundir\\/RelWithDebInfo\\/bin\\/obs\\-ffmpeg\\-mux\\'\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 14
-  },
-  "cp: cannot stat 'rundir/RelWithDebInfo/data': No such file or directory": {
-    "name": "cp: cannot stat 'rundir/RelWithDebInfo/data': No such file or directory",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "dependency",
-    "regex": "cp\\:\\ cannot\\ stat\\ \\'rundir\\/RelWithDebInfo\\/data\\'\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 14
-  },
-  "cp: cannot stat 'rundir/RelWithDebInfo/obs-plugins/': No such file or directory": {
-    "name": "cp: cannot stat 'rundir/RelWithDebInfo/obs-plugins/': No such file or directory",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "dependency",
-    "regex": "cp\\:\\ cannot\\ stat\\ \\'rundir\\/RelWithDebInfo\\/obs\\-plugins\\/\\'\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 14
-  },
-  "PATH/FILE.EXT install_name_tool: command not found": {
-    "name": "PATH/FILE.EXT install_name_tool: command not found",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ install_name_tool\\:\\ command\\ not\\ found",
-    "amount": 14
-  },
-  "PATH/FILE.EXT plutil: command not found": {
-    "name": "PATH/FILE.EXT plutil: command not found",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ plutil\\:\\ command\\ not\\ found",
-    "amount": 14
-  },
-  "PATH/FILE.EXT codesign: command not found": {
-    "name": "PATH/FILE.EXT codesign: command not found",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ codesign\\:\\ command\\ not\\ found",
-    "amount": 14
-  },
-  "PATH/FILE.EXT xcnotary: command not found": {
-    "name": "PATH/FILE.EXT xcnotary: command not found",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ xcnotary\\:\\ command\\ not\\ found",
-    "amount": 14
-  },
-  "PATH/FILE.EXT msbuild: command not found": {
-    "name": "PATH/FILE.EXT msbuild: command not found",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ msbuild\\:\\ command\\ not\\ found",
+    "regex": "Failed\\ to\\ generate\\ test\\ project\\ build\\ system\\.",
     "amount": 14
   },
   "A required package was not found ": {
@@ -959,15 +1202,6 @@
     ],
     "origin": "CMake",
     "regex": "A\\ required\\ package\\ was\\ not\\ found",
-    "amount": 13
-  },
-  "error: 'config.h' file not found": {
-    "name": "'config.h' file not found",
-    "projects": [
-      "swoole/swoole-src"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ \\'config\\.h\\'\\ file\\ not\\ found",
     "amount": 13
   },
   "PATH/FILE.EXT pyenv: command not found": {
@@ -1087,59 +1321,76 @@
     "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\:\\ command\\ not\\ found",
     "amount": 13
   },
-  "Could NOT find Atlas (missing: Atlas_CLAPACK_INCLUDE_DIR Atlas_CBLAS_LIBRARY Atlas_BLAS_LIBRARY) ": {
-    "name": "Could NOT find Atlas (missing: Atlas_CLAPACK_INCLUDE_DIR Atlas_CBLAS_LIBRARY Atlas_BLAS_LIBRARY) ",
+  "PATH/FILE.EXT Copy-Item: command not found": {
+    "name": "PATH/FILE.EXT Copy-Item: command not found",
     "projects": [
-      "BVLC/caffe"
+      "tesseract-ocr/tesseract"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ Copy\\-Item\\:\\ command\\ not\\ found",
+    "amount": 13
+  },
+  "PATH/FILE.EXT ssh-agent: command not found": {
+    "name": "PATH/FILE.EXT ssh-agent: command not found",
+    "projects": [
+      "changkun/modern-cpp-tutorial"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ ssh\\-agent\\:\\ command\\ not\\ found",
+    "amount": 13
+  },
+  "PATH/FILE.EXT ssh-add: command not found": {
+    "name": "PATH/FILE.EXT ssh-add: command not found",
+    "projects": [
+      "changkun/modern-cpp-tutorial"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ ssh\\-add\\:\\ command\\ not\\ found",
+    "amount": 13
+  },
+  "PATH/FILE.EXT ssh-keyscan: command not found": {
+    "name": "PATH/FILE.EXT ssh-keyscan: command not found",
+    "projects": [
+      "changkun/modern-cpp-tutorial"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ ssh\\-keyscan\\:\\ command\\ not\\ found",
+    "amount": 13
+  },
+  "PATH/FILE.EXT scp: command not found": {
+    "name": "PATH/FILE.EXT scp: command not found",
+    "projects": [
+      "changkun/modern-cpp-tutorial"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ scp\\:\\ command\\ not\\ found",
+    "amount": 13
+  },
+  "error: Only Windows platforms are supported": {
+    "name": "Only Windows platforms are supported",
+    "projects": [
+      "pbatard/rufus"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ Only\\ Windows\\ platforms\\ are\\ supported",
+    "amount": 13
+  },
+  "error: 'windows.h' file not found": {
+    "name": "'windows.h' file not found",
+    "projects": [
+      "pbatard/rufus"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'windows\\.h\\'\\ file\\ not\\ found",
+    "amount": 13
+  },
+  "Conan executable not found! ": {
+    "name": "Conan executable not found! ",
+    "projects": [
+      "yuzu-emu/yuzu"
     ],
     "origin": "CMake",
-    "regex": "Could\\ NOT\\ find\\ Atlas\\ \\(missing\\:\\ Atlas_CLAPACK_INCLUDE_DIR",
-    "amount": 13
-  },
-  "error: cannot run ssh: No such file or directory": {
-    "name": "error: cannot run ssh: No such file or directory",
-    "projects": [
-      "swoole/swoole-src",
-      "OpenRCT2/OpenRCT2"
-    ],
-    "origin": "dependency",
-    "regex": "error\\:\\ cannot\\ run\\ ssh\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 13
-  },
-  "xargs: clang-format: No such file or directory": {
-    "name": "xargs: clang-format: No such file or directory",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "dependency",
-    "regex": "xargs\\:\\ clang\\-format\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 12
-  },
-  "PATH/FILE.EXT phpize: command not found": {
-    "name": "PATH/FILE.EXT phpize: command not found",
-    "projects": [
-      "swoole/swoole-src"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ phpize\\:\\ command\\ not\\ found",
-    "amount": 12
-  },
-  "PATH/FILE.EXT cd: core-tests: No such file or directory": {
-    "name": "PATH/FILE.EXT cd: core-tests: No such file or directory",
-    "projects": [
-      "swoole/swoole-src"
-    ],
-    "origin": "dependency",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ cd\\:\\ core\\-tests\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 12
-  },
-  "PATH/FILE.EXT virtualenv: command not found": {
-    "name": "PATH/FILE.EXT virtualenv: command not found",
-    "projects": [
-      "BVLC/caffe"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ virtualenv\\:\\ command\\ not\\ found",
+    "regex": "Conan\\ executable\\ not\\ found\\!",
     "amount": 12
   },
   "Could NOT find FFmpeg (missing: FFMPEG_AVCODEC_LIBRARIES FFMPEG_AVCODEC_INCLUDE_DIRS avcodec avdevice avutil avformat) ": {
@@ -1180,6 +1431,36 @@
     "regex": "fatal\\ error\\:\\ too\\ many\\ errors\\ emitted\\,\\ stopping\\ now\\ \\[\\-ferror\\-limit\\=\\]",
     "amount": 11
   },
+  "CPack contained in CMake version 3.18 and newer generates RPM packages that won't install correctly on some distributions.  You are using version 3.19.2 which has the bug, please use version 3.17.5 or set OSQUERY_IGNORE_CMAKE_MAX_VERSION_CHECK=TRUE if you're not going to generate a RPM package. ": {
+    "name": "CPack contained in CMake version 3.18 and newer generates RPM packages that won't install correctly on some distributions.  You are using version 3.19.2 which has the bug, please use version 3.17.5 or set OSQUERY_IGNORE_CMAKE_MAX_VERSION_CHECK=TRUE if you're not going to generate a RPM package. ",
+    "projects": [
+      "osquery/osquery"
+    ],
+    "origin": "CMake",
+    "regex": "CPack\\ contained\\ in\\ CMake\\ version\\ 3\\.18\\ and\\ newer\\ generates\\ RPM\\ packages\\ that",
+    "amount": 11
+  },
+  "error: 'objcPATH/FILE.EXT file not found": {
+    "name": "'objcPATH/FILE.EXT file not found",
+    "projects": [
+      "adun.app",
+      "biococoa",
+      "talksoup.app"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'objc(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
+    "amount": 11
+  },
+  "Error: invalid syntax": {
+    "name": "Error: invalid syntax",
+    "projects": [
+      "mozilla/DeepSpeech",
+      "facebookresearch/faiss"
+    ],
+    "origin": "general_error",
+    "regex": "Error\\:\\ invalid\\ syntax",
+    "amount": 11
+  },
   "Unable to find the requested Boost libraries. Unable to find the Boost header files.  Please set BOOST_ROOT to the root directory containing Boost or BOOST_INCLUDEDIR to the directory containing Boost's headers. ": {
     "name": "Unable to find the requested Boost libraries. Unable to find the Boost header files.  Please set BOOST_ROOT to the root directory containing Boost or BOOST_INCLUDEDIR to the directory containing Boost's headers. ",
     "projects": [
@@ -1190,59 +1471,44 @@
     "regex": "Unable\\ to\\ find\\ the\\ requested\\ Boost\\ libraries\\.",
     "amount": 10
   },
-  "PATH/FILE.EXT cd: /Telegram: No such file or directory": {
-    "name": "PATH/FILE.EXT cd: /Telegram: No such file or directory",
+  "error: dpkg-source -i=\"*\" -b . subprocess returned exit status 2": {
+    "name": "error: dpkg-source -i=\"*\" -b . subprocess returned exit status 2",
     "projects": [
-      "telegramdesktop/tdesktop"
-    ],
-    "origin": "dependency",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ cd\\:\\ \\/Telegram\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 10
-  },
-  "PATH/FILE.EXT cd: ../out/Debug: No such file or directory": {
-    "name": "PATH/FILE.EXT cd: ../out/Debug: No such file or directory",
-    "projects": [
-      "telegramdesktop/tdesktop"
-    ],
-    "origin": "dependency",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ cd\\:\\ \\.\\.\\/out\\/Debug\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 10
-  },
-  "sudo: snap: command not found": {
-    "name": "sudo: snap: command not found",
-    "projects": [
-      "telegramdesktop/tdesktop"
-    ],
-    "origin": "bash_command",
-    "regex": "sudo\\:\\ snap\\:\\ command\\ not\\ found",
-    "amount": 10
-  },
-  "mv: cannot stat 'telegram-desktop_*.snap': No such file or directory": {
-    "name": "mv: cannot stat 'telegram-desktop_*.snap': No such file or directory",
-    "projects": [
-      "telegramdesktop/tdesktop"
-    ],
-    "origin": "dependency",
-    "regex": "mv\\:\\ cannot\\ stat\\ \\'telegram\\-desktop_\\*\\.snap\\'\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 10
-  },
-  "Conan executable not found! ": {
-    "name": "Conan executable not found! ",
-    "projects": [
-      "yuzu-emu/yuzu"
-    ],
-    "origin": "CMake",
-    "regex": "Conan\\ executable\\ not\\ found\\!",
-    "amount": 10
-  },
-  "error: in `PATH/FILE.EXT": {
-    "name": "error: in `PATH/FILE.EXT",
-    "projects": [
-      "coolsnowwolf/lede",
-      "autodocksuite"
+      "libdeflate",
+      "powerline",
+      "pyao",
+      "disulfinder",
+      "entropybroker",
+      "teeworlds"
     ],
     "origin": "general_error",
-    "regex": "error\\:\\ in\\ \\`(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
+    "regex": "error\\:\\ dpkg\\-source\\ \\-i\\=\\\"\\*\\\"\\ \\-b\\ \\.\\ subprocess\\ returned\\ exit\\ status\\ 2",
+    "amount": 10
+  },
+  "/usr/bin/ld: PATH/FILE.EXT error loading plugin: PATH/FILE.EXT cannot open shared object file: No such file or directory": {
+    "name": "/usr/bin/ld: PATH/FILE.EXT error loading plugin: PATH/FILE.EXT cannot open shared object file: No such file or directory",
+    "projects": [
+      "grabix",
+      "leela-zero",
+      "blastem",
+      "fasta3",
+      "llvmlite",
+      "mupen64plus-video-arachnoid"
+    ],
+    "origin": "dependency",
+    "regex": "\\/usr\\/bin\\/ld\\:\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ error\\ loading\\ plugin\\:\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ cannot\\ open\\ shared\\ object\\ file\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 10
+  },
+  "Error: could not load cache": {
+    "name": "Error: could not load cache",
+    "projects": [
+      "assimp/assimp",
+      "Tencent/ncnn",
+      "pybind/pybind11",
+      "osquery/osquery"
+    ],
+    "origin": "general_error",
+    "regex": "Error\\:\\ could\\ not\\ load\\ cache",
     "amount": 10
   },
   "ERROR - [106/0] make: python: Command not found": {
@@ -1267,102 +1533,35 @@
     "regex": "Could\\ NOT\\ find\\ PkgConfig\\ \\(missing\\:\\ PKG_CONFIG_EXECUTABLE\\)",
     "amount": 9
   },
-  "error: dpkg-source -i=\"*\" -b . subprocess returned exit status 2": {
-    "name": "error: dpkg-source -i=\"*\" -b . subprocess returned exit status 2",
+  "error: function definition is not allowed here": {
+    "name": "function definition is not allowed here",
     "projects": [
-      "libdeflate",
-      "powerline",
-      "pyao",
-      "disulfinder",
-      "entropybroker"
+      "ekg2",
+      "eurephia",
+      "win32-loader",
+      "reprepro",
+      "growl-for-linux"
     ],
-    "origin": "general_error",
-    "regex": "error\\:\\ dpkg\\-source\\ \\-i\\=\\\"\\*\\\"\\ \\-b\\ \\.\\ subprocess\\ returned\\ exit\\ status\\ 2",
+    "origin": "clang",
+    "regex": "error\\:\\ function\\ definition\\ is\\ not\\ allowed\\ here",
     "amount": 9
   },
-  "/usr/bin/ld: PATH/FILE.EXT error loading plugin: PATH/FILE.EXT cannot open shared object file: No such file or directory": {
-    "name": "/usr/bin/ld: PATH/FILE.EXT error loading plugin: PATH/FILE.EXT cannot open shared object file: No such file or directory",
+  "fatal error: linker command failed with exit code 1 (use -v to see invocation)": {
+    "name": "fatal error: linker command failed with exit code 1 (use -v to see invocation)",
     "projects": [
-      "grabix",
-      "leela-zero",
-      "blastem",
-      "fasta3",
-      "llvmlite"
+      "pjreddie/darknet"
     ],
-    "origin": "dependency",
-    "regex": "\\/usr\\/bin\\/ld\\:\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ error\\ loading\\ plugin\\:\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ cannot\\ open\\ shared\\ object\\ file\\:\\ No\\ such\\ file\\ or\\ directory",
+    "origin": "fatal_error",
+    "regex": "fatal\\ error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
     "amount": 9
   },
-  "error: you should not run configure as root (set FORCE_UNSAFE_CONFIGURE=1 in environment to bypass this check)": {
-    "name": "error: you should not run configure as root (set FORCE_UNSAFE_CONFIGURE=1 in environment to bypass this check)",
+  "error: 'zlib.h' file not found": {
+    "name": "'zlib.h' file not found",
     "projects": [
-      "coolsnowwolf/lede"
+      "facebook/zstd"
     ],
-    "origin": "general_error",
-    "regex": "error\\:\\ you\\ should\\ not\\ run\\ configure\\ as\\ root\\ \\(set\\ FORCE_UNSAFE_CONFIGURE\\=1\\ in\\ environment\\ to\\ bypass\\ this\\ check\\)",
-    "amount": 9
-  },
-  "du: cannot access './bin': No such file or directory": {
-    "name": "du: cannot access './bin': No such file or directory",
-    "projects": [
-      "coolsnowwolf/lede"
-    ],
-    "origin": "dependency",
-    "regex": "du\\:\\ cannot\\ access\\ \\'\\.\\/bin\\'\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 9
-  },
-  "find: \u2018./bin/targets/\u2019: No such file or directory": {
-    "name": "find: \u2018./bin/targets/\u2019: No such file or directory",
-    "projects": [
-      "coolsnowwolf/lede"
-    ],
-    "origin": "dependency",
-    "regex": "find\\:\\ \\\u2018\\.\\/bin\\/targets\\/\\\u2019\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 9
-  },
-  "find: \u2018./bin/packages/\u2019: No such file or directory": {
-    "name": "find: \u2018./bin/packages/\u2019: No such file or directory",
-    "projects": [
-      "coolsnowwolf/lede"
-    ],
-    "origin": "dependency",
-    "regex": "find\\:\\ \\\u2018\\.\\/bin\\/packages\\/\\\u2019\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 9
-  },
-  "/usr/bin/sed: can't read s#\\$\\$VERSION\\$\\$#${{ env.OBS_GIT_TAG }}#g: No such file or directory": {
-    "name": "/usr/bin/sed: can't read s#\\$\\$VERSION\\$\\$#${{ env.OBS_GIT_TAG }}#g: No such file or directory",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "dependency",
-    "regex": "\\/usr\\/bin\\/sed\\:\\ can\\'t\\ read\\ s\\#\\\\\\$\\\\\\$VERSION\\\\\\$\\\\\\$\\#\\$\\{\\{\\ env\\.OBS_GIT_TAG\\ \\}\\}\\#g\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 9
-  },
-  "/usr/bin/sed: can't read s#\\$\\$CI_PATH\\$\\$#../CI/scripts/macos#g: No such file or directory": {
-    "name": "/usr/bin/sed: can't read s#\\$\\$CI_PATH\\$\\$#../CI/scripts/macos#g: No such file or directory",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "dependency",
-    "regex": "\\/usr\\/bin\\/sed\\:\\ can\\'t\\ read\\ s\\#\\\\\\$\\\\\\$CI_PATH\\\\\\$\\\\\\$\\#\\.\\.\\/CI\\/scripts\\/macos\\#g\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 9
-  },
-  "/usr/bin/sed: can't read s#\\$\\$BUNDLE_PATH\\$\\$#${{ github.workspace }}/build#g: No such file or directory": {
-    "name": "/usr/bin/sed: can't read s#\\$\\$BUNDLE_PATH\\$\\$#${{ github.workspace }}/build#g: No such file or directory",
-    "projects": [
-      "obsproject/obs-studio"
-    ],
-    "origin": "dependency",
-    "regex": "\\/usr\\/bin\\/sed\\:\\ can\\'t\\ read\\ s\\#\\\\\\$\\\\\\$BUNDLE_PATH\\\\\\$\\\\\\$\\#\\$\\{\\{\\ github\\.workspace\\ \\}\\}\\/build\\#g\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 9
-  },
-  "Failed to generate test project build system. ": {
-    "name": "Failed to generate test project build system. ",
-    "projects": [
-      "ClickHouse/ClickHouse"
-    ],
-    "origin": "CMake",
-    "regex": "Failed\\ to\\ generate\\ test\\ project\\ build\\ system\\.",
+    "origin": "clang",
+    "regex": "error\\:\\ \\'zlib\\.h\\'\\ file\\ not\\ found",
     "amount": 9
   },
   "error: 'boostPATH/FILE.EXT file not found": {
@@ -1451,60 +1650,6 @@
     "regex": "error\\:\\ aborting\\ due\\ to\\ unexpected\\ upstream\\ changes\\,\\ see\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
     "amount": 8
   },
-  "error: function definition is not allowed here": {
-    "name": "function definition is not allowed here",
-    "projects": [
-      "ekg2",
-      "eurephia",
-      "win32-loader",
-      "reprepro"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ function\\ definition\\ is\\ not\\ allowed\\ here",
-    "amount": 8
-  },
-  "fatal error: linker command failed with exit code 1 (use -v to see invocation)": {
-    "name": "fatal error: linker command failed with exit code 1 (use -v to see invocation)",
-    "projects": [
-      "pjreddie/darknet"
-    ],
-    "origin": "fatal_error",
-    "regex": "fatal\\ error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
-    "amount": 8
-  },
-  "PATH/FILE.EXT Copy-Item: command not found": {
-    "name": "PATH/FILE.EXT Copy-Item: command not found",
-    "projects": [
-      "tesseract-ocr/tesseract"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ Copy\\-Item\\:\\ command\\ not\\ found",
-    "amount": 8
-  },
-  "CPack contained in CMake version 3.18 and newer generates RPM packages that won't install correctly on some distributions.  You are using version 3.19.2 which has the bug, please use version 3.17.5 or set OSQUERY_IGNORE_CMAKE_MAX_VERSION_CHECK=TRUE if you're not going to generate a RPM package. ": {
-    "name": "CPack contained in CMake version 3.18 and newer generates RPM packages that won't install correctly on some distributions.  You are using version 3.19.2 which has the bug, please use version 3.17.5 or set OSQUERY_IGNORE_CMAKE_MAX_VERSION_CHECK=TRUE if you're not going to generate a RPM package. ",
-    "projects": [
-      "osquery/osquery"
-    ],
-    "origin": "CMake",
-    "regex": "CPack\\ contained\\ in\\ CMake\\ version\\ 3\\.18\\ and\\ newer\\ generates\\ RPM\\ packages\\ that",
-    "amount": 8
-  },
-  "error: ' X11 .rules' file not found": {
-    "name": "' X11 .rules' file not found",
-    "projects": [
-      "spim",
-      "pacman",
-      "xvkbd",
-      "xfaces",
-      "9menu",
-      "acfax",
-      "mgp"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ \\'\\ X11\\ \\.rules\\'\\ file\\ not\\ found",
-    "amount": 8
-  },
   "error: 'cstddef' file not found": {
     "name": "'cstddef' file not found",
     "projects": [
@@ -1521,60 +1666,6 @@
     ],
     "origin": "clang",
     "regex": "error\\:\\ \\'readline(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
-    "amount": 8
-  },
-  "PATH/FILE.EXT ssh-agent: command not found": {
-    "name": "PATH/FILE.EXT ssh-agent: command not found",
-    "projects": [
-      "changkun/modern-cpp-tutorial"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ ssh\\-agent\\:\\ command\\ not\\ found",
-    "amount": 8
-  },
-  "PATH/FILE.EXT ssh-add: command not found": {
-    "name": "PATH/FILE.EXT ssh-add: command not found",
-    "projects": [
-      "changkun/modern-cpp-tutorial"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ ssh\\-add\\:\\ command\\ not\\ found",
-    "amount": 8
-  },
-  "PATH/FILE.EXT ssh-keyscan: command not found": {
-    "name": "PATH/FILE.EXT ssh-keyscan: command not found",
-    "projects": [
-      "changkun/modern-cpp-tutorial"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ ssh\\-keyscan\\:\\ command\\ not\\ found",
-    "amount": 8
-  },
-  "PATH/FILE.EXT scp: command not found": {
-    "name": "PATH/FILE.EXT scp: command not found",
-    "projects": [
-      "changkun/modern-cpp-tutorial"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ scp\\:\\ command\\ not\\ found",
-    "amount": 8
-  },
-  "error: Only Windows platforms are supported": {
-    "name": "Only Windows platforms are supported",
-    "projects": [
-      "pbatard/rufus"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ Only\\ Windows\\ platforms\\ are\\ supported",
-    "amount": 8
-  },
-  "error: 'windows.h' file not found": {
-    "name": "'windows.h' file not found",
-    "projects": [
-      "pbatard/rufus"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ \\'windows\\.h\\'\\ file\\ not\\ found",
     "amount": 8
   },
   "error: 'gflagsPATH/FILE.EXT file not found": {
@@ -1683,6 +1774,34 @@
     ],
     "origin": "bash_command",
     "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ clang\\-tidy\\:\\ command\\ not\\ found",
+    "amount": 7
+  },
+  "./configure: line 8163: /usr/bin/file: No such file or directory": {
+    "name": "./configure: line 8163: /usr/bin/file: No such file or directory",
+    "projects": [
+      "apache/incubator-brpc"
+    ],
+    "origin": "dependency",
+    "regex": "\\.\\/configure\\:\\ line\\ 8163\\:\\ \\/usr\\/bin\\/file\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 7
+  },
+  "Package LibtorrentRasterbar >= 1.2.11 not found with CMake or pkg-config. - Set LibtorrentRasterbar_DIR to a directory containing a LibtorrentRasterbarConfig.cmake file or add the installation prefix of LibtorrentRasterbar to CMAKE_PREFIX_PATH. - Alternatively, make sure there is a valid libtorrent-rasterbar.pc file in your system's pkg-config search paths (use the system environment variable PKG_CONFIG_PATH to specify additional search paths if needed). ": {
+    "name": "Package LibtorrentRasterbar >= 1.2.11 not found with CMake or pkg-config. - Set LibtorrentRasterbar_DIR to a directory containing a LibtorrentRasterbarConfig.cmake file or add the installation prefix of LibtorrentRasterbar to CMAKE_PREFIX_PATH. - Alternatively, make sure there is a valid libtorrent-rasterbar.pc file in your system's pkg-config search paths (use the system environment variable PKG_CONFIG_PATH to specify additional search paths if needed). ",
+    "projects": [
+      "qbittorrent/qBittorrent"
+    ],
+    "origin": "CMake",
+    "regex": "Package\\ LibtorrentRasterbar\\ \\>\\=\\ 1\\.2\\.11\\ not\\ found\\ with\\ CMake\\ or\\ pkg\\-config\\.",
+    "amount": 7
+  },
+  "sysctl: cannot stat /proc/sys/hw/logicalcpu: No such file or directory": {
+    "name": "sysctl: cannot stat /proc/sys/hw/logicalcpu: No such file or directory",
+    "projects": [
+      "apple/darwin-xnu",
+      "osquery/osquery"
+    ],
+    "origin": "dependency",
+    "regex": "sysctl\\:\\ cannot\\ stat\\ \\/proc\\/sys\\/hw\\/logicalcpu\\:\\ No\\ such\\ file\\ or\\ directory",
     "amount": 7
   },
   "[Error] Package cmake is not installed": {
@@ -1856,34 +1975,6 @@
     "regex": "error\\:\\ use\\ of\\ undeclared\\ identifier\\ \\'zzz\\'",
     "amount": 6
   },
-  "error: 'objcPATH/FILE.EXT file not found": {
-    "name": "'objcPATH/FILE.EXT file not found",
-    "projects": [
-      "adun.app",
-      "biococoa"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ \\'objc(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
-    "amount": 6
-  },
-  "./configure: line 8163: /usr/bin/file: No such file or directory": {
-    "name": "./configure: line 8163: /usr/bin/file: No such file or directory",
-    "projects": [
-      "apache/incubator-brpc"
-    ],
-    "origin": "dependency",
-    "regex": "\\.\\/configure\\:\\ line\\ 8163\\:\\ \\/usr\\/bin\\/file\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 6
-  },
-  "Package LibtorrentRasterbar >= 1.2.11 not found with CMake or pkg-config. - Set LibtorrentRasterbar_DIR to a directory containing a LibtorrentRasterbarConfig.cmake file or add the installation prefix of LibtorrentRasterbar to CMAKE_PREFIX_PATH. - Alternatively, make sure there is a valid libtorrent-rasterbar.pc file in your system's pkg-config search paths (use the system environment variable PKG_CONFIG_PATH to specify additional search paths if needed). ": {
-    "name": "Package LibtorrentRasterbar >= 1.2.11 not found with CMake or pkg-config. - Set LibtorrentRasterbar_DIR to a directory containing a LibtorrentRasterbarConfig.cmake file or add the installation prefix of LibtorrentRasterbar to CMAKE_PREFIX_PATH. - Alternatively, make sure there is a valid libtorrent-rasterbar.pc file in your system's pkg-config search paths (use the system environment variable PKG_CONFIG_PATH to specify additional search paths if needed). ",
-    "projects": [
-      "qbittorrent/qBittorrent"
-    ],
-    "origin": "CMake",
-    "regex": "Package\\ LibtorrentRasterbar\\ \\>\\=\\ 1\\.2\\.11\\ not\\ found\\ with\\ CMake\\ or\\ pkg\\-config\\.",
-    "amount": 6
-  },
   "error: libevent is required.  You can get it from https:PATH/FILE.EXT": {
     "name": "error: libevent is required.  You can get it from https:PATH/FILE.EXT",
     "projects": [
@@ -1893,14 +1984,58 @@
     "regex": "error\\:\\ libevent\\ is\\ required\\.\\ \\ You\\ can\\ get\\ it\\ from\\ https\\:(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
     "amount": 6
   },
-  "Error: invalid syntax": {
-    "name": "Error: invalid syntax",
+  "ERROR: Command errored out with exit status 1:": {
+    "name": "ERROR: Command errored out with exit status 1:",
     "projects": [
-      "mozilla/DeepSpeech",
       "facebookresearch/faiss"
     ],
     "origin": "general_error",
-    "regex": "Error\\:\\ invalid\\ syntax",
+    "regex": "ERROR\\:\\ Command\\ errored\\ out\\ with\\ exit\\ status\\ 1\\:",
+    "amount": 6
+  },
+  "ERROR: Command errored out with exit status 1: python setup.py egg_info Check the logs for full command output.": {
+    "name": "ERROR: Command errored out with exit status 1: python setup.py egg_info Check the logs for full command output.",
+    "projects": [
+      "facebookresearch/faiss"
+    ],
+    "origin": "general_error",
+    "regex": "ERROR\\:\\ Command\\ errored\\ out\\ with\\ exit\\ status\\ 1\\:\\ python\\ setup\\.py\\ egg_info\\ Check\\ the\\ logs\\ for\\ full\\ command\\ output\\.",
+    "amount": 6
+  },
+  "mv: cannot stat '_build/html': No such file or directory": {
+    "name": "mv: cannot stat '_build/html': No such file or directory",
+    "projects": [
+      "facebookresearch/faiss"
+    ],
+    "origin": "dependency",
+    "regex": "mv\\:\\ cannot\\ stat\\ \\'_build\\/html\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 6
+  },
+  "PATH/FILE.EXT breathe-apidoc: command not found": {
+    "name": "PATH/FILE.EXT breathe-apidoc: command not found",
+    "projects": [
+      "facebookresearch/faiss"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ breathe\\-apidoc\\:\\ command\\ not\\ found",
+    "amount": 6
+  },
+  "Error: The source directory \"/home/fba_code/source\" does not appear to contain CMakeLists.txt.": {
+    "name": "Error: The source directory \"/home/fba_code/source\" does not appear to contain CMakeLists.txt.",
+    "projects": [
+      "facebookresearch/faiss"
+    ],
+    "origin": "general_error",
+    "regex": "Error\\:\\ The\\ source\\ directory\\ \\\"\\/home\\/fba_code\\/source\\\"\\ does\\ not\\ appear\\ to\\ contain\\ CMakeLists\\.txt\\.",
+    "amount": 6
+  },
+  "error: doxygen-man requires doxygen-man": {
+    "name": "error: doxygen-man requires doxygen-man",
+    "projects": [
+      "v4l-utils"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ doxygen\\-man\\ requires\\ doxygen\\-man",
     "amount": 6
   },
   "error: No suitable database library (PDL or BerkeleyDB version 3 or higher) found.": {
@@ -2067,15 +2202,6 @@
     "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'int\\'\\ to\\ \\'char\\'\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
     "amount": 5
   },
-  "error: 'zlib.h' file not found": {
-    "name": "'zlib.h' file not found",
-    "projects": [
-      "facebook/zstd"
-    ],
-    "origin": "clang",
-    "regex": "error\\:\\ \\'zlib\\.h\\'\\ file\\ not\\ found",
-    "amount": 5
-  },
   "error: numeric value overflows 32-bit unsigned int ": {
     "name": "error: numeric value overflows 32-bit unsigned int ",
     "projects": [
@@ -2157,17 +2283,6 @@
     "regex": "Error\\:\\ reached\\ end\\ of\\ file\\ with\\ incomplete\\ frame\\ ",
     "amount": 5
   },
-  "Error: could not load cache": {
-    "name": "Error: could not load cache",
-    "projects": [
-      "assimp/assimp",
-      "Tencent/ncnn",
-      "pybind/pybind11"
-    ],
-    "origin": "general_error",
-    "regex": "Error\\:\\ could\\ not\\ load\\ cache",
-    "amount": 5
-  },
   "Error: The source directory \"/home/fba_code\" does not appear to contain CMakeLists.txt.": {
     "name": "Error: The source directory \"/home/fba_code\" does not appear to contain CMakeLists.txt.",
     "projects": [
@@ -2177,6 +2292,140 @@
     ],
     "origin": "general_error",
     "regex": "Error\\:\\ The\\ source\\ directory\\ \\\"\\/home\\/fba_code\\\"\\ does\\ not\\ appear\\ to\\ contain\\ CMakeLists\\.txt\\.",
+    "amount": 5
+  },
+  "error: ld returned 1 exit status": {
+    "name": "error: ld returned 1 exit status",
+    "projects": [
+      "exodusii",
+      "loqui",
+      "cheesecutter",
+      "raster3d",
+      "libcgns"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ ld\\ returned\\ 1\\ exit\\ status",
+    "amount": 5
+  },
+  "error: unrepresentable changes to source": {
+    "name": "error: unrepresentable changes to source",
+    "projects": [
+      "libdeflate",
+      "powerline",
+      "pyao",
+      "entropybroker",
+      "teeworlds"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ unrepresentable\\ changes\\ to\\ source",
+    "amount": 5
+  },
+  "ERROR - [9/0] /bin/sh: 1: pkg-config: not found": {
+    "name": "ERROR - [9/0] /bin/sh: 1: pkg-config: not found",
+    "projects": [
+      "redis/redis"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[9\\/0\\]\\ \\/bin\\/sh\\:\\ 1\\:\\ pkg\\-config\\:\\ not\\ found",
+    "amount": 5
+  },
+  "error: 'asmPATH/FILE.EXT file not found": {
+    "name": "'asmPATH/FILE.EXT file not found",
+    "projects": [
+      "tesseract-ocr/tesseract"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ \\'asm(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
+    "amount": 5
+  },
+  "ls: cannot access '*.deb': No such file or directory": {
+    "name": "ls: cannot access '*.deb': No such file or directory",
+    "projects": [
+      "osquery/osquery"
+    ],
+    "origin": "dependency",
+    "regex": "ls\\:\\ cannot\\ access\\ \\'\\*\\.deb\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 5
+  },
+  "ls: cannot access '*.ddeb': No such file or directory": {
+    "name": "ls: cannot access '*.ddeb': No such file or directory",
+    "projects": [
+      "osquery/osquery"
+    ],
+    "origin": "dependency",
+    "regex": "ls\\:\\ cannot\\ access\\ \\'\\*\\.ddeb\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 5
+  },
+  "ls: cannot access 'osquery-?.*.rpm': No such file or directory": {
+    "name": "ls: cannot access 'osquery-?.*.rpm': No such file or directory",
+    "projects": [
+      "osquery/osquery"
+    ],
+    "origin": "dependency",
+    "regex": "ls\\:\\ cannot\\ access\\ \\'osquery\\-\\?\\.\\*\\.rpm\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 5
+  },
+  "ls: cannot access 'osquery-debuginfo-*.rpm': No such file or directory": {
+    "name": "ls: cannot access 'osquery-debuginfo-*.rpm': No such file or directory",
+    "projects": [
+      "osquery/osquery"
+    ],
+    "origin": "dependency",
+    "regex": "ls\\:\\ cannot\\ access\\ \\'osquery\\-debuginfo\\-\\*\\.rpm\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 5
+  },
+  "ls: cannot access '*.tar.gz': No such file or directory": {
+    "name": "ls: cannot access '*.tar.gz': No such file or directory",
+    "projects": [
+      "osquery/osquery"
+    ],
+    "origin": "dependency",
+    "regex": "ls\\:\\ cannot\\ access\\ \\'\\*\\.tar\\.gz\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 5
+  },
+  "sudo: xcode-select: command not found": {
+    "name": "sudo: xcode-select: command not found",
+    "projects": [
+      "osquery/osquery"
+    ],
+    "origin": "bash_command",
+    "regex": "sudo\\:\\ xcode\\-select\\:\\ command\\ not\\ found",
+    "amount": 5
+  },
+  "ls: cannot access '*.pkg': No such file or directory": {
+    "name": "ls: cannot access '*.pkg': No such file or directory",
+    "projects": [
+      "osquery/osquery"
+    ],
+    "origin": "dependency",
+    "regex": "ls\\:\\ cannot\\ access\\ \\'\\*\\.pkg\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 5
+  },
+  "PATH/FILE.EXT =: command not found": {
+    "name": "PATH/FILE.EXT =: command not found",
+    "projects": [
+      "osquery/osquery"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\=\\:\\ command\\ not\\ found",
+    "amount": 5
+  },
+  "PATH/FILE.EXT New-Item: command not found": {
+    "name": "PATH/FILE.EXT New-Item: command not found",
+    "projects": [
+      "osquery/osquery"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ New\\-Item\\:\\ command\\ not\\ found",
+    "amount": 5
+  },
+  "./configure: line 11973: PKG_PROG_PKG_CONFIG: command not found": {
+    "name": "./configure: line 11973: PKG_PROG_PKG_CONFIG: command not found",
+    "projects": [
+      "v4l-utils"
+    ],
+    "origin": "bash_command",
+    "regex": "\\.\\/configure\\:\\ line\\ 11973\\:\\ PKG_PROG_PKG_CONFIG\\:\\ command\\ not\\ found",
     "amount": 5
   },
   "E: Unable to find a source package": {
@@ -2327,18 +2576,6 @@
     "regex": "ERROR\\ \\-\\ \\[29\\/0\\]\\ CUDA_TOOLKIT_ROOT_DIR\\ not\\ found",
     "amount": 4
   },
-  "error: ld returned 1 exit status": {
-    "name": "error: ld returned 1 exit status",
-    "projects": [
-      "exodusii",
-      "loqui",
-      "cheesecutter",
-      "raster3d"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ ld\\ returned\\ 1\\ exit\\ status",
-    "amount": 4
-  },
   "error: non-void function 'gpiv_fwrite_raw_image' should return a value [-Wreturn-type]": {
     "name": "non-void function 'gpiv_fwrite_raw_image' should return a value [-Wreturn-type]",
     "projects": [
@@ -2346,27 +2583,6 @@
     ],
     "origin": "clang",
     "regex": "error\\:\\ non\\-void\\ function\\ \\'gpiv_fwrite_raw_image\\'\\ should\\ return\\ a\\ value\\ \\[\\-Wreturn\\-type\\]",
-    "amount": 4
-  },
-  "error: unrepresentable changes to source": {
-    "name": "error: unrepresentable changes to source",
-    "projects": [
-      "libdeflate",
-      "powerline",
-      "pyao",
-      "entropybroker"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ unrepresentable\\ changes\\ to\\ source",
-    "amount": 4
-  },
-  "ERROR - [9/0] /bin/sh: 1: pkg-config: not found": {
-    "name": "ERROR - [9/0] /bin/sh: 1: pkg-config: not found",
-    "projects": [
-      "redis/redis"
-    ],
-    "origin": "dependency",
-    "regex": "ERROR\\ \\-\\ \\[9\\/0\\]\\ \\/bin\\/sh\\:\\ 1\\:\\ pkg\\-config\\:\\ not\\ found",
     "amount": 4
   },
   "error: *** Missing development libraries for ncurses": {
@@ -2395,6 +2611,33 @@
     ],
     "origin": "clang",
     "regex": "error\\:\\ addition\\ of\\ unsigned\\ offset\\ to\\ 0x08394000\\ overflowed\\ to\\ 0x08393ffe",
+    "amount": 4
+  },
+  "error: addition of unsigned offset to 0x0838ea00 overflowed to 0x0838e9fe": {
+    "name": "addition of unsigned offset to 0x0838ea00 overflowed to 0x0838e9fe",
+    "projects": [
+      "facebook/zstd"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ addition\\ of\\ unsigned\\ offset\\ to\\ 0x0838ea00\\ overflowed\\ to\\ 0x0838e9fe",
+    "amount": 4
+  },
+  "ERROR - [26/0] make[1]: node: Command not found": {
+    "name": "ERROR - [26/0] make[1]: node: Command not found",
+    "projects": [
+      "changkun/modern-cpp-tutorial"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[26\\/0\\]\\ make\\[1\\]\\:\\ node\\:\\ Command\\ not\\ found",
+    "amount": 4
+  },
+  "Could NOT find LibXml2 (missing: LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR) ": {
+    "name": "Could NOT find LibXml2 (missing: LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR) ",
+    "projects": [
+      "xbmc/xbmc"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ NOT\\ find\\ LibXml2\\ \\(missing\\:\\ LIBXML2_LIBRARY\\ LIBXML2_INCLUDE_DIR\\)",
     "amount": 4
   },
   "error: unsupported inline asm: input with type 'long' matching output with type 'char'": {
@@ -2636,6 +2879,61 @@
     "regex": "error\\:\\ \\'dprintf\\'\\ macro\\ redefined\\ \\[\\-Werror\\,\\-Wmacro\\-redefined\\]",
     "amount": 3
   },
+  "clang: error: no input files": {
+    "name": "clang: error: no input files",
+    "projects": [
+      "xinit",
+      "console-cyrillic"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ no\\ input\\ files",
+    "amount": 3
+  },
+  "ERROR - [35/0] make: npm: Command not found": {
+    "name": "ERROR - [35/0] make: npm: Command not found",
+    "projects": [
+      "emscripten-core/emscripten"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[35\\/0\\]\\ make\\:\\ npm\\:\\ Command\\ not\\ found",
+    "amount": 3
+  },
+  "ERROR - [105/0] make: python: Command not found": {
+    "name": "ERROR - [105/0] make: python: Command not found",
+    "projects": [
+      "Tencent/MMKV"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[105\\/0\\]\\ make\\:\\ python\\:\\ Command\\ not\\ found",
+    "amount": 3
+  },
+  "ERROR - [8/0] make: npm: Command not found": {
+    "name": "ERROR - [8/0] make: npm: Command not found",
+    "projects": [
+      "emscripten-core/emscripten"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[8\\/0\\]\\ make\\:\\ npm\\:\\ Command\\ not\\ found",
+    "amount": 3
+  },
+  "Could not find a package configuration file provided by \"Qt5WaylandClient\" with any of the following names: Qt5WaylandClientConfig.cmake qt5waylandclient-config.cmake Add the installation prefix of \"Qt5WaylandClient\" to CMAKE_PREFIX_PATH or set \"Qt5WaylandClient_DIR\" to a directory containing one of the above files.  If \"Qt5WaylandClient\" provides a separate development package or SDK, be sure it has been installed. ": {
+    "name": "Could not find a package configuration file provided by \"Qt5WaylandClient\" with any of the following names: Qt5WaylandClientConfig.cmake qt5waylandclient-config.cmake Add the installation prefix of \"Qt5WaylandClient\" to CMAKE_PREFIX_PATH or set \"Qt5WaylandClient_DIR\" to a directory containing one of the above files.  If \"Qt5WaylandClient\" provides a separate development package or SDK, be sure it has been installed. ",
+    "projects": [
+      "telegramdesktop/tdesktop"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"Qt5WaylandClient\\\"",
+    "amount": 3
+  },
+  "Could NOT find Boost (missing: Boost_INCLUDE_DIR program_options unit_test_framework) (Required is at least version \"1.67\") ": {
+    "name": "Could NOT find Boost (missing: Boost_INCLUDE_DIR program_options unit_test_framework) (Required is at least version \"1.67\") ",
+    "projects": [
+      "EOSIO/eos"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ NOT\\ find\\ Boost\\ \\(missing\\:\\ Boost_INCLUDE_DIR\\ program_options",
+    "amount": 3
+  },
   "error: no acceptable ld found in $PATH": {
     "name": "error: no acceptable ld found in $PATH",
     "projects": [
@@ -2824,16 +3122,6 @@
     ],
     "origin": "CMake",
     "regex": "Submodules\\ are\\ not\\ initialized\\.\\ \\ Run",
-    "amount": 2
-  },
-  "clang: error: no input files": {
-    "name": "clang: error: no input files",
-    "projects": [
-      "xinit",
-      "console-cyrillic"
-    ],
-    "origin": "clang_other",
-    "regex": "clang\\:\\ error\\:\\ no\\ input\\ files",
     "amount": 2
   },
   "error: fields must have a constant size: 'variable length array in structure' extension will never be supported": {
@@ -3035,15 +3323,6 @@
     "regex": "clang\\:\\ error\\:\\ unknown\\ argument\\:\\ \\'\\-freorder\\-blocks\\-and\\-partition\\'",
     "amount": 2
   },
-  "ERROR - [35/0] make: npm: Command not found": {
-    "name": "ERROR - [35/0] make: npm: Command not found",
-    "projects": [
-      "emscripten-core/emscripten"
-    ],
-    "origin": "dependency",
-    "regex": "ERROR\\ \\-\\ \\[35\\/0\\]\\ make\\:\\ npm\\:\\ Command\\ not\\ found",
-    "amount": 2
-  },
   "ERROR - [95/0] /bin/sh: 1: pkg-config: not found": {
     "name": "ERROR - [95/0] /bin/sh: 1: pkg-config: not found",
     "projects": [
@@ -3060,15 +3339,6 @@
     ],
     "origin": "dependency",
     "regex": "ERROR\\ \\-\\ \\[100\\/0\\]\\ \\/bin\\/sh\\:\\ 1\\:\\ sphinx\\-build\\:\\ not\\ found",
-    "amount": 2
-  },
-  "ERROR - [105/0] make: python: Command not found": {
-    "name": "ERROR - [105/0] make: python: Command not found",
-    "projects": [
-      "Tencent/MMKV"
-    ],
-    "origin": "dependency",
-    "regex": "ERROR\\ \\-\\ \\[105\\/0\\]\\ make\\:\\ python\\:\\ Command\\ not\\ found",
     "amount": 2
   },
   "Could not find toolchain file: /ndk-bundle/build/cmake/android.toolchain.cmake ": {
@@ -3584,15 +3854,6 @@
     "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ qmk\\:\\ command\\ not\\ found",
     "amount": 2
   },
-  "sysctl: cannot stat /proc/sys/hw/logicalcpu: No such file or directory": {
-    "name": "sysctl: cannot stat /proc/sys/hw/logicalcpu: No such file or directory",
-    "projects": [
-      "apple/darwin-xnu"
-    ],
-    "origin": "dependency",
-    "regex": "sysctl\\:\\ cannot\\ stat\\ \\/proc\\/sys\\/hw\\/logicalcpu\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 2
-  },
   "sysctl: cannot stat /proc/sys/hw/memsize: No such file or directory": {
     "name": "sysctl: cannot stat /proc/sys/hw/memsize: No such file or directory",
     "projects": [
@@ -3728,15 +3989,6 @@
     "regex": "error\\:\\ \\'libelfin(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
     "amount": 2
   },
-  "error: doxygen-man requires doxygen-man": {
-    "name": "error: doxygen-man requires doxygen-man",
-    "projects": [
-      "v4l-utils"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ doxygen\\-man\\ requires\\ doxygen\\-man",
-    "amount": 2
-  },
   "error: 'va_start' cannot be used in a captured statement": {
     "name": "'va_start' cannot be used in a captured statement",
     "projects": [
@@ -3744,6 +3996,79 @@
     ],
     "origin": "clang",
     "regex": "error\\:\\ \\'va_start\\'\\ cannot\\ be\\ used\\ in\\ a\\ captured\\ statement",
+    "amount": 2
+  },
+  "error: possibly undefined macro: AC_SEARCH_LIBS": {
+    "name": "error: possibly undefined macro: AC_SEARCH_LIBS",
+    "projects": [
+      "tmux/tmux"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ possibly\\ undefined\\ macro\\:\\ AC_SEARCH_LIBS",
+    "amount": 2
+  },
+  "./configure: line 5459: syntax error near unexpected token `newline'": {
+    "name": "./configure: line 5459: syntax error near unexpected token `newline'",
+    "projects": [
+      "tmux/tmux"
+    ],
+    "origin": "configure",
+    "regex": "\\.\\/configure\\:\\ line\\ 5459\\:\\ syntax\\ error\\ near\\ unexpected\\ token\\ \\`newline\\'",
+    "amount": 2
+  },
+  "ERROR - [102/0] make[1]: node: Command not found": {
+    "name": "ERROR - [102/0] make[1]: node: Command not found",
+    "projects": [
+      "changkun/modern-cpp-tutorial"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[102\\/0\\]\\ make\\[1\\]\\:\\ node\\:\\ Command\\ not\\ found",
+    "amount": 2
+  },
+  "ERROR: addExclusiveBuilds() requires at least two arguments": {
+    "name": "ERROR: addExclusiveBuilds() requires at least two arguments",
+    "projects": [
+      "boats",
+      "universalindentgui"
+    ],
+    "origin": "general_error",
+    "regex": "ERROR\\:\\ addExclusiveBuilds\\(\\)\\ requires\\ at\\ least\\ two\\ arguments",
+    "amount": 2
+  },
+  "./macports-ci: line 96: sw_vers: command not found": {
+    "name": "./macports-ci: line 96: sw_vers: command not found",
+    "projects": [
+      "tesseract-ocr/tesseract"
+    ],
+    "origin": "bash_command",
+    "regex": "\\.\\/macports\\-ci\\:\\ line\\ 96\\:\\ sw_vers\\:\\ command\\ not\\ found",
+    "amount": 2
+  },
+  "sudo: port: command not found": {
+    "name": "sudo: port: command not found",
+    "projects": [
+      "tesseract-ocr/tesseract"
+    ],
+    "origin": "bash_command",
+    "regex": "sudo\\:\\ port\\:\\ command\\ not\\ found",
+    "amount": 2
+  },
+  "cp: cannot stat 'tessdata_unittest/fonts/*': No such file or directory": {
+    "name": "cp: cannot stat 'tessdata_unittest/fonts/*': No such file or directory",
+    "projects": [
+      "tesseract-ocr/tesseract"
+    ],
+    "origin": "dependency",
+    "regex": "cp\\:\\ cannot\\ stat\\ \\'tessdata_unittest\\/fonts\\/\\*\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 2
+  },
+  "CPack contained in CMake version 3.18 and newer generates RPM packages that won't install correctly on some distributions.  You are using version 3.19.3 which has the bug, please use version 3.17.5 or set OSQUERY_IGNORE_CMAKE_MAX_VERSION_CHECK=TRUE if you're not going to generate a RPM package. ": {
+    "name": "CPack contained in CMake version 3.18 and newer generates RPM packages that won't install correctly on some distributions.  You are using version 3.19.3 which has the bug, please use version 3.17.5 or set OSQUERY_IGNORE_CMAKE_MAX_VERSION_CHECK=TRUE if you're not going to generate a RPM package. ",
+    "projects": [
+      "osquery/osquery"
+    ],
+    "origin": "CMake",
+    "regex": "CPack\\ contained\\ in\\ CMake\\ version\\ 3\\.18\\ and\\ newer\\ generates\\ RPM\\ packages\\ that",
     "amount": 2
   },
   "[Error] Package glib2-devel is not installed": {
@@ -5132,15 +5457,6 @@
     "regex": "ERROR\\ \\-\\ \\[36\\/0\\]\\ make\\:\\ npm\\:\\ Command\\ not\\ found",
     "amount": 1
   },
-  "error: possibly undefined macro: AC_SEARCH_LIBS": {
-    "name": "error: possibly undefined macro: AC_SEARCH_LIBS",
-    "projects": [
-      "tmux/tmux"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ possibly\\ undefined\\ macro\\:\\ AC_SEARCH_LIBS",
-    "amount": 1
-  },
   "ERROR - [37/0] ./configure: line 4518: PKG_PROG_PKG_CONFIG: command not found": {
     "name": "ERROR - [37/0] ./configure: line 4518: PKG_PROG_PKG_CONFIG: command not found",
     "projects": [
@@ -5148,15 +5464,6 @@
     ],
     "origin": "dependency",
     "regex": "ERROR\\ \\-\\ \\[37\\/0\\]\\ \\.\\/configure\\:\\ line\\ 4518\\:\\ PKG_PROG_PKG_CONFIG\\:\\ command\\ not\\ found",
-    "amount": 1
-  },
-  "./configure: line 5459: syntax error near unexpected token `newline'": {
-    "name": "./configure: line 5459: syntax error near unexpected token `newline'",
-    "projects": [
-      "tmux/tmux"
-    ],
-    "origin": "configure",
-    "regex": "\\.\\/configure\\:\\ line\\ 5459\\:\\ syntax\\ error\\ near\\ unexpected\\ token\\ \\`newline\\'",
     "amount": 1
   },
   "ERROR - [94/0] /bin/sh: 1: pkg-config: not found": {
@@ -5418,15 +5725,6 @@
     ],
     "origin": "dependency",
     "regex": "ERROR\\ \\-\\ \\[101\\/0\\]\\ \\/bin\\/sh\\:\\ 1\\:\\ pkg\\-config\\:\\ not\\ found",
-    "amount": 1
-  },
-  "ERROR - [102/0] make[1]: node: Command not found": {
-    "name": "ERROR - [102/0] make[1]: node: Command not found",
-    "projects": [
-      "changkun/modern-cpp-tutorial"
-    ],
-    "origin": "dependency",
-    "regex": "ERROR\\ \\-\\ \\[102\\/0\\]\\ make\\[1\\]\\:\\ node\\:\\ Command\\ not\\ found",
     "amount": 1
   },
   "ERROR - [130/0] /bin/sh: 1: pkg-config: not found": {
@@ -6167,15 +6465,6 @@
     "regex": "error\\:\\ versioned\\ symbol\\ comedi_internal_trigger\\@\\@v0\\.9\\.0\\ must\\ be\\ defined",
     "amount": 1
   },
-  "./configure: line 11973: PKG_PROG_PKG_CONFIG: command not found": {
-    "name": "./configure: line 11973: PKG_PROG_PKG_CONFIG: command not found",
-    "projects": [
-      "v4l-utils"
-    ],
-    "origin": "bash_command",
-    "regex": "\\.\\/configure\\:\\ line\\ 11973\\:\\ PKG_PROG_PKG_CONFIG\\:\\ command\\ not\\ found",
-    "amount": 1
-  },
   "clang: error: unknown argument: '-fpeephole'": {
     "name": "clang: error: unknown argument: '-fpeephole'",
     "projects": [
@@ -6257,33 +6546,6 @@
     "regex": "ERROR\\ \\-\\ \\[29\\/0\\]\\ Package\\ libpng\\ was\\ not\\ found",
     "amount": 1
   },
-  "ERROR: Command errored out with exit status 1:": {
-    "name": "ERROR: Command errored out with exit status 1:",
-    "projects": [
-      "facebookresearch/faiss"
-    ],
-    "origin": "general_error",
-    "regex": "ERROR\\:\\ Command\\ errored\\ out\\ with\\ exit\\ status\\ 1\\:",
-    "amount": 1
-  },
-  "ERROR: Command errored out with exit status 1: python setup.py egg_info Check the logs for full command output.": {
-    "name": "ERROR: Command errored out with exit status 1: python setup.py egg_info Check the logs for full command output.",
-    "projects": [
-      "facebookresearch/faiss"
-    ],
-    "origin": "general_error",
-    "regex": "ERROR\\:\\ Command\\ errored\\ out\\ with\\ exit\\ status\\ 1\\:\\ python\\ setup\\.py\\ egg_info\\ Check\\ the\\ logs\\ for\\ full\\ command\\ output\\.",
-    "amount": 1
-  },
-  "mv: cannot stat '_build/html': No such file or directory": {
-    "name": "mv: cannot stat '_build/html': No such file or directory",
-    "projects": [
-      "facebookresearch/faiss"
-    ],
-    "origin": "dependency",
-    "regex": "mv\\:\\ cannot\\ stat\\ \\'_build\\/html\\'\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 1
-  },
   "error: Doxyfile not found and no input file specified!": {
     "name": "error: Doxyfile not found and no input file specified!",
     "projects": [
@@ -6291,24 +6553,6 @@
     ],
     "origin": "general_error",
     "regex": "error\\:\\ Doxyfile\\ not\\ found\\ and\\ no\\ input\\ file\\ specified\\!",
-    "amount": 1
-  },
-  "PATH/FILE.EXT breathe-apidoc: command not found": {
-    "name": "PATH/FILE.EXT breathe-apidoc: command not found",
-    "projects": [
-      "facebookresearch/faiss"
-    ],
-    "origin": "bash_command",
-    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ breathe\\-apidoc\\:\\ command\\ not\\ found",
-    "amount": 1
-  },
-  "Error: The source directory \"/home/fba_code/source\" does not appear to contain CMakeLists.txt.": {
-    "name": "Error: The source directory \"/home/fba_code/source\" does not appear to contain CMakeLists.txt.",
-    "projects": [
-      "facebookresearch/faiss"
-    ],
-    "origin": "general_error",
-    "regex": "Error\\:\\ The\\ source\\ directory\\ \\\"\\/home\\/fba_code\\/source\\\"\\ does\\ not\\ appear\\ to\\ contain\\ CMakeLists\\.txt\\.",
     "amount": 1
   },
   "ERROR - [31/0] make[1]: node: Command not found": {
@@ -6390,6 +6634,231 @@
     ],
     "origin": "dependency",
     "regex": "ERROR\\ \\-\\ \\[56\\/0\\]\\ make\\:\\ i686\\-w64\\-mingw32\\-g\\+\\+\\:\\ Command\\ not\\ found",
+    "amount": 1
+  },
+  "PATH/FILE.EXT tesseract: command not found": {
+    "name": "PATH/FILE.EXT tesseract: command not found",
+    "projects": [
+      "tesseract-ocr/tesseract"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ tesseract\\:\\ command\\ not\\ found",
+    "amount": 1
+  },
+  "ERROR - [36/0] ./configure: line 4518: PKG_PROG_PKG_CONFIG: command not found": {
+    "name": "ERROR - [36/0] ./configure: line 4518: PKG_PROG_PKG_CONFIG: command not found",
+    "projects": [
+      "tmux/tmux"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[36\\/0\\]\\ \\.\\/configure\\:\\ line\\ 4518\\:\\ PKG_PROG_PKG_CONFIG\\:\\ command\\ not\\ found",
+    "amount": 1
+  },
+  "clang: error: optimization flag '-fexcess-precision=standard' is not supported [-Werror,-Wignored-optimization-argument]": {
+    "name": "clang: error: optimization flag '-fexcess-precision=standard' is not supported [-Werror,-Wignored-optimization-argument]",
+    "projects": [
+      "pg-cron"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ optimization\\ flag\\ \\'\\-fexcess\\-precision\\=standard\\'\\ is\\ not\\ supported\\ \\[\\-Werror\\,\\-Wignored\\-optimization\\-argument\\]",
+    "amount": 1
+  },
+  "clang: error: -ldl: 'linker' input unused [-Werror,-Wunused-command-line-argument]": {
+    "name": "clang: error: -ldl: 'linker' input unused [-Werror,-Wunused-command-line-argument]",
+    "projects": [
+      "memkind"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ \\-ldl\\:\\ \\'linker\\'\\ input\\ unused\\ \\[\\-Werror\\,\\-Wunused\\-command\\-line\\-argument\\]",
+    "amount": 1
+  },
+  "error: non-constant-expression cannot be narrowed from type 'double' to 'float' in initializer list [-Wc++11-narrowing]": {
+    "name": "non-constant-expression cannot be narrowed from type 'double' to 'float' in initializer list [-Wc++11-narrowing]",
+    "projects": [
+      "stormbaancoureur"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'double\\'\\ to\\ \\'float\\'\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 1
+  },
+  "error: use of undeclared identifier 'nth_getter'": {
+    "name": "use of undeclared identifier 'nth_getter'",
+    "projects": [
+      "growl-for-linux"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ use\\ of\\ undeclared\\ identifier\\ \\'nth_getter\\'",
+    "amount": 1
+  },
+  "error: use of undeclared identifier 'is_differ_pos'": {
+    "name": "use of undeclared identifier 'is_differ_pos'",
+    "projects": [
+      "growl-for-linux"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ use\\ of\\ undeclared\\ identifier\\ \\'is_differ_pos\\'",
+    "amount": 1
+  },
+  "error: declaration does not declare anything [-Werror,-Wmissing-declarations]": {
+    "name": "declaration does not declare anything [-Werror,-Wmissing-declarations]",
+    "projects": [
+      "dewalls"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ declaration\\ does\\ not\\ declare\\ anything\\ \\[\\-Werror\\,\\-Wmissing\\-declarations\\]",
+    "amount": 1
+  },
+  "rm: cannot remove 'qbs-build': No such file or directory": {
+    "name": "rm: cannot remove 'qbs-build': No such file or directory",
+    "projects": [
+      "dewalls"
+    ],
+    "origin": "dependency",
+    "regex": "rm\\:\\ cannot\\ remove\\ \\'qbs\\-build\\'\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 1
+  },
+  "ERROR: /usr/bin/g++ -g -O2 -Wall -Wextra -Werror -m64 -pipe -fexceptions -fvisibility=default -Wdate-time -Wno-attributes -fdebug-prefix-map=PATH/FILE.EXT -fstack-protector-strong -Wformat -Werror=format-security -fPIC -DQT_CORE_LIB -DFORTIFY_SOURCE=2 -IPATH/FILE.EXT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -IPATH/FILE.EXT -std=c++0x -o PATH/FILE.EXT -c PATH/FILE.EXT": {
+    "name": "ERROR: /usr/bin/g++ -g -O2 -Wall -Wextra -Werror -m64 -pipe -fexceptions -fvisibility=default -Wdate-time -Wno-attributes -fdebug-prefix-map=PATH/FILE.EXT -fstack-protector-strong -Wformat -Werror=format-security -fPIC -DQT_CORE_LIB -DFORTIFY_SOURCE=2 -IPATH/FILE.EXT -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -IPATH/FILE.EXT -std=c++0x -o PATH/FILE.EXT -c PATH/FILE.EXT",
+    "projects": [
+      "dewalls"
+    ],
+    "origin": "general_error",
+    "regex": "ERROR\\:\\ \\/usr\\/bin\\/g\\+\\+\\ \\-g\\ \\-O2\\ \\-Wall\\ \\-Wextra\\ \\-Werror\\ \\-m64\\ \\-pipe\\ \\-fexceptions\\ \\-fvisibility\\=default\\ \\-Wdate\\-time\\ \\-Wno\\-attributes\\ \\-fdebug\\-prefix\\-map\\=(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\-fstack\\-protector\\-strong\\ \\-Wformat\\ \\-Werror\\=format\\-security\\ \\-fPIC\\ \\-DQT_CORE_LIB\\ \\-DFORTIFY_SOURCE\\=2\\ \\-I(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\-I\\/usr\\/include\\/x86_64\\-linux\\-gnu\\/qt5\\ \\-I\\/usr\\/include\\/x86_64\\-linux\\-gnu\\/qt5\\/QtCore\\ \\-I\\/usr\\/lib\\/x86_64\\-linux\\-gnu\\/qt5\\/mkspecs\\/linux\\-g\\+\\+\\ \\-I(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\-std\\=c\\+\\+0x\\ \\-o\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\-c\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
+    "amount": 1
+  },
+  "ERROR: Process failed with exit code 1.": {
+    "name": "ERROR: Process failed with exit code 1.",
+    "projects": [
+      "dewalls"
+    ],
+    "origin": "general_error",
+    "regex": "ERROR\\:\\ Process\\ failed\\ with\\ exit\\ code\\ 1\\.",
+    "amount": 1
+  },
+  "error: cannot compute sizeof (size_t)": {
+    "name": "error: cannot compute sizeof (size_t)",
+    "projects": [
+      "openjade"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ cannot\\ compute\\ sizeof\\ \\(size_t\\)",
+    "amount": 1
+  },
+  "error: instantiation of variable 'jellyfish::atomic_bits_array_base<unsigned char, unsigned long, jellyfish::atomic_bits_array<unsigned char, unsigned long> >::atomic_' required here, but no definition is available [-Werror,-Wundefined-var-template]": {
+    "name": "instantiation of variable 'jellyfish::atomic_bits_array_base<unsigned char, unsigned long, jellyfish::atomic_bits_array<unsigned char, unsigned long> >::atomic_' required here, but no definition is available [-Werror,-Wundefined-var-template]",
+    "projects": [
+      "jellyfish"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ instantiation\\ of\\ variable\\ \\'jellyfish\\:\\:atomic_bits_array_base\\<unsigned\\ char\\,\\ unsigned\\ long\\,\\ jellyfish\\:\\:atomic_bits_array\\<unsigned\\ char\\,\\ unsigned\\ long\\>\\ \\>\\:\\:atomic_\\'\\ required\\ here\\,\\ but\\ no\\ definition\\ is\\ available\\ \\[\\-Werror\\,\\-Wundefined\\-var\\-template\\]",
+    "amount": 1
+  },
+  "error: member reference base type 'T *' is not a structure or union": {
+    "name": "member reference base type 'T *' is not a structure or union",
+    "projects": [
+      "pktools"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ member\\ reference\\ base\\ type\\ \\'T\\ \\*\\'\\ is\\ not\\ a\\ structure\\ or\\ union",
+    "amount": 1
+  },
+  "error: cannot represent change to _test.ast: binary file contents changed": {
+    "name": "error: cannot represent change to _test.ast: binary file contents changed",
+    "projects": [
+      "teeworlds"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ cannot\\ represent\\ change\\ to\\ _test\\.ast\\:\\ binary\\ file\\ contents\\ changed",
+    "amount": 1
+  },
+  "error: add _test.ast in debian/source/include-binaries if you want to store the modified binary in the debian tarball": {
+    "name": "error: add _test.ast in debian/source/include-binaries if you want to store the modified binary in the debian tarball",
+    "projects": [
+      "teeworlds"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ add\\ _test\\.ast\\ in\\ debian\\/source\\/include\\-binaries\\ if\\ you\\ want\\ to\\ store\\ the\\ modified\\ binary\\ in\\ the\\ debian\\ tarball",
+    "amount": 1
+  },
+  "error: cannot represent change to _test.bc: binary file contents changed": {
+    "name": "error: cannot represent change to _test.bc: binary file contents changed",
+    "projects": [
+      "teeworlds"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ cannot\\ represent\\ change\\ to\\ _test\\.bc\\:\\ binary\\ file\\ contents\\ changed",
+    "amount": 1
+  },
+  "error: add _test.bc in debian/source/include-binaries if you want to store the modified binary in the debian tarball": {
+    "name": "error: add _test.bc in debian/source/include-binaries if you want to store the modified binary in the debian tarball",
+    "projects": [
+      "teeworlds"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ add\\ _test\\.bc\\ in\\ debian\\/source\\/include\\-binaries\\ if\\ you\\ want\\ to\\ store\\ the\\ modified\\ binary\\ in\\ the\\ debian\\ tarball",
+    "amount": 1
+  },
+  "error: unknown type name 'intmax_t'; did you mean '__intmax_t'?": {
+    "name": "unknown type name 'intmax_t'; did you mean '__intmax_t'?",
+    "projects": [
+      "rcs-blame"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ unknown\\ type\\ name\\ \\'intmax_t\\'\\;\\ did\\ you\\ mean\\ \\'__intmax_t\\'\\?",
+    "amount": 1
+  },
+  "error: unknown type name 'uintmax_t'": {
+    "name": "unknown type name 'uintmax_t'",
+    "projects": [
+      "rcs-blame"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ unknown\\ type\\ name\\ \\'uintmax_t\\'",
+    "amount": 1
+  },
+  "error: non-constant-expression cannot be narrowed from type 'char' to 'mz_uint8' (aka 'unsigned char') in initializer list [-Wc++11-narrowing]": {
+    "name": "non-constant-expression cannot be narrowed from type 'char' to 'mz_uint8' (aka 'unsigned char') in initializer list [-Wc++11-narrowing]",
+    "projects": [
+      "sdrangelove"
+    ],
+    "origin": "clang",
+    "regex": "error\\:\\ non\\-constant\\-expression\\ cannot\\ be\\ narrowed\\ from\\ type\\ \\'char\\'\\ to\\ \\'mz_uint8\\'\\ \\(aka\\ \\'unsigned\\ char\\'\\)\\ in\\ initializer\\ list\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 1
+  },
+  "ERROR - [1/0] /bin/sh: 1: pkg-config: not found": {
+    "name": "ERROR - [1/0] /bin/sh: 1: pkg-config: not found",
+    "projects": [
+      "redis/redis"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[1\\/0\\]\\ \\/bin\\/sh\\:\\ 1\\:\\ pkg\\-config\\:\\ not\\ found",
+    "amount": 1
+  },
+  "ERROR - [28/0] make: python: Command not found": {
+    "name": "ERROR - [28/0] make: python: Command not found",
+    "projects": [
+      "Tencent/MMKV"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[28\\/0\\]\\ make\\:\\ python\\:\\ Command\\ not\\ found",
+    "amount": 1
+  },
+  "ERROR - [9/0] configure: error: \"libevent not found": {
+    "name": "ERROR - [9/0] configure: error: \"libevent not found",
+    "projects": [
+      "tmux/tmux"
+    ],
+    "origin": "dependency",
+    "regex": "ERROR\\ \\-\\ \\[9\\/0\\]\\ configure\\:\\ error\\:\\ \\\"libevent\\ not\\ found",
+    "amount": 1
+  },
+  "Could not find a package configuration file provided by \"Qt5LinguistTools\" with any of the following names: Qt5LinguistToolsConfig.cmake qt5linguisttools-config.cmake Add the installation prefix of \"Qt5LinguistTools\" to CMAKE_PREFIX_PATH or set \"Qt5LinguistTools_DIR\" to a directory containing one of the above files.  If \"Qt5LinguistTools\" provides a separate development package or SDK, be sure it has been installed. ": {
+    "name": "Could not find a package configuration file provided by \"Qt5LinguistTools\" with any of the following names: Qt5LinguistToolsConfig.cmake qt5linguisttools-config.cmake Add the installation prefix of \"Qt5LinguistTools\" to CMAKE_PREFIX_PATH or set \"Qt5LinguistTools_DIR\" to a directory containing one of the above files.  If \"Qt5LinguistTools\" provides a separate development package or SDK, be sure it has been installed. ",
+    "projects": [
+      "sqlitebrowser/sqlitebrowser"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"Qt5LinguistTools\\\"",
     "amount": 1
   },
   "make target not found": {
