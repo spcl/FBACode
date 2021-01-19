@@ -95,7 +95,7 @@ def run_scripts(logger, script_list, cwd=None):
     return True
 
 
-def apt_install(logger, pkgs, project=None, verbose=True):
+def apt_install_1(logger, pkgs, project=None, verbose=True):
     if project is not None and project["build"].get("apt_not_found") is None:
         project["build"]["apt_not_found"] = []
     cmd = "apt-get install -y --force-yes --no-install-recommends "
@@ -160,4 +160,36 @@ def apt_install(logger, pkgs, project=None, verbose=True):
                 "apt-get install -y --force-yes --no-install-recommends ", ""
             )
             apt_install(logger, cmd, project)
+    return True
+
+
+def apt_install(logger, pkgs, project=None, verbose=True):
+    if project is not None and project["build"].get("apt_not_found") is None:
+        project["build"]["apt_not_found"] = []
+    cmd = "apt-get install -y --force-yes --no-install-recommends "
+    if isinstance(pkgs, str):
+        pkg_list = [i.strip() for i in pkgs.split(" ")]
+    elif isinstance(pkgs, list):
+        pkg_list = list(flatten(pkgs))
+        if not all(isinstance(i, str) for i in pkgs):
+            logger.error_log.print_error(
+                logger.idx, "apt installer was not str or list[str]: {}".format(pkgs)
+            )
+            return False
+    else:
+        logger.error_log.print_error(
+            logger.idx, "apt installer was not str or list[str]: {}".format(pkgs)
+        )
+        return False
+    if verbose:
+        print("APT INSTALL: {}".format(pkgs))
+    for pkg in pkg_list:
+        if verbose:
+            print("apt install {}".format(pkg))
+        out = run(["bash", "-c", cmd + pkg], stderr=PIPE)
+        if out.returncode != 0:
+            if verbose:
+                logger.error_log.print_error(logger.idx, "apt package {} could not be installed".format(pkg))
+            if project is not None:
+                project["build"]["apt_not_found"].append(pkg)
     return True

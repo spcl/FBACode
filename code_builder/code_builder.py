@@ -142,7 +142,14 @@ def download_and_build(
 
 
 def build_projects(
-    source_dir, build_dir, target_dir, repositories_db, force_update, cfg, output
+    source_dir,
+    build_dir,
+    target_dir,
+    repositories_db,
+    force_update,
+    cfg,
+    output,
+    log_dir,
 ):
 
     if not exists(source_dir):
@@ -163,7 +170,7 @@ def build_projects(
         threads_count = int(cfg["clone"]["threads"])
     else:
         threads_count = 1
-    contexts = []
+    # contexts = []
     ctx = Context(projects_count, cfg)
     # global loggers
     # loggers = open_logfiles(ctx.cfg, getpid())
@@ -183,7 +190,6 @@ def build_projects(
         # when we build twice
         all_repositories = {}
         temporary_stats = Statistics(projects_count)
-        futures = []
         idx = 0
         for database, repositories in repositories_db.items():
             # my simple attempt:
@@ -212,38 +218,6 @@ def build_projects(
                 projects.append(future)
                 idx += 1
             repositories_idx += repo_count
-
-            # # all_repositories.update(repositories)
-            # repo_count = len(repositories)
-            # processer = get_database(database)(source_dir, ctx)
-            # indices = list(range(repositories_idx + 1, repositories_idx + repo_count + 1))
-            # keys, values = zip(*repositories.items())
-            # # idx, repo, spec -> downloaded project
-            # futures = map(pool, processer.clone, [indices, keys, values], ctx)
-            # # save statistics when database processer is done
-            # # when_all(futures, lambda: processer.finish())
-
-            # # TODO handle repository that is not updated
-
-            # # for each project, attach a builder
-            # # build_func = lambda fut: recognize_and_build(*fut.result(), build_dir, target_dir, ctx)
-            # for project in futures:
-            #     projects.append(
-            #         callback(
-            #             pool,
-            #             ctx,
-            #             project,
-            #             functools.partial(
-            #                 recognize_and_build,
-            #                 build_dir=build_dir,
-            #                 target_dir=target_dir,
-            #                 ctx=ctx,
-            #                 stats=temporary_stats,
-            #             ),
-            #         )
-            #     )
-            # repositories_idx += repo_count
-            # database_processers.append(processer)
         print("submitted {} tasks to queue".format(idx))
         # for project in concurrent.futures.as_completed(futures):
         for project in projects:
@@ -254,26 +228,26 @@ def build_projects(
         end = time()
         print("Process repositorites in %f [s]" % (end - start))
     start = time()
-    for name, proj in all_repositories.items():
-        print("stats for {}".format(name))
+    for (i, (name, proj)) in enumerate(all_repositories.items()):
+        print("[{}/{}] stats for {}".format(i, projects_count, name), end="\r")
         stats.update(proj, name)
+    print()
     end = time()
     print("Process repositorites in %f [s]" % (end - start))
     stats.print_stats(stdout)
-    # close f again?
-    # f = stdout if output == "" else open(output, "w")
-    # print(json.dumps(repositories, indent=2), file=f)
-    stats.save_rebuild_json()
+    # save various jsons with stats
+    timestamp = cfg["output"]["time"]
+    stats.save_rebuild_json(log_dir, timestamp)
     stats.save_errors_json()
-    stats.save_errorstat_json()
-    stats.save_dependencies_json()
-    timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+    stats.save_errorstat_json(log_dir, timestamp)
+    stats.save_dependencies_json(log_dir, timestamp)
+    # timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     with open(
-        join("buildlogs", "summary_{}_{}.txt".format(timestamp, projects_count)), "w"
+        join(log_dir, "summary_{}_{}.txt".format(timestamp, projects_count)), "w"
     ) as o:
         stats.print_stats(o)
     with open(
-        join("buildlogs", "build_details_{}_{}.json".format(timestamp, projects_count)),
+        join(log_dir, "build_details_{}_{}.json".format(timestamp, projects_count)),
         "w",
     ) as o:
         o.write(json.dumps(all_repositories, indent=2))

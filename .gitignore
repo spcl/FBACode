@@ -112,4 +112,5 @@ fbacode-virtualenv/
 bitcodes/
 source/
 buildlogs/
+compiler_output/
 .vscode/

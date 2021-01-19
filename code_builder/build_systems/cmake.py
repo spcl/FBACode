@@ -47,11 +47,14 @@ class Project:
             #         self.project["build"]["travis_installer"] = True
             c_compiler_opt = "-DCMAKE_C_COMPILER=" + c_compiler
             cpp_compiler_opt = "-DCMAKE_CXX_COMPILER=" + cxx_compiler
+            # cmake_prefix_path = "-DCMAKE_PREFIX_PATH=/usr/lib/llvm-9:{}".format(os.environ.get("CMAKE_PREFIX_PATH", ""))
+            # print("CMAKE PATH =", os.environ.get("CMAKE_PREFIX_PATH", ""))
             cmd = [
                 "cmake",
                 abspath(self.repository_path),
                 c_compiler_opt,
                 cpp_compiler_opt,
+                # cmake_prefix_path,
             ]
             ret = run(cmd, cwd=self.build_dir, stdout=PIPE, stderr=PIPE)
             if ret.returncode:

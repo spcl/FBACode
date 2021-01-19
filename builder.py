@@ -28,8 +28,8 @@ parser.add_argument('--source-dir', dest='source_dir', default='source', action=
         help='Directory used to store source codes')
 parser.add_argument('--build-dir', dest='build_dir', default='build', action='store',
         help='Directory used to build projects')
-parser.add_argument('--results-dir', dest='results_dir', default='bitcodes', action='store',
-        help='Directory used to store resulting bitcodes')
+parser.add_argument('--results-dir', dest='results_dir', default='compiler_output', action='store',
+        help='Directory used to store resulting bitcodes and AST')
 parser.add_argument('--user-config-file', dest='user_config_file', default='user.cfg', action='store',
         help='User config file')
 parser.add_argument('--config-file', dest='config_file', default='build.cfg', action='store',
@@ -42,6 +42,8 @@ parser.add_argument('--verbose', dest='verbose', action='store_true',
         help='Verbose output.')
 parser.add_argument('--output', dest='output', default='', action='store',
         help='Output.')
+parser.add_argument('--log_dir', dest='log_dir', default='buildlogs', action='store',
+        help='Directory used to store the logs and build stats')
 
 parsed_args = parser.parse_args(argv[1:])
 cfg = open_config(parsed_args, path.dirname(path.realpath(__file__)))
@@ -59,7 +61,8 @@ repositories = build_projects(  source_dir = parsed_args.source_dir,
                                 repositories_db = repositories,
                                 force_update = parsed_args.build_force_update,
                                 cfg = cfg,
-                                output = parsed_args.output)
+                                output = parsed_args.output,
+                                log_dir = parsed_args.log_dir)
 
 if parsed_args.export_repos is not None:
     export_projects(repositories, parsed_args.export_repos)

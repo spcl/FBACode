@@ -51,6 +51,7 @@ class Statistics:
         self.dependencies = {}
         self.build_systems = {}
         self.ci_systems = {}
+        self.all_projects = {}
         self.dep_mapping = {}
         try:
             with open("code_builder/dep_mapping.json", "r") as f:
@@ -96,24 +97,35 @@ class Statistics:
         )
         for err, data in self.errortypes.items():
             print("{}: {}".format(err, data["amount"]), file=out)
-        print("unrecognized errors:")
-        for err in self.unrecognized_errs:
-            print(err, file=out)
-        print("\ndetected missing dependencies:", file=out)
-        self.dependencies = OrderedDict(
-            sorted(
-                self.dependencies.items(),
-                key=lambda i: i[1].get("count", 0),
-                reverse=True,
-            )
-        )
-        print(json.dumps(self.dependencies, indent=2), file=out)
-        print("\nDependency mapping:", file=out)
-        print(json.dumps(self.dep_mapping, indent=2), file=out)
+        print("failed packages:", file=out)
+        for name, p in self.all_projects.items():
+            if p["status"] == "unrecognized":
+                print("\n- {}: build system unrecognized".format(name), file=out)
+            elif p["status"] != "success":
+                print("\n- {}:".format(name), file=out)
+                for e in p.get("build", {}).get("errortypes", []):
+                    print("    {}".format(e), file=out)
+                
+
+        # print("unrecognized errors:")
+        # for err in self.unrecognized_errs:
+        #     print(err, file=out)
+        # print("\ndetected missing dependencies:", file=out)
+        # self.dependencies = OrderedDict(
+        #     sorted(
+        #         self.dependencies.items(),
+        #         key=lambda i: i[1].get("count", 0),
+        #         reverse=True,
+        #     )
+        # )
+        # print(json.dumps(self.dependencies, indent=2), file=out)
+        # print("\nDependency mapping:", file=out)
+        # print(json.dumps(self.dep_mapping, indent=2), file=out)
 
     def update(self, project, name):
         # update build_systems statistic
         start = time()
+        self.all_projects[name] = project
         project["statistics"] = {}
         build_system = project.get("build_system", "unrecognized")
         if build_system not in self.build_systems:
@@ -250,7 +262,11 @@ class Statistics:
         self.incorrect_projects += 1
 
     def add_errors(self, project, name, errors):
-        new_errors = [e for e in errors if e not in project["build"]["errortypes"]]
+        new_errors = []
+        for e in errors:
+            if [i for i in project["build"]["errortypes"] if e in i] == []:
+                new_errors.append(e)
+        # new_errors = [e for e in errors if e not in project["build"]["errortypes"]]
         for err in new_errors:
             if err in self.errortypes:
                 self.errortypes[err]["amount"] += 1
@@ -523,13 +539,10 @@ class Statistics:
             self.rebuild_projects[project["type"]] = {}
         self.rebuild_projects[project["type"]][name] = rebuild_data
 
-    def save_errorstat_json(self, path=None):
-        if path is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            path = join(
-                "buildlogs",
-                "errorstats_{}_{}.json".format(timestamp, self.project_count),
-            )
+    def save_errorstat_json(self, path, timestamp):
+        path = join(
+            path, "errorstats_{}_{}.json".format(timestamp, self.project_count),
+        )
         self.errortypes = OrderedDict(
             sorted(
                 self.errortypes.items(),
@@ -540,7 +553,7 @@ class Statistics:
         with open(path, "w") as o:
             o.write(json.dumps(self.errortypes, indent=2))
 
-    def save_rebuild_json(self, path=None, path_with_missing=None):
+    def save_rebuild_json(self, path, timestamp):
         rebuild_with_missing = {}
         for source, projects in self.rebuild_projects.items():
             for name, p in projects.items():
@@ -549,20 +562,13 @@ class Statistics:
                         rebuild_with_missing[source] = {}
                     rebuild_with_missing[source][name] = p
 
-        if path is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            path = join(
-                "buildlogs", "rebuild_{}_{}.json".format(timestamp, self.project_count),
-            )
-        if path_with_missing is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            path_with_missing = join(
-                "buildlogs",
-                "useful_rebuild_{}_{}.json".format(timestamp, self.project_count),
-            )
-        with open(path, "w") as o:
+        name = join(path, "rebuild_{}_{}.json".format(timestamp, self.project_count),)
+        name_with_missing = join(
+            path, "useful_rebuild_{}_{}.json".format(timestamp, self.project_count),
+        )
+        with open(name, "w") as o:
             o.write(json.dumps(self.rebuild_projects, indent=2))
-        with open(path_with_missing, "w") as o:
+        with open(name_with_missing, "w") as o:
             o.write(json.dumps(rebuild_with_missing, indent=2))
 
     def save_errors_json(self, path=None):
@@ -578,17 +584,13 @@ class Statistics:
         with open(path, "w") as o:
             o.write(json.dumps(self.errors_stdout, indent=2))
 
-    def save_dependencies_json(self, path=None, map_path=None):
-        if path is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            path = join(
-                "buildlogs",
-                "dependencies_{}_{}.json".format(timestamp, self.project_count),
-            )
-            map_path = join(
-                "buildlogs",
-                "dep_maping_{}_{}.json".format(timestamp, self.project_count),
-            )
+    def save_dependencies_json(self, path, timestamp):
+        name = join(
+            path, "dependencies_{}_{}.json".format(timestamp, self.project_count),
+        )
+        map_name = join(
+            path, "dep_maping_{}_{}.json".format(timestamp, self.project_count),
+        )
         self.dependencies = OrderedDict(
             sorted(
                 self.dependencies.items(),
@@ -596,9 +598,9 @@ class Statistics:
                 reverse=True,
             )
         )
-        with open(path, "w") as o:
+        with open(name, "w") as o:
             o.write(json.dumps(self.dependencies, indent=2))
-        with open(map_path, "w") as o:
+        with open(map_name, "w") as o:
             o.write(json.dumps(self.dep_mapping, indent=2))
         with open("code_builder/dep_mapping.json", "w") as o:
             o.write(json.dumps(self.persistent_dep_mapping, indent=2))

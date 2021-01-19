@@ -38,11 +38,13 @@ def print_section(idx, ctx, message):
 source_dir = "/home/fba_code/source"
 build_dir = "/home/fba_code/build"
 bitcodes_dir = "/home/fba_code/bitcodes"
+ast_dir = "/home/fba_code/AST"
 dependency_map = "/home/fba_code/dep_mapping.json"
 build_system = os.environ["BUILD_SYSTEM"]
 ci_system = os.environ["CI_SYSTEM"]
 external_build_dir = os.environ["BUILD_DIR"]
 external_bitcodes_dir = os.environ["BITCODES_DIR"]
+external_ast_dir = os.environ["AST_DIR"]
 install_deps = not os.environ["DEPENDENCY_INSTALL"] == "False"
 skip_build = os.environ["SKIP_BUILD"] == "True"
 
@@ -59,7 +61,7 @@ print("Building {} in here using {} and {}".format(name, build_system, ci_system
 print("python version: {}".format(sys.version))
 
 # directories to be chowned in the end
-chown_dirs = [build_dir]
+chown_dirs = [build_dir, source_dir]
 
 cfg = {"output": {"verbose": verbose, "file": "/home/fba_code/"}}
 ctx = Context(cfg)
@@ -148,17 +150,15 @@ else:
             print_section(idx, ctx, "build success!")
             project["status"] = "success"
             project["build"]["build"] = "success"
-            if os.environ.get("save_ir") != "False":
-                project["bitcodes"] = {"dir": external_bitcodes_dir}
-                builder.generate_bitcodes(bitcodes_dir)
-                chown_dirs.append(bitcodes_dir)
-            if os.environ.get("save_ast") != "False":
-                project["ast_files"] = {
-                    "dir": os.path.join(external_bitcodes_dir, "AST")
-                }
-                builder.generate_ast(os.path.join(bitcodes_dir, "AST"))
-                chown_dirs.append(bitcodes_dir)
-end = time()                
+        if os.environ.get("save_ir") != "False":
+            project["bitcodes"] = {"dir": external_bitcodes_dir}
+            builder.generate_bitcodes(bitcodes_dir)
+            chown_dirs.append(bitcodes_dir)
+        if os.environ.get("save_ast") != "False":
+            project["ast_files"] = {"dir": external_ast_dir}
+            builder.generate_ast(ast_dir)
+            chown_dirs.append(ast_dir)
+end = time()
 project["build"]["time"] = end - start
 ctx.out_log.print_info(idx, "Finish processing %s in %f [s]" % (name, end - start))
 
@@ -175,15 +175,6 @@ out = {"idx": idx, "name": name, "project": project}
 with open("output.json", "w") as f:
     json.dump(out, f, indent=2)
 
-# if os.environ.get("keep_build_files") == "False":
-#     # delete everything
-#     run(["rm", "-rf", build_dir])
-#     run(["mkdir", build_dir])
-# if os.environ.get("keep_source_files") == "False":
-#     run(["rm", "-rf", source_dir])
-#     # run(["mkdir", source_dir])
-# else:
-chown_dirs.append(source_dir)
 
 # move logs to build directory
 for file in glob.glob("*.log"):

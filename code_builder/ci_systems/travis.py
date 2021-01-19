@@ -6,7 +6,9 @@ from subprocess import PIPE
 import json
 from os.path import isfile, join
 from yaml.composer import ComposerError
-from yaml.loader import FullLoader
+# try:
+    # not all distros have the FullLoader yet...
+    # from yaml.loader import FullLoader
 
 # module path is different inside docker image
 try:
@@ -44,7 +46,10 @@ class CiSystem:
         print("installing dependencies using travis")
         try:
             with open(join(self.travis_dir, ".travis.yml"), 'r') as f:
-                yml = yaml.load(f, Loader=FullLoader)
+                # try:
+                #     yml = yaml.load(f, Loader=FullLoader)
+                # except:
+                yml = yaml.safe_load(f)
                 self.yml = yml
         except ComposerError as e:
             self.error_log.print_error(

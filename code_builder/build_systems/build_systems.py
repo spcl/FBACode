@@ -10,7 +10,7 @@ import copy
 import string
 
 from os.path import abspath, join, exists, basename, dirname
-from os import mkdir
+from os import makedirs, mkdir
 from glob import iglob
 from sys import version_info
 from time import sleep, time
@@ -90,9 +90,15 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     source_dir, ctx.cfg["build"]["clang_version"]
                 )
             build_dir = join(build_dir, source_name)
-            target_dir = join(target_dir, source_name)
+            # target_dir = join(target_dir, source_name)
+            ast_dir = join(target_dir, "AST", source_name)
+            bitcodes_dir = join(target_dir, "bitcodes", source_name)
             if not exists(build_dir):
-                mkdir(build_dir)
+                makedirs(build_dir)
+            if not exists(ast_dir):
+                makedirs(ast_dir)
+            if not exists(bitcodes_dir):
+                makedirs(bitcodes_dir)
             docker_client = docker.from_env()  # type: ignore
             tmp_file = tempfile.NamedTemporaryFile(mode="w")
             # do not install dpendencies the first time around
@@ -123,9 +129,13 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 "bind": "/home/fba_code/dep_mapping.json",
             }
             volumes[abspath(build_dir)] = {"mode": "rw", "bind": "/home/fba_code/build"}
-            volumes[abspath(target_dir)] = {
+            volumes[abspath(bitcodes_dir)] = {
                 "mode": "rw",
                 "bind": "/home/fba_code/bitcodes",
+            }
+            volumes[abspath(ast_dir)] = {
+                "mode": "rw",
+                "bind": "/home/fba_code/AST",
             }
             volumes[abspath(tmp_file.name)] = {
                 "mode": "ro",
@@ -134,28 +144,18 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             environment = [
                 "BUILD_SYSTEM={}".format(build_name.lower()),
                 "BUILD_DIR={}".format(abspath(build_dir)),
-                "BITCODES_DIR={}".format(abspath(target_dir)),
+                "BITCODES_DIR={}".format(abspath(bitcodes_dir)),
+                "AST_DIR={}".format(abspath(ast_dir)),
                 "CI_SYSTEM={}".format(ci_system),
                 "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
                 "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),
                 "JOBS={}".format(str(ctx.cfg["build"]["jobs"])),
                 "save_ir={}".format(str(ctx.cfg["build"]["save_ir"])),
                 "save_ast={}".format(str(ctx.cfg["build"]["save_ast"])),
-                # "keep_build_files={}".format(str(ctx.cfg["build"]["keep_build_files"])),
-                # "keep_source_files={}".format(
-                #     str(ctx.cfg["build"]["keep_source_files"])
-                # ),
             ]
-            # generate a name for docker
-            # container_name = "{}.{}.{}".format(idx, name, build_name)
-            # allowed_chars = string.ascii_letters + string.digits + "_.-"
-            # for c in container_name:
-            #     if c not in allowed_chars:
-            #         container_name = container_name.replace(c, "_")
             container = docker_client.containers.run(
                 dockerfile,
                 detach=True,
-                # name=container_name,
                 environment=environment,
                 volumes=volumes,
                 auto_remove=False,
@@ -290,7 +290,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 environment = [
                     "BUILD_SYSTEM={}".format(build_name.lower()),
                     "BUILD_DIR={}".format(abspath(build_dir)),
-                    "BITCODES_DIR={}".format(abspath(target_dir)),
+                    "BITCODES_DIR={}".format(abspath(bitcodes_dir)),
+                    "AST_DIR={}".format(abspath(ast_dir)),
                     "CI_SYSTEM={}".format(ci_system),
                     "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
                     "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),

@@ -42,6 +42,7 @@ class Installer:
                 if m.lower() in key.lower() or key.lower() in m.lower()
             ]
             # if m in self.dependency_map:
+            print("dependency serach matched to:\n", matches)
             for match in matches:
                 # we can install the pkgs in here, maybe take those with more than min number of installs
                 installs = [i for _, i in self.dependency_map[match]["deps"].items()]
