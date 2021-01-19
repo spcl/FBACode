@@ -64,8 +64,11 @@ function run_compilation() {
         # echo "do compilation"
         # echo "now emit llvm"
         # if there are multiple input files, -emit-llvm would faile with the -o option
-        ${compiler} -Qunused-arguments -emit-llvm -c "${ARGS[@]}"
-        ${compiler} -Qunused-arguments -emit-ast "${ARGS[@]}"
+        #  || true because we want to continue, even if the command fails
+        ${compiler} -Qunused-arguments -emit-llvm -c "${ARGS[@]}"  > /dev/null 2>&1 || true
+        ${compiler} -Qunused-arguments -emit-ast "${ARGS[@]}"  > /dev/null 2>&1 || true
+        # -ast-print-xml seems to be deprecated
+        # ${compiler} -Qunused-arguments -ast-print-xml "${ARGS[@]}"
         ${compiler} "${@:2}"
         # ${compiler} -emit-llvm "${ARGS[@]}"
         # ${compiler} -emit-llvm "${ARGS[@]}"
@@ -87,8 +90,8 @@ function run_compilation() {
         #done
     elif [ "$intercep_compilation_no_c" == true ]; then
         # echo "Run LLVM generation with flags, add -c manually: ${ARGS[@]}" > /dev/stderr
-        ${compiler} -Qunused-arguments -emit-llvm "${ARGS[@]}" -c
-        ${compiler} -Qunused-arguments -emit-ast "${ARGS[@]}"
+        ${compiler} -Qunused-arguments -emit-llvm "${ARGS[@]}" -c  > /dev/null 2>&1 || true
+        ${compiler} -Qunused-arguments -emit-ast "${ARGS[@]}"  > /dev/null 2>&1 || true
         ${compiler} "${@:2}"
     else
         #echo "Run linking with flags: "${IR_FILES[@]}""
