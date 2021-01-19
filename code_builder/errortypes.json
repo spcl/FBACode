@@ -106,7 +106,7 @@
     ],
     "origin": "general_error",
     "regex": "error\\:\\ debian\\/rules\\ build\\ subprocess\\ returned\\ exit\\ status\\ 2",
-    "amount": 207
+    "amount": 213
   },
   "clang: error: linker command failed with exit code 1 (use -v to see invocation)": {
     "name": "clang: error: linker command failed with exit code 1 (use -v to see invocation)",
@@ -150,11 +150,12 @@
       "llvmlite",
       "octave-instrument-control",
       "mupen64plus-video-arachnoid",
-      "slapi-nis"
+      "slapi-nis",
+      "v4l-utils"
     ],
     "origin": "clang_other",
     "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
-    "amount": 107
+    "amount": 113
   },
   "error: ": {
     "name": "error: ",
@@ -384,6 +385,19 @@
     "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ \\.\\/configure\\:\\ No\\ such\\ file\\ or\\ directory",
     "amount": 49
   },
+  "Could not find a package configuration file provided by \"LLVM\" with any of the following names: ": {
+    "name": "Could not find a package configuration file provided by \"LLVM\" with any of the following names: ",
+    "projects": [
+      "apple/swift",
+      "EOSIO/eos",
+      "iovisor/bcc",
+      "ponylang/ponyc",
+      "halide/Halide"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"LLVM\\\"\\ with\\ any\\ of",
+    "amount": 49
+  },
   "By not providing \"FindQt5.cmake\" in CMAKE_MODULE_PATH this project has asked CMake to find a package configuration file provided by \"Qt5\", but CMake did not find one. ": {
     "name": "By not providing \"FindQt5.cmake\" in CMAKE_MODULE_PATH this project has asked CMake to find a package configuration file provided by \"Qt5\", but CMake did not find one. ",
     "projects": [
@@ -417,19 +431,6 @@
     ],
     "origin": "CMake",
     "regex": "Could\\ NOT\\ find\\ OpenSSL\\,\\ try\\ to\\ set\\ the\\ path\\ to\\ OpenSSL\\ root\\ folder\\ in\\ the",
-    "amount": 43
-  },
-  "Could not find a package configuration file provided by \"LLVM\" with any of the following names: ": {
-    "name": "Could not find a package configuration file provided by \"LLVM\" with any of the following names: ",
-    "projects": [
-      "apple/swift",
-      "EOSIO/eos",
-      "iovisor/bcc",
-      "ponylang/ponyc",
-      "halide/Halide"
-    ],
-    "origin": "CMake",
-    "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"LLVM\\\"\\ with\\ any\\ of",
     "amount": 43
   },
   "error: am__fastdepCXX does not appear in AM_CONDITIONAL": {
@@ -501,6 +502,17 @@
     "regex": "By\\ not\\ providing\\ \\\"FindQt5\\.cmake\\\"\\ in\\ CMAKE_MODULE_PATH\\ this\\ project\\ has",
     "amount": 37
   },
+  "Could not find a package configuration file provided by \"LLVM\" with any of the following names: LLVMConfig.cmake llvm-config.cmake Add the installation prefix of \"LLVM\" to CMAKE_PREFIX_PATH or set \"LLVM_DIR\" to a directory containing one of the above files.  If \"LLVM\" provides a separate development package or SDK, be sure it has been installed. ": {
+    "name": "Could not find a package configuration file provided by \"LLVM\" with any of the following names: LLVMConfig.cmake llvm-config.cmake Add the installation prefix of \"LLVM\" to CMAKE_PREFIX_PATH or set \"LLVM_DIR\" to a directory containing one of the above files.  If \"LLVM\" provides a separate development package or SDK, be sure it has been installed. ",
+    "projects": [
+      "EOSIO/eos",
+      "iovisor/bcc",
+      "apple/swift"
+    ],
+    "origin": "CMake",
+    "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"LLVM\\\"\\ with\\ any\\ of",
+    "amount": 37
+  },
   "sysctl: cannot stat /proc/sys/hw/ncpu: No such file or directory": {
     "name": "sysctl: cannot stat /proc/sys/hw/ncpu: No such file or directory",
     "projects": [
@@ -545,16 +557,14 @@
     "regex": "Can\\'t\\ exec\\ \\\"autopoint\\\"\\:\\ No\\ such\\ file\\ or\\ directory",
     "amount": 32
   },
-  "Could not find a package configuration file provided by \"LLVM\" with any of the following names: LLVMConfig.cmake llvm-config.cmake Add the installation prefix of \"LLVM\" to CMAKE_PREFIX_PATH or set \"LLVM_DIR\" to a directory containing one of the above files.  If \"LLVM\" provides a separate development package or SDK, be sure it has been installed. ": {
-    "name": "Could not find a package configuration file provided by \"LLVM\" with any of the following names: LLVMConfig.cmake llvm-config.cmake Add the installation prefix of \"LLVM\" to CMAKE_PREFIX_PATH or set \"LLVM_DIR\" to a directory containing one of the above files.  If \"LLVM\" provides a separate development package or SDK, be sure it has been installed. ",
+  "SyntaxParserLib, SourceKit, and concurrency require libdispatch on non-Darwin hosts.  Please specify SWIFT_PATH_TO_LIBDISPATCH_SOURCE ": {
+    "name": "SyntaxParserLib, SourceKit, and concurrency require libdispatch on non-Darwin hosts.  Please specify SWIFT_PATH_TO_LIBDISPATCH_SOURCE ",
     "projects": [
-      "EOSIO/eos",
-      "iovisor/bcc",
       "apple/swift"
     ],
     "origin": "CMake",
-    "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"LLVM\\\"\\ with\\ any\\ of",
-    "amount": 31
+    "regex": "SyntaxParserLib\\,\\ SourceKit\\,\\ and\\ concurrency\\ require\\ libdispatch\\ on",
+    "amount": 29
   },
   "error: possibly undefined macro: AM_PROG_LIBTOOL": {
     "name": "error: possibly undefined macro: AM_PROG_LIBTOOL",
@@ -707,15 +717,6 @@
     ],
     "origin": "CMake",
     "regex": "You\\ need\\ to\\ decide\\ whether\\ you\\ want\\ to\\ use\\ GL\\-\\ or\\ GLES\\-based\\ rendering\\.",
-    "amount": 23
-  },
-  "SyntaxParserLib, SourceKit, and concurrency require libdispatch on non-Darwin hosts.  Please specify SWIFT_PATH_TO_LIBDISPATCH_SOURCE ": {
-    "name": "SyntaxParserLib, SourceKit, and concurrency require libdispatch on non-Darwin hosts.  Please specify SWIFT_PATH_TO_LIBDISPATCH_SOURCE ",
-    "projects": [
-      "apple/swift"
-    ],
-    "origin": "CMake",
-    "regex": "SyntaxParserLib\\,\\ SourceKit\\,\\ and\\ concurrency\\ require\\ libdispatch\\ on",
     "amount": 23
   },
   "PATH/FILE.EXT cd: build: No such file or directory": {
@@ -1461,16 +1462,6 @@
     "regex": "Error\\:\\ invalid\\ syntax",
     "amount": 11
   },
-  "Unable to find the requested Boost libraries. Unable to find the Boost header files.  Please set BOOST_ROOT to the root directory containing Boost or BOOST_INCLUDEDIR to the directory containing Boost's headers. ": {
-    "name": "Unable to find the requested Boost libraries. Unable to find the Boost header files.  Please set BOOST_ROOT to the root directory containing Boost or BOOST_INCLUDEDIR to the directory containing Boost's headers. ",
-    "projects": [
-      "facebook/folly",
-      "BVLC/caffe"
-    ],
-    "origin": "CMake",
-    "regex": "Unable\\ to\\ find\\ the\\ requested\\ Boost\\ libraries\\.",
-    "amount": 10
-  },
   "error: dpkg-source -i=\"*\" -b . subprocess returned exit status 2": {
     "name": "error: dpkg-source -i=\"*\" -b . subprocess returned exit status 2",
     "projects": [
@@ -1479,10 +1470,21 @@
       "pyao",
       "disulfinder",
       "entropybroker",
-      "teeworlds"
+      "teeworlds",
+      "xfce4-terminal"
     ],
     "origin": "general_error",
     "regex": "error\\:\\ dpkg\\-source\\ \\-i\\=\\\"\\*\\\"\\ \\-b\\ \\.\\ subprocess\\ returned\\ exit\\ status\\ 2",
+    "amount": 11
+  },
+  "Unable to find the requested Boost libraries. Unable to find the Boost header files.  Please set BOOST_ROOT to the root directory containing Boost or BOOST_INCLUDEDIR to the directory containing Boost's headers. ": {
+    "name": "Unable to find the requested Boost libraries. Unable to find the Boost header files.  Please set BOOST_ROOT to the root directory containing Boost or BOOST_INCLUDEDIR to the directory containing Boost's headers. ",
+    "projects": [
+      "facebook/folly",
+      "BVLC/caffe"
+    ],
+    "origin": "CMake",
+    "regex": "Unable\\ to\\ find\\ the\\ requested\\ Boost\\ libraries\\.",
     "amount": 10
   },
   "/usr/bin/ld: PATH/FILE.EXT error loading plugin: PATH/FILE.EXT cannot open shared object file: No such file or directory": {
@@ -1564,6 +1566,18 @@
     "regex": "error\\:\\ \\'zlib\\.h\\'\\ file\\ not\\ found",
     "amount": 9
   },
+  "error: aborting due to unexpected upstream changes, see PATH/FILE.EXT": {
+    "name": "error: aborting due to unexpected upstream changes, see PATH/FILE.EXT",
+    "projects": [
+      "lice5",
+      "lsh-utils",
+      "disulfinder",
+      "xfce4-terminal"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ aborting\\ due\\ to\\ unexpected\\ upstream\\ changes\\,\\ see\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
+    "amount": 9
+  },
   "error: 'boostPATH/FILE.EXT file not found": {
     "name": "'boostPATH/FILE.EXT file not found",
     "projects": [
@@ -1637,17 +1651,6 @@
     ],
     "origin": "CMake",
     "regex": "Compiler\\ doesn\\'t\\ support\\ baseline\\ optimization\\ flags\\:",
-    "amount": 8
-  },
-  "error: aborting due to unexpected upstream changes, see PATH/FILE.EXT": {
-    "name": "error: aborting due to unexpected upstream changes, see PATH/FILE.EXT",
-    "projects": [
-      "lice5",
-      "lsh-utils",
-      "disulfinder"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ aborting\\ due\\ to\\ unexpected\\ upstream\\ changes\\,\\ see\\ (?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)",
     "amount": 8
   },
   "error: 'cstddef' file not found": {
