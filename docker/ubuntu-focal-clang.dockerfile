@@ -10,7 +10,7 @@ ARG CLANG_VERSION
 RUN echo "building image for clange version ${CLANG_VERSION}"
 
 ARG deps='apt-transport-https ca-certificates software-properties-common curl gpg-agent gnupg' 
-ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} libomp-${CLANG_VERSION}-dev \
+ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} libomp-${CLANG_VERSION}-dev llvm-${CLANG_VERSION} llvm-${CLANG_VERSION}-dev\
   clang++-${CLANG_VERSION} texinfo build-essential fakeroot devscripts automake autotools-dev \
   wget snapd git ruby-full sudo python2 python3-setuptools unzip"
 RUN echo ${CLANG_VERSION}

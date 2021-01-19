@@ -9,7 +9,7 @@ RUN echo "building image for clange version ${CLANG_VERSION}"
 
 
 ARG deps='apt-transport-https ca-certificates software-properties-common gnupg-agent gnupg curl' 
-ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} \
+ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} llvm-${CLANG_VERSION} llvm-${CLANG_VERSION}-dev \
   libomp-${CLANG_VERSION}-dev clang++-${CLANG_VERSION} texinfo build-essential fakeroot \
   devscripts automake autotools-dev wget curl git sudo python python-pip python3-setuptools python-setuptools unzip"
 RUN echo ${CLANG_VERSION}

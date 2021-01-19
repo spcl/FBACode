@@ -7,7 +7,7 @@ RUN echo "Europe/Zurich" > /etc/timezone
 ARG CLANG_VERSION
 
 ARG deps='software-properties-common gnupg-agent gnupg curl' 
-ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} \
+ARG soft="python3 python3-pip cmake make clang-${CLANG_VERSION} llvm-${CLANG_VERSION} llvm-${CLANG_VERSION}-dev\
   libomp-${CLANG_VERSION}-dev clang++-${CLANG_VERSION} texinfo build-essential fakeroot \
   devscripts automake autotools-dev wget curl git sudo python python-pip unzip"
 RUN echo ${CLANG_VERSION}
