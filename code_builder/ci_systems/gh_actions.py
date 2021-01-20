@@ -2,7 +2,7 @@ from os.path import isdir, join
 import os
 import yaml
 from yaml.composer import ComposerError
-from yaml.loader import FullLoader
+# from yaml.loader import FullLoader
 from .ci_helper import append_script, run, set_env_vars
 import stat
 from subprocess import PIPE
@@ -36,7 +36,7 @@ class CiSystem:
         for file in yml_files:
             try:
                 with open(join(self.gh_dir, ".github/workflows/") + file, "r") as f:
-                    yml = yaml.load(f, Loader=FullLoader)
+                    yml = yaml.safe_load(f)
                     ymls.append(yml)
             except ComposerError as e:
                 self.error_log.print_error(

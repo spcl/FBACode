@@ -333,7 +333,8 @@ class CiSystem:
         yml = None
         try:
             with open(join(repo_dir, ".travis.yml"), "r") as f:
-                yml = yaml.load(f, Loader=FullLoader)
+                # yml = yaml.load(f, Loader=FullLoader)
+                yml = yaml.safe_load(f)
         except ComposerError as e:
             print("Error parsing .travis.yml:\n  {}".format(e))
             return False
