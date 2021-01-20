@@ -104,7 +104,12 @@ def download_and_build(
     print("\n| ".join("{}\t{}".format(k, v) for k, v in running_builds.items()))
     global loggers
     ctx.set_loggers(loggers.stdout, loggers.stderr)
-    cloner.clone(idx, name, project)
+    try:
+        cloner.clone(idx, name, project)
+    except Exception as e:
+        print("error cloning {}:\n{}".format(name, e))
+        project["status"] = "clone fail"
+        return (idx, name, project)
     try:
         idx, name, new_project = recognize_and_build(
             idx, name, project, build_dir, target_dir, ctx, stats=stats
@@ -116,7 +121,9 @@ def download_and_build(
                 "".join(traceback.format_exception(*sys.exc_info()))
             )
         )
+        project["status"] = "docker_crash"
         new_project = project
+    # delete build files if option set
     if ctx.cfg["build"]["keep_build_files"] == "False":
         # delete everything except log file and project.json
         proj_build_dir = join(build_dir, basename(project["source"]["dir"]))
