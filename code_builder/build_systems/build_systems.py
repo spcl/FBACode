@@ -293,7 +293,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 project["is_first_build"] = False
                 start_docker(idx, name, project, ctx, **docker_conf)
             # Generate summary and stats data
-            if project["status"] != "success":
+            if project["status"] != "crash" and project["status"] != "success":
                 if stats is None:
                     stats = Statistics(1)
                 # set first build to true, so the analyzer doesn't save stats
@@ -310,7 +310,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     # try and install missing deps
                     start_docker(idx, name, project, ctx, **docker_conf)
 
-                project["is_first_build"] = False
+            project["is_first_build"] = False
             if "bitcodes" in project:
                 bitcodes = [
                     x
