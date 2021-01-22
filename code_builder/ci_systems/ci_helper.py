@@ -93,7 +93,7 @@ def run_scripts(logger, script_list, cwd=None):
             logger.error_log.print_info(logger.idx, out.stdout)
             fails += 1
         print(out.stdout)
-    logger.output_log.print_log(
+    logger.output_log.print_info(
         logger.idx, "{} errors in {} scripts".format(fails, len(script_list)),
     )
     return True
