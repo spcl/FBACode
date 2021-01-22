@@ -121,7 +121,7 @@ class Statistics:
         # print("\nDependency mapping:", file=out)
         # print(json.dumps(self.dep_mapping, indent=2), file=out)
 
-    def update(self, project, name):
+    def update(self, project, name, final_update=True):
         # update build_systems statistic
         start = time()
         self.all_projects[name] = project
@@ -138,12 +138,13 @@ class Statistics:
                 self.ci_systems[i] = {"success": 0, "fail": 0}
         if "build" in project and "clone_time" in project["build"]:
             project["source"]["time"] = project["build"]["clone_time"]
-        self.clone_time += project["source"]["time"]
+        if "source" in project:
+            self.clone_time += project["source"].get("time")
         if "build" in project:
             self.build_time += project["build"]["time"]
-        if project.get("double_build") and "build" in project:
+        if project.get("double_build_done") and "build" in project and final_update:
             self.map_dependencies(
-                project["first_build"].get("missing_dependencies", []),
+                project["no_install_build"].get("missing_dependencies", []),
                 project["build"].get("installed", []),
                 name,
             )

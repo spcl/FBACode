@@ -53,6 +53,164 @@ ci_systems = {
 double_build_ci = {"travis", "gh_actions", "debian_install"}
 
 
+def start_docker(
+    idx,
+    name,
+    project,
+    ctx,
+    source_dir,
+    build_dir,
+    ast_dir,
+    bitcodes_dir,
+    build_name,
+    ci_system,
+    dockerfile,
+):
+    docker_client = docker.from_env()  # type: ignore
+    tmp_file = tempfile.NamedTemporaryFile(mode="w")
+    json.dump(
+        {
+            "idx": idx,
+            "name": name,
+            "verbose": ctx.cfg["output"]["verbose"],
+            "project": project,
+        },
+        tmp_file,
+    )
+    tmp_file.flush()
+    volumes = {}
+    # changed source to rw, need to write into for debian
+    # since fetching happens in container
+    docker_timeout = int(ctx.cfg["build"]["docker_timeout"])
+    volumes[abspath(source_dir)] = {
+        "mode": "rw",
+        "bind": "/home/fba_code/source",
+    }
+    volumes[join(dirname(__file__), "../dep_mapping.json")] = {
+        "mode": "ro",
+        "bind": "/home/fba_code/dep_mapping.json",
+    }
+    volumes[abspath(build_dir)] = {"mode": "rw", "bind": "/home/fba_code/build"}
+    volumes[abspath(bitcodes_dir)] = {
+        "mode": "rw",
+        "bind": "/home/fba_code/bitcodes",
+    }
+    volumes[abspath(ast_dir)] = {
+        "mode": "rw",
+        "bind": "/home/fba_code/AST",
+    }
+    volumes[abspath(tmp_file.name)] = {
+        "mode": "ro",
+        "bind": "/home/fba_code/input.json",
+    }
+    environment = [
+        "BUILD_SYSTEM={}".format(build_name.lower()),
+        "BUILD_DIR={}".format(abspath(build_dir)),
+        "BITCODES_DIR={}".format(abspath(bitcodes_dir)),
+        "AST_DIR={}".format(abspath(ast_dir)),
+        "CI_SYSTEM={}".format(ci_system),
+        "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
+        "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),
+        "JOBS={}".format(str(ctx.cfg["build"]["jobs"])),
+        "save_ir={}".format(str(ctx.cfg["build"]["save_ir"])),
+        "save_ast={}".format(str(ctx.cfg["build"]["save_ast"])),
+    ]
+    container = docker_client.containers.run(
+        dockerfile,
+        detach=True,
+        environment=environment,
+        volumes=volumes,
+        auto_remove=False,
+        remove=False,
+        # mem_limit="3g"  # limit memory to 3GB to protect the host
+    )
+    if project.get("is_first_build", False):
+        ctx.out_log.print_info(
+            idx,
+            "1/2 building {} in container {} as {} and {}\n    dockerfile:{}".format(
+                name, container.name, build_name, ci_system, dockerfile
+            ),
+        )
+    else:
+        ctx.out_log.print_info(
+            idx,
+            "building {} in container {} as {} and {}\n    dockerfile:{}".format(
+                name, container.name, build_name, ci_system, dockerfile
+            ),
+        )
+    sleep(10)
+    # FIXME: this sometimes fails???
+    # container exits before 10s, then this fails (i think)
+    reload_fail = 0
+    try:
+        container.reload()
+    except Exception:
+        print("AAAAAAAAAAAAAA\n{}: container.reload failed".format(name))
+        reload_fail += 1
+    while reload_fail < 3 and container.status == "running":
+        # get the current time of the container, can differ from host bc timezone
+        # time = container.stats(stream=False)["read"]
+        # try with utc time, should be faster
+        # TODO: make timeout configurable
+        timeout = datetime.utcnow() - timedelta(minutes=docker_timeout)
+        logs = container.logs(since=timeout, tail=10)
+        # ctx.out_log.print_info(idx, logs)
+        if logs == b"":
+            ctx.out_log.print_info(idx, "stopping container, no progress in 30min")
+            container.stop(timeout=3)
+        sleep(10)
+        try:
+            container.reload()
+            reload_fail = 0
+        except Exception:
+            print("BBBBBBBBBBBB\ncontainer.reload failed, lets try and handle this")
+            reload_fail += 1
+    # just use this to get exit code
+    return_code = container.wait()
+    if return_code["StatusCode"]:
+        # the init.py or the docker container crashed unexpectadly
+        ctx.err_log.print_error(
+            idx,
+            "The build process failed! Return code {}, output: {}\n".format(
+                return_code, container.logs(tail=10).decode("utf-8")
+            ),
+        )
+        docker_log = container.logs()
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+        docker_log_file = "container_{}_{}.log".format(
+            name.replace("/", "_"), timestamp
+        )
+        with open(join(abspath(build_dir), docker_log_file), "w") as f:
+            f.write(docker_log.decode())
+        project["status"] = "crash"
+        project["crash_reason"] = "docker container crashed"
+        return False
+    docker_log = container.logs()
+    timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+    docker_log_file = "container_{}_{}.log".format(name.replace("/", "_"), timestamp)
+    with open(join(abspath(build_dir), docker_log_file), "w") as f:
+        f.write(docker_log.decode())
+    # Get output JSON
+    try:
+        binary_data, _ = container.get_archive("/home/fba_code/output.json")
+        # with next(binary_data) not the whole thing is loaded if file is big
+        bin = b"".join(list(binary_data))
+        tar_file = tarfile.open(fileobj=io.BytesIO(bin))
+        data = tar_file.extractfile(tar_file.getmember("output.json"))
+        project.update(json.loads(data.read())["project"])
+    except Exception as e:
+        ctx.err_log.print_error(
+            idx,
+            "Failure retrieving the Project File from docker (1/2):\n{}".format(str(e)),
+        )
+        project["status"] = "crash"
+        project["crash_reason"] = "docker output.json not found or invalid archive"
+        return False
+    container.remove()
+    project["build"]["docker_log"] = docker_log_file
+    return True
+
+
 def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=None):
 
     # if project["status"] == "unrecognized":
@@ -99,297 +257,60 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 makedirs(ast_dir)
             if not exists(bitcodes_dir):
                 makedirs(bitcodes_dir)
-            docker_client = docker.from_env()  # type: ignore
-            tmp_file = tempfile.NamedTemporaryFile(mode="w")
             # do not install dpendencies the first time around
             if ci_system in double_build_ci:
                 project["install_deps"] = False
                 project["is_first_build"] = True
             else:
                 project["install_deps"] = True
-            json.dump(
-                {
-                    "idx": idx,
-                    "name": name,
-                    "verbose": ctx.cfg["output"]["verbose"],
-                    "project": project,
-                },
-                tmp_file,
-            )
-            tmp_file.flush()
-            volumes = {}
-            # changed source to rw, need to write into for debian
-            # since fetching happens in container
-            volumes[abspath(source_dir)] = {
-                "mode": "rw",
-                "bind": "/home/fba_code/source",
-            }
-            volumes[join(dirname(__file__), "../dep_mapping.json")] = {
-                "mode": "ro",
-                "bind": "/home/fba_code/dep_mapping.json",
-            }
-            volumes[abspath(build_dir)] = {"mode": "rw", "bind": "/home/fba_code/build"}
-            volumes[abspath(bitcodes_dir)] = {
-                "mode": "rw",
-                "bind": "/home/fba_code/bitcodes",
-            }
-            volumes[abspath(ast_dir)] = {
-                "mode": "rw",
-                "bind": "/home/fba_code/AST",
-            }
-            volumes[abspath(tmp_file.name)] = {
-                "mode": "ro",
-                "bind": "/home/fba_code/input.json",
-            }
-            environment = [
-                "BUILD_SYSTEM={}".format(build_name.lower()),
-                "BUILD_DIR={}".format(abspath(build_dir)),
-                "BITCODES_DIR={}".format(abspath(bitcodes_dir)),
-                "AST_DIR={}".format(abspath(ast_dir)),
-                "CI_SYSTEM={}".format(ci_system),
-                "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
-                "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),
-                "JOBS={}".format(str(ctx.cfg["build"]["jobs"])),
-                "save_ir={}".format(str(ctx.cfg["build"]["save_ir"])),
-                "save_ast={}".format(str(ctx.cfg["build"]["save_ast"])),
-            ]
-            container = docker_client.containers.run(
-                dockerfile,
-                detach=True,
-                environment=environment,
-                volumes=volumes,
-                auto_remove=False,
-                remove=False,
-                # mem_limit="3g"  # limit memory to 3GB to protect the host
-            )
-            if project.get("is_first_build", False):
-                ctx.out_log.print_info(
-                    idx,
-                    "1/2 building {} in container {} as {} and {}\n    dockerfile:{}".format(
-                        name, container.name, build_name, ci_system, dockerfile
-                    ),
-                )
-            else:
-                ctx.out_log.print_info(
-                    idx,
-                    "building {} in container {} as {} and {}\n    dockerfile:{}".format(
-                        name, container.name, build_name, ci_system, dockerfile
-                    ),
-                )
-            sleep(10)
-            # FIXME: this sometimes fails???
-            # container exits before 10s, then this fails (i think)
-            reload_fail = False
-            try:
-                container.reload()
-            except:
-                print("AAAAAAAAAAAAAA\n{}: container.reload failed".format(name))
-                reload_fail = True
-            while not reload_fail and container.status == "running":
-                # get the current time of the container, can differ from host bc timezone
-                # time = container.stats(stream=False)["read"]
-                # try with utc time, should be faster
-                # TODO: make timeout configurable
-                timeout = datetime.utcnow() - timedelta(minutes=30)
-                logs = container.logs(since=timeout, tail=10)
-                # ctx.out_log.print_info(idx, logs)
-                if logs == b"":
-                    ctx.out_log.print_info(
-                        idx, "stopping container, no progress in 30min"
-                    )
-                    container.stop(timeout=3)
-                sleep(10)
-                try:
-                    container.reload()
-                except:
-                    print(
-                        "BBBBBBBBBBBB\ncontainer.reload failed, lets try and handle this"
-                    )
-                reload_fail = True
-            # just use this to get exit code
-            return_code = container.wait()
-            if return_code["StatusCode"]:
-                # the init.py or the docker container crashed unexpectadly
-                ctx.err_log.print_error(
-                    idx,
-                    "The build process failed! Return code {}, output: {}\n".format(
-                        return_code, container.logs(tail=10).decode("utf-8")
-                    ),
-                )
-                docker_log = container.logs()
-                timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-                docker_log_file = "container_{}_{}.log".format(
-                    name.replace("/", "_"), timestamp
-                )
-                with open(join(abspath(build_dir), docker_log_file), "w") as f:
-                    f.write(docker_log.decode())
-                project["status"] = "crash"
-                project["crash_reason"] = "docker container crashed"
-                return (idx, name, project)
-            docker_log = container.logs()
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            docker_log_file = "container_{}_{}.log".format(
-                name.replace("/", "_"), timestamp
-            )
-            with open(join(abspath(build_dir), docker_log_file), "w") as f:
-                f.write(docker_log.decode())
-            # Get output JSON
-            try:
-                binary_data, _ = container.get_archive("/home/fba_code/output.json")
-                # with next(binary_data) not the whole thing is loaded if file is big
-                bin = b"".join(list(binary_data))
-                tar_file = tarfile.open(fileobj=io.BytesIO(bin))
-                data = tar_file.extractfile(tar_file.getmember("output.json"))
-                project = {**project, **json.loads(data.read())["project"]}
-            except Exception as e:
-                ctx.err_log.print_error(
-                    idx,
-                    "Failure retrieving the Project File from docker (1/2):\n{}".format(
-                        str(e)
-                    ),
-                )
-                project["status"] = "crash"
-                project[
-                    "crash_reason"
-                ] = "docker output.json not found or invalid archive"
-                return (idx, name, project)
-            end = time()
-            project["build"]["time"] = end - start
 
-            container.remove()
-            project["build"]["docker_log"] = docker_log_file
+            docker_conf = {
+                "source_dir": source_dir,
+                "build_dir": build_dir,
+                "ast_dir": ast_dir,
+                "bitcodes_dir": bitcodes_dir,
+                "build_name": build_name,
+                "ci_system": ci_system,
+                "dockerfile": dockerfile,
+            }
+
+            start_docker(idx, name, project, ctx, **docker_conf)
+
             # if we have a build system that can install packages, rerun with packages
             # at the moment only travis, can be expended..
-            if ci_system in double_build_ci:
+            if (
+                ci_system in double_build_ci
+                and project["status"] != "success"
+                and project["status"] != "crash"
+            ):
                 if stats is None:
                     stats = Statistics(1)
-                stats.update(project, name)
-                project["first_build"] = copy.deepcopy(project["build"])
+                stats.update(project, name, final_update=False)
+                project["no_install_build"] = copy.deepcopy(project["build"])
                 project["install_deps"] = True
                 project["build"] = {}
-                project["double_build"] = True
+                project["double_build_done"] = True
                 project["is_first_build"] = False
-                volumes.pop(abspath(tmp_file.name))
-                tmp_file.close()
-                tmp_file = tempfile.NamedTemporaryFile(mode="w")
-                # rerun the same container but with installing deps
-                json.dump(
-                    {
-                        "idx": idx,
-                        "name": name,
-                        "verbose": ctx.cfg["output"]["verbose"],
-                        "project": project,
-                    },
-                    tmp_file,
-                )
-                tmp_file.flush()
-                volumes[abspath(tmp_file.name)] = {
-                    "mode": "ro",
-                    "bind": "/home/fba_code/input.json",
-                }
-                environment = [
-                    "BUILD_SYSTEM={}".format(build_name.lower()),
-                    "BUILD_DIR={}".format(abspath(build_dir)),
-                    "BITCODES_DIR={}".format(abspath(bitcodes_dir)),
-                    "AST_DIR={}".format(abspath(ast_dir)),
-                    "CI_SYSTEM={}".format(ci_system),
-                    "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
-                    "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),
-                    "JOBS={}".format(str(ctx.cfg["build"]["jobs"])),
-                    "save_ir={}".format(str(ctx.cfg["build"]["save_ir"])),
-                    "save_ast={}".format(str(ctx.cfg["build"]["save_ast"])),
-                    "keep_build_files={}".format(str(ctx.cfg["build"]["keep_build_files"])),
-                    "keep_source_files={}".format(
-                        str(ctx.cfg["build"]["keep_source_files"])
-                    ),
-                ]
-                container = docker_client.containers.run(
-                    dockerfile,
-                    detach=True,
-                    # name=container_name,
-                    environment=environment,
-                    volumes=volumes,
-                    auto_remove=False,
-                    remove=False,
-                    # mem_limit="3g"  # limit memory to 3GB to protect the host
-                )
-                ctx.out_log.print_info(
-                    idx,
-                    "2/2 building {} in container {} as {}".format(
-                        name, container.name, build_name
-                    ),
-                )
-                sleep(10)
-                container.reload()
-                while container.status == "running":
-                    timeout = datetime.utcnow() - timedelta(minutes=30)
-                    logs = container.logs(since=timeout, tail=1)
-                    # ctx.out_log.print_info(idx, logs)
-                    if logs == b"":
-                        container.stop(timeout=3)
-                    sleep(10)
-                    container.reload()
-                # just use this to get exit code
-                return_code = container.wait()
-                if return_code["StatusCode"]:
-                    # the init.py or the docker container crashed unexpectadly
-                    ctx.err_log.print_error(
-                        idx,
-                        "The build process failed! Return code {}, output: {}\n".format(
-                            return_code, container.logs(tail=10).decode()
-                        ),
-                    )
-                    docker_log = container.logs()
-                    timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-                    docker_log_file = "container_{}_{}.log".format(
-                        name.replace("/", "_"), timestamp
-                    )
-                    with open(join(abspath(build_dir), docker_log_file), "w") as f:
-                        f.write(docker_log.decode())
-                    project["status"] = "crash"
-                    project["crash_reason"] = "docker container crashed"
-                    end = time()
-                    project["build"]["time"] = end - start
-                    return (idx, name, project)
-                docker_log = container.logs()
-                timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-                docker_log_file = "container_{}_{}.log".format(
-                    name.replace("/", "_"), timestamp
-                )
-                with open(join(abspath(build_dir), docker_log_file), "w") as f:
-                    f.write(docker_log.decode())
-                # Get output JSON
-                try:
-                    binary_data, _ = container.get_archive("/home/fba_code/output.json")
-                    # maybe if bigger than chunk this fails??
-                    # with next(binary_data) not the whole thing is loaded if file is big
-                    bin = b"".join(list(binary_data))
-                    tar_file = tarfile.open(fileobj=io.BytesIO(bin))
-                    data = tar_file.extractfile(tar_file.getmember("output.json"))
-                    project = {**project, **json.loads(data.read())["project"]}
-                except Exception as e:
-                    ctx.err_log.print_error(
-                        idx,
-                        "Failure retrieving the Project File from docker:\n{}".format(
-                            str(e)
-                        ),
-                    )
-                    project["status"] = "crash"
-                    project[
-                        "crash_reason"
-                    ] = "docker output.json not found or invalid archive"
-                    end = time()
-                    project["build"]["time"] = end - start
-                    return (idx, name, project)
-                end = time()
-                project["build"]["time"] = end - start
-
-                container.remove()
-
-                # do the comparison of missing deps and installed packages in statistics
-
-                project["build"]["docker_log"] = docker_log_file
+                start_docker(idx, name, project, ctx, **docker_conf)
             # Generate summary and stats data
+            if project["status"] != "success":
+                if stats is None:
+                    stats = Statistics(1)
+                # set first build to true, so the analyzer doesn't save stats
+                project["is_first_build"] = True
+                stats.update(project, name, final_update=False)
+                if project["build"]["missing_dependencies"] != []:
+                    project["missing_deps"] = copy.deepcopy(
+                        project["build"]["missing_dependencies"]
+                    )
+                    project["install_deps"] = True
+                    project["first_build"] = copy.deepcopy(project["build"])
+                    project["build"] = {}
+                    # from the top now y'all
+                    # try and install missing deps
+                    start_docker(idx, name, project, ctx, **docker_conf)
+
+                project["is_first_build"] = False
             if "bitcodes" in project:
                 bitcodes = [
                     x
@@ -404,14 +325,15 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 ast = [
                     x
                     for x in iglob(
-                        "{0}/**/*.ast".format(project["ast_files"]["dir"]), recursive=True
+                        "{0}/**/*.ast".format(project["ast_files"]["dir"]),
+                        recursive=True,
                     )
                 ]
                 size = sum(os.path.getsize(x) for x in ast)
                 project["ast_files"]["files"] = len(ast)
                 project["ast_files"]["size"] = size
-
-
+            end = time()
+            project["build"]["time"] = end - start
             ctx.out_log.print_info(
                 idx, "Finish processing %s in %f [s]" % (name, end - start)
             )
