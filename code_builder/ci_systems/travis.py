@@ -6,9 +6,10 @@ from subprocess import PIPE
 import json
 from os.path import isfile, join
 from yaml.composer import ComposerError
+
 # try:
-    # not all distros have the FullLoader yet...
-    # from yaml.loader import FullLoader
+# not all distros have the FullLoader yet...
+# from yaml.loader import FullLoader
 
 # module path is different inside docker image
 try:
@@ -16,7 +17,7 @@ try:
 except ModuleNotFoundError:
     from code_builder.build_systems.environment import get_c_compiler, get_cxx_compiler
 
-from .ci_helper import append_script, apt_install, run, set_env_vars
+from .ci_helper import append_script, apt_install, run, set_env_vars, run_scripts
 
 
 class Context:
@@ -29,7 +30,9 @@ class Context:
 
 
 class CiSystem:
-    def __init__(self, repo_dir, build_dir, idx, ctx, name, project):
+    def __init__(
+        self, repo_dir, build_dir, idx, ctx, name, project, use_build_dir=False
+    ):
         self.repository_path = repo_dir
         self.build_dir = build_dir
         self.idx = idx
@@ -37,7 +40,7 @@ class CiSystem:
         self.output_log = ctx.out_log
         self.error_log = ctx.err_log
         self.project = project
-        self.travis_dir = repo_dir
+        self.travis_dir = build_dir if use_build_dir else repo_dir
 
     def install(self):
         # open the .travis.yml file
@@ -45,7 +48,7 @@ class CiSystem:
         self.big_script = []
         print("installing dependencies using travis")
         try:
-            with open(join(self.travis_dir, ".travis.yml"), 'r') as f:
+            with open(join(self.travis_dir, ".travis.yml"), "r") as f:
                 # try:
                 #     yml = yaml.load(f, Loader=FullLoader)
                 # except:
@@ -53,11 +56,13 @@ class CiSystem:
                 self.yml = yml
         except ComposerError as e:
             self.error_log.print_error(
-                self.idx, "Error parsing .travis.yml:\n  {}".format(e))
+                self.idx, "Error parsing .travis.yml:\n  {}".format(e)
+            )
             return False
         except FileNotFoundError:
             self.error_log.print_error(
-                self.idx, "Could not find {}/.travis.yml".format(self.travis_dir))
+                self.idx, "Could not find {}/.travis.yml".format(self.travis_dir)
+            )
             return False
 
         # set global env vars specified in the yaml
@@ -102,11 +107,11 @@ class CiSystem:
         # cache components
         # i dont think there is anything to do
         # run the before_install script, if any
-        
+
         if yml.get("before_install") is not None:
             print("TRAVIS: running before_install")
             append_script(self.big_script, yml["before_install"])
-            
+
             # if not run_scripts(self, yml["before_install"], cwd=self.travis_dir):
             #     return False
         # run the install
@@ -177,7 +182,7 @@ class CiSystem:
         # run the accumulated script
         # print("bigass script:")
         script_file = join(self.travis_dir, "combined_script.sh")
-        with open(script_file, 'w') as f:
+        with open(script_file, "w") as f:
             f.write("#!/bin/bash\n")
             for s in self.big_script:
                 f.write(s)
@@ -190,13 +195,19 @@ class CiSystem:
         out = run([script_file], cwd=self.travis_dir, stdout=PIPE, stderr=PIPE)
         if out.returncode != 0:
             self.error_log.print_error(
-                self.idx, "TRAVIS combined_script.sh failed (error {}):\n{}".format(
-                    out.returncode, out.stderr))
+                self.idx,
+                "TRAVIS combined_script.sh failed (error {}):\n{}".format(
+                    out.returncode, out.stderr
+                ),
+            )
             self.error_log.print_info(self.idx, out.stdout)
             return False
         else:
-            print("TRAVIS combined_script.sh:\n{}\nstderr:\n{}".format(
-                out.stdout, out.stderr))
+            print(
+                "TRAVIS combined_script.sh:\n{}\nstderr:\n{}".format(
+                    out.stdout, out.stderr
+                )
+            )
         return True
         # replacements = [
         #     (";;", ";"),
@@ -214,8 +225,11 @@ class CiSystem:
     def travis_addons(self, addons):
         apt = addons.get("apt")
         # in case it's just a string or list of strings
-        if apt and (isinstance(apt, str) or
-                    isinstance(apt, list) and all(isinstance(i, str) for i in apt)):
+        if apt and (
+            isinstance(apt, str)
+            or isinstance(apt, list)
+            and all(isinstance(i, str) for i in apt)
+        ):
             if not apt_install(self, apt, self.project):
                 return False
         # in case it is more complicated
@@ -234,48 +248,54 @@ class CiSystem:
                     source_url = None
                     if isinstance(source, str):
                         # this should be in safelist
-                        safelist_entry = [
-                            i for i in safelist if i["alias"] == source]
+                        safelist_entry = [i for i in safelist if i["alias"] == source]
                         if not safelist_entry:
                             # found nothing in safelist, try to use this string as url
                             source_url = source
                         else:
-                            key_url = safelist_entry[0].get(
-                                "canonical_key_url", None)
+                            key_url = safelist_entry[0].get("canonical_key_url", None)
                             source_url = safelist_entry[0].get("sourceline")
                     else:
                         key_url = source.get("key_url", None)
                         source_url = source.get("sourceline")
                     if key_url:
-                        cmd = ["bash", "-c",
-                               "wget -qO - {} | apt-key add -".format(key_url)]
+                        cmd = [
+                            "bash",
+                            "-c",
+                            "wget -qO - {} | apt-key add -".format(key_url),
+                        ]
                         out = run(cmd, cwd=self.travis_dir, stderr=PIPE)
                         if out.returncode != 0:
                             self.error_log.print_error(
-                                self.idx, "adding key to repo failed")
-                            self.error_log.print_error(self.idx, "{}:\n{}".format(
-                                out.args, out.stderr))
+                                self.idx, "adding key to repo failed"
+                            )
+                            self.error_log.print_error(
+                                self.idx, "{}:\n{}".format(out.args, out.stderr)
+                            )
                             return False
                     if source_url is None:
                         self.error_log.print_error(
-                            self.idx, "wrong format of sourceline in travis")
+                            self.idx, "wrong format of sourceline in travis"
+                        )
                         return False
                     cmd = ["add-apt-repository", source_url]
                     out = run(cmd, cwd=self.travis_dir, stderr=PIPE)
                     if out.returncode != 0:
+                        self.error_log.print_error(self.idx, "adding repo failed")
                         self.error_log.print_error(
-                            self.idx, "adding repo failed")
-                        self.error_log.print_error(self.idx, "{}:\n{}".format(
-                            out.args, out.stderr))
+                            self.idx, "{}:\n{}".format(out.args, out.stderr)
+                        )
                         return False
             if apt.get("update") or do_update:
                 cmd = ["apt-get", "update"]
                 out = run(cmd, stderr=PIPE)
                 if out.returncode != 0:
                     self.error_log.print_error(
-                        self.idx, "apt update from .travis.yml failed")
-                    self.error_log.print_error(self.idx, "{}:\n{}".format(
-                        out.args, out.stderr))
+                        self.idx, "apt update from .travis.yml failed"
+                    )
+                    self.error_log.print_error(
+                        self.idx, "{}:\n{}".format(out.args, out.stderr)
+                    )
                     return False
             # lol, apt.get
             if apt.get("packages") is not None:
@@ -293,9 +313,11 @@ class CiSystem:
                 out = run(cmd, stderr=PIPE)
                 if out.returncode != 0:
                     self.error_log.print_error(
-                        self.idx, "snap install from .travis.yml failed")
-                    self.error_log.print_error(self.idx, "{}:\n{}".format(
-                        out.args, out.stderr))
+                        self.idx, "snap install from .travis.yml failed"
+                    )
+                    self.error_log.print_error(
+                        self.idx, "{}:\n{}".format(out.args, out.stderr)
+                    )
                     return False
             else:
                 for snap in snaps:
@@ -304,7 +326,8 @@ class CiSystem:
                     else:
                         if "name" not in snap:
                             self.error_log.print_error(
-                                self.idx, "invalid yaml file, snap name missing")
+                                self.idx, "invalid yaml file, snap name missing"
+                            )
                             return False
                         cmd = "snap install " + snap["name"]
                         if snap.get("confinement") is not None:
@@ -314,10 +337,20 @@ class CiSystem:
                     out = run(["bash", "-c", cmd], cwd=self.travis_dir, stderr=PIPE)
                     if out.returncode != 0:
                         self.error_log.print_error(
-                            self.idx, "snap install from .travis.yml failed")
-                        self.error_log.print_error(self.idx, "{}:\n{}".format(
-                            out.args, out.stderr))
+                            self.idx, "snap install from .travis.yml failed"
+                        )
+                        self.error_log.print_error(
+                            self.idx, "{}:\n{}".format(out.args, out.stderr)
+                        )
                         return False
+        return True
+
+    def build(self):
+        # run the script
+        if self.yml.get("script") is not None:
+            print("TRAVIS: running script")
+            if not run_scripts(self, self.yml["script"], cwd=self.build_dir):
+                return False
         return True
 
     @staticmethod
@@ -342,7 +375,9 @@ class CiSystem:
             print("Could not find {}/.travis.yml".format(repo_dir))
             return False
         if "dist" in yml and yml.get("dist") in supported_dists:
-            return "mcopik/fbacode:ubuntu-{}-clang-{}".format(yml.get("dist"), clang_version)
+            return "mcopik/fbacode:ubuntu-{}-clang-{}".format(
+                yml.get("dist"), clang_version
+            )
         else:
             # default is xenial
             return "mcopik/fbacode:ubuntu-xenial-clang-{}".format(clang_version)

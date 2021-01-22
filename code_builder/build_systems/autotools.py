@@ -23,7 +23,6 @@ class Context:
 
 
 class Project:
-
     def __init__(self, repo_dir, build_dir, idx, ctx, name, project):
         self.repository_path = repo_dir
         self.build_dir = build_dir
@@ -33,6 +32,31 @@ class Project:
         self.error_log = ctx.err_log
         self.name = name
         self.project = project
+        self.COPY_SRC_TO_BUILD = True
+
+    def copy_src(self):
+        # clean build dir
+        for f in listdir(self.build_dir):
+            if ".log" in f:
+                continue
+            p = join(self.build_dir, f)
+            if isdir(p):
+                shutil.rmtree(p)
+            else:
+                remove(p)
+        # copy over source files
+        cmd = [
+            "bash",
+            "-c",
+            "shopt -s dotglob; cp -a {}/* {}".format(
+                self.repository_path, self.build_dir
+            ),
+        ]
+        out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
+        if out.returncode != 0:
+            self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr))
+            return False
+        return True
 
     def configure(self, force_update=True):
         # run autoreconf -i --force
@@ -48,30 +72,9 @@ class Project:
         #             "error trying to install dependencies using travis!")
         #     else:
         #         self.project["build"]["travis_installer"] = True
-        if len(listdir(self.build_dir)) == 0 or force_update:
+        if force_update:
             # clean build dir and copy source over
             # we cant always build in separate directory from build
-            for f in listdir(self.build_dir):
-                if ".log" in f:
-                    continue
-                p = join(self.build_dir, f)
-                if isdir(p):
-                    shutil.rmtree(p)
-                else:
-                    remove(p)
-            cmd = [
-                "bash",
-                "-c",
-                "shopt -s dotglob; cp -a {}/* {}".format(
-                    self.repository_path, self.build_dir
-                ),
-            ]
-            out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
-            if out.returncode != 0:
-                self.error_log.print_error(
-                    self.idx, "{}:\n{}".format(out.args, out.stderr)
-                )
-                return False
             autogen_failed = False
             if isfile(join(self.build_dir, "autogen.sh")):
                 ret = run(

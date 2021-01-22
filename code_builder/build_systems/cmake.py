@@ -22,7 +22,6 @@ class Context:
 
 
 class Project:
-
     def __init__(self, repo_dir, build_dir, idx, ctx, name, project):
         self.repository_path = repo_dir
         self.build_dir = build_dir
@@ -32,6 +31,10 @@ class Project:
         self.error_log = ctx.err_log
         self.name = name
         self.project = project
+        self.COPY_SRC_TO_BUILD = False
+
+    def copy_src(self):
+        return True
 
     def configure(self, force_update=True):
         c_compiler = get_c_compiler()

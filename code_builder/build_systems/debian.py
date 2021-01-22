@@ -6,6 +6,7 @@ from os import listdir, makedirs, remove
 from re import search, escape
 import pathlib
 import os
+from time import time
 
 from .utils import run
 
@@ -20,7 +21,6 @@ class Context:
 
 
 class Project:
-
     def __init__(self, repo_dir, build_dir, idx, ctx, name, project):
         self.repository_path = repo_dir
         self.build_dir = build_dir
@@ -30,12 +30,16 @@ class Project:
         self.error_log = ctx.err_log
         self.name = name
         self.project = project
+        self.COPY_SRC_TO_BUILD = False
 
-    def configure(self, force_update=False):
-        # fetch the source code and dependencies
-        # c_compiler = get_c_compiler()
-        # cxx_compiler = get_cxx_compiler()
+    def copy_src(self):
+        # debian is a special case, if we move the files from the downloaded dir the build might fail
+        # we use the self.temp_build_dir to build the project, which is the downloaded location
+        # we don't have anything in the build dir yet, but its ok, since the
+        # debian dep installer does not need any source files
+        # we just download the source here
         temp = join(self.build_dir, "..")
+        start = time()
         # mkdir(temp)
         out = run(
             ["apt-get", "source", "-y", self.name],
@@ -99,7 +103,14 @@ class Project:
         if out.returncode != 0:
             self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr))
             return False
-        return version
+        end = time()
+        self.project["build"]["clone_time"] = end - start
+        return True
+
+    def configure(self, force_update=False):
+        # we can not distinguish between a configure step and a build step
+        # with dpkg-buildpackage. we run the command in build.
+        return True
 
     def build(self):
         # basically run debian/rules

@@ -136,6 +136,8 @@ class Statistics:
         for i in ci_systems:
             if i not in self.ci_systems:
                 self.ci_systems[i] = {"success": 0, "fail": 0}
+        if "build" in project and "clone_time" in project["build"]:
+            project["source"]["time"] = project["build"]["clone_time"]
         self.clone_time += project["source"]["time"]
         if "build" in project:
             self.build_time += project["build"]["time"]

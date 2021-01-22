@@ -70,7 +70,8 @@ def run_scripts(logger, script_list, cwd=None):
         logger.output_log.print_error(
             logger.idx, "travis script not string or list: {}".format(script_list)
         )
-        return True
+        return False
+    fails = 0
     for cmd in script_list:
         substitution = run(
             ["bash", "-c", 'echo "{}"'.format(cmd)], stdout=PIPE, stderr=PIPE
@@ -90,8 +91,11 @@ def run_scripts(logger, script_list, cwd=None):
                 logger.idx, "bash command execution failed: {}".format(out.stderr),
             )
             logger.error_log.print_info(logger.idx, out.stdout)
-            return False
+            fails += 1
         print(out.stdout)
+    logger.output_log.print_log(
+        logger.idx, "{} errors in {} scripts".format(fails, len(script_list)),
+    )
     return True
 
 
@@ -189,7 +193,9 @@ def apt_install(logger, pkgs, project=None, verbose=True):
         out = run(["bash", "-c", cmd + pkg], stderr=PIPE)
         if out.returncode != 0:
             if verbose:
-                logger.error_log.print_error(logger.idx, "apt package {} could not be installed".format(pkg))
+                logger.error_log.print_error(
+                    logger.idx, "apt package {} could not be installed".format(pkg)
+                )
             if project is not None:
                 project["build"]["apt_not_found"].append(pkg)
     return True

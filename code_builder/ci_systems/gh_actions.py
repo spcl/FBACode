@@ -2,6 +2,7 @@ from os.path import isdir, join
 import os
 import yaml
 from yaml.composer import ComposerError
+
 # from yaml.loader import FullLoader
 from .ci_helper import append_script, run, set_env_vars
 import stat
@@ -18,14 +19,16 @@ class Context:
 
 
 class CiSystem:
-    def __init__(self, repo_dir, build_dir, idx, ctx, name, project):
+    def __init__(
+        self, repo_dir, build_dir, idx, ctx, name, project, use_build_dir=False
+    ):
         self.repository_path = repo_dir
         self.build_dir = build_dir
         self.idx = idx
         self.ctx = ctx
         self.output_log = ctx.out_log
         self.error_log = ctx.err_log
-        self.gh_dir = repo_dir
+        self.gh_dir = build_dir if use_build_dir else repo_dir
         self.project = project
 
     def install(self):

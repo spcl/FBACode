@@ -23,6 +23,7 @@ class Context:
 
 
 class Project:
+    
 
     def __init__(self, repo_dir, build_dir, idx, ctx, name, project):
         self.repository_path = repo_dir
@@ -33,6 +34,28 @@ class Project:
         self.error_log = ctx.err_log
         self.name = name
         self.project = project
+        self.COPY_SRC_TO_BUILD = True
+
+    def copy_src(self):
+        for f in listdir(self.build_dir):
+            if ".log" in f:
+                continue
+            p = join(self.build_dir, f)
+            if isdir(p):
+                shutil.rmtree(p)
+            else:
+                remove(p)
+        cmd = [
+            "bash",
+            "-c",
+            "shopt -s dotglob; cp -a {}/* {}".format(
+                self.repository_path, self.build_dir
+            ),
+        ]
+        out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
+        if out.returncode != 0:
+            self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr))
+            return False
 
     def configure(self, force_update=True):
         # should we set env variables like CC and CXX?
@@ -47,47 +70,30 @@ class Project:
         #             "error trying to install dependencies using travis!")
         #     else:
         #         self.project["build"]["travis_installer"] = True
-        if len(listdir(self.build_dir)) == 0 or force_update:
-            # clean build dir and copy source over
-            # we cant always build in separate directory from build
-            for f in listdir(self.build_dir):
-                if ".log" in f:
-                    continue
-                p = join(self.build_dir, f)
-                if isdir(p):
-                    shutil.rmtree(p)
-                else:
-                    remove(p)
-            cmd = ["bash", "-c", "shopt -s dotglob; cp -a {}/* {}".format(
-                   self.repository_path, self.build_dir)]
-            out = run(cmd, cwd=self.repository_path, stderr=subprocess.PIPE)
-            if out.returncode != 0:
-                self.error_log.print_error(self.idx, "{}:\n{}".format(out.args, out.stderr))
-                return False
+        if force_update:
             if isfile(join(self.build_dir, "configure")):
-                ret = run(
-                    ["./configure"], cwd=self.build_dir, stderr=PIPE, stdout=PIPE)
+                ret = run(["./configure"], cwd=self.build_dir, stderr=PIPE, stdout=PIPE)
                 if ret.returncode:
-                    self.error_log.print_info(
-                        self.idx, "Failed make configure command"
-                    )
+                    self.error_log.print_info(self.idx, "Failed make configure command")
                     self.error_log.print_error(self.idx, ret.stderr)
                     self.error_log.print_info(self.idx, ret.stdout)
+                    self.project["build"]["configure"] = "./configure failed"
                     return False
                 else:
                     self.output_log.print_info(
                         self.idx,
-                        "Configure {} to build in {}"
-                        .format(self.repository_path, self.build_dir),
+                        "Configure {} to build in {}".format(
+                            self.repository_path, self.build_dir
+                        ),
                     )
-                    self.output_log.print_debug(
-                        self.idx, "make configure command"
-                    )
+                    self.output_log.print_debug(self.idx, "make configure command")
                     self.output_log.print_debug(self.idx, ret.stdout)
+                    self.project["build"]["configure"] = "./configure success"
             else:
                 self.output_log.print_info(
-                    self.idx,
-                    "No ./configure, let's hope for the best")
+                    self.idx, "No ./configure, let's hope for the best"
+                )
+                self.project["build"]["configure"] = "no ./configure"
             return True
         return True
 
@@ -111,9 +117,11 @@ class Project:
             # CMake file format: {build_dir}/../CMakeFiles/{dir}.dir/relative_bc_location
             res = search(r"{}".format(self.build_dir), str(file))
             if res is None:
-                self.error_log.print_error(self.idx, "error while globbing for .bc files: {}".format(file))
+                self.error_log.print_error(
+                    self.idx, "error while globbing for .bc files: {}".format(file)
+                )
                 continue
-            local_path = str(file)[res.end(0) + 1:]
+            local_path = str(file)[res.end(0) + 1 :]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
             # os.rename does not work for target and destinations being
             # on different filesystems
@@ -124,9 +132,11 @@ class Project:
         for file in pathlib.Path(self.build_dir).glob("**/*.ast"):
             res = search(r"{}".format(self.build_dir), str(file))
             if res is None:
-                self.error_log.print_error(self.idx, "error while globbing for .bc files: {}".format(file))
+                self.error_log.print_error(
+                    self.idx, "error while globbing for .bc files: {}".format(file)
+                )
                 continue
-            local_path = str(file)[res.end(0) + 1:]
+            local_path = str(file)[res.end(0) + 1 :]
             makedirs(join(target_dir, dirname(local_path)), exist_ok=True)
             shutil.copy(str(file), join(target_dir, local_path))
         return True
@@ -139,7 +149,7 @@ class Project:
     @staticmethod
     def recognize(repo_dir):
         return isfile(join(repo_dir, "Makefile")) or isfile(join(repo_dir, "configure"))
-    
+
     @staticmethod
     def get_docker_image(repo_dir, clang_version=9):
         return "mcopik/fbacode:ubuntu-2004-clang-{}".format(clang_version)

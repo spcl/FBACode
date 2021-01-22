@@ -88,11 +88,14 @@ project = {
 }
 
 builder = builder_class(source_dir, build_dir, idx, ctx, name, project)
+ci = ci_class(source_dir, build_dir, idx, ctx, name, project, builder.COPY_SRC_TO_BUILD)
+start = time()
+builder.copy_src()
+end = time()
+copy_time = end - start
 if install_deps:
     print_section(idx, ctx, "insalling dependencies with {}".format(ci_system))
-
     # by default, get dependencies with ci system
-    ci = ci_class(source_dir, build_dir, idx, ctx, name, project)
     start = time()
     success = ci.install()
     if not success:
@@ -123,7 +126,7 @@ start = time()
 print_section(idx, ctx, "starting configuration")
 configured = builder.configure(build_dir)
 end = time()
-project["build"]["configure_time"] = end - start
+project["build"]["configure_time"] = end - start + copy_time
 start = time()
 if not configured:
     project["build"]["configure"] = "fail"
@@ -142,10 +145,24 @@ else:
     else:
         project["skipped_build"] = False
         if not builder.build():
-            print_section(idx, ctx, "build failed")
-            project["build"]["build"] = "fail"
-            project["status"] = "fail"
-            failure = True
+            ci_build = getattr(ci, "build", None)
+            # we try to use the ci system to build
+            if callable(ci_build):
+                print_section(idx, ctx, "trying ci build")
+                if ci.build():
+                    print_section(idx, ctx, "ci build success!")
+                    project["status"] = "success"
+                    project["build"]["build"] = "success"
+                else:
+                    print_section(idx, ctx, "ci build failed too")
+                    project["build"]["build"] = "fail"
+                    project["status"] = "fail"
+                    failure = True
+            else:
+                print_section(idx, ctx, "build failed")
+                project["build"]["build"] = "fail"
+                project["status"] = "fail"
+                failure = True
         else:
             print_section(idx, ctx, "build success!")
             project["status"] = "success"

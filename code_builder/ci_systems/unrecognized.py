@@ -9,7 +9,9 @@ class Context:
 
 
 class CiSystem:
-    def __init__(self, repo_dir, build_dir, idx, ctx, name, project):
+    def __init__(
+        self, repo_dir, build_dir, idx, ctx, name, project, use_build_dir=False
+    ):
         self.repository_path = repo_dir
         self.build_dir = build_dir
         self.idx = idx
