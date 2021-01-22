@@ -347,6 +347,20 @@ class CiSystem:
 
     def build(self):
         # run the script
+        try:
+            with open(join(self.travis_dir, ".travis.yml"), "r") as f:
+                yml = yaml.safe_load(f)
+                self.yml = yml
+        except ComposerError as e:
+            self.error_log.print_error(
+                self.idx, "Error parsing .travis.yml:\n  {}".format(e)
+            )
+            return False
+        except FileNotFoundError:
+            self.error_log.print_error(
+                self.idx, "Could not find {}/.travis.yml".format(self.travis_dir)
+            )
+            return False
         if self.yml.get("script") is not None:
             print("TRAVIS: running script")
             if not run_scripts(self, self.yml["script"], cwd=self.build_dir):
