@@ -9,6 +9,7 @@ from multiprocessing import Manager
 
 from time import time
 from os import environ, mkdir, getpid, listdir, remove
+import os
 from os.path import isdir, join, exists, basename
 from sys import stdout
 from datetime import datetime
@@ -96,6 +97,22 @@ def callback(pool, ctx, f, callback):
     return future
 
 
+def get_dir_size(start_path):
+
+    # https://stackoverflow.com/questions/1392413/calculating-a-directorys-size-using-python
+    total_size = 0
+    file_count = 0
+    for dirpath, dirnames, filenames in os.walk(start_path):
+        for f in filenames:
+            fp = join(dirpath, f)
+            # skip if it is symbolic link
+            if not os.path.islink(fp):
+                file_count += 1
+                total_size += os.path.getsize(fp)
+
+    return total_size, file_count
+
+
 def download_and_build(
     cloner, idx, name, project, target_dir, build_dir, ctx, stats, running_builds
 ):
@@ -123,6 +140,15 @@ def download_and_build(
         )
         project["status"] = "docker_crash"
         new_project = project
+    # save build dir and source dir size
+    if "build" in project:
+        size, count = get_dir_size(project["build"]["dir"])
+        project["build"]["file_count"] = count
+        project["build"]["size"] = size
+    if "source" in project:
+        size, count = get_dir_size(project["source"]["dir"])
+        project["source"]["file_count"] = count
+        project["source"]["size"] = size
     # delete build files if option set
     if ctx.cfg["build"]["keep_build_files"] == "False":
         # delete everything except log file and project.json
@@ -235,8 +261,10 @@ def build_projects(
         end = time()
         print("Process repositorites in %f [s]" % (end - start))
     start = time()
+    with open("current_build.json", "w",) as o:
+        o.write(json.dumps(all_repositories, indent=2))
     for (i, (name, proj)) in enumerate(all_repositories.items()):
-        print("[{}/{}] stats for {}".format(i, projects_count, name), end="\r")
+        print("[{}/{}] stats for {}".format(i, projects_count, name))
         stats.update(proj, name)
     print()
     end = time()
