@@ -333,6 +333,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 project["ast_files"]["files"] = len(ast)
                 project["ast_files"]["size"] = size
             end = time()
+            if "build" not in project:
+                project["build"] = {}
             project["build"]["time"] = end - start
             ctx.out_log.print_info(
                 idx, "Finish processing %s in %f [s]" % (name, end - start)
