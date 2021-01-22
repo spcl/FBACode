@@ -400,6 +400,17 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 size = sum(os.path.getsize(x) for x in bitcodes)
                 project["bitcodes"]["files"] = len(bitcodes)
                 project["bitcodes"]["size"] = size
+            if "ast_files" in project:
+                ast = [
+                    x
+                    for x in iglob(
+                        "{0}/**/*.ast".format(project["ast_files"]["dir"]), recursive=True
+                    )
+                ]
+                size = sum(os.path.getsize(x) for x in ast)
+                project["ast_files"]["files"] = len(ast)
+                project["ast_files"]["size"] = size
+
 
             ctx.out_log.print_info(
                 idx, "Finish processing %s in %f [s]" % (name, end - start)
