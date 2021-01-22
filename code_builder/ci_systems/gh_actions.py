@@ -33,7 +33,9 @@ class CiSystem:
 
     def install(self):
         yml_files = [
-            f for f in os.listdir(join(self.gh_dir, ".github/workflows")) if ".yml" in f
+            f
+            for f in os.listdir(join(self.gh_dir, ".github/workflows"))
+            if ".yml" in f or ".yaml" in f
         ]
         ymls = []
         for file in yml_files:
