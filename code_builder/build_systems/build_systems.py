@@ -163,7 +163,7 @@ def start_docker(
             container.reload()
             reload_fail = 0
         except Exception:
-            print("BBBBBBBBBBBB\ncontainer.reload failed, lets try and handle this")
+            print("AAAAAAAAAAAAAA\ncontainer.reload failed, lets try and handle this")
             reload_fail += 1
     # just use this to get exit code
     return_code = container.wait()
@@ -293,7 +293,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 project["double_build_done"] = True
                 project["is_first_build"] = False
                 start_docker(idx, name, project, ctx, **docker_conf)
-            #the build failed, let's try again with missing pkgs data
+            # the build failed, let's try again with missing pkgs data
             if (
                 project["status"] != "crash"
                 and project["status"] != "success"

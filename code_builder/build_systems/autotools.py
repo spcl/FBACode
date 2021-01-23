@@ -176,8 +176,10 @@ class Project:
 
     @staticmethod
     def recognize(repo_dir):
-        return isfile(join(repo_dir, "Makefile.am")) or isfile(
-            join(repo_dir, "configure.in")
+        return (
+            isfile(join(repo_dir, "Makefile.am"))
+            or isfile(join(repo_dir, "configure.in"))
+            or isfile(join(repo_dir, "configure.ac"))
         )
 
     @staticmethod

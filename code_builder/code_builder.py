@@ -141,7 +141,7 @@ def download_and_build(
         project["status"] = "docker_crash"
         new_project = project
     # save build dir and source dir size
-    if "build" in project:
+    if "build" in project and "dir" in project["build"]:
         size, count = get_dir_size(project["build"]["dir"])
         project["build"]["file_count"] = count
         project["build"]["size"] = size
