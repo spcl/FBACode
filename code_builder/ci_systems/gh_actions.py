@@ -87,8 +87,9 @@ class CiSystem:
                 # list of jobnames we want to skip
                 # blacklist is probably better than whitelist,
                 # since jobnames can be anything
-                blacklist = {"unit", "test", "lint"}
-                if any(x in jobname for x in blacklist):
+                blacklist = {"unit", "test", "lint", "win", "macos", "coverage"}
+                step_blacklist = blacklist.union({"compile", "build", "make"})
+                if any(x in jobname.lower() for x in blacklist):
                     print(
                         "skipped job {} of {} because of blacklist".format(
                             jobname, yml_files[i]
@@ -106,6 +107,13 @@ class CiSystem:
                             "no run in step {} or job {} of {}".format(
                                 stepnum, jobname, yml_files[i]
                             ),
+                        )
+                        continue
+                    if any(x in step.get("name", "").lower() for x in step_blacklist):
+                        print(
+                            "skipped step {} of {} because of blacklist".format(
+                                step.get("name", ""), jobname
+                            )
                         )
                         continue
                     self.handle_env(step.get("env"))
