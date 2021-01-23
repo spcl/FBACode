@@ -289,7 +289,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 stats.update(project, name, final_update=False)
                 project["no_install_build"] = copy.deepcopy(project["build"])
                 project["install_deps"] = True
-                project["build"] = {}
+                project.pop("build", None)
                 project["double_build_done"] = True
                 project["is_first_build"] = False
                 start_docker(idx, name, project, ctx, **docker_conf)
@@ -310,7 +310,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     )
                     project["install_deps"] = True
                     project["first_build"] = copy.deepcopy(project["build"])
-                    project["build"] = {}
+                    project.pop("build", None)
                     # from the top now y'all
                     # try and install missing deps
                     start_docker(idx, name, project, ctx, **docker_conf)
