@@ -282,6 +282,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 ci_system in double_build_ci
                 and project["status"] != "success"
                 and project["status"] != "crash"
+                and "build" in project
             ):
                 if stats is None:
                     stats = Statistics(1)
@@ -292,8 +293,12 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 project["double_build_done"] = True
                 project["is_first_build"] = False
                 start_docker(idx, name, project, ctx, **docker_conf)
-            # Generate summary and stats data
-            if project["status"] != "crash" and project["status"] != "success":
+            #the build failed, let's try again with missing pkgs data
+            if (
+                project["status"] != "crash"
+                and project["status"] != "success"
+                and "build" in project
+            ):
                 if stats is None:
                     stats = Statistics(1)
                 # set first build to true, so the analyzer doesn't save stats
@@ -333,9 +338,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 project["ast_files"]["files"] = len(ast)
                 project["ast_files"]["size"] = size
             end = time()
-            if "build" not in project:
-                project["build"] = {}
-            project["build"]["time"] = end - start
+            if "build" in project:
+                project["build"]["time"] = end - start
             ctx.out_log.print_info(
                 idx, "Finish processing %s in %f [s]" % (name, end - start)
             )
