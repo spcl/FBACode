@@ -84,6 +84,7 @@ project = {
         "stdout": os.path.basename(loggers.stdout_file),
         "stderr": os.path.basename(loggers.stderr_file),
         "installed": [],
+        "-j":  os.environ.get("JOBS", 1)
     },
 }
 
