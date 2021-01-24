@@ -132,6 +132,7 @@ if not configured:
     project["build"]["configure"] = "fail"
     failure = True
     print_section(idx, ctx, "configuration failed")
+    end = time()
 else:
     print_section(idx, ctx, "configuration succeeded, starting build")
     project["build"]["configure"] = "success"
@@ -142,6 +143,7 @@ else:
         project["build"]["build"] = "skipped"
         project["skipped_build"] = True
         print_section(idx, ctx, "skipping build")
+        end = time()
     else:
         project["skipped_build"] = False
         if not builder.build():
@@ -163,7 +165,9 @@ else:
                 project["build"]["build"] = "fail"
                 project["status"] = "fail"
                 failure = True
+            end = time()
         else:
+            end = time()
             print_section(idx, ctx, "build success!")
             project["status"] = "success"
             project["build"]["build"] = "success"
@@ -175,7 +179,6 @@ else:
             project["ast_files"] = {"dir": external_ast_dir}
             builder.generate_ast(ast_dir)
             chown_dirs.append(ast_dir)
-end = time()
 project["build"]["time"] = end - start
 ctx.out_log.print_info(idx, "Finish processing %s in %f [s]" % (name, end - start))
 
