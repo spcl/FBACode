@@ -36,7 +36,7 @@ RUN python3 -m pip install pyyaml
 
 # install pyenv (needed for travis...)
 RUN curl https://pyenv.run | bash
-RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
+RUN curl https://bootstrap.pypa.io/2.7/get-pip.py --output get-pip.py
 RUN python2 get-pip.py
 RUN python2 -m pip install --upgrade pip
 # so travis can use sudo
