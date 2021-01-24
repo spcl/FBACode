@@ -112,8 +112,8 @@ def start_docker(
         "DEPENDENCY_INSTALL={}".format(str(project["install_deps"])),
         "SKIP_BUILD={}".format(str(ctx.cfg["build"]["skip_build"])),
         "JOBS={}".format(str(ctx.cfg["build"]["jobs"])),
-        "save_ir={}".format(str(ctx.cfg["build"]["save_ir"])),
-        "save_ast={}".format(str(ctx.cfg["build"]["save_ast"])),
+        "SAVE_IR={}".format(str(ctx.cfg["build"]["save_ir"])),
+        "SAVE_AST={}".format(str(ctx.cfg["build"]["save_ast"])),
     ]
     container = docker_client.containers.run(
         dockerfile,
@@ -184,6 +184,7 @@ def start_docker(
             f.write(docker_log.decode())
         project["status"] = "crash"
         project["crash_reason"] = "docker container crashed"
+        container.remove()
         return False
     docker_log = container.logs()
     timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
@@ -205,6 +206,7 @@ def start_docker(
         )
         project["status"] = "crash"
         project["crash_reason"] = "docker output.json not found or invalid archive"
+        container.remove()
         return False
     container.remove()
     project["build"]["docker_log"] = docker_log_file

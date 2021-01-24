@@ -84,7 +84,7 @@ project = {
         "stdout": os.path.basename(loggers.stdout_file),
         "stderr": os.path.basename(loggers.stderr_file),
         "installed": [],
-        "-j":  os.environ.get("JOBS", 1)
+        "-j": os.environ.get("JOBS", 1)
     },
 }
 
@@ -172,11 +172,11 @@ else:
             print_section(idx, ctx, "build success!")
             project["status"] = "success"
             project["build"]["build"] = "success"
-        if os.environ.get("save_ir") != "False":
+        if os.environ.get("SAVE_IR") != "False":
             project["bitcodes"] = {"dir": external_bitcodes_dir}
             builder.generate_bitcodes(bitcodes_dir)
             chown_dirs.append(bitcodes_dir)
-        if os.environ.get("save_ast") != "False":
+        if os.environ.get("SAVE_AST") != "False":
             project["ast_files"] = {"dir": external_ast_dir}
             builder.generate_ast(ast_dir)
             chown_dirs.append(ast_dir)
