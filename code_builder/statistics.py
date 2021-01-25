@@ -200,7 +200,7 @@ class Statistics:
                 text = self.match_error_with_regex(project, name, text)
                 text = self.match_error_fuzzy(project, name, text)
                 text = self.find_new_errors(project, name, text)
-                    
+
                 # found no errs yet, check docker log (stdout of build)
                 # this file can be big, so try to avoid
                 if not project["build"]["errortypes"]:
@@ -224,10 +224,14 @@ class Statistics:
             for i in ci_systems:
                 self.ci_systems[i]["fail"] += 1
             self.add_rebuild_data(project, name)
-            end = time()
-            project["statistics"]["error_analysis"] = end - start
-            self.stat_time += end - start
-        if "build" in project and project["status"] != "success":
+        end = time()
+        project["statistics"]["error_analysis"] = end - start
+        self.stat_time += end - start
+        if (
+            "build" in project
+            and project["status"] != "success"
+            and project["status"] != "crash"
+        ):
             start = time()
             self.find_deps(project, name)
             end = time()
