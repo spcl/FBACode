@@ -1,113 +1,5 @@
 {
-  "error: debian/rules build subprocess returned exit status 2": {
-    "name": "error: debian/rules build subprocess returned exit status 2",
-    "projects": [
-      "thc-ipv6",
-      "tgl",
-      "jacktrip",
-      "jackeq",
-      "libghemical",
-      "libgmpada",
-      "libgpiv",
-      "pacman",
-      "libomxil-bellagio",
-      "xinit",
-      "grabix",
-      "irssi-plugin-robustirc",
-      "memcached",
-      "win32-loader",
-      "libqmi",
-      "leela-zero",
-      "rng-tools",
-      "wav2cdr",
-      "libtrace3",
-      "9menu",
-      "9base",
-      "3dchess",
-      "ableton-link",
-      "acfax",
-      "achilles",
-      "acm",
-      "aconnectgui",
-      "acpid",
-      "adun.app",
-      "adplug",
-      "aewm++-goodies",
-      "afl",
-      "aghermann",
-      "slof",
-      "vdr-plugin-xineliboutput",
-      "biococoa",
-      "vinagre",
-      "minisat2",
-      "hpsockd",
-      "libayatana-appindicator",
-      "reprepro",
-      "libappimage",
-      "opensp",
-      "sks-ecc",
-      "geki2",
-      "bzrtp",
-      "memtest86",
-      "vdr-plugin-dvd",
-      "libiodbc2",
-      "nam",
-      "blastem",
-      "gkrellmitime",
-      "uniutils",
-      "eztrace-contrib",
-      "crimson",
-      "mgp",
-      "zypper",
-      "tgt",
-      "liblxi",
-      "dsniff",
-      "autodocksuite",
-      "fasta3",
-      "pgpgpg",
-      "aranym",
-      "libyami-utils",
-      "coz-profiler",
-      "gdis",
-      "libomxmad",
-      "kylin-video",
-      "coinor-ipopt",
-      "dxvk",
-      "uhub",
-      "kyotocabinet",
-      "rnetclient",
-      "llvmlite",
-      "vdr",
-      "comedilib",
-      "v4l-utils",
-      "tclcl",
-      "pforth",
-      "amideco",
-      "cura-engine",
-      "dnaclust",
-      "stx-btree",
-      "linpsk",
-      "mupen64plus-video-arachnoid",
-      "xvier",
-      "stormbaancoureur",
-      "knews",
-      "growl-for-linux",
-      "talksoup.app",
-      "libcgns",
-      "dewalls",
-      "openjade",
-      "jellyfish",
-      "universalindentgui",
-      "pktools",
-      "minisapserver",
-      "rcs-blame",
-      "sdrangelove",
-      "slapi-nis"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ debian\\/rules\\ build\\ subprocess\\ returned\\ exit\\ status\\ 2",
-    "amount": 213
-  },
+ 
   "clang: error: linker command failed with exit code 1 (use -v to see invocation)": {
     "name": "clang: error: linker command failed with exit code 1 (use -v to see invocation)",
     "projects": [
@@ -151,84 +43,20 @@
       "octave-instrument-control",
       "mupen64plus-video-arachnoid",
       "slapi-nis",
-      "v4l-utils"
+      "v4l-utils",
+      "pyparted",
+      "lxtask",
+      "vpcs",
+      "kmscube",
+      "fping",
+      "hydra",
+      "pixz",
+      "librsync",
+      "planner"
     ],
     "origin": "clang_other",
     "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
-    "amount": 113
-  },
-  "error: ": {
-    "name": "error: ",
-    "projects": [
-      "OpenRCT2/OpenRCT2",
-      "qmk/qmk_firmware",
-      "gkrellmitime",
-      "uniutils",
-      "eztrace-contrib",
-      "adplug",
-      "crimson",
-      "mgp",
-      "zypper",
-      "tgt",
-      "liblxi",
-      "cxref",
-      "dsniff",
-      "autodocksuite",
-      "fasta3",
-      "pgpgpg",
-      "aranym",
-      "libyami-utils",
-      "coz-profiler",
-      "gdis",
-      "libomxmad",
-      "raster3d",
-      "kylin-video",
-      "thc-ipv6",
-      "libgpiv",
-      "coinor-ipopt",
-      "dxvk",
-      "uhub",
-      "kyotocabinet",
-      "smalt",
-      "rnetclient",
-      "llvmlite",
-      "vdr",
-      "octave-instrument-control",
-      "comedilib",
-      "v4l-utils",
-      "tclcl",
-      "pforth",
-      "amideco",
-      "cura-engine",
-      "xsettingsd",
-      "dnaclust",
-      "stx-btree",
-      "linpsk",
-      "facebookresearch/faiss",
-      "pg-cron",
-      "boats",
-      "memkind",
-      "mupen64plus-video-arachnoid",
-      "xvier",
-      "console-cyrillic",
-      "stormbaancoureur",
-      "knews",
-      "growl-for-linux",
-      "talksoup.app",
-      "libcgns",
-      "dewalls",
-      "openjade",
-      "jellyfish",
-      "universalindentgui",
-      "pktools",
-      "minisapserver",
-      "rcs-blame",
-      "sdrangelove",
-      "slapi-nis"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ ",
-    "amount": 94
+    "amount": 170
   },
   "docker_crash": {
     "name": "docker_crash",
@@ -692,6 +520,23 @@
     "regex": "Cannot\\ import\\ pybind11\\.\\ \\ Please\\ install\\.\\ \\ \\(\\[sudo\\]\\ pip3\\ install\\ \\-\\-user",
     "amount": 25
   },
+  "error: dpkg-source -i=\"*\" -b . subprocess returned exit status 2": {
+    "name": "error: dpkg-source -i=\"*\" -b . subprocess returned exit status 2",
+    "projects": [
+      "libdeflate",
+      "powerline",
+      "pyao",
+      "disulfinder",
+      "entropybroker",
+      "teeworlds",
+      "xfce4-terminal",
+      "xboxdrv",
+      "libzstd"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ dpkg\\-source\\ \\-i\\=\\\"\\*\\\"\\ \\-b\\ \\.\\ subprocess\\ returned\\ exit\\ status\\ 2",
+    "amount": 25
+  },
   "Could NOT find Boost (missing: Boost_INCLUDE_DIR system program_options) (Required is at least version \"1.66.0\") ": {
     "name": "Could NOT find Boost (missing: Boost_INCLUDE_DIR system program_options) (Required is at least version \"1.66.0\") ",
     "projects": [
@@ -893,6 +738,21 @@
     "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ msbuild\\:\\ command\\ not\\ found",
     "amount": 19
   },
+  "error: unrepresentable changes to source": {
+    "name": "error: unrepresentable changes to source",
+    "projects": [
+      "libdeflate",
+      "powerline",
+      "pyao",
+      "entropybroker",
+      "teeworlds",
+      "xboxdrv",
+      "libzstd"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ unrepresentable\\ changes\\ to\\ source",
+    "amount": 19
+  },
   "Could not find gflags library. ": {
     "name": "Could not find gflags library. ",
     "projects": [
@@ -946,6 +806,18 @@
     ],
     "origin": "clang",
     "regex": "error\\:\\ \\'\\ X11\\ \\.rules\\'\\ file\\ not\\ found",
+    "amount": 18
+  },
+  "fatal error: too many errors emitted, stopping now [-ferror-limit=]": {
+    "name": "fatal error: too many errors emitted, stopping now [-ferror-limit=]",
+    "projects": [
+      "vdr-plugin-xineliboutput",
+      "sks-ecc",
+      "stx-btree",
+      "lookup"
+    ],
+    "origin": "fatal_error",
+    "regex": "fatal\\ error\\:\\ too\\ many\\ errors\\ emitted\\,\\ stopping\\ now\\ \\[\\-ferror\\-limit\\=\\]",
     "amount": 18
   },
   "if given arguments: ": {
@@ -1421,17 +1293,6 @@
     "regex": "Could\\ not\\ find\\ Go",
     "amount": 11
   },
-  "fatal error: too many errors emitted, stopping now [-ferror-limit=]": {
-    "name": "fatal error: too many errors emitted, stopping now [-ferror-limit=]",
-    "projects": [
-      "vdr-plugin-xineliboutput",
-      "sks-ecc",
-      "stx-btree"
-    ],
-    "origin": "fatal_error",
-    "regex": "fatal\\ error\\:\\ too\\ many\\ errors\\ emitted\\,\\ stopping\\ now\\ \\[\\-ferror\\-limit\\=\\]",
-    "amount": 11
-  },
   "CPack contained in CMake version 3.18 and newer generates RPM packages that won't install correctly on some distributions.  You are using version 3.19.2 which has the bug, please use version 3.17.5 or set OSQUERY_IGNORE_CMAKE_MAX_VERSION_CHECK=TRUE if you're not going to generate a RPM package. ": {
     "name": "CPack contained in CMake version 3.18 and newer generates RPM packages that won't install correctly on some distributions.  You are using version 3.19.2 which has the bug, please use version 3.17.5 or set OSQUERY_IGNORE_CMAKE_MAX_VERSION_CHECK=TRUE if you're not going to generate a RPM package. ",
     "projects": [
@@ -1460,21 +1321,6 @@
     ],
     "origin": "general_error",
     "regex": "Error\\:\\ invalid\\ syntax",
-    "amount": 11
-  },
-  "error: dpkg-source -i=\"*\" -b . subprocess returned exit status 2": {
-    "name": "error: dpkg-source -i=\"*\" -b . subprocess returned exit status 2",
-    "projects": [
-      "libdeflate",
-      "powerline",
-      "pyao",
-      "disulfinder",
-      "entropybroker",
-      "teeworlds",
-      "xfce4-terminal"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ dpkg\\-source\\ \\-i\\=\\\"\\*\\\"\\ \\-b\\ \\.\\ subprocess\\ returned\\ exit\\ status\\ 2",
     "amount": 11
   },
   "Unable to find the requested Boost libraries. Unable to find the Boost header files.  Please set BOOST_ROOT to the root directory containing Boost or BOOST_INCLUDEDIR to the directory containing Boost's headers. ": {
@@ -1511,6 +1357,18 @@
     ],
     "origin": "general_error",
     "regex": "Error\\:\\ could\\ not\\ load\\ cache",
+    "amount": 10
+  },
+  "ERROR: addExclusiveBuilds() requires at least two arguments": {
+    "name": "ERROR: addExclusiveBuilds() requires at least two arguments",
+    "projects": [
+      "boats",
+      "universalindentgui",
+      "qtexengine",
+      "xflr5"
+    ],
+    "origin": "general_error",
+    "regex": "ERROR\\:\\ addExclusiveBuilds\\(\\)\\ requires\\ at\\ least\\ two\\ arguments",
     "amount": 10
   },
   "ERROR - [106/0] make: python: Command not found": {
@@ -1671,6 +1529,40 @@
     "regex": "error\\:\\ \\'readline(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
     "amount": 8
   },
+  "error: binary build with no binary artifacts found; .buildinfo is meaningless": {
+    "name": "error: binary build with no binary artifacts found; .buildinfo is meaningless",
+    "projects": [
+      "libdfp",
+      "servicelog",
+      "fenix-plugins",
+      "ixp4xx-microcode"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ binary\\ build\\ with\\ no\\ binary\\ artifacts\\ found\\;\\ \\.buildinfo\\ is\\ meaningless",
+    "amount": 8
+  },
+  "error: dpkg-genbuildinfo subprocess returned exit status 25": {
+    "name": "error: dpkg-genbuildinfo subprocess returned exit status 25",
+    "projects": [
+      "libdfp",
+      "servicelog",
+      "fenix-plugins",
+      "ixp4xx-microcode"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ dpkg\\-genbuildinfo\\ subprocess\\ returned\\ exit\\ status\\ 25",
+    "amount": 8
+  },
+  "clang: error: cannot specify -o when generating multiple output files": {
+    "name": "clang: error: cannot specify -o when generating multiple output files",
+    "projects": [
+      "sysvinit",
+      "libssw"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ cannot\\ specify\\ \\-o\\ when\\ generating\\ multiple\\ output\\ files",
+    "amount": 8
+  },
   "error: 'gflagsPATH/FILE.EXT file not found": {
     "name": "'gflagsPATH/FILE.EXT file not found",
     "projects": [
@@ -1805,6 +1697,195 @@
     ],
     "origin": "dependency",
     "regex": "sysctl\\:\\ cannot\\ stat\\ \\/proc\\/sys\\/hw\\/logicalcpu\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 7
+  },
+  "error: command 'x86_64-linux-gnu-gcc' failed with exit status 1": {
+    "name": "error: command 'x86_64-linux-gnu-gcc' failed with exit status 1",
+    "projects": [
+      "pyparted"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ command\\ 'x86_64\\-linux\\-gnu\\-gcc'\\ failed\\ with\\ exit\\ status\\ 1",
+    "amount": 7
+  },
+  "error: cannot represent change to conftest_0.ast: binary file contents changed": {
+    "name": "error: cannot represent change to conftest_0.ast: binary file contents changed",
+    "projects": [
+      "xboxdrv"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ cannot\\ represent\\ change\\ to\\ conftest_0\\.ast:\\ binary\\ file\\ contents\\ changed",
+    "amount": 7
+  },
+  "error: add conftest_0.ast in debian/source/include-binaries if you want to store the modified binary in the debian tarball": {
+    "name": "error: add conftest_0.ast in debian/source/include-binaries if you want to store the modified binary in the debian tarball",
+    "projects": [
+      "xboxdrv"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ add\\ conftest_0\\.ast\\ in\\ debian/source/include\\-binaries\\ if\\ you\\ want\\ to\\ store\\ the\\ modified\\ binary\\ in\\ the\\ debian\\ tarball",
+    "amount": 7
+  },
+  "error: cannot represent change to conftest_0.bc: binary file contents changed": {
+    "name": "error: cannot represent change to conftest_0.bc: binary file contents changed",
+    "projects": [
+      "xboxdrv"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ cannot\\ represent\\ change\\ to\\ conftest_0\\.bc:\\ binary\\ file\\ contents\\ changed",
+    "amount": 7
+  },
+  "error: add conftest_0.bc in debian/source/include-binaries if you want to store the modified binary in the debian tarball": {
+    "name": "error: add conftest_0.bc in debian/source/include-binaries if you want to store the modified binary in the debian tarball",
+    "projects": [
+      "xboxdrv"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ add\\ conftest_0\\.bc\\ in\\ debian/source/include\\-binaries\\ if\\ you\\ want\\ to\\ store\\ the\\ modified\\ binary\\ in\\ the\\ debian\\ tarball",
+    "amount": 7
+  },
+  "error: cannot represent change to programsPATH/FILE.EXT binary file contents changed": {
+    "name": "error: cannot represent change to programsPATH/FILE.EXT binary file contents changed",
+    "projects": [
+      "libzstd"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ cannot\\ represent\\ change\\ to\\ programs(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ binary\\ file\\ contents\\ changed",
+    "amount": 7
+  },
+  "error: add programsPATH/FILE.EXT in debian/source/include-binaries if you want to store the modified binary in the debian tarball": {
+    "name": "error: add programsPATH/FILE.EXT in debian/source/include-binaries if you want to store the modified binary in the debian tarball",
+    "projects": [
+      "libzstd"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ add\\ programs(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ in\\ debian/source/include\\-binaries\\ if\\ you\\ want\\ to\\ store\\ the\\ modified\\ binary\\ in\\ the\\ debian\\ tarball",
+    "amount": 7
+  },
+  "error: format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]": {
+    "name": "format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]",
+    "projects": [
+      "rcs"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ format\\ string\\ is\\ not\\ a\\ string\\ literal\\ \\(potentially\\ insecure\\)\\ \\[\\-Werror,\\-Wformat\\-security\\]",
+    "amount": 7
+  },
+  "error: source file is not valid UTF-8": {
+    "name": "source file is not valid UTF-8",
+    "projects": [
+      "lookup"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ source\\ file\\ is\\ not\\ valid\\ UTF\\-8",
+    "amount": 7
+  },
+  "error: case value evaluates to 4294967286, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 4294967286, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "pekwm"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ case\\ value\\ evaluates\\ to\\ 4294967286,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ 'int'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 7
+  },
+  "error: case value evaluates to 4294967287, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 4294967287, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "pekwm"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ case\\ value\\ evaluates\\ to\\ 4294967287,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ 'int'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 7
+  },
+  "error: case value evaluates to 4294967288, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 4294967288, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "pekwm"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ case\\ value\\ evaluates\\ to\\ 4294967288,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ 'int'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 7
+  },
+  "error: case value evaluates to 4294967289, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 4294967289, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "pekwm"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ case\\ value\\ evaluates\\ to\\ 4294967289,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ 'int'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 7
+  },
+  "error: case value evaluates to 4294967290, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 4294967290, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "pekwm"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ case\\ value\\ evaluates\\ to\\ 4294967290,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ 'int'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 7
+  },
+  "error: case value evaluates to 4294967291, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 4294967291, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "pekwm"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ case\\ value\\ evaluates\\ to\\ 4294967291,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ 'int'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 7
+  },
+  "error: case value evaluates to 4294967292, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 4294967292, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "pekwm"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ case\\ value\\ evaluates\\ to\\ 4294967292,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ 'int'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 7
+  },
+  "error: case value evaluates to 4294967293, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 4294967293, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "pekwm"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ case\\ value\\ evaluates\\ to\\ 4294967293,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ 'int'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 7
+  },
+  "error: case value evaluates to 4294967294, which cannot be narrowed to type 'int' [-Wc++11-narrowing]": {
+    "name": "case value evaluates to 4294967294, which cannot be narrowed to type 'int' [-Wc++11-narrowing]",
+    "projects": [
+      "pekwm"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ case\\ value\\ evaluates\\ to\\ 4294967294,\\ which\\ cannot\\ be\\ narrowed\\ to\\ type\\ 'int'\\ \\[\\-Wc\\+\\+11\\-narrowing\\]",
+    "amount": 7
+  },
+  "PATH/FILE.EXT aclocal-1.12: command not found": {
+    "name": "PATH/FILE.EXT aclocal-1.12: command not found",
+    "projects": [
+      "pekwm"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ aclocal\\-1\\.12:\\ command\\ not\\ found",
+    "amount": 7
+  },
+  "PATH/FILE.EXT automake-1.12: command not found": {
+    "name": "PATH/FILE.EXT automake-1.12: command not found",
+    "projects": [
+      "pekwm"
+    ],
+    "origin": "bash_command",
+    "regex": "(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ automake\\-1\\.12:\\ command\\ not\\ found",
+    "amount": 7
+  },
+  "error: 'libxmlPATH/FILE.EXT file not found": {
+    "name": "'libxmlPATH/FILE.EXT file not found",
+    "projects": [
+      "libnfo"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ 'libxml(?:\\.\\.|\\.)?(?:[/]*/)+\\S*\\.\\S+(?:\\sline\\s\\d+:?)?(?=\\s|$|\\.)\\ file\\ not\\ found",
     "amount": 7
   },
   "[Error] Package cmake is not installed": {
@@ -2310,19 +2391,6 @@
     "regex": "error\\:\\ ld\\ returned\\ 1\\ exit\\ status",
     "amount": 5
   },
-  "error: unrepresentable changes to source": {
-    "name": "error: unrepresentable changes to source",
-    "projects": [
-      "libdeflate",
-      "powerline",
-      "pyao",
-      "entropybroker",
-      "teeworlds"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ unrepresentable\\ changes\\ to\\ source",
-    "amount": 5
-  },
   "ERROR - [9/0] /bin/sh: 1: pkg-config: not found": {
     "name": "ERROR - [9/0] /bin/sh: 1: pkg-config: not found",
     "projects": [
@@ -2787,28 +2855,6 @@
     "regex": "ERROR\\ \\-\\ \\[8\\/0\\]\\ \\/bin\\/sh\\:\\ 1\\:\\ pkg\\-config\\:\\ not\\ found",
     "amount": 3
   },
-  "error: binary build with no binary artifacts found; .buildinfo is meaningless": {
-    "name": "error: binary build with no binary artifacts found; .buildinfo is meaningless",
-    "projects": [
-      "libdfp",
-      "servicelog",
-      "fenix-plugins"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ binary\\ build\\ with\\ no\\ binary\\ artifacts\\ found\\;\\ \\.buildinfo\\ is\\ meaningless",
-    "amount": 3
-  },
-  "error: dpkg-genbuildinfo subprocess returned exit status 25": {
-    "name": "error: dpkg-genbuildinfo subprocess returned exit status 25",
-    "projects": [
-      "libdfp",
-      "servicelog",
-      "fenix-plugins"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ dpkg\\-genbuildinfo\\ subprocess\\ returned\\ exit\\ status\\ 25",
-    "amount": 3
-  },
   "ERROR - [38/0] CUDA_TOOLKIT_ROOT_DIR not found": {
     "name": "ERROR - [38/0] CUDA_TOOLKIT_ROOT_DIR not found",
     "projects": [
@@ -2935,6 +2981,16 @@
     ],
     "origin": "CMake",
     "regex": "Could\\ NOT\\ find\\ Boost\\ \\(missing\\:\\ Boost_INCLUDE_DIR\\ program_options",
+    "amount": 3
+  },
+  "diff: debian/copyright_hints: No such file or directory": {
+    "name": "diff: debian/copyright_hints: No such file or directory",
+    "projects": [
+      "zypper",
+      "gamin"
+    ],
+    "origin": "dependency",
+    "regex": "diff\\:\\ debian\\/copyright_hints\\:\\ No\\ such\\ file\\ or\\ directory",
     "amount": 3
   },
   "error: no acceptable ld found in $PATH": {
@@ -3947,15 +4003,6 @@
     "regex": "make\\[1\\]\\:\\ \\*\\*\\*\\ obj\\-x86_64\\-linux\\-gnu\\:\\ No\\ such\\ file\\ or\\ directory",
     "amount": 2
   },
-  "diff: debian/copyright_hints: No such file or directory": {
-    "name": "diff: debian/copyright_hints: No such file or directory",
-    "projects": [
-      "zypper"
-    ],
-    "origin": "dependency",
-    "regex": "diff\\:\\ debian\\/copyright_hints\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 2
-  },
   "error: 'getVideoDecoderMimeTypes' has C-linkage specified, but returns incomplete type 'std::vector<std::string>' (aka 'vector<basic_string<char> >') which could be incompatible with C [-Werror,-Wreturn-type-c-linkage]": {
     "name": "'getVideoDecoderMimeTypes' has C-linkage specified, but returns incomplete type 'std::vector<std::string>' (aka 'vector<basic_string<char> >') which could be incompatible with C [-Werror,-Wreturn-type-c-linkage]",
     "projects": [
@@ -4028,16 +4075,6 @@
     "regex": "ERROR\\ \\-\\ \\[102\\/0\\]\\ make\\[1\\]\\:\\ node\\:\\ Command\\ not\\ found",
     "amount": 2
   },
-  "ERROR: addExclusiveBuilds() requires at least two arguments": {
-    "name": "ERROR: addExclusiveBuilds() requires at least two arguments",
-    "projects": [
-      "boats",
-      "universalindentgui"
-    ],
-    "origin": "general_error",
-    "regex": "ERROR\\:\\ addExclusiveBuilds\\(\\)\\ requires\\ at\\ least\\ two\\ arguments",
-    "amount": 2
-  },
   "./macports-ci: line 96: sw_vers: command not found": {
     "name": "./macports-ci: line 96: sw_vers: command not found",
     "projects": [
@@ -4072,6 +4109,34 @@
     ],
     "origin": "CMake",
     "regex": "CPack\\ contained\\ in\\ CMake\\ version\\ 3\\.18\\ and\\ newer\\ generates\\ RPM\\ packages\\ that",
+    "amount": 2
+  },
+  "clang: error: '-I-' not supported, please use -iquote instead": {
+    "name": "clang: error: '-I-' not supported, please use -iquote instead",
+    "projects": [
+      "elph"
+    ],
+    "origin": "clang_other",
+    "regex": "clang\\:\\ error\\:\\ \\'\\-I\\-\\'\\ not\\ supported\\,\\ please\\ use\\ \\-iquote\\ instead",
+    "amount": 2
+  },
+  "error: '-I-' not supported, please use -iquote insteaderror: ": {
+    "name": "error: '-I-' not supported, please use -iquote insteaderror: ",
+    "projects": [
+      "elph"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ '\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ insteaderror:\\ ",
+    "amount": 2
+  },
+  "error: linker command failed with exit code 1 (use -v to see invocation)": {
+    "name": "error: linker command failed with exit code 1 (use -v to see invocation)",
+    "projects": [
+      "Tencent/ncnn",
+      "planner"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
     "amount": 2
   },
   "[Error] Package glib2-devel is not installed": {
@@ -4189,15 +4254,6 @@
     ],
     "origin": "general_error",
     "regex": "error\\:\\ gettext\\ infrastructure\\ mismatch\\:\\ using\\ a\\ Makefile\\.in\\.in\\ from\\ gettext\\ version\\ 0\\.17\\ but\\ the\\ autoconf\\ macros\\ are\\ from\\ gettext\\ version\\ 0\\.19",
-    "amount": 1
-  },
-  "clang: error: '-I-' not supported, please use -iquote instead": {
-    "name": "clang: error: '-I-' not supported, please use -iquote instead",
-    "projects": [
-      "elph"
-    ],
-    "origin": "clang_other",
-    "regex": "clang\\:\\ error\\:\\ \\'\\-I\\-\\'\\ not\\ supported\\,\\ please\\ use\\ \\-iquote\\ instead",
     "amount": 1
   },
   "error: exception specification in declaration does not match previous declaration": {
@@ -4450,15 +4506,6 @@
     ],
     "origin": "dependency",
     "regex": "ERROR\\ \\-\\ \\[462\\/0\\]\\ ldd\\:\\ _build\\/bin\\/snap\\-exec\\:\\ No\\ such\\ file\\ or\\ directory",
-    "amount": 1
-  },
-  "clang: error: cannot specify -o when generating multiple output files": {
-    "name": "clang: error: cannot specify -o when generating multiple output files",
-    "projects": [
-      "sysvinit"
-    ],
-    "origin": "clang_other",
-    "regex": "clang\\:\\ error\\:\\ cannot\\ specify\\ \\-o\\ when\\ generating\\ multiple\\ output\\ files",
     "amount": 1
   },
   "error: invalid token at start of a preprocessor expression": {
@@ -6576,15 +6623,6 @@
     "regex": "ERROR\\ \\-\\ \\[33\\/0\\]\\ make\\:\\ python\\:\\ Command\\ not\\ found",
     "amount": 1
   },
-  "error: linker command failed with exit code 1 (use -v to see invocation)": {
-    "name": "error: linker command failed with exit code 1 (use -v to see invocation)",
-    "projects": [
-      "Tencent/ncnn"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
-    "amount": 1
-  },
   "ERROR - [39/0] /bin/sh: 1: pkg-config: not found": {
     "name": "ERROR - [39/0] /bin/sh: 1: pkg-config: not found",
     "projects": [
@@ -6862,6 +6900,87 @@
     ],
     "origin": "CMake",
     "regex": "Could\\ not\\ find\\ a\\ package\\ configuration\\ file\\ provided\\ by\\ \\\"Qt5LinguistTools\\\"",
+    "amount": 1
+  },
+  "error: errorerror: : : : '-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote instead": {
+    "name": "error: errorerror: : : : '-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote instead",
+    "projects": [
+      "elph"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ errorerror:\\ :\\ :\\ :\\ '\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ instead'\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ instead'\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ instead",
+    "amount": 1
+  },
+  "error: errorerror'-I-' not supported, please use -iquote instead: : ": {
+    "name": "error: errorerror'-I-' not supported, please use -iquote instead: : ",
+    "projects": [
+      "elph"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ errorerror'\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ instead:\\ :\\ ",
+    "amount": 1
+  },
+  "error: : error: '-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote instead": {
+    "name": "error: : error: '-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote instead",
+    "projects": [
+      "elph"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ :\\ error:\\ '\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ instead'\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ instead",
+    "amount": 1
+  },
+  "error: : '-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote insteaderrorerrorerror: ": {
+    "name": "error: : '-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote insteaderrorerrorerror: ",
+    "projects": [
+      "elph"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ :\\ '\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ instead'\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ insteaderrorerrorerror:\\ ",
+    "amount": 1
+  },
+  "error: : : errorerror: '-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote instead: '-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote instead": {
+    "name": "error: : : errorerror: '-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote instead: '-I-' not supported, please use -iquote instead'-I-' not supported, please use -iquote instead",
+    "projects": [
+      "elph"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ :\\ :\\ errorerror:\\ '\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ instead'\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ instead:\\ '\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ instead'\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ instead",
+    "amount": 1
+  },
+  "error: non-void function 'gam_eq_flush' should return a value [-Wreturn-type]": {
+    "name": "non-void function 'gam_eq_flush' should return a value [-Wreturn-type]",
+    "projects": [
+      "gamin"
+    ],
+    "origin": "clang",
+    "regex": "error:\\ non\\-void\\ function\\ 'gam_eq_flush'\\ should\\ return\\ a\\ value\\ \\[\\-Wreturn\\-type\\]",
+    "amount": 1
+  },
+  "rmdir: failed to remove 'debian/build': No such file or directory": {
+    "name": "rmdir: failed to remove 'debian/build': No such file or directory",
+    "projects": [
+      "gamin"
+    ],
+    "origin": "dependency",
+    "regex": "rmdir:\\ failed\\ to\\ remove\\ 'debian/build':\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 1
+  },
+  "make[1]: *** debian/build: No such file or directory": {
+    "name": "make[1]: *** debian/build: No such file or directory",
+    "projects": [
+      "gamin"
+    ],
+    "origin": "dependency",
+    "regex": "make\\[1\\]:\\ \\*\\*\\*\\ debian/build:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 1
+  },
+  "Invalid gemspec in [curses.gemspec]: No such file or directory": {
+    "name": "Invalid gemspec in [curses.gemspec]: No such file or directory",
+    "projects": [
+      "ruby-curses"
+    ],
+    "origin": "dependency",
+    "regex": "Invalid\\ gemspec\\ in\\ \\[curses\\.gemspec\\]:\\ No\\ such\\ file\\ or\\ directory",
     "amount": 1
   },
   "make target not found": {
