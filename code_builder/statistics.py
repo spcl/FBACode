@@ -272,6 +272,7 @@ class Statistics:
         project["build"]["errortypes"].extend(new_errors)
 
     def match_error_with_regex(self, project, name, log):
+        log_lines = log.splitlines()
         errors_matches = [
             (err, re.search(self.errors_stdout[err]["regex"], log))
             for err in self.errors_stdout
@@ -280,7 +281,9 @@ class Statistics:
         ]
         errors = []
         for err, match in errors_matches:
-            log = log.replace(match[0], "")
+            errlines = [i for i in log_lines if match[0] in i]
+            for e in errlines:
+                log = log.replace(e, "")
             errors.append(err)
         # we found the following errors
         self.add_errors(project, name, errors)
