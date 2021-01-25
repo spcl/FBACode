@@ -139,8 +139,6 @@ def start_docker(
             ),
         )
     sleep(10)
-    # FIXME: this sometimes fails???
-    # container exits before 10s, then this fails (i think)
     reload_fail = 0
     try:
         container.reload()
@@ -260,11 +258,15 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             if not exists(bitcodes_dir):
                 makedirs(bitcodes_dir)
             # do not install dpendencies the first time around
-            if ci_system in double_build_ci:
+            do_double_build = (
+                ci_system in double_build_ci
+                and ctx.cfg["build"]["double_build"] == "True"
+            )
+            if do_double_build:
                 project["install_deps"] = False
                 project["is_first_build"] = True
             else:
-                project["install_deps"] = True
+                project["install_deps"] = ctx.cfg["build"]["install_deps"] == "True"
 
             docker_conf = {
                 "source_dir": source_dir,
@@ -281,7 +283,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
             # if we have a build system that can install packages, rerun with packages
             # at the moment only travis, can be expended..
             if (
-                ci_system in double_build_ci
+                do_double_build
                 and project["status"] != "success"
                 and project["status"] != "crash"
                 and "build" in project
@@ -290,7 +292,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     stats = Statistics(1)
                 stats.update(project, name, final_update=False)
                 project["no_install_build"] = copy.deepcopy(project["build"])
-                project["install_deps"] = True
+                project["install_deps"] = ctx.cfg["build"]["install_deps"] == "True"
                 project.pop("build", None)
                 project["double_build_done"] = True
                 project["is_first_build"] = False
@@ -300,6 +302,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 project["status"] != "crash"
                 and project["status"] != "success"
                 and "build" in project
+                and ctx.cfg["build"]["install_deps"] == "True"
             ):
                 if stats is None:
                     stats = Statistics(1)
@@ -316,8 +319,8 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                     # from the top now y'all
                     # try and install missing deps
                     start_docker(idx, name, project, ctx, **docker_conf)
-
-            project["is_first_build"] = False
+            if do_double_build:
+                project["is_first_build"] = False
             if "bitcodes" in project:
                 bitcodes = [
                     x
