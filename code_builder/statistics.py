@@ -280,7 +280,7 @@ class Statistics:
         ]
         errors = []
         for err, match in errors_matches:
-            log = log.replace(match, "")
+            log = log.replace(match[0], "")
             errors.append(err)
         # we found the following errors
         self.add_errors(project, name, errors)
