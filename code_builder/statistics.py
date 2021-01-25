@@ -189,31 +189,18 @@ class Statistics:
 
         else:
             if "build" in project:
-                # new plan:
-                # first try to match stderr to existing errors using regex
-                # then try to match to existing errors using levenshtein distance
-                # (fuzzywuzzy)
-                #   - how to handle path substitutions?
-                # then add new error pattern
+                # we pass the errror log through all the stages,
+                # always removing the found errors from the string
                 project["build"]["errortypes"] = []
                 # print("\nstarting error analysis for {}".format(name))
                 err_log = join(project["build"]["dir"], project["build"]["stderr"])
                 with open(err_log, "r") as log:
                     text = log.read()
                     text = self.find_confident_errors(project, name, text)
+                    text = self.match_error_with_regex(project, name, text)
+                    text = self.match_error_fuzzy(project, name, text)
                     text = self.find_new_errors(project, name, text)
-                    if self.match_error_with_regex(project, name, text):
-                        pass
-                        # print("found err by regex!")
-                    elif self.match_error_fuzzy(project, name, text):
-                        pass
-                        # print("found err by fuzzy search!")
-                    # elif self.find_new_errors(project, name, text):
-                    #     pass
-                    # print("matched new errors!")
-                    else:
-                        pass
-                        # print("no error found yet, looking at docker log...")
+                    
                 # found no errs yet, check docker log (stdout of build)
                 # this file can be big, so try to avoid
                 if not project["build"]["errortypes"]:
@@ -223,17 +210,10 @@ class Statistics:
                     with open(docker_log, "r") as log:
                         text = log.read()
                     text = self.find_confident_errors(project, name, text)
+                    text = self.match_error_with_regex(project, name, text)
+                    text = self.match_error_fuzzy(project, name, text)
                     text = self.find_new_errors(project, name, text)
-                    if self.match_error_with_regex(project, name, text):
-                        pass
-                        # print("found err by regex!")
-                    elif self.match_error_fuzzy(project, name, text):
-                        pass
-                        # print("found err by fuzzy search!")
-                    # elif self.find_new_errors(project, name, text):
-                    #     pass
-                    # print("matched new errors!")
-                    else:
+                    if not project["build"]["errortypes"]:
                         # print("no errors found for {}... fuck".format(name))
                         self.errortypes["unrecognized"]["amount"] += 1
                         if name not in self.errortypes["unrecognized"]["projects"]:
@@ -288,21 +268,25 @@ class Statistics:
         project["build"]["errortypes"].extend(new_errors)
 
     def match_error_with_regex(self, project, name, log):
-        errors = [
-            err
+        errors_matches = [
+            (err, re.search(self.errors_stdout[err]["regex"], log))
             for err in self.errors_stdout
             if self.errors_stdout[err]["regex"] is not None
             and re.search(self.errors_stdout[err]["regex"], log) is not None
         ]
+        errors = []
+        for err, match in errors_matches:
+            log = log.replace(match, "")
+            errors.append(err)
         # we found the following errors
         self.add_errors(project, name, errors)
-        return bool(errors)
+        return log
 
     def match_error_fuzzy(self, project, name, log):
-        lines = [l for l in log.splitlines() if len(l) < 1000]
-        lines = [re.sub(self.path_regex, "PATH/FILE.TXT", l) for l in lines]
+        orig_lines = [l for l in log.splitlines() if len(l) < 1000]
+        lines = [re.sub(self.path_regex, "PATH/FILE.TXT", l) for l in orig_lines]
         errors = []
-        for l in lines:
+        for i, l in enumerate(lines):
             # check if string has any processable character, otherwise continue
             processed = fuzzywuzzy.utils.full_process(l)  # type: ignore
             if not processed:
@@ -313,12 +297,13 @@ class Statistics:
             # what threshold??
             new_errs = [m[0] for m in matches if m[1] >= 90]
             if new_errs:
+                log.replace(orig_lines[i], "")
                 pass
                 # print("matched \n{}\nto\n{} using fuzzy".format(l, new_errs), sep='\n')
             errors.extend([m[0] for m in matches if m[1] >= 90])
         # remove dups
         self.add_errors(project, name, list(set(errors)))
-        return bool(errors)
+        return log
 
     # we search for these errors anyway, since they are pretty safely "good"
     def find_confident_errors(self, project, name, log):
