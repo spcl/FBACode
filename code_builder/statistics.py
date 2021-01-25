@@ -196,10 +196,10 @@ class Statistics:
                 err_log = join(project["build"]["dir"], project["build"]["stderr"])
                 with open(err_log, "r") as log:
                     text = log.read()
-                    text = self.find_confident_errors(project, name, text)
-                    text = self.match_error_with_regex(project, name, text)
-                    text = self.match_error_fuzzy(project, name, text)
-                    text = self.find_new_errors(project, name, text)
+                text = self.find_confident_errors(project, name, text)
+                text = self.match_error_with_regex(project, name, text)
+                text = self.match_error_fuzzy(project, name, text)
+                text = self.find_new_errors(project, name, text)
                     
                 # found no errs yet, check docker log (stdout of build)
                 # this file can be big, so try to avoid
