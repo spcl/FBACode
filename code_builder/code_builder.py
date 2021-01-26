@@ -8,7 +8,7 @@ import sys
 from multiprocessing import Manager
 
 from time import time
-from os import environ, mkdir, getpid, listdir, remove
+from os import environ, makedirs, mkdir, getpid, listdir, remove
 import os
 from os.path import isdir, join, exists, basename
 from sys import stdout
@@ -271,6 +271,8 @@ def build_projects(
     print("Process repositorites in %f [s]" % (end - start))
     stats.print_stats(stdout)
     # save various jsons with stats
+    if not isdir(log_dir):
+        makedirs(log_dir)
     timestamp = cfg["output"]["time"]
     stats.save_rebuild_json(log_dir, timestamp)
     stats.save_errors_json()

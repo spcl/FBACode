@@ -44,6 +44,8 @@ parser.add_argument('--output', dest='output', default='', action='store',
         help='Output.')
 parser.add_argument('--log_dir', dest='log_dir', default='buildlogs', action='store',
         help='Directory used to store the logs and build stats')
+parser.add_argument('-j', dest='n_jobs', default=None, action='store',
+        help='-j flag to invoke compiler with')
 
 parsed_args = parser.parse_args(argv[1:])
 cfg = open_config(parsed_args, path.dirname(path.realpath(__file__)))
@@ -51,6 +53,8 @@ cfg['output'] = {'verbose' : parsed_args.verbose}
 if parsed_args.out_to_file:
     cfg['output']['file'] = parsed_args.out_to_file
 cfg['output']['time'] = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+if parsed_args.n_jobs:
+    cfg["build"]["jobs"] = parsed_args.n_jobs
 
 with open(parsed_args.repositories_db) as repo_db:
     repositories = json.load(repo_db)
