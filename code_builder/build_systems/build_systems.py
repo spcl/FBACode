@@ -44,8 +44,8 @@ build_systems = {
 # continuous integration systems, decreasing priority
 ci_systems = {
     "debian_install": debian_install.CiSystem,
-    "gh_actions": gh_actions.CiSystem,
     "travis": travis.CiSystem,
+    "gh_actions": gh_actions.CiSystem,
     "circle_ci": circle_ci.CiSystem,
 }
 
