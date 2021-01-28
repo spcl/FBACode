@@ -40,29 +40,6 @@ def initializer_func(ctx, f, args):
     return f(*args)
 
 
-def map(exec, f, args, ctx):
-    return [
-        exec.submit(functools.partial(initializer_func, ctx, f, d)) for d in zip(*args)
-    ]
-
-
-def when_all(futures, callback):
-    return WhenAll(futures, callback)
-
-
-class WhenAll:
-    def __init__(self, fs, callback):
-        self.callback = callback
-        self.futures = set(fs)
-        for f in fs:
-            f.add_done_callback(self.done)
-
-    def done(self, f):
-        self.futures.remove(f)
-        if len(self.futures) == 0:
-            self.callback()
-
-
 class Context:
     def __init__(self, projects_count, cfg):
         self.cfg = cfg
@@ -72,29 +49,6 @@ class Context:
     def set_loggers(self, out, err):
         self.out_log = out
         self.err_log = err
-
-
-def copy_futures(dest, src):
-    if src.cancelled():
-        dest.cancel()
-    exc = src.exception()
-    if exc is not None:
-        dest.set_exception(exc)
-    else:
-        dest.set_result(src.result())
-
-
-def callback(pool, ctx, f, callback):
-    future = concurrent.futures.Future()
-
-    def local_callback(f):
-        res = pool.submit(
-            functools.partial(initializer_func, ctx, callback, f.result())
-        )
-        res.add_done_callback(functools.partial(copy_futures, future))
-
-    f.add_done_callback(local_callback)
-    return future
 
 
 def get_dir_size(start_path):
