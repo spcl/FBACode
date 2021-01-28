@@ -288,6 +288,9 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 and project["status"] != "crash"
                 and "build" in project
             ):
+                end = time()
+                if "build" in project:
+                    project["build"]["time"] = end - start
                 if stats is None:
                     stats = Statistics(1)
                 stats.update(project, name, final_update=False)
@@ -304,6 +307,9 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 and "build" in project
                 and ctx.cfg["build"]["install_deps"] == "True"
             ):
+                end = time()
+                if "build" in project:
+                    project["build"]["time"] = end - start
                 if stats is None:
                     stats = Statistics(1)
                 # set first build to true, so the analyzer doesn't save stats
