@@ -375,7 +375,6 @@ class CiSystem:
     def get_docker_image(repo_dir, clang_version=9):
         # no trusty since it does not support clang 9
         # trusty will run with clang 8, some packages require trusty
-        # no, fuck trusty
         supported_dists = ["focal", "bionic", "xenial"]
         yml = None
         try:

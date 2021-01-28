@@ -177,7 +177,6 @@ class DebianFetcher:
             "https://sources.debian.org/api/list/?suite={}".format(self.suite)
         )
         if all_pkgs.status_code != 200:
-            # hmmm fuck
             self.error_log.error(
                 "error fetching {}, code {}".format(all_pkgs.url, all_pkgs.status_code)
             )
@@ -191,15 +190,6 @@ class DebianFetcher:
         with ThreadPoolExecutor(max_workers=self.thread_count) as executor:
             # start thread_count workers
             for index in range(0, self.thread_count):
-                # print(
-                #     "[{}/{}] fetched, trying {}".format(
-                #         repo_count, max_repos, pkg_list[index]["name"]
-                #     )
-                # )
-                # self.out_log.info(
-                #             repo_count,
-                #             "fetch info for {}".format(pkg_list[index]["name"]),
-                #         )
                 future = executor.submit(self.package_info, pkg_list[index]["name"])
                 futures.append(future)
                 # sleep(0.05)
@@ -217,23 +207,11 @@ class DebianFetcher:
                             repo_count += 1
                             self.results.append(result)
                             print(
-                                "[{}/{}] debian c/c++ packages found".format(repo_count, max_repos),
+                                "[{}/{}] debian c/c++ packages found".format(
+                                    repo_count, max_repos
+                                ),
                                 end="\r",
                             )
-                            # print(
-                            #     "[{}/{}] {} fetched".format(
-                            #         repo_count, max_repos, result["name"]
-                            #     )
-                            # )
-                        # print(
-                        #     "[{}/{}] fetched, trying {}".format(
-                        #         repo_count, max_repos, pkg_list[index]["name"]
-                        #     )
-                        # )
-                        # self.out_log.info(
-                        #     repo_count,
-                        #     "fetch info for {}".format(pkg_list[index]["name"]),
-                        # )
                         new_future = executor.submit(
                             self.package_info, pkg_list[index]["name"]
                         )
@@ -273,8 +251,6 @@ class DebianFetcher:
 
     def package_info(self, name):
         # get the version number for this package
-        # TODO: check for suite
-        # self.out_log.info("fetching info for {}".format(name))
         response = get(
             "https://sources.debian.org/api/src/{}/?suite={}".format(name, self.suite)
         )
@@ -314,28 +290,8 @@ class DebianFetcher:
             if lang[0] in c_names
         ]
         # if response.json()["pkg_infos"]["sloc"][0][0] in c_names:
-        # XXX: ignore packages with more than 1mil LOC (just for testing)
-        if any(c_sloc) and int(response.json()["pkg_infos"]["sloc"][0][1]) < 100000:
-            # self.out_log.info("contains c/c++!")
-            # self.results.append(
-            #     {
-            #         # name: {
-            #         "version": version,
-            #         "name": name,
-            #         "sloc": response.json()["pkg_infos"]["sloc"],
-            #         "suite": self.suite,
-            #         "vcs_browser": response.json()["pkg_infos"]["vcs_browser"]
-            #         if "vcs_browser" in response.json()["pkg_infos"]
-            #         else None,
-            #         "vcs_type": response.json()["pkg_infos"]["vcs_type"]
-            #         if "vcs_type" in response.json()["pkg_infos"]
-            #         else None
-            #         # }
-            #     }
-            # )
-            # return True
+        if any(c_sloc) and int(response.json()["pkg_infos"]["sloc"][0][1]):
             return {
-                # name: {
                 "version": version,
                 "name": name,
                 "sloc": response.json()["pkg_infos"]["sloc"],
@@ -346,7 +302,6 @@ class DebianFetcher:
                 "vcs_type": response.json()["pkg_infos"]["vcs_type"]
                 if "vcs_type" in response.json()["pkg_infos"]
                 else None
-                # }
             }
         return False
 

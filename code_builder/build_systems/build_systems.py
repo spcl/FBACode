@@ -143,7 +143,7 @@ def start_docker(
     try:
         container.reload()
     except Exception:
-        print("AAAAAAAAAAAAAA\n{}: container.reload failed".format(name))
+        print("{}: container.reload failed {} times".format(name, reload_fail))
         reload_fail += 1
     while reload_fail < 3 and container.status == "running":
         # get the current time of the container, can differ from host bc timezone
@@ -161,7 +161,7 @@ def start_docker(
             container.reload()
             reload_fail = 0
         except Exception:
-            print("AAAAAAAAAAAAAA\ncontainer.reload failed, lets try and handle this")
+            print("{}: container.reload failed {} times".format(name, reload_fail))
             reload_fail += 1
     # just use this to get exit code
     return_code = container.wait()

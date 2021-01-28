@@ -132,9 +132,9 @@ def download_and_build(
             idx, name, project, build_dir, target_dir, ctx, stats=stats
         )
     except Exception as e:
-        print("aaaaaaaaaaaaaaaaaa failure in {} builder:\n{}".format(name, e))
+        print("Failure in {} builder:\n{}".format(name, e))
         print(
-            "Stackoverflow approach:\n{}".format(
+            "Exception trace:\n{}".format(
                 "".join(traceback.format_exception(*sys.exc_info()))
             )
         )

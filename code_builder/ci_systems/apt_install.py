@@ -34,8 +34,7 @@ class Installer:
             return
         pkgs_to_install = []
         for m, source in self.missing:
-
-            # do shitty fuzzy search
+            # compare dependencies both ways
             matches = [
                 key
                 for key in self.dependency_map
@@ -47,9 +46,9 @@ class Installer:
                 # we can install the pkgs in here, maybe take those with more than min number of installs
                 installs = [i for _, i in self.dependency_map[match]["deps"].items()]
                 for pkg, number in self.dependency_map[match]["deps"].items():
-                    # for now, install only max
-                    # if number != min(installs):
-                    pkgs_to_install.append(pkg)
+                    # install if this package was installed everytime
+                    if number == max(installs):
+                        pkgs_to_install.append(pkg)
 
             if not matches:
                 # maybe just try, problem is that apt search is garbage

@@ -214,7 +214,6 @@ class Statistics:
                     text = self.match_error_fuzzy(project, name, text)
                     text = self.find_new_errors(project, name, text)
                     if not project["build"]["errortypes"]:
-                        # print("no errors found for {}... fuck".format(name))
                         self.errortypes["unrecognized"]["amount"] += 1
                         if name not in self.errortypes["unrecognized"]["projects"]:
                             self.errortypes["unrecognized"]["projects"].append(name)
@@ -356,7 +355,7 @@ class Statistics:
                     log = log.replace(err, "")
                     continue
                 elif err.strip() == "":
-                    # this is just a newline, sometimes this fucks it up
+                    # this is just a newline, sometimes this is here
                     continue
                 else:
                     # this is no longer part of same err
