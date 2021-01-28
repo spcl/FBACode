@@ -180,7 +180,7 @@ else:
             project["ast_files"] = {"dir": external_ast_dir}
             builder.generate_ast(ast_dir)
             chown_dirs.append(ast_dir)
-project["build"]["time"] = end - start
+project["build"]["build_time"] = end - start
 ctx.out_log.print_info(idx, "Finish processing %s in %f [s]" % (name, end - start))
 
 # get installed packages after build
