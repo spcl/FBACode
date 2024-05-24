@@ -1,5 +1,4 @@
 {
- 
   "clang: error: linker command failed with exit code 1 (use -v to see invocation)": {
     "name": "clang: error: linker command failed with exit code 1 (use -v to see invocation)",
     "projects": [
@@ -52,11 +51,12 @@
       "hydra",
       "pixz",
       "librsync",
-      "planner"
+      "planner",
+      "dssi"
     ],
     "origin": "clang_other",
     "regex": "clang\\:\\ error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
-    "amount": 170
+    "amount": 173
   },
   "docker_crash": {
     "name": "docker_crash",
@@ -2499,6 +2499,17 @@
     "regex": "\\.\\/configure\\:\\ line\\ 11973\\:\\ PKG_PROG_PKG_CONFIG\\:\\ command\\ not\\ found",
     "amount": 5
   },
+  "error: linker command failed with exit code 1 (use -v to see invocation)": {
+    "name": "error: linker command failed with exit code 1 (use -v to see invocation)",
+    "projects": [
+      "Tencent/ncnn",
+      "planner",
+      "dssi"
+    ],
+    "origin": "general_error",
+    "regex": "error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
+    "amount": 5
+  },
   "E: Unable to find a source package": {
     "name": "E: Unable to find a source package",
     "projects": [
@@ -2991,6 +3002,15 @@
     ],
     "origin": "dependency",
     "regex": "diff\\:\\ debian\\/copyright_hints\\:\\ No\\ such\\ file\\ or\\ directory",
+    "amount": 3
+  },
+  "error: make -j64 returned exit code 2": {
+    "name": "error: make -j64 returned exit code 2",
+    "projects": [
+      "dssi"
+    ],
+    "origin": "general_error",
+    "regex": "error:\\ make\\ \\-j64\\ returned\\ exit\\ code\\ 2",
     "amount": 3
   },
   "error: no acceptable ld found in $PATH": {
@@ -4127,16 +4147,6 @@
     ],
     "origin": "general_error",
     "regex": "error:\\ '\\-I\\-'\\ not\\ supported,\\ please\\ use\\ \\-iquote\\ insteaderror:\\ ",
-    "amount": 2
-  },
-  "error: linker command failed with exit code 1 (use -v to see invocation)": {
-    "name": "error: linker command failed with exit code 1 (use -v to see invocation)",
-    "projects": [
-      "Tencent/ncnn",
-      "planner"
-    ],
-    "origin": "general_error",
-    "regex": "error\\:\\ linker\\ command\\ failed\\ with\\ exit\\ code\\ 1\\ \\(use\\ \\-v\\ to\\ see\\ invocation\\)",
     "amount": 2
   },
   "[Error] Package glib2-devel is not installed": {

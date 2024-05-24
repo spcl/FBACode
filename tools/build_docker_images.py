@@ -8,23 +8,30 @@ import configparser
 
 PROJECT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir)
 DOCKER_DIR = os.path.join(PROJECT_DIR, "docker")
-REPOSITORY_NAME = "mcopik/fbacode"
+REPOSITORY_NAME = "spcleth/fbacode"
 
 images = {
-    "ubuntu-2004-clang": {"dockerfile": "ubuntu-2004-clang.dockerfile"},
+    # "ubuntu-2204-clang": {"dockerfile": "ubuntu-2204-clang.dockerfile", "clang_version": 18},
+    # "ubuntu-2204-clang": {"dockerfile": "ubuntu-2204-clang.dockerfile", "clang_version": 17},
+    # "debian-bookworm-clang-base-test": {"dockerfile": "debian-bookworm-clang-base.dockerfile", "clang_version": 18},
+    # "debian-bookworm-clang-test": {"dockerfile": "debian-bookworm-clang.dockerfile", "clang_version": 18},
+    "debian-bookworm-cxxlangstat-test": {"dockerfile": "debian-bookworm-cxxlangstat.dockerfile", "clang_version": 18},
+    # "debian-bookworm-clang": {"dockerfile": "debian-bookworm-clang.dockerfile", "clang_version": 17},
+    # "ubuntu-2004-clang": {"dockerfile": "ubuntu-2004-clang.dockerfile", "clang_version": 11},
+    # "ubuntu-2004-clang-local-build": {"dockerfile": "ubuntu-2004-clang-local-build.dockerfile", "clang_version": 18},
     # 'debian-sid': {
     #     'dockerfile': 'Dockerfile_debian-sid.base'
     # },
-    "debian-buster-clang": {"dockerfile": "debian-buster-clang.dockerfile"},
+    # "debian-buster-clang": {"dockerfile": "debian-buster-clang.dockerfile"},
     # 'debian-bullseye': {
     #     'dockerfile': 'Dockerfile_debian-bullseye.base'
     # }
-    "ubuntu-bionic-clang": {"dockerfile": "ubuntu-bionic-clang.dockerfile"},
+    # "ubuntu-bionic-clang": {"dockerfile": "ubuntu-bionic-clang.dockerfile"},
     # 'ubuntu-trusty-clang': {
     #     'dockerfile': 'ubuntu-trusty-clang.dockerfile'
     # },
-    "ubuntu-xenial-clang": {"dockerfile": "ubuntu-xenial-clang.dockerfile"},
-    "ubuntu-focal-clang": {"dockerfile": "ubuntu-focal-clang.dockerfile"},
+    # "ubuntu-xenial-clang": {"dockerfile": "ubuntu-xenial-clang.dockerfile"},
+    # "ubuntu-focal-clang": {"dockerfile": "ubuntu-focal-clang.dockerfile"},
 }
 
 # default version 9, lets try to read version from config file
@@ -42,7 +49,6 @@ except Exception as e:
         )
     )
 
-
 no_cache = False
 verbose = False
 if len(sys.argv) > 1 and "--nocache" in sys.argv:
@@ -53,6 +59,8 @@ if len(sys.argv) > 1 and "-v" in sys.argv:
 client = docker.from_env()  # type: ignore
 errors = 0
 for i, (img, definitions) in enumerate(images.items()):
+    clang_version = str(definitions["clang_version"])
+    print(f"clang_version = {clang_version}")
     print(
         "\n\n[{}/{}] building {}:{}-{}".format(
             i + 1, len(images), REPOSITORY_NAME, img, clang_version

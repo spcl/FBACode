@@ -27,7 +27,7 @@ class Installer:
 
         self.missing = missing
 
-    def install(self):
+    def install(self, builder = None):
         # let's try to install using previous dependencies (if there are any)
         if self.missing == []:
             print("no depencencies to install")

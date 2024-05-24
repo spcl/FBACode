@@ -1,12 +1,16 @@
-docker==4.2.1
-GitPython==3.1.3
+docker==7.0.0
+GitPython==3.1.42
 fuzzywuzzy==0.18.0
-python-Levenshtein==0.12.0
-PyYAML==5.3.1
+python-Levenshtein==0.25.0
+PyYAML==6.0.1
 #linting
-flake8==3.7.9
-flake8-black==0.1.2
-black==19.10b0
-autopep8==1.5.4
+flake8==7.0.0
+flake8-black==0.3.6
+black==24.2.0
+autopep8==2.0.4
 # AST analysis
 clang==11.0
+# Package management
+conan==2.2.2
+# copying build artifacts to a remote server
+fabric==3.2.2

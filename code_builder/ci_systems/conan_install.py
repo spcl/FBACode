@@ -1,11 +1,12 @@
 from .ci_helper import run
 from subprocess import PIPE
+from os.path import join
 
 # different paths inside docker
 try:
-    from build_systems import debian  # type: ignore just for linter
+    from build_systems import conan  # type: ignore just for linter
 except ModuleNotFoundError:
-    from code_builder.build_systems import debian
+    from code_builder.build_systems import conan
 
 
 class Context:
@@ -28,28 +29,31 @@ class CiSystem:
         self.output_log = ctx.out_log
         self.error_log = ctx.err_log
         self.project = project
-        self.name = name
+        self.name = name[: name.rfind("@")]
+        self.name_and_version = name
+        self.version = project["build"]["version"]
 
     def install(self, builder = None):
+        conanfile_path = join(builder.get_remote_package_folder(), "conanfile.py")
+        print(f"conanfile_path={conanfile_path}")
         out = run(
-            ["apt-get", "build-dep", "-y", self.name],
-            cwd=self.repository_path,
+            f"conan install --version={self.version} -s compiler=clang -s compiler.cppstd=gnu20 -s compiler.version=18 --build=never {conanfile_path}".split(),
             stderr=PIPE,
         )
         if out.returncode != 0:
             self.error_log.print_error(
-                self.idx, "error in apt build-dep: {}".format(out.stderr)
+                self.idx, "error in conan install: {}".format(out.stderr)
             )
             return False
         self.output_log.print_info(
-            self.idx, "installed debian deps {}:\n{}".format(out.args, out.stderr)
+            self.idx, "installed conan deps {}:\n{}".format(out.args, out.stderr)
         )
         return True
 
     @staticmethod
     def recognize(repo_dir):
-        return debian.Project.recognize(repo_dir)
+        return conan.Project.recognize(repo_dir)
 
     @staticmethod
     def get_docker_image(repo_dir, clang_version=9):
-        return debian.Project.get_docker_image(repo_dir, clang_version)
+        return conan.Project.get_docker_image(repo_dir, clang_version)

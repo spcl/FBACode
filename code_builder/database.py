@@ -1,9 +1,11 @@
 import os
 from os import makedirs
 from time import time
-from os.path import join
+from os.path import join, exists
+from shutil import rmtree
 
 from .repository import GitProject
+from git import Repo, GitCommandError, InvalidGitRepositoryError
 
 
 class GitHub:
@@ -55,13 +57,60 @@ class debian:
         if "source" not in project:
             project["source"] = {"dir": os.path.abspath(join(self.build_dir, name))}
         project["source"]["time"] = 0
-        self.ctx.out_log.print_info(idx, "initinalized debian package {}".format(name))
+        self.ctx.out_log.print_info(idx, "initialized debian package {}".format(name))
         makedirs(join(self.build_dir, name), exist_ok=True)
         open(join(self.build_dir, name, ".debianbuild"), "a").close()
         return (idx, name, project)
 
+class conan_cloner:
+    def __init__(self, build_dir, ctx):
+        self.build_dir = build_dir
+        self.ctx = ctx
+        self.clone_time = 0
 
-databases = {"github.org": GitHub, "debian": debian}
+    def clone(self, idx, name, project):
+        # the copy is going to happen in the actual build container
+
+        if project["status"] == "new":
+            project["status"] = "cloned"
+        if "source" not in project:
+            project["source"] = {"dir": os.path.abspath(join(self.build_dir, name))}
+        project["source"]["time"] = 0
+        self.ctx.out_log.print_info(idx, "initialized conan package {}".format(name))
+        makedirs(join(self.build_dir, name), exist_ok=True)
+        open(join(self.build_dir, name, ".conanbuild"), "a").close()
+        return (idx, name, project)
+        
+        # First need to get the conan file from the conan-center-index remote
+        start = time()
+        _, _, recipe_dir = self._get_recipe(idx, name)
+        
+        # check for updates
+        if project["status"] == "new":
+            project["status"] = "cloned"
+
+        
+        if "source" not in project:
+            project["source"] = {"dir": os.path.abspath(join(self.build_dir, name))}
+        end = time()
+        project["source"]["time"] = end - start
+        self.ctx.out_log.print_info(
+            idx, "Cloned project %s from GitHub in %f seconds" % (name, end - start)
+        )
+        return (idx, name, project)
+
+
+        if project["status"] == "new":
+            project["status"] = "cloned"
+        if "source" not in project:
+            project["source"] = {"dir": os.path.abspath(join(self.build_dir, name))}
+        project["source"]["time"] = 0
+        self.ctx.out_log.print_info(idx, "initialized conan package {}".format(name))
+        makedirs(join(self.build_dir, name), exist_ok=True)
+        # open(join(self.build_dir, name, ".debianbuild"), "a").close()
+        return (idx, name, project)
+
+databases = {"github.org": GitHub, "debian": debian, "conan": conan_cloner}
 
 
 def get_database(name):

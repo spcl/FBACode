@@ -15,6 +15,6 @@ source "${DIR}/clang-wrapper.cfg"
 source "${DIR}/clang-wrapper-functions.sh"
 # echo "######################## clang call" >> /home/fba_code/build/wrapper++.log
 # echo $PARENT_ARGS  >> /home/fba_code/build/wrapper++.log
-echo "clang++ ${@}"  >> /home/fba_code/build/clang_calls.log
-run_compilation "clang++" "$@"
+echo "${CLANGCXX} ${@}"  >> /home/fba_code/build/clang_calls.log
+run_compilation "${CLANGCXX}" "$@"
 

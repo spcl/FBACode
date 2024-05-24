@@ -1,0 +1,41 @@
+{
+    "debian": {
+        "abseil": {
+            "type": "debian",
+            "version": "20220623.1-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        149832
+                    ],
+                    [
+                        "pascal",
+                        1362
+                    ],
+                    [
+                        "sh",
+                        654
+                    ],
+                    [
+                        "python",
+                        446
+                    ],
+                    [
+                        "makefile",
+                        32
+                    ],
+                    [
+                        "ansic",
+                        10
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/abseil",
+                "vcs_type": "git"
+            }
+        }
+    }
+}

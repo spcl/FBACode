@@ -2,8 +2,12 @@ from requests import get
 from time import time, sleep
 from string import ascii_lowercase
 from random import shuffle
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+from subprocess import PIPE
 import concurrent.futures
+import json
+import requests
+from .utils.driver import run
 
 
 def maximum_repos(cfg):
@@ -187,31 +191,31 @@ class DebianFetcher:
         futures = []
         index = 0
         print("Loaded all {} debian packages".format(len(pkg_list)))
-        with ThreadPoolExecutor(max_workers=self.thread_count) as executor:
+        with ProcessPoolExecutor(max_workers=self.thread_count) as executor:
             # start thread_count workers
             for index in range(0, self.thread_count):
                 future = executor.submit(self.package_info, pkg_list[index]["name"])
                 futures.append(future)
                 # sleep(0.05)
-            incomplete_futures = True
             # when one finishes, increment counter and add a new one to the queue
-            while incomplete_futures:
-                done, incomplete_futures = concurrent.futures.wait(
+            while len(futures) > 0:
+                done, _ = concurrent.futures.wait(
                     futures, return_when=concurrent.futures.FIRST_COMPLETED
                 )
                 for future in done:
                     result = future.result()
                     futures.remove(future)
-                    if repo_count < min(max_repos, len(pkg_list)):
-                        if result is not False:
-                            repo_count += 1
-                            self.results.append(result)
-                            print(
-                                "[{}/{}] debian c/c++ packages found".format(
-                                    repo_count, max_repos
-                                ),
-                                end="\r",
-                            )
+
+                    if not result is False:
+                        self.results.append(result)
+                        repo_count += 1
+                        print(
+                            "[{}/{}] debian c/c++ packages found".format(
+                                repo_count, max_repos
+                            ),
+                            end="\r",
+                        )
+                    if index < len(pkg_list):
                         new_future = executor.submit(
                             self.package_info, pkg_list[index]["name"]
                         )
@@ -251,13 +255,23 @@ class DebianFetcher:
 
     def package_info(self, name):
         # get the version number for this package
-        response = get(
-            "https://sources.debian.org/api/src/{}/?suite={}".format(name, self.suite)
-        )
+        try:
+            response = get(
+                "https://sources.debian.org/api/src/{}/?suite={}".format(name, self.suite),
+                timeout = 15
+            )
+        except Exception as e:
+            self.error_log.error("Failed to get src for {} with error: {}".format(name, e))
+            return False
         if response.status_code != 200:
             self.error_log.error(
                 "error fetching pkg versions for {}, code {}".format(
                     name, response.status_code
+                )
+            )
+            self.error_log.error(
+                "full URL is: {}".format(
+                    "https://sources.debian.org/api/src/{}/?suite={}".format(name, self.suite)
                 )
             )
             return False
@@ -271,18 +285,31 @@ class DebianFetcher:
             return False
         version = response.json()["versions"][0]["version"]
         # get more info for package and version
-        response = get(
-            "https://sources.debian.org/api/info/package/{}/{}".format(name, version)
-        )
+        try:
+            response = get(
+                "https://sources.debian.org/api/info/package/{}/{}".format(name, version),
+                timeout = 10
+            )
+        except Exception as e:
+            self.error_log.error(
+                "Failed to get pkg info for {} with error: {}".format(name, e)
+            )
+            return False
         if response.status_code != 200:
             self.error_log.error(
                 "error fetching pkg info for {}, code {}".format(
                     name, response.status_code
                 )
             )
+            self.error_log.error(
+                "full URL is: {}".format(
+                    "https://sources.debian.org/api/info/package/{}/{}".format(name, version)
+                )
+            )
             return False
         # only keep packages with mostly c or c++
-        c_names = ["ansic", "cpp"]
+        # c_names = ["ansic", "cpp"]
+        c_names = ["cpp"]
         # uncomment to include packages which contain any amount of c/c++
         c_sloc = [
             {lang[0]: lang[1]}
@@ -305,8 +332,88 @@ class DebianFetcher:
             }
         return False
 
+class ConanFetcher:
+    def __init__(self, cfg, out_log, error_log):
+        self.cfg = cfg
+        self.out_log = out_log
+        self.error_log = error_log
+        self.name = "conan"
+        self.shuffle = bool(cfg["conan"]["shuffle"])
 
-code_sources = {"github.org": GithubFetcher, "debian": DebianFetcher}
+        self.results = {}
+        self.max_repos = None
+
+    def fetch(self, max_repos = -1):
+        # fetch results to self.results
+        self.max_repos = max_repos
+        repo_count = 0
+        self.out_log.set_counter(max_repos)
+        self.error_log.set_counter(max_repos)
+        start = time()
+
+        out = run(
+            [
+                "bash",
+                "-c",
+                "shopt -s dotglob; conan search \"*\" --remote=conancenter --format=json"
+            ],
+            stderr=PIPE,
+            stdout=PIPE
+        )
+
+        pkg_list = list(json.loads(out.stdout)["conancenter"].keys())
+        unique_pkgs = list(set([name[:name.rfind('/')] for name in pkg_list]))
+
+        new_pkg_list = [[pkg for pkg in pkg_list if pkg_name in pkg][-1] for pkg_name in unique_pkgs]
+        pkg_list = new_pkg_list
+
+        if self.shuffle:
+            shuffle(pkg_list)
+        
+        index = 0
+        print("Conan search returned {} packages".format(len(pkg_list)))
+
+        for idx, pkg in enumerate(pkg_list):
+            if repo_count >= max_repos:
+                break
+            pkg = pkg.replace("/", "@")
+            result = self.package_info(pkg)
+            if result is not False:
+                repo_count += 1
+                self.results.update(result)
+                print(
+                    "[{}/{}] conan c/c++ packages found".format(
+                        repo_count, max_repos
+                    ),
+                    end="\r",
+                )
+
+        print("done!")
+        end = time()
+        self.out_log.info(
+            "got {} c/c++ packages in {} seconds!".format(repo_count, end - start)
+        )
+        return True
+
+    def process_results(self, data):
+        return self.results
+
+    def update(self, existing_repo):
+        pass
+
+    def package_info(self, name):
+        package_name = name[:name.rfind('@')]
+        package_version = name[name.rfind('@') + 1:]
+        return {
+            name: {
+                "name": package_name,
+                "version": package_version,
+                "status": "new",
+                "type": "conan"
+            }
+        }
+
+code_sources = {"github.org": GithubFetcher, "debian": DebianFetcher, "conan": ConanFetcher}
 
 
 def fetch_projects(cfg, out_log, error_log, max_repos=None):

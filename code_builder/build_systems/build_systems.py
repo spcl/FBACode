@@ -8,17 +8,19 @@ import json
 import tempfile
 import copy
 import string
+import time
 
 from os.path import abspath, join, exists, basename, dirname
 from os import makedirs, mkdir
 from glob import iglob
 from sys import version_info
 from time import sleep, time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
-from . import cmake, debian, autotools, make
-from ..ci_systems import travis, circle_ci, gh_actions, debian_install
+from . import cmake, debian, autotools, make, conan
+from ..ci_systems import travis, circle_ci, gh_actions, debian_install, conan_install
 
+DOCKER_MOUNT_POINT = "/home/fba_code"
 
 def run(command, cwd=None, stdout=None, stderr=None):
 
@@ -32,6 +34,7 @@ def run(command, cwd=None, stdout=None, stderr=None):
 
 
 build_systems = {
+    "conan": conan.Project,
     "debian": debian.Project,
     "CMake": cmake.Project,
     "make": make.Project,
@@ -43,10 +46,11 @@ build_systems = {
 
 # continuous integration systems, decreasing priority
 ci_systems = {
+    "conan_install": conan_install.CiSystem,
     "debian_install": debian_install.CiSystem,
     "travis": travis.CiSystem,
     "gh_actions": gh_actions.CiSystem,
-    "circle_ci": circle_ci.CiSystem,
+    "circle_ci": circle_ci.CiSystem
 }
 
 # if any of these, do a build without installing first, then install in second build
@@ -84,24 +88,24 @@ def start_docker(
     docker_timeout = int(ctx.cfg["build"]["docker_timeout"])
     volumes[abspath(source_dir)] = {
         "mode": "rw",
-        "bind": "/home/fba_code/source",
+        "bind": f"{DOCKER_MOUNT_POINT}/source",
     }
     volumes[join(dirname(__file__), "../dep_mapping.json")] = {
         "mode": "ro",
-        "bind": "/home/fba_code/dep_mapping.json",
+        "bind": f"{DOCKER_MOUNT_POINT}/dep_mapping.json",
     }
-    volumes[abspath(build_dir)] = {"mode": "rw", "bind": "/home/fba_code/build"}
+    volumes[abspath(build_dir)] = {"mode": "rw", "bind": f"{DOCKER_MOUNT_POINT}/build"}
     volumes[abspath(bitcodes_dir)] = {
         "mode": "rw",
-        "bind": "/home/fba_code/bitcodes",
+        "bind": f"{DOCKER_MOUNT_POINT}/bitcodes",
     }
     volumes[abspath(ast_dir)] = {
         "mode": "rw",
-        "bind": "/home/fba_code/AST",
+        "bind": f"{DOCKER_MOUNT_POINT}/AST",
     }
     volumes[abspath(tmp_file.name)] = {
         "mode": "ro",
-        "bind": "/home/fba_code/input.json",
+        "bind": f"{DOCKER_MOUNT_POINT}/input.json",
     }
     environment = [
         "BUILD_SYSTEM={}".format(build_name.lower()),
@@ -150,8 +154,10 @@ def start_docker(
         # time = container.stats(stream=False)["read"]
         # try with utc time, should be faster
         # TODO: make timeout configurable
-        timeout = datetime.utcnow() - timedelta(minutes=docker_timeout)
-        logs = container.logs(since=timeout, tail=10)
+        # timeout = datetime.utcnow() - timedelta(minutes=docker_timeout)
+        timeout = datetime.now(timezone.utc) - timedelta(minutes=docker_timeout)
+        # timeout = datetime.now() - timedelta(minutes=docker_timeout)
+        logs = container.logs(since=timeout.timestamp(), tail=10)
         # ctx.out_log.print_info(idx, logs)
         if logs == b"":
             ctx.out_log.print_info(idx, "stopping container, no progress in 30min")
@@ -178,8 +184,16 @@ def start_docker(
         docker_log_file = "container_{}_{}.log".format(
             name.replace("/", "_"), timestamp
         )
-        with open(join(abspath(build_dir), docker_log_file), "w") as f:
-            f.write(docker_log.decode())
+        try:
+            with open(join(abspath(build_dir), docker_log_file), "w") as f:
+                f.write(docker_log.decode())
+        except:
+            ctx.err_log.print_error(
+                idx,
+                "Failure writing Docker log file: {}\n".format(
+                    join(abspath(build_dir), docker_log_file)
+                ),
+            )
         project["status"] = "crash"
         project["crash_reason"] = "docker container crashed"
         container.remove()
@@ -187,11 +201,18 @@ def start_docker(
     docker_log = container.logs()
     timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     docker_log_file = "container_{}_{}.log".format(name.replace("/", "_"), timestamp)
-    with open(join(abspath(build_dir), docker_log_file), "w") as f:
-        f.write(docker_log.decode())
+
+    try:
+        with open(join(abspath(build_dir), docker_log_file), "w") as f:
+            f.write(docker_log.decode())
+    except:
+        ctx.err_log.print_error(
+            idx,
+            "Failure writing Docker log file: {}\n".format(join(abspath(build_dir), docker_log_file)),
+        )
     # Get output JSON
     try:
-        binary_data, _ = container.get_archive("/home/fba_code/output.json")
+        binary_data, _ = container.get_archive(f"{DOCKER_MOUNT_POINT}/output.json")
         # with next(binary_data) not the whole thing is loaded if file is big
         bin = b"".join(list(binary_data))
         tar_file = tarfile.open(fileobj=io.BytesIO(bin))
@@ -226,6 +247,7 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
     ci_system = "unrecognized"
     ci_dockerfile = False
     project.setdefault("ci_systems", [])
+    print(f"Recognizing and building {name} in {source_dir}")
     for ci_name, system in ci_systems.items():
         if system.recognize(source_dir):
             if ci_system == "unrecognized":
@@ -249,14 +271,16 @@ def recognize_and_build(idx, name, project, build_dir, target_dir, ctx, stats=No
                 )
             build_dir = join(build_dir, source_name)
             # target_dir = join(target_dir, source_name)
-            ast_dir = join(target_dir, "AST", source_name)
-            bitcodes_dir = join(target_dir, "bitcodes", source_name)
+            ast_dir = join(target_dir, source_name, "AST")
+            bitcodes_dir = join(target_dir, source_name, "bitcodes")
+
             if not exists(build_dir):
                 makedirs(build_dir)
             if not exists(ast_dir):
                 makedirs(ast_dir)
             if not exists(bitcodes_dir):
                 makedirs(bitcodes_dir)
+
             # do not install dpendencies the first time around
             do_double_build = (
                 ci_system in double_build_ci

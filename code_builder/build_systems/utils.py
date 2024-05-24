@@ -1,7 +1,8 @@
 import subprocess
 from sys import version_info
 from subprocess import CalledProcessError, CompletedProcess
-
+import os
+from os import path
 
 def decode(stream):
     if isinstance(stream, bytes) or isinstance(stream, bytearray):
@@ -29,3 +30,18 @@ def run(command, cwd=None, stdout=None, stderr=None) -> CompletedProcess:
             out = e.output
             return CompletedProcess(command, code, stderr=decode(out))
         return CompletedProcess(command, code, stdout=decode(out))
+
+def recursively_get_files(directory, ext = ""):
+    files = []
+    for root, dirs, filenames in os.walk(directory):
+        for filename in filenames:
+            if filename.endswith(ext):
+                files.append(path.join(root, filename))
+    return files
+
+def recursively_get_dirs(directory):
+    directories = []
+    for root, dirs, filenames in os.walk(directory):
+        for d in dirs:
+            directories.append(path.join(root, d))
+    return directories
