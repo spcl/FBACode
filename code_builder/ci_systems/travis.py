@@ -42,7 +42,7 @@ class CiSystem:
         self.project = project
         self.travis_dir = build_dir if use_build_dir else repo_dir
 
-    def install(self):
+    def install(self, builder = None):
         # open the .travis.yml file
         # TODO: collect all scripts and then run them in a single instance
         self.big_script = []
@@ -388,9 +388,9 @@ class CiSystem:
             print("Could not find {}/.travis.yml".format(repo_dir))
             return False
         if "dist" in yml and yml.get("dist") in supported_dists:
-            return "mcopik/fbacode:ubuntu-{}-clang-{}".format(
+            return "specleth/fbacode:ubuntu-{}-clang-{}".format(
                 yml.get("dist"), clang_version
             )
         else:
             # default is xenial
-            return "mcopik/fbacode:ubuntu-xenial-clang-{}".format(clang_version)
+            return "spcleth/fbacode:ubuntu-xenial-clang-{}".format(clang_version)

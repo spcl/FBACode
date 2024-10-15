@@ -161,7 +161,7 @@ class Project:
             res = search(r"{}".format(self.build_dir), str(file))
             if res is None:
                 self.error_log.print_error(
-                    self.idx, "error while globbing for .bc files: {}".format(file)
+                    self.idx, "error while globbing for .ast files: {}".format(file)
                 )
                 continue
             local_path = str(file)[res.end(0) + 1 :]
@@ -184,4 +184,4 @@ class Project:
 
     @staticmethod
     def get_docker_image(repo_dir, clang_version=9):
-        return "mcopik/fbacode:ubuntu-2004-clang-{}".format(clang_version)
+        return "spcleth/fbacode:ubuntu-2004-clang-{}".format(clang_version)

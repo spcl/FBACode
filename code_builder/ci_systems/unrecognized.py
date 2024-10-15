@@ -20,7 +20,7 @@ class CiSystem:
         self.error_log = ctx.err_log
         self.project = project
 
-    def install(self):
+    def install(self, builder = None):
         # let's try to install using previous dependencies (if there are any)
         pass
 

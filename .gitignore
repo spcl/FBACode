@@ -91,6 +91,7 @@ ENV/
 env.bak/
 venv.bak/
 fbacode-virtualenv/
+fbacode-test/
 
 # Spyder project settings
 .spyderproject
@@ -114,3 +115,16 @@ source/
 buildlogs/
 compiler_output/
 .vscode/
+analyze/
+ast_archive/
+cxx-langstat/
+
+# current_build.json
+# all_built.json
+# intermediate_all_built.json
+
+# Data analysis folder
+data_analysis/**/*.png
+data_analysis/**/*.txt
+data_analysis/**/*.pdf
+build-*/

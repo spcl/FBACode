@@ -1,0 +1,332 @@
+{
+    "debian":{
+      "bro-aux": {
+        "type": "debian",
+        "version": "0.42-1",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "sh",
+              999
+            ],
+            [
+              "ansic",
+              943
+            ],
+            [
+              "ruby",
+              71
+            ],
+            [
+              "makefile",
+              68
+            ],
+            [
+              "perl",
+              35
+            ],
+            [
+              "cpp",
+              26
+            ]
+          ],
+          "vcs_url": "https://salsa.debian.org/bro-team/bro-aux",
+          "vcs_type": "git"
+        }
+      },
+      "qrencode": {
+        "type": "debian",
+        "version": "4.1.1-1",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "ansic",
+              11778
+            ],
+            [
+              "sh",
+              4911
+            ],
+            [
+              "makefile",
+              112
+            ]
+          ],
+          "vcs_url": "https://salsa.debian.org/debian/qrencode",
+          "vcs_type": "git"
+        }
+      },
+      "libfishcamp": {
+        "type": "debian",
+        "version": "1.2+20220607003151-1",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "ansic",
+              2620
+            ],
+            [
+              "makefile",
+              2
+            ]
+          ],
+          "vcs_url": "https://salsa.debian.org/debian-astro-team/libfishcamp",
+          "vcs_type": "git"
+        }
+      },
+      "librscode": {
+        "type": "debian",
+        "version": "1.3-8",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "ansic",
+              477
+            ],
+            [
+              "makefile",
+              96
+            ],
+            [
+              "sh",
+              5
+            ]
+          ],
+          "vcs_url": "https://salsa.debian.org/debian/librscode",
+          "vcs_type": "git"
+        }
+      },
+      "lightdm-remote-session-x2go": {
+        "type": "debian",
+        "version": "0.0.2.0-2",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "makefile",
+              73
+            ],
+            [
+              "ansic",
+              11
+            ],
+            [
+              "sh",
+              7
+            ]
+          ],
+          "vcs_url": "https://salsa.debian.org/debian-remote-team/lightdm-remote-session-x2go",
+          "vcs_type": "git"
+        }
+      },
+      "bti": {
+        "type": "debian",
+        "version": "034-6",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "perl",
+              2071
+            ],
+            [
+              "ansic",
+              1870
+            ],
+            [
+              "xml",
+              542
+            ],
+            [
+              "sh",
+              119
+            ],
+            [
+              "makefile",
+              62
+            ]
+          ],
+          "vcs_url": "https://git.toastfreeware.priv.at/debian/bti.git",
+          "vcs_type": "git"
+        }
+      },
+      "zmk": {
+        "type": "debian",
+        "version": "0.5.1-2",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "makefile",
+              1749
+            ],
+            [
+              "sh",
+              313
+            ],
+            [
+              "ansic",
+              42
+            ],
+            [
+              "awk",
+              12
+            ],
+            [
+              "cpp",
+              12
+            ]
+          ],
+          "vcs_url": "https://salsa.debian.org/zyga-guest/zmk",
+          "vcs_type": "git"
+        }
+      },
+      "avce00": {
+        "type": "debian",
+        "version": "2.0.0-9",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "ansic",
+              9851
+            ],
+            [
+              "makefile",
+              3
+            ]
+          ],
+          "vcs_url": "https://salsa.debian.org/debian-gis-team/avce00",
+          "vcs_type": "git"
+        }
+      },
+      "boolector": {
+        "type": "debian",
+        "version": "1.5.118.6b56be4.121013-1.3",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "ansic",
+              47665
+            ],
+            [
+              "sh",
+              422
+            ],
+            [
+              "cpp",
+              173
+            ],
+            [
+              "makefile",
+              158
+            ]
+          ],
+          "vcs_url": null,
+          "vcs_type": null
+        }
+      },
+      "safe": {
+        "type": "debian",
+        "version": "1.0.1-2",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "cpp",
+              513
+            ],
+            [
+              "ansic",
+              63
+            ],
+            [
+              "makefile",
+              4
+            ]
+          ],
+          "vcs_url": "https://salsa.debian.org/werdahias/libsafe",
+          "vcs_type": "git"
+        }
+      },
+      "looktxt": {
+        "type": "debian",
+        "version": "1.4.1-3",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "ansic",
+              3336
+            ],
+            [
+              "makefile",
+              29
+            ],
+            [
+              "sh",
+              3
+            ]
+          ],
+          "vcs_url": "https://salsa.debian.org/science-team/looktxt",
+          "vcs_type": "git"
+        }
+      },
+      "zchunk": {
+        "type": "debian",
+        "version": "1.2.3+ds1-2",
+        "suite": "bookworm",
+        "recently_updated": true,
+        "status": "new",
+        "codebase_data": {
+          "sloc": [
+            [
+              "ansic",
+              12892
+            ],
+            [
+              "python",
+              433
+            ],
+            [
+              "sh",
+              288
+            ],
+            [
+              "makefile",
+              12
+            ]
+          ],
+          "vcs_url": "https://salsa.debian.org/pkg-rpm-team/zchunk",
+          "vcs_type": "git"
+        }
+      }
+    }
+  }

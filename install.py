@@ -9,7 +9,7 @@ args = parser.parse_args()
 
 def execute(cmd):
     ret = subprocess.run(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True
+        cmd, capture_output = True, text = True, shell=True
     )
     if ret.returncode:
         raise RuntimeError(

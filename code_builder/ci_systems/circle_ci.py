@@ -22,7 +22,7 @@ class CiSystem:
         self.error_log = ctx.err_log
         self.project = project
 
-    def install(self):
+    def install(self, builder = None):
         return True
 
     @staticmethod

@@ -30,7 +30,17 @@ class CiSystem:
         self.project = project
         self.name = name
 
-    def install(self):
+    def install(self, builder = None):
+        out = run(
+            ["apt-get", "update", "-y"],
+            cwd=self.repository_path,
+            stderr=PIPE,
+        )
+        if out.returncode != 0:
+            self.error_log.print_error(
+                self.idx, "error in apt uppdate: {}".format(out.stderr)
+            )
+            return False
         out = run(
             ["apt-get", "build-dep", "-y", self.name],
             cwd=self.repository_path,

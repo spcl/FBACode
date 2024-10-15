@@ -1,0 +1,4122 @@
+{
+    "debian": {
+        "capnproto": {
+            "type": "debian",
+            "version": "0.9.2-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        20958
+                    ],
+                    [
+                        "sh",
+                        4467
+                    ],
+                    [
+                        "ansic",
+                        681
+                    ],
+                    [
+                        "makefile",
+                        538
+                    ],
+                    [
+                        "xml",
+                        275
+                    ]
+                ],
+                "vcs_url": "https://github.com/thomaslee/capnproto-debian",
+                "vcs_type": "git"
+            }
+        },
+        "timg": {
+            "type": "debian",
+            "version": "1.4.5-1+deb12u1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        7946
+                    ],
+                    [
+                        "cpp",
+                        3984
+                    ],
+                    [
+                        "pascal",
+                        166
+                    ],
+                    [
+                        "makefile",
+                        9
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/timg",
+                "vcs_type": "git"
+            }
+        },
+        "r-cran-rstanarm": {
+            "type": "debian",
+            "version": "2.21.3-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        44
+                    ],
+                    [
+                        "sh",
+                        20
+                    ],
+                    [
+                        "makefile",
+                        2
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/r-pkg-team/r-cran-rstanarm",
+                "vcs_type": "git"
+            }
+        },
+        "seqan2": {
+            "type": "debian",
+            "version": "2.4.0+dfsg-15",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        256886
+                    ],
+                    [
+                        "ansic",
+                        91672
+                    ],
+                    [
+                        "python",
+                        8330
+                    ],
+                    [
+                        "sh",
+                        995
+                    ],
+                    [
+                        "xml",
+                        570
+                    ],
+                    [
+                        "makefile",
+                        251
+                    ],
+                    [
+                        "awk",
+                        51
+                    ],
+                    [
+                        "javascript",
+                        21
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/med-team/seqan2",
+                "vcs_type": "git"
+            }
+        },
+        "embree": {
+            "type": "debian",
+            "version": "3.13.5+dfsg-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        180815
+                    ],
+                    [
+                        "xml",
+                        3877
+                    ],
+                    [
+                        "ansic",
+                        2957
+                    ],
+                    [
+                        "python",
+                        1466
+                    ],
+                    [
+                        "sh",
+                        502
+                    ],
+                    [
+                        "makefile",
+                        229
+                    ],
+                    [
+                        "csh",
+                        42
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/multimedia-team/embree",
+                "vcs_type": "git"
+            }
+        },
+        "v4l-utils": {
+            "type": "debian",
+            "version": "1.22.1-5",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        81718
+                    ],
+                    [
+                        "cpp",
+                        51598
+                    ],
+                    [
+                        "perl",
+                        11014
+                    ],
+                    [
+                        "sh",
+                        5276
+                    ],
+                    [
+                        "makefile",
+                        682
+                    ],
+                    [
+                        "python",
+                        544
+                    ],
+                    [
+                        "php",
+                        119
+                    ],
+                    [
+                        "sed",
+                        16
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/libv4l",
+                "vcs_type": "git"
+            }
+        },
+        "lnav": {
+            "type": "debian",
+            "version": "0.11.1-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        145182
+                    ],
+                    [
+                        "ansic",
+                        29675
+                    ],
+                    [
+                        "sh",
+                        4007
+                    ],
+                    [
+                        "makefile",
+                        1642
+                    ],
+                    [
+                        "python",
+                        860
+                    ],
+                    [
+                        "sql",
+                        258
+                    ],
+                    [
+                        "xml",
+                        120
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/carnil/lnav",
+                "vcs_type": "git"
+            }
+        },
+        "visp": {
+            "type": "debian",
+            "version": "3.5.0-4",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        479124
+                    ],
+                    [
+                        "ansic",
+                        46236
+                    ],
+                    [
+                        "xml",
+                        22483
+                    ],
+                    [
+                        "python",
+                        4600
+                    ],
+                    [
+                        "java",
+                        4247
+                    ],
+                    [
+                        "sh",
+                        460
+                    ],
+                    [
+                        "makefile",
+                        237
+                    ],
+                    [
+                        "objc",
+                        145
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/science-team/visp",
+                "vcs_type": "git"
+            }
+        },
+        "ros-diagnostics": {
+            "type": "debian",
+            "version": "1.11.0+ds-4",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        3001
+                    ],
+                    [
+                        "python",
+                        2550
+                    ],
+                    [
+                        "xml",
+                        226
+                    ],
+                    [
+                        "sh",
+                        21
+                    ],
+                    [
+                        "makefile",
+                        10
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/science-team/ros-diagnostics",
+                "vcs_type": "git"
+            }
+        },
+        "bmagic": {
+            "type": "debian",
+            "version": "6.3.0-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        84298
+                    ],
+                    [
+                        "ansic",
+                        9703
+                    ],
+                    [
+                        "sh",
+                        1664
+                    ],
+                    [
+                        "makefile",
+                        742
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "dwz": {
+            "type": "debian",
+            "version": "0.15-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        16632
+                    ],
+                    [
+                        "exp",
+                        1554
+                    ],
+                    [
+                        "asm",
+                        1349
+                    ],
+                    [
+                        "sh",
+                        1211
+                    ],
+                    [
+                        "makefile",
+                        174
+                    ],
+                    [
+                        "cpp",
+                        107
+                    ],
+                    [
+                        "awk",
+                        23
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "librsb": {
+            "type": "debian",
+            "version": "1.3.0.2+dfsg-4",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        274405
+                    ],
+                    [
+                        "f90",
+                        108468
+                    ],
+                    [
+                        "cpp",
+                        16934
+                    ],
+                    [
+                        "sh",
+                        6761
+                    ],
+                    [
+                        "makefile",
+                        1680
+                    ],
+                    [
+                        "objc",
+                        692
+                    ],
+                    [
+                        "awk",
+                        22
+                    ],
+                    [
+                        "sed",
+                        1
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/science-team/librsb",
+                "vcs_type": "git"
+            }
+        },
+        "renderdoc": {
+            "type": "debian",
+            "version": "1.24+dfsg-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        759366
+                    ],
+                    [
+                        "ansic",
+                        309460
+                    ],
+                    [
+                        "python",
+                        26606
+                    ],
+                    [
+                        "xml",
+                        22599
+                    ],
+                    [
+                        "java",
+                        11365
+                    ],
+                    [
+                        "cs",
+                        7181
+                    ],
+                    [
+                        "makefile",
+                        6707
+                    ],
+                    [
+                        "yacc",
+                        5682
+                    ],
+                    [
+                        "ruby",
+                        4648
+                    ],
+                    [
+                        "perl",
+                        3461
+                    ],
+                    [
+                        "sh",
+                        2354
+                    ],
+                    [
+                        "php",
+                        2119
+                    ],
+                    [
+                        "lisp",
+                        1835
+                    ],
+                    [
+                        "javascript",
+                        1524
+                    ],
+                    [
+                        "tcl",
+                        1068
+                    ],
+                    [
+                        "ml",
+                        747
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/xorg-team/app/renderdoc",
+                "vcs_type": "git"
+            }
+        },
+        "plink1.9": {
+            "type": "debian",
+            "version": "1.90~b6.26-220402-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        127479
+                    ],
+                    [
+                        "cpp",
+                        1108
+                    ],
+                    [
+                        "makefile",
+                        142
+                    ],
+                    [
+                        "sh",
+                        53
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/med-team/plink1-9",
+                "vcs_type": "git"
+            }
+        },
+        "waylandpp": {
+            "type": "debian",
+            "version": "1.0.0-4",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "xml",
+                        10327
+                    ],
+                    [
+                        "cpp",
+                        4346
+                    ],
+                    [
+                        "makefile",
+                        26
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/waylandpp",
+                "vcs_type": "git"
+            }
+        },
+        "odb": {
+            "type": "debian",
+            "version": "2.4.0-16",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        41219
+                    ],
+                    [
+                        "sh",
+                        11329
+                    ],
+                    [
+                        "makefile",
+                        38
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "coz-profiler": {
+            "type": "debian",
+            "version": "0.2.2-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        188045
+                    ],
+                    [
+                        "javascript",
+                        20133
+                    ],
+                    [
+                        "cpp",
+                        6852
+                    ],
+                    [
+                        "makefile",
+                        214
+                    ],
+                    [
+                        "python",
+                        118
+                    ],
+                    [
+                        "sh",
+                        88
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/coz-team/coz-profiler",
+                "vcs_type": "git"
+            }
+        },
+        "scitokens-cpp": {
+            "type": "debian",
+            "version": "0.7.3-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        5080
+                    ],
+                    [
+                        "makefile",
+                        14
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/ellert/scitokens-cpp",
+                "vcs_type": "git"
+            }
+        },
+        "spectra": {
+            "type": "debian",
+            "version": "1.0.1-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        21645
+                    ],
+                    [
+                        "ansic",
+                        175
+                    ],
+                    [
+                        "fortran",
+                        131
+                    ],
+                    [
+                        "makefile",
+                        77
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/math-team/spectra",
+                "vcs_type": "git"
+            }
+        },
+        "wdq2wav": {
+            "type": "debian",
+            "version": "1.0.0-1.1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        840
+                    ],
+                    [
+                        "cpp",
+                        801
+                    ],
+                    [
+                        "makefile",
+                        17
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "segyio": {
+            "type": "debian",
+            "version": "1.8.3-1.2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        17823
+                    ],
+                    [
+                        "ansic",
+                        4637
+                    ],
+                    [
+                        "python",
+                        4326
+                    ],
+                    [
+                        "makefile",
+                        38
+                    ],
+                    [
+                        "sh",
+                        23
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/science-team/segyio",
+                "vcs_type": "git"
+            }
+        },
+        "wala": {
+            "type": "debian",
+            "version": "1.5.2-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "java",
+                        185762
+                    ],
+                    [
+                        "javascript",
+                        37931
+                    ],
+                    [
+                        "xml",
+                        6066
+                    ],
+                    [
+                        "cpp",
+                        1161
+                    ],
+                    [
+                        "sh",
+                        204
+                    ],
+                    [
+                        "makefile",
+                        46
+                    ],
+                    [
+                        "python",
+                        46
+                    ],
+                    [
+                        "ml",
+                        12
+                    ],
+                    [
+                        "lisp",
+                        8
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/java-team/wala",
+                "vcs_type": "git"
+            }
+        },
+        "warzone2100": {
+            "type": "debian",
+            "version": "4.3.3-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        529389
+                    ],
+                    [
+                        "ansic",
+                        344010
+                    ],
+                    [
+                        "javascript",
+                        50924
+                    ],
+                    [
+                        "python",
+                        16380
+                    ],
+                    [
+                        "php",
+                        4182
+                    ],
+                    [
+                        "sh",
+                        3812
+                    ],
+                    [
+                        "makefile",
+                        1751
+                    ],
+                    [
+                        "lisp",
+                        1194
+                    ],
+                    [
+                        "ruby",
+                        503
+                    ],
+                    [
+                        "cs",
+                        476
+                    ],
+                    [
+                        "perl",
+                        224
+                    ],
+                    [
+                        "xml",
+                        222
+                    ],
+                    [
+                        "java",
+                        88
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/games-team/warzone2100",
+                "vcs_type": "git"
+            }
+        },
+        "clblast": {
+            "type": "debian",
+            "version": "1.5.3-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        53454
+                    ],
+                    [
+                        "ansic",
+                        4158
+                    ],
+                    [
+                        "python",
+                        3176
+                    ],
+                    [
+                        "sh",
+                        29
+                    ],
+                    [
+                        "makefile",
+                        18
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/gspr/clblast",
+                "vcs_type": "git"
+            }
+        },
+        "r-cran-plogr": {
+            "type": "debian",
+            "version": "0.2.0-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        397
+                    ],
+                    [
+                        "ansic",
+                        142
+                    ],
+                    [
+                        "makefile",
+                        2
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/r-pkg-team/r-cran-plogr",
+                "vcs_type": "git"
+            }
+        },
+        "libvbz-hdf-plugin": {
+            "type": "debian",
+            "version": "1.0.2-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        28287
+                    ],
+                    [
+                        "python",
+                        392
+                    ],
+                    [
+                        "ansic",
+                        40
+                    ],
+                    [
+                        "sh",
+                        21
+                    ],
+                    [
+                        "makefile",
+                        18
+                    ],
+                    [
+                        "xml",
+                        16
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/med-team/libvbz-hdf-plugin",
+                "vcs_type": "git"
+            }
+        },
+        "stax": {
+            "type": "debian",
+            "version": "1.37-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        10761
+                    ],
+                    [
+                        "makefile",
+                        31
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "gringo": {
+            "type": "debian",
+            "version": "5.4.1-3.1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        138270
+                    ],
+                    [
+                        "python",
+                        1611
+                    ],
+                    [
+                        "ansic",
+                        1381
+                    ],
+                    [
+                        "yacc",
+                        891
+                    ],
+                    [
+                        "javascript",
+                        627
+                    ],
+                    [
+                        "sh",
+                        184
+                    ],
+                    [
+                        "xml",
+                        182
+                    ],
+                    [
+                        "makefile",
+                        29
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/science-team/gringo",
+                "vcs_type": "git"
+            }
+        },
+        "keyman": {
+            "type": "debian",
+            "version": "16.0.138-4",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "python",
+                        48724
+                    ],
+                    [
+                        "cpp",
+                        9485
+                    ],
+                    [
+                        "sh",
+                        8376
+                    ],
+                    [
+                        "ansic",
+                        3642
+                    ],
+                    [
+                        "perl",
+                        959
+                    ],
+                    [
+                        "makefile",
+                        421
+                    ],
+                    [
+                        "xml",
+                        98
+                    ],
+                    [
+                        "javascript",
+                        56
+                    ],
+                    [
+                        "sed",
+                        16
+                    ]
+                ],
+                "vcs_url": "https://github.com/keymanapp/keyman/tree/stable-16.0/linux/debian",
+                "vcs_type": "git"
+            }
+        },
+        "dvisvgm": {
+            "type": "debian",
+            "version": "3.0.3-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        80827
+                    ],
+                    [
+                        "ansic",
+                        31385
+                    ],
+                    [
+                        "makefile",
+                        875
+                    ],
+                    [
+                        "xml",
+                        193
+                    ],
+                    [
+                        "python",
+                        177
+                    ],
+                    [
+                        "sh",
+                        103
+                    ]
+                ],
+                "vcs_url": "https://github.com/debian-tex/dvisvgm",
+                "vcs_type": "git"
+            }
+        },
+        "fcitx5": {
+            "type": "debian",
+            "version": "5.0.21-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        60597
+                    ],
+                    [
+                        "sh",
+                        1839
+                    ],
+                    [
+                        "python",
+                        984
+                    ],
+                    [
+                        "xml",
+                        751
+                    ],
+                    [
+                        "ansic",
+                        64
+                    ],
+                    [
+                        "makefile",
+                        11
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/input-method-team/fcitx5",
+                "vcs_type": "git"
+            }
+        },
+        "therion": {
+            "type": "debian",
+            "version": "6.1.6-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        120299
+                    ],
+                    [
+                        "cpp",
+                        95363
+                    ],
+                    [
+                        "tcl",
+                        19779
+                    ],
+                    [
+                        "perl",
+                        1895
+                    ],
+                    [
+                        "makefile",
+                        1232
+                    ],
+                    [
+                        "python",
+                        255
+                    ],
+                    [
+                        "asm",
+                        219
+                    ],
+                    [
+                        "sh",
+                        103
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "ffmpeg": {
+            "type": "debian",
+            "version": "7:5.1.4-0+deb12u1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        1198468
+                    ],
+                    [
+                        "asm",
+                        101293
+                    ],
+                    [
+                        "sh",
+                        8607
+                    ],
+                    [
+                        "makefile",
+                        4668
+                    ],
+                    [
+                        "cpp",
+                        2681
+                    ],
+                    [
+                        "lisp",
+                        1771
+                    ],
+                    [
+                        "perl",
+                        1101
+                    ],
+                    [
+                        "objc",
+                        1001
+                    ],
+                    [
+                        "python",
+                        575
+                    ],
+                    [
+                        "awk",
+                        56
+                    ],
+                    [
+                        "ruby",
+                        51
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/multimedia-team/ffmpeg",
+                "vcs_type": "git"
+            }
+        },
+        "tao-json": {
+            "type": "debian",
+            "version": "0.0+git20200604.f357d72-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        48129
+                    ],
+                    [
+                        "makefile",
+                        55
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/med-team/tao-json",
+                "vcs_type": "git"
+            }
+        },
+        "r-cran-projpred": {
+            "type": "debian",
+            "version": "2.3.0+dfsg-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        296
+                    ],
+                    [
+                        "sh",
+                        14
+                    ],
+                    [
+                        "makefile",
+                        5
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/r-pkg-team/r-cran-projpred",
+                "vcs_type": "git"
+            }
+        },
+        "octave": {
+            "type": "debian",
+            "version": "7.3.0-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        332823
+                    ],
+                    [
+                        "ansic",
+                        71320
+                    ],
+                    [
+                        "fortran",
+                        20963
+                    ],
+                    [
+                        "objc",
+                        8562
+                    ],
+                    [
+                        "sh",
+                        8115
+                    ],
+                    [
+                        "yacc",
+                        4882
+                    ],
+                    [
+                        "lex",
+                        4438
+                    ],
+                    [
+                        "perl",
+                        1554
+                    ],
+                    [
+                        "java",
+                        1366
+                    ],
+                    [
+                        "awk",
+                        1257
+                    ],
+                    [
+                        "makefile",
+                        652
+                    ],
+                    [
+                        "xml",
+                        173
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/pkg-octave-team/octave",
+                "vcs_type": "git"
+            }
+        },
+        "zxing-cpp": {
+            "type": "debian",
+            "version": "1.4.0-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        49035
+                    ],
+                    [
+                        "python",
+                        150
+                    ],
+                    [
+                        "javascript",
+                        31
+                    ],
+                    [
+                        "makefile",
+                        11
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/zxing-cpp",
+                "vcs_type": "git"
+            }
+        },
+        "googletest": {
+            "type": "debian",
+            "version": "1.12.1-0.2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        52103
+                    ],
+                    [
+                        "python",
+                        3685
+                    ],
+                    [
+                        "sh",
+                        122
+                    ],
+                    [
+                        "makefile",
+                        18
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/googletest",
+                "vcs_type": "git"
+            }
+        },
+        "watchman": {
+            "type": "debian",
+            "version": "4.9.0-7",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        27450
+                    ],
+                    [
+                        "python",
+                        6534
+                    ],
+                    [
+                        "java",
+                        3404
+                    ],
+                    [
+                        "php",
+                        3257
+                    ],
+                    [
+                        "ansic",
+                        2803
+                    ],
+                    [
+                        "javascript",
+                        1116
+                    ],
+                    [
+                        "makefile",
+                        674
+                    ],
+                    [
+                        "ruby",
+                        364
+                    ],
+                    [
+                        "sh",
+                        124
+                    ],
+                    [
+                        "xml",
+                        102
+                    ],
+                    [
+                        "lisp",
+                        4
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/watchman",
+                "vcs_type": "git"
+            }
+        },
+        "libjama": {
+            "type": "debian",
+            "version": "1.2.4-2.3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        1589
+                    ],
+                    [
+                        "makefile",
+                        36
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "r-cran-intervals": {
+            "type": "debian",
+            "version": "0.15.2-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        306
+                    ],
+                    [
+                        "ansic",
+                        20
+                    ],
+                    [
+                        "sh",
+                        13
+                    ],
+                    [
+                        "makefile",
+                        2
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/r-pkg-team/r-cran-intervals",
+                "vcs_type": "git"
+            }
+        },
+        "flexc++": {
+            "type": "debian",
+            "version": "2.11.02-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        6411
+                    ],
+                    [
+                        "makefile",
+                        166
+                    ],
+                    [
+                        "sh",
+                        130
+                    ],
+                    [
+                        "ansic",
+                        9
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/flexcpp",
+                "vcs_type": "git"
+            }
+        },
+        "actor-framework": {
+            "type": "debian",
+            "version": "0.17.6-2.1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        77682
+                    ],
+                    [
+                        "sh",
+                        674
+                    ],
+                    [
+                        "python",
+                        309
+                    ],
+                    [
+                        "makefile",
+                        13
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "augustus": {
+            "type": "debian",
+            "version": "3.5.0+dfsg-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        80063
+                    ],
+                    [
+                        "perl",
+                        21491
+                    ],
+                    [
+                        "python",
+                        4368
+                    ],
+                    [
+                        "ansic",
+                        1244
+                    ],
+                    [
+                        "makefile",
+                        1126
+                    ],
+                    [
+                        "sh",
+                        171
+                    ],
+                    [
+                        "javascript",
+                        32
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/med-team/augustus",
+                "vcs_type": "git"
+            }
+        },
+        "libwildmagic": {
+            "type": "debian",
+            "version": "5.17+cleaned1-6",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        215940
+                    ],
+                    [
+                        "csh",
+                        637
+                    ],
+                    [
+                        "sh",
+                        91
+                    ],
+                    [
+                        "makefile",
+                        39
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debichem-team/libwildmagic",
+                "vcs_type": "git"
+            }
+        },
+        "golang-github-bep-golibsass": {
+            "type": "debian",
+            "version": "1.1.0-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        30477
+                    ],
+                    [
+                        "ansic",
+                        848
+                    ],
+                    [
+                        "sh",
+                        662
+                    ],
+                    [
+                        "makefile",
+                        344
+                    ],
+                    [
+                        "perl",
+                        124
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/go-team/packages/golang-github-bep-golibsass",
+                "vcs_type": "git"
+            }
+        },
+        "lerc": {
+            "type": "debian",
+            "version": "4.0.0+ds-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        9022
+                    ],
+                    [
+                        "python",
+                        656
+                    ],
+                    [
+                        "makefile",
+                        28
+                    ],
+                    [
+                        "sh",
+                        8
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian-gis-team/lerc",
+                "vcs_type": "git"
+            }
+        },
+        "kicad": {
+            "type": "debian",
+            "version": "6.0.11+dfsg-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        633548
+                    ],
+                    [
+                        "ansic",
+                        128181
+                    ],
+                    [
+                        "python",
+                        15410
+                    ],
+                    [
+                        "sh",
+                        560
+                    ],
+                    [
+                        "awk",
+                        294
+                    ],
+                    [
+                        "makefile",
+                        264
+                    ],
+                    [
+                        "xml",
+                        231
+                    ],
+                    [
+                        "asm",
+                        222
+                    ],
+                    [
+                        "perl",
+                        10
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/electronics-team/KiCad/kicad/-/tree/debian/sid",
+                "vcs_type": "git"
+            }
+        },
+        "cadabra2": {
+            "type": "debian",
+            "version": "2.4.3.2-1.1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        133450
+                    ],
+                    [
+                        "cpp",
+                        92064
+                    ],
+                    [
+                        "python",
+                        1530
+                    ],
+                    [
+                        "javascript",
+                        203
+                    ],
+                    [
+                        "sh",
+                        184
+                    ],
+                    [
+                        "xml",
+                        182
+                    ],
+                    [
+                        "objc",
+                        53
+                    ],
+                    [
+                        "makefile",
+                        51
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/cadabra2",
+                "vcs_type": "git"
+            }
+        },
+        "openttd": {
+            "type": "debian",
+            "version": "13.0-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        228495
+                    ],
+                    [
+                        "ansic",
+                        30726
+                    ],
+                    [
+                        "awk",
+                        217
+                    ],
+                    [
+                        "javascript",
+                        88
+                    ],
+                    [
+                        "sh",
+                        42
+                    ],
+                    [
+                        "makefile",
+                        40
+                    ],
+                    [
+                        "xml",
+                        27
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/openttd-team/openttd",
+                "vcs_type": "git"
+            }
+        },
+        "nlohmann-json3": {
+            "type": "debian",
+            "version": "3.11.2-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        101475
+                    ],
+                    [
+                        "python",
+                        4426
+                    ],
+                    [
+                        "makefile",
+                        297
+                    ],
+                    [
+                        "sql",
+                        227
+                    ],
+                    [
+                        "ansic",
+                        45
+                    ],
+                    [
+                        "sh",
+                        17
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/nlohmann-json3",
+                "vcs_type": "git"
+            }
+        },
+        "cunit": {
+            "type": "debian",
+            "version": "2.1-3-dfsg-2.6",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "sh",
+                        9860
+                    ],
+                    [
+                        "ansic",
+                        9503
+                    ],
+                    [
+                        "cpp",
+                        1270
+                    ],
+                    [
+                        "makefile",
+                        382
+                    ],
+                    [
+                        "perl",
+                        45
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/cunit",
+                "vcs_type": "git"
+            }
+        },
+        "collada2gltf": {
+            "type": "debian",
+            "version": "20140924-9",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        33763
+                    ],
+                    [
+                        "ansic",
+                        5313
+                    ],
+                    [
+                        "python",
+                        29
+                    ],
+                    [
+                        "makefile",
+                        6
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/collada2gltf",
+                "vcs_type": "git"
+            }
+        },
+        "libargs": {
+            "type": "debian",
+            "version": "6.4.1-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        15120
+                    ],
+                    [
+                        "makefile",
+                        56
+                    ],
+                    [
+                        "sh",
+                        19
+                    ],
+                    [
+                        "python",
+                        12
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/med-team/libargs",
+                "vcs_type": "git"
+            }
+        },
+        "gdal": {
+            "type": "debian",
+            "version": "3.6.2+dfsg-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        1136033
+                    ],
+                    [
+                        "ansic",
+                        197355
+                    ],
+                    [
+                        "python",
+                        35910
+                    ],
+                    [
+                        "java",
+                        5511
+                    ],
+                    [
+                        "xml",
+                        4011
+                    ],
+                    [
+                        "sh",
+                        3950
+                    ],
+                    [
+                        "cs",
+                        2443
+                    ],
+                    [
+                        "yacc",
+                        1047
+                    ],
+                    [
+                        "makefile",
+                        288
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian-gis-team/gdal",
+                "vcs_type": "git"
+            }
+        },
+        "fastani": {
+            "type": "debian",
+            "version": "1.33-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        6387
+                    ],
+                    [
+                        "ansic",
+                        385
+                    ],
+                    [
+                        "sh",
+                        50
+                    ],
+                    [
+                        "makefile",
+                        19
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/med-team/fastani",
+                "vcs_type": "git"
+            }
+        },
+        "primesieve": {
+            "type": "debian",
+            "version": "11.0+ds-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        8219
+                    ],
+                    [
+                        "ansic",
+                        723
+                    ],
+                    [
+                        "sh",
+                        197
+                    ],
+                    [
+                        "makefile",
+                        88
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/math-team/primesieve",
+                "vcs_type": "git"
+            }
+        },
+        "kodi-game-libretro": {
+            "type": "debian",
+            "version": "20.2.2-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        6599
+                    ],
+                    [
+                        "xml",
+                        13
+                    ],
+                    [
+                        "makefile",
+                        8
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/games-team/libretro/kodi-game-libretro",
+                "vcs_type": "git"
+            }
+        },
+        "restinio": {
+            "type": "debian",
+            "version": "0.6.16-0.2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        220222
+                    ],
+                    [
+                        "ansic",
+                        13569
+                    ],
+                    [
+                        "ruby",
+                        2618
+                    ],
+                    [
+                        "python",
+                        993
+                    ],
+                    [
+                        "asm",
+                        954
+                    ],
+                    [
+                        "makefile",
+                        676
+                    ],
+                    [
+                        "sh",
+                        21
+                    ],
+                    [
+                        "xml",
+                        1
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/restinio",
+                "vcs_type": "git"
+            }
+        },
+        "jsonnet": {
+            "type": "debian",
+            "version": "0.18.0+ds-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        66447
+                    ],
+                    [
+                        "ansic",
+                        8214
+                    ],
+                    [
+                        "python",
+                        2768
+                    ],
+                    [
+                        "sh",
+                        1929
+                    ],
+                    [
+                        "javascript",
+                        1417
+                    ],
+                    [
+                        "makefile",
+                        192
+                    ],
+                    [
+                        "java",
+                        140
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/jsonnet",
+                "vcs_type": "git"
+            }
+        },
+        "recoll": {
+            "type": "debian",
+            "version": "1.34.3-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        69282
+                    ],
+                    [
+                        "ansic",
+                        8573
+                    ],
+                    [
+                        "python",
+                        8293
+                    ],
+                    [
+                        "xml",
+                        7003
+                    ],
+                    [
+                        "sh",
+                        6122
+                    ],
+                    [
+                        "makefile",
+                        1041
+                    ],
+                    [
+                        "perl",
+                        131
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/recoll",
+                "vcs_type": "git"
+            }
+        },
+        "abseil": {
+            "type": "debian",
+            "version": "20220623.1-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        149832
+                    ],
+                    [
+                        "pascal",
+                        1362
+                    ],
+                    [
+                        "sh",
+                        654
+                    ],
+                    [
+                        "python",
+                        446
+                    ],
+                    [
+                        "makefile",
+                        32
+                    ],
+                    [
+                        "ansic",
+                        10
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/abseil",
+                "vcs_type": "git"
+            }
+        },
+        "catch2": {
+            "type": "debian",
+            "version": "2.13.10-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        35933
+                    ],
+                    [
+                        "python",
+                        1158
+                    ],
+                    [
+                        "sh",
+                        81
+                    ],
+                    [
+                        "objc",
+                        59
+                    ],
+                    [
+                        "makefile",
+                        14
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/catch2",
+                "vcs_type": "git"
+            }
+        },
+        "opencv": {
+            "type": "debian",
+            "version": "4.6.0+dfsg-12",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        1079020
+                    ],
+                    [
+                        "xml",
+                        682526
+                    ],
+                    [
+                        "python",
+                        43885
+                    ],
+                    [
+                        "lisp",
+                        30943
+                    ],
+                    [
+                        "java",
+                        25642
+                    ],
+                    [
+                        "ansic",
+                        7968
+                    ],
+                    [
+                        "javascript",
+                        5956
+                    ],
+                    [
+                        "objc",
+                        2039
+                    ],
+                    [
+                        "sh",
+                        1017
+                    ],
+                    [
+                        "cs",
+                        601
+                    ],
+                    [
+                        "perl",
+                        494
+                    ],
+                    [
+                        "makefile",
+                        179
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/science-team/opencv",
+                "vcs_type": "git"
+            }
+        },
+        "rudecgi": {
+            "type": "debian",
+            "version": "5.0.0-1.1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "sh",
+                        8570
+                    ],
+                    [
+                        "cpp",
+                        3007
+                    ],
+                    [
+                        "makefile",
+                        76
+                    ]
+                ],
+                "vcs_url": "https://gitorious.org/rudecgi-packaging/rudecgi-packaging",
+                "vcs_type": "git"
+            }
+        },
+        "librandom123": {
+            "type": "debian",
+            "version": "1.14.0+dfsg-4",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        4947
+                    ],
+                    [
+                        "ansic",
+                        4559
+                    ],
+                    [
+                        "objc",
+                        66
+                    ],
+                    [
+                        "sh",
+                        35
+                    ],
+                    [
+                        "makefile",
+                        3
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/med-team/librandom123",
+                "vcs_type": "git"
+            }
+        },
+        "geos": {
+            "type": "debian",
+            "version": "3.11.1-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        157310
+                    ],
+                    [
+                        "xml",
+                        53816
+                    ],
+                    [
+                        "ansic",
+                        6956
+                    ],
+                    [
+                        "sh",
+                        302
+                    ],
+                    [
+                        "makefile",
+                        30
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian-gis-team/geos",
+                "vcs_type": "git"
+            }
+        },
+        "r-cran-treespace": {
+            "type": "debian",
+            "version": "1.1.4.1+dfsg-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        24
+                    ],
+                    [
+                        "sh",
+                        13
+                    ],
+                    [
+                        "makefile",
+                        2
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/r-pkg-team/r-cran-treespace",
+                "vcs_type": "git"
+            }
+        },
+        "opm-common": {
+            "type": "debian",
+            "version": "2022.10+ds-7",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        164554
+                    ],
+                    [
+                        "python",
+                        2872
+                    ],
+                    [
+                        "sh",
+                        216
+                    ],
+                    [
+                        "xml",
+                        174
+                    ],
+                    [
+                        "ansic",
+                        149
+                    ],
+                    [
+                        "pascal",
+                        136
+                    ],
+                    [
+                        "makefile",
+                        12
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/science-team/opm-common",
+                "vcs_type": "git"
+            }
+        },
+        "gemmi": {
+            "type": "debian",
+            "version": "0.5.7+ds-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        48972
+                    ],
+                    [
+                        "python",
+                        4352
+                    ],
+                    [
+                        "ansic",
+                        3428
+                    ],
+                    [
+                        "sh",
+                        302
+                    ],
+                    [
+                        "makefile",
+                        69
+                    ],
+                    [
+                        "f90",
+                        42
+                    ],
+                    [
+                        "javascript",
+                        12
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debichem-team/gemmi",
+                "vcs_type": "git"
+            }
+        },
+        "ares": {
+            "type": "debian",
+            "version": "126-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        356508
+                    ],
+                    [
+                        "ansic",
+                        20394
+                    ],
+                    [
+                        "makefile",
+                        16
+                    ],
+                    [
+                        "sh",
+                        2
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/games-team/ares",
+                "vcs_type": "git"
+            }
+        },
+        "libfilezilla": {
+            "type": "debian",
+            "version": "0.41.0-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        25452
+                    ],
+                    [
+                        "sh",
+                        4241
+                    ],
+                    [
+                        "makefile",
+                        351
+                    ],
+                    [
+                        "xml",
+                        37
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/libfilezilla",
+                "vcs_type": "git"
+            }
+        },
+        "libvpx": {
+            "type": "debian",
+            "version": "1.12.0-1+deb12u2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        235362
+                    ],
+                    [
+                        "cpp",
+                        110311
+                    ],
+                    [
+                        "asm",
+                        22260
+                    ],
+                    [
+                        "sh",
+                        4891
+                    ],
+                    [
+                        "python",
+                        4390
+                    ],
+                    [
+                        "perl",
+                        1840
+                    ],
+                    [
+                        "makefile",
+                        439
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/multimedia-team/libvpx",
+                "vcs_type": "git"
+            }
+        },
+        "protozero": {
+            "type": "debian",
+            "version": "1.7.1-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        20258
+                    ],
+                    [
+                        "sh",
+                        18
+                    ],
+                    [
+                        "makefile",
+                        15
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian-gis-team/protozero/",
+                "vcs_type": "git"
+            }
+        },
+        "welle.io": {
+            "type": "debian",
+            "version": "2.4+ds-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        84768
+                    ],
+                    [
+                        "asm",
+                        17454
+                    ],
+                    [
+                        "cpp",
+                        16818
+                    ],
+                    [
+                        "javascript",
+                        497
+                    ],
+                    [
+                        "xml",
+                        155
+                    ],
+                    [
+                        "sh",
+                        141
+                    ],
+                    [
+                        "python",
+                        131
+                    ],
+                    [
+                        "java",
+                        37
+                    ],
+                    [
+                        "makefile",
+                        36
+                    ],
+                    [
+                        "ruby",
+                        32
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian-hamradio-team/welle.io",
+                "vcs_type": "git"
+            }
+        },
+        "intel2gas": {
+            "type": "debian",
+            "version": "1.3.3-17",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        1286
+                    ],
+                    [
+                        "makefile",
+                        90
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "spaced": {
+            "type": "debian",
+            "version": "1.2.0-201605+dfsg-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        2252
+                    ],
+                    [
+                        "sh",
+                        44
+                    ],
+                    [
+                        "makefile",
+                        11
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/med-team/spaced",
+                "vcs_type": "git"
+            }
+        },
+        "indi": {
+            "type": "debian",
+            "version": "1.9.9+dfsg-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        186148
+                    ],
+                    [
+                        "ansic",
+                        30833
+                    ],
+                    [
+                        "xml",
+                        869
+                    ],
+                    [
+                        "sh",
+                        282
+                    ],
+                    [
+                        "makefile",
+                        11
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/qt-kde-team/3rdparty/indi",
+                "vcs_type": "git"
+            }
+        },
+        "protobuf": {
+            "type": "debian",
+            "version": "3.21.12-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        179370
+                    ],
+                    [
+                        "java",
+                        87794
+                    ],
+                    [
+                        "objc",
+                        60661
+                    ],
+                    [
+                        "ansic",
+                        37810
+                    ],
+                    [
+                        "cs",
+                        28526
+                    ],
+                    [
+                        "python",
+                        22443
+                    ],
+                    [
+                        "php",
+                        11464
+                    ],
+                    [
+                        "ruby",
+                        6127
+                    ],
+                    [
+                        "sh",
+                        3635
+                    ],
+                    [
+                        "makefile",
+                        3341
+                    ],
+                    [
+                        "pascal",
+                        2354
+                    ],
+                    [
+                        "xml",
+                        2321
+                    ],
+                    [
+                        "javascript",
+                        311
+                    ],
+                    [
+                        "lisp",
+                        87
+                    ],
+                    [
+                        "awk",
+                        17
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "spirv-tools": {
+            "type": "debian",
+            "version": "2023.1-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        408882
+                    ],
+                    [
+                        "javascript",
+                        5890
+                    ],
+                    [
+                        "python",
+                        2847
+                    ],
+                    [
+                        "ansic",
+                        403
+                    ],
+                    [
+                        "sh",
+                        385
+                    ],
+                    [
+                        "ruby",
+                        88
+                    ],
+                    [
+                        "makefile",
+                        17
+                    ],
+                    [
+                        "lisp",
+                        9
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/xorg-team/vulkan/spirv-tools",
+                "vcs_type": "git"
+            }
+        },
+        "ns3": {
+            "type": "debian",
+            "version": "3.37-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        614846
+                    ],
+                    [
+                        "python",
+                        17286
+                    ],
+                    [
+                        "ansic",
+                        7257
+                    ],
+                    [
+                        "xml",
+                        3432
+                    ],
+                    [
+                        "makefile",
+                        2247
+                    ],
+                    [
+                        "sh",
+                        972
+                    ],
+                    [
+                        "javascript",
+                        165
+                    ],
+                    [
+                        "perl",
+                        102
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/ns3",
+                "vcs_type": "git"
+            }
+        },
+        "libdivide": {
+            "type": "debian",
+            "version": "3.0-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        1885
+                    ],
+                    [
+                        "ansic",
+                        814
+                    ],
+                    [
+                        "makefile",
+                        2
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/libdivide.git",
+                "vcs_type": "git"
+            }
+        },
+        "transfuse": {
+            "type": "debian",
+            "version": "0.5.8-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        3709
+                    ],
+                    [
+                        "python",
+                        12
+                    ],
+                    [
+                        "makefile",
+                        11
+                    ],
+                    [
+                        "sh",
+                        8
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/science-team/transfuse",
+                "vcs_type": "git"
+            }
+        },
+        "libwebm": {
+            "type": "debian",
+            "version": "1.0.0.29-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        32049
+                    ],
+                    [
+                        "sh",
+                        455
+                    ],
+                    [
+                        "python",
+                        128
+                    ],
+                    [
+                        "makefile",
+                        28
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/multimedia-team/libwebm",
+                "vcs_type": "git"
+            }
+        },
+        "aspcud": {
+            "type": "debian",
+            "version": "1:1.9.6-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        17012
+                    ],
+                    [
+                        "ansic",
+                        4888
+                    ],
+                    [
+                        "yacc",
+                        182
+                    ],
+                    [
+                        "sh",
+                        113
+                    ],
+                    [
+                        "python",
+                        83
+                    ],
+                    [
+                        "makefile",
+                        11
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/aspcud",
+                "vcs_type": "git"
+            }
+        },
+        "poco": {
+            "type": "debian",
+            "version": "1.11.0-3",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        306156
+                    ],
+                    [
+                        "ansic",
+                        197138
+                    ],
+                    [
+                        "makefile",
+                        1464
+                    ],
+                    [
+                        "sh",
+                        507
+                    ],
+                    [
+                        "xml",
+                        79
+                    ],
+                    [
+                        "perl",
+                        29
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/poco",
+                "vcs_type": "git"
+            }
+        },
+        "r-cran-s2": {
+            "type": "debian",
+            "version": "1.1.2-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        96702
+                    ],
+                    [
+                        "pascal",
+                        1362
+                    ],
+                    [
+                        "ansic",
+                        37
+                    ],
+                    [
+                        "sh",
+                        14
+                    ],
+                    [
+                        "makefile",
+                        2
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/r-pkg-team/r-cran-s2",
+                "vcs_type": "git"
+            }
+        },
+        "trilinos": {
+            "type": "debian",
+            "version": "13.2.0-4",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        3466824
+                    ],
+                    [
+                        "ansic",
+                        433701
+                    ],
+                    [
+                        "fortran",
+                        168838
+                    ],
+                    [
+                        "python",
+                        102712
+                    ],
+                    [
+                        "xml",
+                        66353
+                    ],
+                    [
+                        "sh",
+                        38380
+                    ],
+                    [
+                        "makefile",
+                        25246
+                    ],
+                    [
+                        "perl",
+                        7516
+                    ],
+                    [
+                        "f90",
+                        6358
+                    ],
+                    [
+                        "csh",
+                        4161
+                    ],
+                    [
+                        "objc",
+                        2620
+                    ],
+                    [
+                        "lex",
+                        1484
+                    ],
+                    [
+                        "lisp",
+                        810
+                    ],
+                    [
+                        "javascript",
+                        552
+                    ],
+                    [
+                        "yacc",
+                        515
+                    ],
+                    [
+                        "awk",
+                        364
+                    ],
+                    [
+                        "ml",
+                        281
+                    ],
+                    [
+                        "php",
+                        145
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/science-team/trilinos",
+                "vcs_type": "git"
+            }
+        },
+        "f3d": {
+            "type": "debian",
+            "version": "1.3.1+dfsg-5",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        28581
+                    ],
+                    [
+                        "sh",
+                        306
+                    ],
+                    [
+                        "xml",
+                        155
+                    ],
+                    [
+                        "python",
+                        65
+                    ],
+                    [
+                        "makefile",
+                        21
+                    ],
+                    [
+                        "javascript",
+                        17
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/f3d",
+                "vcs_type": "git"
+            }
+        },
+        "trafficserver": {
+            "type": "debian",
+            "version": "9.2.3+ds-1+deb12u1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        345147
+                    ],
+                    [
+                        "ansic",
+                        31129
+                    ],
+                    [
+                        "python",
+                        25254
+                    ],
+                    [
+                        "sh",
+                        7211
+                    ],
+                    [
+                        "makefile",
+                        3045
+                    ],
+                    [
+                        "perl",
+                        2255
+                    ],
+                    [
+                        "java",
+                        277
+                    ],
+                    [
+                        "pascal",
+                        119
+                    ],
+                    [
+                        "sql",
+                        94
+                    ],
+                    [
+                        "xml",
+                        2
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/trafficserver",
+                "vcs_type": "git"
+            }
+        },
+        "onednn": {
+            "type": "debian",
+            "version": "2.6.3-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        515276
+                    ],
+                    [
+                        "lisp",
+                        23608
+                    ],
+                    [
+                        "ansic",
+                        11625
+                    ],
+                    [
+                        "python",
+                        1535
+                    ],
+                    [
+                        "asm",
+                        831
+                    ],
+                    [
+                        "sh",
+                        68
+                    ],
+                    [
+                        "makefile",
+                        46
+                    ],
+                    [
+                        "javascript",
+                        37
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/deeplearning-team/onednn",
+                "vcs_type": "git"
+            }
+        },
+        "minizinc": {
+            "type": "debian",
+            "version": "2.6.4+dfsg1-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        65627
+                    ],
+                    [
+                        "ansic",
+                        8237
+                    ],
+                    [
+                        "python",
+                        2865
+                    ],
+                    [
+                        "sh",
+                        37
+                    ],
+                    [
+                        "javascript",
+                        36
+                    ],
+                    [
+                        "makefile",
+                        10
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "r-cran-sass": {
+            "type": "debian",
+            "version": "0.4.5+dfsg-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        29736
+                    ],
+                    [
+                        "ansic",
+                        956
+                    ],
+                    [
+                        "sh",
+                        668
+                    ],
+                    [
+                        "makefile",
+                        322
+                    ],
+                    [
+                        "perl",
+                        124
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/r-pkg-team/r-cran-sass",
+                "vcs_type": "git"
+            }
+        },
+        "libcifpp": {
+            "type": "debian",
+            "version": "5.0.7.1-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        35831
+                    ],
+                    [
+                        "sh",
+                        93
+                    ],
+                    [
+                        "makefile",
+                        14
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/med-team/libcifpp",
+                "vcs_type": "git"
+            }
+        },
+        "osmium-tool": {
+            "type": "debian",
+            "version": "1.15.0-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        32120
+                    ],
+                    [
+                        "ansic",
+                        2434
+                    ],
+                    [
+                        "makefile",
+                        211
+                    ],
+                    [
+                        "sh",
+                        26
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian-gis-team/osmium-tool/",
+                "vcs_type": "git"
+            }
+        },
+        "scythestat": {
+            "type": "debian",
+            "version": "1.0.3-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        4679
+                    ],
+                    [
+                        "ansic",
+                        3528
+                    ],
+                    [
+                        "sh",
+                        3456
+                    ],
+                    [
+                        "makefile",
+                        39
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/science-team/scythestat",
+                "vcs_type": "git"
+            }
+        },
+        "draco": {
+            "type": "debian",
+            "version": "1.5.5+dfsg-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        49960
+                    ],
+                    [
+                        "python",
+                        279
+                    ],
+                    [
+                        "javascript",
+                        49
+                    ],
+                    [
+                        "sh",
+                        47
+                    ],
+                    [
+                        "makefile",
+                        20
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/roehling/draco",
+                "vcs_type": "git"
+            }
+        },
+        "stella": {
+            "type": "debian",
+            "version": "6.7+dfsg-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "ansic",
+                        185562
+                    ],
+                    [
+                        "cpp",
+                        83701
+                    ],
+                    [
+                        "sh",
+                        3904
+                    ],
+                    [
+                        "makefile",
+                        776
+                    ],
+                    [
+                        "perl",
+                        500
+                    ],
+                    [
+                        "objc",
+                        187
+                    ],
+                    [
+                        "asm",
+                        163
+                    ],
+                    [
+                        "yacc",
+                        86
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/games-team/stella",
+                "vcs_type": "git"
+            }
+        },
+        "horizon-eda": {
+            "type": "debian",
+            "version": "2.4.0-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        265690
+                    ],
+                    [
+                        "ansic",
+                        3824
+                    ],
+                    [
+                        "python",
+                        2085
+                    ],
+                    [
+                        "makefile",
+                        1126
+                    ],
+                    [
+                        "xml",
+                        378
+                    ],
+                    [
+                        "sql",
+                        219
+                    ],
+                    [
+                        "sh",
+                        185
+                    ],
+                    [
+                        "ruby",
+                        61
+                    ]
+                ],
+                "vcs_url": null,
+                "vcs_type": null
+            }
+        },
+        "libosmium": {
+            "type": "debian",
+            "version": "2.19.0-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        52567
+                    ],
+                    [
+                        "sh",
+                        148
+                    ],
+                    [
+                        "makefile",
+                        20
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian-gis-team/libosmium/",
+                "vcs_type": "git"
+            }
+        },
+        "simgrid": {
+            "type": "debian",
+            "version": "3.32-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        111033
+                    ],
+                    [
+                        "ansic",
+                        66370
+                    ],
+                    [
+                        "python",
+                        8594
+                    ],
+                    [
+                        "fortran",
+                        6079
+                    ],
+                    [
+                        "f90",
+                        5123
+                    ],
+                    [
+                        "xml",
+                        4783
+                    ],
+                    [
+                        "java",
+                        3905
+                    ],
+                    [
+                        "sh",
+                        2480
+                    ],
+                    [
+                        "perl",
+                        1889
+                    ],
+                    [
+                        "makefile",
+                        112
+                    ],
+                    [
+                        "lisp",
+                        49
+                    ],
+                    [
+                        "javascript",
+                        7
+                    ],
+                    [
+                        "sed",
+                        6
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/simgrid",
+                "vcs_type": "git"
+            }
+        },
+        "gromacs": {
+            "type": "debian",
+            "version": "2022.5-2",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "xml",
+                        841565
+                    ],
+                    [
+                        "cpp",
+                        571976
+                    ],
+                    [
+                        "ansic",
+                        40200
+                    ],
+                    [
+                        "python",
+                        22039
+                    ],
+                    [
+                        "sh",
+                        3493
+                    ],
+                    [
+                        "perl",
+                        2481
+                    ],
+                    [
+                        "yacc",
+                        644
+                    ],
+                    [
+                        "fortran",
+                        397
+                    ],
+                    [
+                        "lisp",
+                        265
+                    ],
+                    [
+                        "makefile",
+                        179
+                    ],
+                    [
+                        "lex",
+                        125
+                    ],
+                    [
+                        "awk",
+                        68
+                    ],
+                    [
+                        "csh",
+                        39
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debichem-team/gromacs",
+                "vcs_type": "git"
+            }
+        },
+        "proj": {
+            "type": "debian",
+            "version": "9.1.1-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "sh",
+                        217874
+                    ],
+                    [
+                        "cpp",
+                        151527
+                    ],
+                    [
+                        "sql",
+                        75239
+                    ],
+                    [
+                        "ansic",
+                        5818
+                    ],
+                    [
+                        "yacc",
+                        1286
+                    ],
+                    [
+                        "makefile",
+                        34
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian-gis-team/proj",
+                "vcs_type": "git"
+            }
+        },
+        "mozjs102": {
+            "type": "debian",
+            "version": "102.15.1-1~deb12u1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "javascript",
+                        1965213
+                    ],
+                    [
+                        "cpp",
+                        1240505
+                    ],
+                    [
+                        "python",
+                        681312
+                    ],
+                    [
+                        "ansic",
+                        438915
+                    ],
+                    [
+                        "xml",
+                        117665
+                    ],
+                    [
+                        "sh",
+                        18330
+                    ],
+                    [
+                        "asm",
+                        13490
+                    ],
+                    [
+                        "makefile",
+                        11673
+                    ],
+                    [
+                        "yacc",
+                        4504
+                    ],
+                    [
+                        "perl",
+                        2222
+                    ],
+                    [
+                        "lex",
+                        1414
+                    ],
+                    [
+                        "exp",
+                        756
+                    ],
+                    [
+                        "java",
+                        177
+                    ],
+                    [
+                        "ruby",
+                        97
+                    ],
+                    [
+                        "sql",
+                        66
+                    ],
+                    [
+                        "csh",
+                        35
+                    ],
+                    [
+                        "sed",
+                        18
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/gnome-team/mozjs/tree/debian/102/master",
+                "vcs_type": "git"
+            }
+        },
+        "logiops": {
+            "type": "debian",
+            "version": "0.3.1-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        11875
+                    ],
+                    [
+                        "sh",
+                        23
+                    ],
+                    [
+                        "makefile",
+                        8
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/debian/logiops",
+                "vcs_type": "git"
+            }
+        },
+        "libsass": {
+            "type": "debian",
+            "version": "3.6.5+20220909-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        30084
+                    ],
+                    [
+                        "ansic",
+                        839
+                    ],
+                    [
+                        "sh",
+                        659
+                    ],
+                    [
+                        "makefile",
+                        356
+                    ],
+                    [
+                        "perl",
+                        124
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/sass-team/libsass",
+                "vcs_type": "git"
+            }
+        },
+        "aseba": {
+            "type": "debian",
+            "version": "1.6.99+dfsg-7",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        44160
+                    ],
+                    [
+                        "ansic",
+                        15471
+                    ],
+                    [
+                        "python",
+                        1597
+                    ],
+                    [
+                        "javascript",
+                        765
+                    ],
+                    [
+                        "sh",
+                        95
+                    ],
+                    [
+                        "makefile",
+                        60
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/science-team/aseba.git",
+                "vcs_type": "git"
+            }
+        },
+        "rsymphony": {
+            "type": "debian",
+            "version": "0.1-33-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        47
+                    ],
+                    [
+                        "sh",
+                        44
+                    ],
+                    [
+                        "ansic",
+                        21
+                    ],
+                    [
+                        "makefile",
+                        2
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/edd/r-cran-rsymphony",
+                "vcs_type": "git"
+            }
+        },
+        "tao-pegtl": {
+            "type": "debian",
+            "version": "3.2.7-1",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        22498
+                    ],
+                    [
+                        "makefile",
+                        72
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/birger/tao-pegtl",
+                "vcs_type": "git"
+            }
+        },
+        "opentracing-cpp": {
+            "type": "debian",
+            "version": "1.6.0-4",
+            "suite": "bookworm",
+            "recently_updated": true,
+            "status": "new",
+            "codebase_data": {
+                "sloc": [
+                    [
+                        "cpp",
+                        14234
+                    ],
+                    [
+                        "ansic",
+                        68
+                    ],
+                    [
+                        "sh",
+                        16
+                    ],
+                    [
+                        "makefile",
+                        5
+                    ]
+                ],
+                "vcs_url": "https://salsa.debian.org/ssgelm/opentracing-cpp",
+                "vcs_type": "git"
+            }
+        }
+    }
+}
