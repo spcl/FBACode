@@ -8,7 +8,7 @@ from subprocess import PIPE
 import json
 
 from time import time
-from shutil import move, copyfile
+from shutil import move, copyfile, copy2
 from datetime import datetime
 
 from ci_systems.apt_install import Installer  # type: ignore  we are in docker
@@ -16,6 +16,8 @@ from ci_systems.apt_install import Installer  # type: ignore  we are in docker
 # paths are different indide docker
 from utils.driver import open_logfiles  # type: ignore
 from build_systems.utils import run  # type: ignore
+
+DOCKER_MOUNT_POINT = "/home/fba_code"
 
 
 class Context:
@@ -35,18 +37,22 @@ def print_section(idx, ctx, message):
     print(to_print)
 
 
-source_dir = "/home/fba_code/source"
-build_dir = "/home/fba_code/build"
-bitcodes_dir = "/home/fba_code/bitcodes"
-ast_dir = "/home/fba_code/AST"
-dependency_map = "/home/fba_code/dep_mapping.json"
-build_system = os.environ["BUILD_SYSTEM"]
-ci_system = os.environ["CI_SYSTEM"]
-external_build_dir = os.environ["BUILD_DIR"]
-external_bitcodes_dir = os.environ["BITCODES_DIR"]
-external_ast_dir = os.environ["AST_DIR"]
-install_deps = not os.environ["DEPENDENCY_INSTALL"] == "False"
-skip_build = os.environ["SKIP_BUILD"] == "True"
+source_dir = f"{DOCKER_MOUNT_POINT}/source"
+build_dir = f"{DOCKER_MOUNT_POINT}/build"
+bitcodes_dir = f"{DOCKER_MOUNT_POINT}/bitcodes"
+ast_dir = f"{DOCKER_MOUNT_POINT}/AST"
+headers_dir = f"{build_dir}/relevant_headers"
+# features_dir = f"{DOCKER_MOUNT_POINT}/features"
+dependency_map = f"{DOCKER_MOUNT_POINT}/dep_mapping.json"
+build_system = os.environ.get("BUILD_SYSTEM", "")
+ci_system = os.environ.get("CI_SYSTEM", "")
+external_build_dir = os.environ.get("BUILD_DIR", "")
+external_bitcodes_dir = os.environ.get("BITCODES_DIR", "")
+external_ast_dir = os.environ.get("AST_DIR")
+# external_features_dir = os.environ.get("FEATURES_DIR")
+# install_deps = not (os.environ.get("DEPENDENCY_INSTALL", "") == "False")
+install_deps = True
+skip_build = os.environ.get("SKIP_BUILD", "") == "True"
 
 json_input = json.load(open(sys.argv[1], "r"))
 idx = json_input["idx"]
@@ -63,14 +69,15 @@ print("python version: {}".format(sys.version))
 # directories to be chowned in the end
 chown_dirs = [build_dir, source_dir]
 
-cfg = {"output": {"verbose": verbose, "file": "/home/fba_code/"}}
+cfg = {"output": {"verbose": verbose, "file": f"{DOCKER_MOUNT_POINT}/"}}
 ctx = Context(cfg)
 timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-loggers = open_logfiles(cfg, name.replace("/", "_"), timestamp=timestamp)
+loggers = open_logfiles(cfg, name.replace("/", "_"), timestamp = timestamp)
 ctx.set_loggers(loggers.stdout, loggers.stderr)
+
 # save all installed packages, to get the difference later (newly installed deps)
 # assusmes we run debian or ubuntu, maybe put into library in the future
-out = run(["dpkg", "--get-selections"], stderr=PIPE, stdout=PIPE)
+out = run(["dpkg", "--get-selections"], capture_output = True, text = True)
 preinstalled_pkgs = out.stdout.splitlines()
 preinstalled_pkgs = [
     i.replace("install", "").strip() for i in preinstalled_pkgs if "deinstall" not in i
@@ -84,21 +91,26 @@ project = {
         "stdout": os.path.basename(loggers.stdout_file),
         "stderr": os.path.basename(loggers.stderr_file),
         "installed": [],
-        "-j": os.environ.get("JOBS", 1)
+        "-j": os.environ.get("JOBS", 1),
     },
 }
+
+if "folder" in json_input["project"]:
+    project["build"]["folder"] = json_input["project"]["folder"]
+if "version" in json_input["project"]:
+    project["build"]["version"] = json_input["project"]["version"]
 
 builder = builder_class(source_dir, build_dir, idx, ctx, name, project)
 ci = ci_class(source_dir, build_dir, idx, ctx, name, project, builder.COPY_SRC_TO_BUILD)
 start = time()
-builder.copy_src()
+copied_src = builder.copy_src()
 end = time()
 copy_time = end - start
-if install_deps:
-    print_section(idx, ctx, "insalling dependencies with {}".format(ci_system))
+if copied_src and install_deps:
+    print_section(idx, ctx, "installing dependencies with {}".format(ci_system))
     # by default, get dependencies with ci system
     start = time()
-    success = ci.install()
+    success = ci.install(builder=builder)
     if not success:
         print("failed installation using {}".format(ci_system))
         project["build"]["install"] = "fail"
@@ -122,6 +134,26 @@ if install_deps:
         )
         installer.install()
         print_section(idx, ctx, "done installing dependencies from prev. build")
+        
+        os.unlink("/usr/bin/clang")
+        os.unlink("/usr/bin/clang++")
+        os.unlink("/usr/bin/cc")
+        os.unlink("/usr/bin/gcc")
+        os.unlink("/usr/bin/g++")
+
+        os.symlink(f"{DOCKER_MOUNT_POINT}/wrappers/clang", "/usr/bin/cc")
+        os.symlink(f"{DOCKER_MOUNT_POINT}/wrappers/clang++", "/usr/bin/c++")
+        os.symlink(f"{DOCKER_MOUNT_POINT}/wrappers/clang++", "/usr/bin/cpp")
+        os.symlink(f"{DOCKER_MOUNT_POINT}/wrappers/clang", "/usr/bin/gcc")
+        os.symlink(f"{DOCKER_MOUNT_POINT}/wrappers/clang++", "/usr/bin/g++")
+
+        for version in "4.6 4.7 4.8 4.9 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19".split():
+            os.unlink(f"/usr/bin/clang-{version}")
+            os.unlink(f"/usr/bin/clang++-{version}")
+            os.symlink(f"{DOCKER_MOUNT_POINT}/wrappers/clang", f"/usr/bin/clang-{version}")
+            os.symlink(f"{DOCKER_MOUNT_POINT}/wrappers/clang++", f"/usr/bin/clang++-{version}")
+
+        print_section(idx, ctx, "finished redoing the clang wrapper")
 
 start = time()
 print_section(idx, ctx, "starting configuration")
@@ -133,6 +165,11 @@ if not configured:
     project["build"]["configure"] = "fail"
     failure = True
     print_section(idx, ctx, "configuration failed")
+    end = time()
+elif not copied_src:
+    project["build"]["configure"] = "fail"
+    failure = True
+    print_section(idx, ctx, "copy_src failed")
     end = time()
 else:
     print_section(idx, ctx, "configuration succeeded, starting build")
@@ -146,6 +183,8 @@ else:
         print_section(idx, ctx, "skipping build")
         end = time()
     else:
+        if not os.path.exists(os.path.join(build_dir, "header_dependencies")):
+            os.makedirs(os.path.join(build_dir, "header_dependencies"))
         project["skipped_build"] = False
         if not builder.build():
             ci_build = getattr(ci, "build", None)
@@ -180,17 +219,37 @@ else:
             project["ast_files"] = {"dir": external_ast_dir}
             builder.generate_ast(ast_dir)
             chown_dirs.append(ast_dir)
+        if os.environ.get("SAVE_HEADERS") != "False":
+            project["relevant_headers"] = {"dir": headers_dir}
+            result = builder.save_header_files(headers_dir)
+            if result == False:
+                project["status"] = "fail"
+            else:
+                project["releveant_headers_mapping"] = result
+            chown_dirs.append(headers_dir)
 project["build"]["build_time"] = end - start
 ctx.out_log.print_info(idx, "Finish processing %s in %f [s]" % (name, end - start))
 
+with open(f"{build_dir}/source-files.log", "w") as fout:
+    for file in glob.glob(f"{build_dir}/source-files-*.log"):
+        with open(file, "r") as fin:
+            fout.write(fin.read())
+        os.unlink(file)
+
 # get installed packages after build
-out = run(["dpkg", "--get-selections"], stderr=PIPE, stdout=PIPE)
+out = run(["dpkg", "--get-selections"], capture_output = True, text = True)
 installed_pkgs = out.stdout.splitlines()
 installed_pkgs = [
     i.replace("install", "").strip() for i in installed_pkgs if "deinstall" not in i
 ]
 new_pkgs = list(set(installed_pkgs) - set(preinstalled_pkgs))
 project["build"]["installed"].extend(new_pkgs)
+
+if builder.temp_build_dir is not None:
+    project["build"]["temp_build_dir"] = builder.temp_build_dir
+
+
+
 out = {"idx": idx, "name": name, "project": project}
 # save output JSON
 with open("output.json", "w") as f:
@@ -200,7 +259,7 @@ with open("output.json", "w") as f:
 # move logs to build directory
 for file in glob.glob("*.log"):
     move(file, build_dir)
-copyfile("output.json", os.path.join(build_dir, "output.json"))
+copy2("output.json", os.path.join(build_dir, "output.json"))
 
 # change the user and group to the one of the host, since we are root
 host_uid = os.stat(build_dir).st_uid

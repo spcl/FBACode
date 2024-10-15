@@ -31,7 +31,7 @@ class CiSystem:
         self.gh_dir = build_dir if use_build_dir else repo_dir
         self.project = project
 
-    def install(self):
+    def install(self, builder = None):
         yml_files = [
             f
             for f in os.listdir(join(self.gh_dir, ".github/workflows"))

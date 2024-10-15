@@ -1,8 +1,9 @@
 *Fetch, Build and Analyze Code*
 
-The project consists of two major components: [*fetcher*](#fetcher) and [*builder*](#builder).
-The former is responsible for discovering repositories and source codes. The latter
-downloades the code, attempts build and generates LLVM bitcodes.
+The project consists of three major components: [*fetcher*](#fetcher), [*builder*](#builder), and [*analyzer*](#analyzer).
+The first one is responsible for discovering repositories and source codes. The second one downloades the code, attempts build and generates LLVM bitcodes, and sends them to a remote server for storage. Finally, the analyzer downoads the build artifacts from the remote storage server and analyzes them.
+
+We perform the analysis on the AST files produces by the builder. Specifically, the analysis is done by a C++ tool ([cxx-langstat](https://github.com/spcl/cxx-langstat)) that relies on the Clang compiler infrastructure to parse the ASTs. This introduces a requirement: the langstat tool must be built with the exact same compiler version that the AST files were built with. We achieve this by using docker multi-stage builds. 
 
 ## Requirements
 
@@ -11,6 +12,9 @@ downloades the code, attempts build and generates LLVM bitcodes.
   - [requests](https://pypi.org/project/requests/)
   - [GitPython](https://pypi.org/project/GitPython/)
   - [docker](https://pypi.org/project/docker/)
+  - [fabric](https://pypi.org/project/fabric/)
+  - [PyYaml](https://pypi.org/project/PyYAML/)
+  - [fuzzywuzzy](https://pypi.org/project/fuzzywuzzy/)
 
 ## Installation
 
@@ -21,6 +25,21 @@ the environment.
 Use **tools/build_docker_images.py** to build and update Docker images necessary
 to run build steps.
 
+### Debian installation
+#### Creating the docker containers
+First, either pull the build and analyze images from DockerHub using:
+```bash
+docker pull spcleth:debian-bookworm-clang
+docker pull spcleth:debian-bookworm-cxxlangstat
+```
+Or build the images locally using `python3 tools/build_docker_images.py`.
+The order in which to create the docker containers is:
+1. debian-bookworm-clang-base
+1. debian-bookworm-clang-base-beta
+1. debian-bookworm-clang
+1. debian-bookworm-cxxlangstat
+
+When building the `debian-bookworm-clang` image, make sure the cxx-langstat project can be found as folder inside the root of FBACode.
 ## Fetcher
 
 Fetcher attempts to discover available repositories that could be built. The goal
@@ -38,8 +57,8 @@ To avoid running into [rate limit issues](https://developer.github.com/v3/search
 
 #### Debian
 
-The fetcher looks for random projects with C or C++ code in them, which is found in the debian package API.
-At the moment only Debian 10 (Buster) is supported. 
+The fetcher looks for random projects with C++ code in them, which is found in the debian package API.
+At the moment only Debian 12 (Bookworm) is supported. 
 
 
 ## Builder
@@ -85,7 +104,7 @@ supported, as well as stages.
 
 #### Debian Builder
 
-The current implementation uses packages from the Debian 10 (Buster, latest LTS at the time) repository.
+The current implementation uses packages from the Debian 12 (Bookworm, latest LTS at the time) repository.
 The Packages get downloaded inside the docker container, since we don't know if apt is
 available on the host system. it basically runs `apt-source package`, then 
 `apt build-dep package` to install dependencies and finally `dpkg-buildpackage` to build it.
@@ -99,3 +118,26 @@ time them separately.
 - installing dependencies is missing
 - discovering dependencies is not very good yet
 - We should use CI configurations (Travis, CircleCI, GH Actions) and package mangers to discover configuration flags and dependencies.
+
+## Analyzer
+
+The analyzer component is responsible for "downloading" the build artifacts from the remote storage server and then to analyze them. It uses a docker image to start a container that will decompress the archive and run [cxx-langstat](https://github.com/spcl/cxx-langstat) on the AST files.
+
+# Example build and analysis on Debian
+Here, we will showcase how to build and analyze projects from the Debian repository. We will use the `examples/debian-abseil.json file`, but it can be replaced with any other debian json database.
+
+## Build
+```bash
+python3 builder.py examples/debian-abseil.json
+```
+After the build finishes, you should see on the remote server specified inside of `build.cfg` an archive with the results of the build. Depending on the contents of the config file, the build artifacts might exist on the build machine as well.
+
+## Analysis
+Make sure the root of FBACode contains a folder named `ast_archive`. This is where the analyzer will "download" the artifacts from the remote server. Additionally, the build artifacts folder must contain a `build_summary.json` file. This is similar to a database of the artifacts in that folder. If it does not exist, we recommend using the `all_built.json` in the build directory used by `builder.py` (by default it is `build/`).
+```bash
+python3 analyzer.py <folder containing the build artifacts> # typically of form run_<timestamp>
+```
+
+Then, in the `analyze/` folder, there should be separate folders for each project that was analyzed. Each folder contains the statistics for that specific project. 
+
+Next, the `data_analysis/` folder contains a jupyter notebook that aggregates the per-project statistics to extract high-level insights.

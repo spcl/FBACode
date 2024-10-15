@@ -1,0 +1,5 @@
+# source: chat gpt
+
+Package: clang-*
+Pin: release *
+Pin-Priority: -1

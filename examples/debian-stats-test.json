@@ -1,0 +1,124 @@
+{
+    "debian": {
+        "ktextwidgets": {
+          "type": "debian",
+          "version": "5.103.0-1",
+          "suite": "bookworm",
+          "recently_updated": true,
+          "status": "new",
+          "codebase_data": {
+            "sloc": [
+              [
+                "cpp",
+                5768
+              ],
+              [
+                "sh",
+                21
+              ],
+              [
+                "makefile",
+                7
+              ]
+            ],
+            "vcs_url": "https://salsa.debian.org/qt-kde-team/kde/ktextwidgets",
+            "vcs_type": "git"
+          }
+        },
+        "dssi": {
+          "type": "debian",
+          "version": "1.1.1~dfsg0-5",
+          "suite": "bookworm",
+          "recently_updated": true,
+          "status": "new",
+          "codebase_data": {
+            "sloc": [
+              [
+                "sh",
+                10975
+              ],
+              [
+                "ansic",
+                3887
+              ],
+              [
+                "cpp",
+                1364
+              ],
+              [
+                "perl",
+                191
+              ],
+              [
+                "makefile",
+                165
+              ]
+            ],
+            "vcs_url": "https://salsa.debian.org/multimedia-team/dssi",
+            "vcs_type": "git"
+          }
+        },
+        "iitii": {
+          "type": "debian",
+          "version": "0.0+git20191030.85209e0-2",
+          "suite": "bookworm",
+          "recently_updated": true,
+          "status": "new",
+          "codebase_data": {
+            "sloc": [
+              [
+                "cpp",
+                1257
+              ],
+              [
+                "ansic",
+                395
+              ],
+              [
+                "sh",
+                22
+              ],
+              [
+                "makefile",
+                11
+              ]
+            ],
+            "vcs_url": "https://salsa.debian.org/med-team/iitii",
+            "vcs_type": "git"
+          }
+        },
+        "tagua": {
+          "type": "debian",
+          "version": "1.0~alpha2-16-g618c6a0-3",
+          "suite": "bookworm",
+          "recently_updated": true,
+          "status": "new",
+          "codebase_data": {
+            "sloc": [
+              [
+                "cpp",
+                26141
+              ],
+              [
+                "ansic",
+                13039
+              ],
+              [
+                "makefile",
+                183
+              ],
+              [
+                "ruby",
+                88
+              ],
+              [
+                "sh",
+                39
+              ]
+            ],
+            "vcs_url": "https://salsa.debian.org/debian/tagua",
+            "vcs_type": "git"
+          }
+        }
+    }
+}

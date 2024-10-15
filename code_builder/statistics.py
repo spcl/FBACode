@@ -1,15 +1,17 @@
 import json
-from json.decoder import JSONDecodeError
 import re
 import copy
+import fuzzywuzzy
+import shutil
+import os.path
+
+from json.decoder import JSONDecodeError
 from os.path import join
 from datetime import datetime
 from collections import OrderedDict
 from fuzzywuzzy import process, fuzz
-import fuzzywuzzy
 from time import time
 from . import dep_finder
-import shutil
 
 
 class Statistics:
@@ -22,6 +24,9 @@ class Statistics:
         self.unrecognized_projects = []
         self.clone_time = 0
         self.build_time = 0
+        if not os.path.exists("code_builder/errortypes.json"):
+            with open("code_builder/errortypes.json", "w") as f:
+                f.write("{}")
         try:
             with open("code_builder/errortypes.json", "r") as f:
                 self.errors_stdout = json.load(f)
@@ -53,6 +58,9 @@ class Statistics:
         self.ci_systems = {}
         self.all_projects = {}
         self.dep_mapping = {}
+        if not os.path.exists("code_builder/dep_mapping.json"):
+            with open("code_builder/dep_mapping.json", "w") as f:
+                f.write("{}")
         try:
             with open("code_builder/dep_mapping.json", "r") as f:
                 self.persistent_dep_mapping = json.load(f)
@@ -159,7 +167,7 @@ class Statistics:
             for i in ci_systems:
                 self.ci_systems[i]["success"] += 1
             self.add_correct_project()
-        elif project["status"] == "crash":
+        elif project["status"] == "crash" or project["status"] == "docker_crash":
             self.build_systems[build_system]["fail"] += 1
             for i in ci_systems:
                 self.ci_systems[i]["fail"] += 1
@@ -189,7 +197,7 @@ class Statistics:
 
         else:
             if "build" in project:
-                # we pass the errror log through all the stages,
+                # we pass the error log through all the stages,
                 # always removing the found errors from the string
                 project["build"]["errortypes"] = []
                 # print("\nstarting error analysis for {}".format(name))
